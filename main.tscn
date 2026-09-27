@@ -1,8 +1,13 @@
 [gd_scene format=3 uid="uid://cy28uaq81a1c"]
 
+[ext_resource type="Texture2D" uid="uid://c2o1xkacu131c" path="res://boden1.png" id="1_0xm2m"]
 [ext_resource type="Script" uid="uid://c0rl8h6ne4ir" path="res://player.gd" id="1_ig7tw"]
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_nxgan"]
+albedo_texture = ExtResource("1_0xm2m")
+
 [sub_resource type="BoxMesh" id="BoxMesh_wkg2w"]
+material = SubResource("StandardMaterial3D_nxgan")
 size = Vector3(50, 0.2, 50)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_2ofg4"]
@@ -10,6 +15,8 @@ size = Vector3(50, 0.2, 50)
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_2ofg4"]
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_2ofg4"]
+
+[sub_resource type="Environment" id="Environment_2ofg4"]
 
 [node name="Node3D" type="Node3D" unique_id=1406368339]
 
@@ -33,3 +40,10 @@ mesh = SubResource("CapsuleMesh_2ofg4")
 
 [node name="Camera3D" type="Camera3D" parent="Player" unique_id=2789363]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.6, 0)
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=245996109]
+transform = Transform3D(0.18566664, 0.9826128, 0, -0.17062889, 0.032240666, 0.9848077, 0.9676847, -0.18284594, 0.17364815, 0, 4, 0)
+shadow_enabled = true
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1283818073]
+environment = SubResource("Environment_2ofg4")
