@@ -62,6 +62,11 @@ emission_enabled = true
 emission = Color(0.95, 0.12, 0.02, 1)
 emission_energy_multiplier = 2.2
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_t8aj2"]
+albedo_color = Color(0.12, 0.1, 0.09, 1)
+metallic = 0.25
+roughness = 0.5
+
 [sub_resource type="CylinderMesh" id="Cylinder"]
 material = SubResource("MatMetal")
 top_radius = 0.25
@@ -177,47 +182,49 @@ shape = SubResource("ShapeSideWall")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.575, -2.8)
 
 [node name="Mesh" type="MeshInstance3D" parent="Counter" unique_id=213595159]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1.1876299)
 mesh = SubResource("BoxCounter")
 
 [node name="Collision" type="CollisionShape3D" parent="Counter" unique_id=1274107635]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1.1886399)
 shape = SubResource("ShapeCounter")
 
 [node name="CounterTop" type="MeshInstance3D" parent="." unique_id=557678241]
-transform = Transform3D(1.03, 0, 0, 0, 0.12, 0, 0, 0, 1.06, 0, 1.22, -2.8)
+transform = Transform3D(1.03, 0, 0, 0, 0.12, 0, 0, 0, 1.06, 0, 1.22, -1.61237)
 material_override = SubResource("MatDark")
 mesh = SubResource("BoxCounter")
 
 [node name="CashRegister" type="MeshInstance3D" parent="." unique_id=1798960768]
-transform = Transform3D(0.9, 0, 0, 0, 0.55, 0, 0, 0, 0.75, 2.1, 1.55, -2.8)
+transform = Transform3D(0.9, 0, 0, 0, 0.55, 0, 0, 0, 0.75, 2.1, 1.55, -1.61237)
 mesh = SubResource("BoxSmall")
 
 [node name="CashScreen" type="MeshInstance3D" parent="." unique_id=1999699835]
-transform = Transform3D(0.65, 0, 0, 0, 0.07825181, 0.10395585, 0, -0.016632935, 0.4890738, 2.1, 1.95, -2.92)
+transform = Transform3D(0.65, 0, 0, 0, 0.07825181, 0.10395585, 0, -0.016632935, 0.4890738, 2.1, 1.95, -1.7323701)
 material_override = SubResource("MatSign")
 mesh = SubResource("BoxSmall")
 
 [node name="KitchenBackShelf" type="MeshInstance3D" parent="." unique_id=1005955309]
-transform = Transform3D(3, 0, 0, 0, 0.25, 0, 0, 0, 0.35, -3.8, 2, -5.45)
-material_override = SubResource("MatDark")
+transform = Transform3D(7, 0, 0, 0, 0.25, 0, 0, 0, 0.35, -0.91877294, 0.9611652, -5.5760846)
+material_override = SubResource("StandardMaterial3D_t8aj2")
 mesh = SubResource("BoxSmall")
 
 [node name="DonerSpit" type="Node3D" parent="." unique_id=231999689]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.2, 0, -4.55)
+transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, -3.9592829, 0.6649709, -2.4962418)
 
 [node name="Base" type="MeshInstance3D" parent="DonerSpit" unique_id=1536134390]
-transform = Transform3D(1.35, 0, 0, 0, 0.75, 0, 0, 0, 1.35, 0, 0.35, 0)
+transform = Transform3D(1.35, 0, 0, 0, 0.75, 0, 0, 0, 1.35, 1.2535589, 1.517907, 1.6601951)
 mesh = SubResource("BoxSmall")
 
 [node name="Pole" type="MeshInstance3D" parent="DonerSpit" unique_id=352803591]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.45, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.2535589, 2.617907, 1.6601951)
 mesh = SubResource("Cylinder")
 
 [node name="Meat" type="MeshInstance3D" parent="DonerSpit" unique_id=1155044594]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.55, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.2535589, 2.7738883, 1.6601951)
 mesh = SubResource("CylinderMeat")
 
 [node name="TopCap" type="MeshInstance3D" parent="DonerSpit" unique_id=175268866]
-transform = Transform3D(0.7, 0, 0, 0, 0.2, 0, 0, 0, 0.7, 0, 2.45, 0)
+transform = Transform3D(0.7, 0, 0, 0, 0.2, 0, 0, 0, 0.7, 1.2535589, 3.617907, 1.6601951)
 mesh = SubResource("Cylinder")
 
 [node name="Grill" type="StaticBody3D" parent="." unique_id=7977972]
@@ -260,33 +267,43 @@ mesh = SubResource("BoxSmall")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 0.8, 1.5)
 
 [node name="Mesh" type="MeshInstance3D" parent="Table1" unique_id=1102744915]
-transform = Transform3D(2.2, 0, 0, 0, 0.25, 0, 0, 0, 1.4, 0, 0, 0)
+transform = Transform3D(2.2, 0, 0, 0, 0.25, 0, 0, 0, 1.4, -2.4011502, 0, 0.45780873)
 material_override = SubResource("MatWood")
 mesh = SubResource("BoxSmall")
 
 [node name="Collision" type="CollisionShape3D" parent="Table1" unique_id=1909829891]
-transform = Transform3D(2.2, 0, 0, 0, 0.25, 0, 0, 0, 1.4, 0, 0, 0)
+transform = Transform3D(2.2, 0, 0, 0, 0.25, 0, 0, 0, 1.4, -2.395092, 0, 0.45026731)
 shape = SubResource("ShapeSmall")
 
 [node name="Table2" type="StaticBody3D" parent="." unique_id=858128262]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 0.8, 1.5)
 
 [node name="Mesh" type="MeshInstance3D" parent="Table2" unique_id=439723037]
-transform = Transform3D(2.2, 0, 0, 0, 0.25, 0, 0, 0, 1.4, 0, 0, 0)
+transform = Transform3D(2.2, 0, 0, 0, 0.25, 0, 0, 0, 1.4, 0, 0, 0.45780873)
 material_override = SubResource("MatWood")
 mesh = SubResource("BoxSmall")
 
 [node name="Collision" type="CollisionShape3D" parent="Table2" unique_id=893111253]
-transform = Transform3D(2.2, 0, 0, 0, 0.25, 0, 0, 0, 1.4, 0, 0, 0)
+transform = Transform3D(2.2, 0, 0, 0, 0.25, 0, 0, 0, 1.4, 0.01755333, 0.014683247, 0.4483559)
 shape = SubResource("ShapeSmall")
 
 [node name="Chair1" type="MeshInstance3D" parent="." unique_id=1560673258]
-transform = Transform3D(0.8, 0, 0, 0, 0.9, 0, 0, 0, 0.8, -4, 0.45, 0)
+transform = Transform3D(0.8, 0, 0, 0, 0.9, 0, 0, 0, 0.8, -6.4130826, 0.46468323, 0.39122987)
+material_override = SubResource("MatRed")
+mesh = SubResource("BoxSmall")
+
+[node name="Chair3" type="MeshInstance3D" parent="." unique_id=818654149]
+transform = Transform3D(0.8, 0, 0, 0, 0.9, 0, 0, 0, 0.8, -6.4130826, 0.46468323, 3.4104571)
 material_override = SubResource("MatRed")
 mesh = SubResource("BoxSmall")
 
 [node name="Chair2" type="MeshInstance3D" parent="." unique_id=1439333001]
-transform = Transform3D(0.8, 0, 0, 0, 0.9, 0, 0, 0, 0.8, 4, 0.45, 0)
+transform = Transform3D(0.8, 0, 0, 0, 0.9, 0, 0, 0, 0.8, 4, 0.45, 0.9656968)
+material_override = SubResource("MatRed")
+mesh = SubResource("BoxSmall")
+
+[node name="Chair4" type="MeshInstance3D" parent="." unique_id=1044669613]
+transform = Transform3D(0.8, 0, 0, 0, 0.9, 0, 0, 0, 0.8, 4, 0.45, 3.2070713)
 material_override = SubResource("MatRed")
 mesh = SubResource("BoxSmall")
 
