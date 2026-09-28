@@ -93,6 +93,9 @@ transparency = 1
 albedo_color = Color(0.18, 0.48, 0.62, 0.22)
 roughness = 0.15
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_hsot5"]
+albedo_color = Color(0.6627451, 0.61960787, 0.54509807, 1)
+
 [sub_resource type="StandardMaterial3D" id="MatRed"]
 albedo_color = Color(0.55, 0.06, 0.035, 1)
 roughness = 0.55
@@ -204,7 +207,12 @@ material_override = SubResource("MatSign")
 mesh = SubResource("BoxSmall")
 
 [node name="KitchenBackShelf" type="MeshInstance3D" parent="." unique_id=1005955309]
-transform = Transform3D(7, 0, 0, 0, 0.25, 0, 0, 0, 0.35, -0.91877294, 0.9611652, -5.5760846)
+transform = Transform3D(7, 0, 0, 0, 0.25, 0, 0, 0, 1.15, -0.91877294, 0.9611652, -5.170214)
+material_override = SubResource("StandardMaterial3D_t8aj2")
+mesh = SubResource("BoxSmall")
+
+[node name="KitchenBackShelf2" type="MeshInstance3D" parent="." unique_id=1157267575]
+transform = Transform3D(6, 0, 0, 0, 1, 0, 0, 0, 1, -0.91877294, 0.54147387, -5.170214)
 material_override = SubResource("StandardMaterial3D_t8aj2")
 mesh = SubResource("BoxSmall")
 
@@ -240,12 +248,12 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 0.55, -4.55)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.5, 1.35, -3.8)
 
 [node name="Mesh" type="MeshInstance3D" parent="Fridge" unique_id=507782226]
-transform = Transform3D(1.5, 0, 0, 0, 2.7, 0, 0, 0, 1.8, 0, 0, 0)
+transform = Transform3D(1.5, 0, 0, 0, 2.7, 0, 0, 0, 1.8, 0.36563778, 0, -0.97055507)
 material_override = SubResource("MatMetal")
 mesh = SubResource("BoxSmall")
 
 [node name="Collision" type="CollisionShape3D" parent="Fridge" unique_id=1448463917]
-transform = Transform3D(1.5, 0, 0, 0, 2.7, 0, 0, 0, 1.8, 0, 0, 0)
+transform = Transform3D(1.5, 0, 0, 0, 2.7, 0, 0, 0, 1.8, 0.35536575, 0, -0.9695904)
 shape = SubResource("ShapeSmall")
 
 [node name="WindowLeft" type="MeshInstance3D" parent="." unique_id=1551778343]
@@ -258,9 +266,9 @@ transform = Transform3D(0.08, 0, 0, 0, 1.2, 0, 0, 0, 3.8, 8.73, 1.75, 1.5)
 material_override = SubResource("MatGlass")
 mesh = SubResource("BoxSmall")
 
-[node name="Sign" type="MeshInstance3D" parent="." unique_id=1983536484]
-transform = Transform3D(2.7, 0, 0, 0, 0.55, 0, 0, 0, 0.15, 0, 2.65, 5.72)
-material_override = SubResource("MatSign")
+[node name="eingang oben" type="MeshInstance3D" parent="." unique_id=1983536484]
+transform = Transform3D(2.7, 0, 0, 0, 0.55, 0, 0, 0, 0.25, 0, 2.9801617, 5.876078)
+material_override = SubResource("StandardMaterial3D_hsot5")
 mesh = SubResource("BoxSmall")
 
 [node name="Table1" type="StaticBody3D" parent="." unique_id=817401843]
@@ -272,7 +280,7 @@ material_override = SubResource("MatWood")
 mesh = SubResource("BoxSmall")
 
 [node name="Collision" type="CollisionShape3D" parent="Table1" unique_id=1909829891]
-transform = Transform3D(2.2, 0, 0, 0, 0.25, 0, 0, 0, 1.4, -2.395092, 0, 0.45026731)
+transform = Transform3D(2.2, 0, 0, 0, 0.25, 0, 0, 0, 1.4, -2.395092, 0, 0.48070765)
 shape = SubResource("ShapeSmall")
 
 [node name="Table2" type="StaticBody3D" parent="." unique_id=858128262]
@@ -298,31 +306,31 @@ material_override = SubResource("MatRed")
 mesh = SubResource("BoxSmall")
 
 [node name="Chair2" type="MeshInstance3D" parent="." unique_id=1439333001]
-transform = Transform3D(0.8, 0, 0, 0, 0.9, 0, 0, 0, 0.8, 4, 0.45, 0.9656968)
+transform = Transform3D(0.8, 0, 0, 0, 0.9, 0, 0, 0, 0.8, 4, 0.45, 0.7155018)
 material_override = SubResource("MatRed")
 mesh = SubResource("BoxSmall")
 
 [node name="Chair4" type="MeshInstance3D" parent="." unique_id=1044669613]
-transform = Transform3D(0.8, 0, 0, 0, 0.9, 0, 0, 0, 0.8, 4, 0.45, 3.2070713)
+transform = Transform3D(0.8, 0, 0, 0, 0.9, 0, 0, 0, 0.8, 4, 0.45, 3.2978742)
 material_override = SubResource("MatRed")
 mesh = SubResource("BoxSmall")
 
 [node name="CeilingLight1" type="OmniLight3D" parent="." unique_id=1822949857]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 2.9, 1)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 2.6955612, 1)
 light_color = Color(1, 0.82, 0.62, 1)
 light_energy = 5.0
 shadow_enabled = true
 omni_range = 8.0
 
 [node name="CeilingLight2" type="OmniLight3D" parent="." unique_id=103323658]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 2.9, 1)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 2.6955612, 1)
 light_color = Color(1, 0.92, 0.78, 1)
 light_energy = 5.0
 shadow_enabled = true
 omni_range = 8.0
 
 [node name="KitchenLight" type="OmniLight3D" parent="." unique_id=363872540]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.8, -4.2)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.595561, -4.2)
 light_color = Color(1, 0.7, 0.42, 1)
 light_energy = 6.0
 shadow_enabled = true
