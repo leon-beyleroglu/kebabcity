@@ -110,7 +110,7 @@ tonemap_mode = 2
 
 [sub_resource type="CapsuleShape3D" id="PlayerShape"]
 radius = 0.45
-height = 1.8
+height = 2.356006
 
 [sub_resource type="StandardMaterial3D" id="MatYellow"]
 albedo_color = Color(0.95, 0.6, 0.08, 1)
@@ -345,14 +345,15 @@ light_energy = 0.7
 shadow_enabled = true
 
 [node name="Player" type="CharacterBody3D" parent="." unique_id=317042492]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 4.2)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.4866173, 4.2)
 script = ExtResource("1_player")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Player" unique_id=966143708]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0021178722, -0.13426447, 0.0005812645)
 shape = SubResource("PlayerShape")
 
 [node name="Camera3D" type="Camera3D" parent="Player" unique_id=1888410181]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.65, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.7549808, 0)
 current = true
 
 [node name="DecorativeMenuBoard" type="MeshInstance3D" parent="." unique_id=1271968411]
