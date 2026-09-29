@@ -7,10 +7,10 @@ albedo_color = Color(0.306494, 0.30649397, 0.30649397, 1)
 roughness = 0.9
 
 [sub_resource type="BoxMesh" id="BoxFloor"]
-size = Vector3(18, 0.2, 33.605347)
+size = Vector3(18, 0.2, 22.094177)
 
 [sub_resource type="BoxShape3D" id="ShapeFloor"]
-size = Vector3(18, 0.2, 33.605347)
+size = Vector3(18, 0.2, 22.172668)
 
 [sub_resource type="StandardMaterial3D" id="MatWall"]
 albedo_color = Color(0.78, 0.72, 0.62, 1)
@@ -39,7 +39,7 @@ size = Vector3(0.25, 3.2, 12)
 size = Vector3(0.25, 3.2, 12)
 
 [sub_resource type="BoxShape3D" id="ShapeCounter"]
-size = Vector3(7.5, 1.15, 1.1)
+size = Vector3(7.0980225, 1.2341797, 1.5786254)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_t8aj2"]
 albedo_color = Color(0.12, 0.1, 0.09, 1)
@@ -81,15 +81,10 @@ height = 1.65
 radial_segments = 32
 
 [sub_resource type="BoxShape3D" id="ShapeSmall"]
-size = Vector3(1.2991333, 0.8, 1)
-
-[sub_resource type="StandardMaterial3D" id="MatGlass"]
-transparency = 1
-albedo_color = Color(0.18, 0.48, 0.62, 0.22)
-roughness = 0.15
+size = Vector3(0.97171783, 0.8, 1.0048218)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_hsot5"]
-albedo_color = Color(0.6627451, 0.61960787, 0.54509807, 1)
+albedo_color = Color(0.78039217, 0.72156864, 0.61960787, 1)
 
 [sub_resource type="StandardMaterial3D" id="MatWood"]
 albedo_color = Color(0.38, 0.2, 0.09, 1)
@@ -122,7 +117,7 @@ roughness = 0.5
 
 [sub_resource type="BoxMesh" id="BoxTestCounter"]
 material = SubResource("MatWood")
-size = Vector3(6.8, 1.2, 1.2)
+size = Vector3(6.8, 1.2, 1.1975342)
 
 [sub_resource type="BoxShape3D" id="ShapeTestCounter"]
 size = Vector3(6.8, 1.2, 1.2)
@@ -130,6 +125,11 @@ size = Vector3(6.8, 1.2, 1.2)
 [sub_resource type="BoxMesh" id="BoxTestCounterTop"]
 material = SubResource("MatDark")
 size = Vector3(7.1, 0.14, 1.5)
+
+[sub_resource type="StandardMaterial3D" id="MatGlass"]
+transparency = 1
+albedo_color = Color(0.18, 0.48, 0.62, 0.22)
+roughness = 0.15
 
 [sub_resource type="BoxMesh" id="BoxMesh_ffds4"]
 material = SubResource("MatMetal")
@@ -153,21 +153,53 @@ emission_enabled = true
 emission = Color(0.95, 0.12, 0.02, 1)
 emission_energy_multiplier = 2.2
 
+[sub_resource type="BoxMesh" id="BoxMesh_6pmx1"]
+material = SubResource("MatMetal")
+size = Vector3(1, 0.8, 1.6835938)
+
 [sub_resource type="StandardMaterial3D" id="MatLettuce"]
 albedo_color = Color(0.16, 0.5, 0.08, 1)
 roughness = 0.85
+
+[sub_resource type="BoxMesh" id="BoxMesh_o7dl6"]
+material = SubResource("MatMetal")
+size = Vector3(1, 0.8, 1.9086914)
+
+[sub_resource type="BoxMesh" id="BoxMesh_f6pxk"]
+material = SubResource("MatMetal")
+size = Vector3(1, 0.8, 1.6494141)
 
 [sub_resource type="StandardMaterial3D" id="MatTomato"]
 albedo_color = Color(0.82, 0.1, 0.035, 1)
 roughness = 0.7
 
+[sub_resource type="BoxMesh" id="BoxMesh_tf74o"]
+material = SubResource("MatMetal")
+size = Vector3(1, 0.8, 1.878418)
+
+[sub_resource type="BoxMesh" id="BoxMesh_ipmwm"]
+material = SubResource("MatMetal")
+size = Vector3(1, 0.8, 1.7866211)
+
 [sub_resource type="StandardMaterial3D" id="MatOnion"]
 albedo_color = Color(0.82, 0.62, 0.8, 1)
 roughness = 0.75
 
+[sub_resource type="BoxMesh" id="BoxMesh_p23ri"]
+material = SubResource("MatMetal")
+size = Vector3(1, 0.8, 2.0107422)
+
+[sub_resource type="BoxMesh" id="BoxMesh_nrjn5"]
+material = SubResource("MatMetal")
+size = Vector3(1, 0.8, 1.8110352)
+
 [sub_resource type="StandardMaterial3D" id="MatCabbage"]
 albedo_color = Color(0.72, 0.84, 0.42, 1)
 roughness = 0.85
+
+[sub_resource type="BoxMesh" id="BoxMesh_wuo8e"]
+material = SubResource("MatMetal")
+size = Vector3(1, 0.8, 2.008789)
 
 [sub_resource type="StandardMaterial3D" id="MatSauceWhite"]
 albedo_color = Color(0.94, 0.9, 0.72, 1)
@@ -177,9 +209,45 @@ roughness = 0.45
 albedo_color = Color(0.72, 0.06, 0.025, 1)
 roughness = 0.45
 
+[sub_resource type="BoxMesh" id="BoxMesh_qromb"]
+material = SubResource("MatMetal")
+size = Vector3(1, 0.8, 2.3588867)
+
+[sub_resource type="BoxMesh" id="BoxMesh_853is"]
+material = SubResource("MatMetal")
+size = Vector3(1, 0.8, 2.7250977)
+
+[sub_resource type="BoxMesh" id="BoxMesh_63lsx"]
+material = SubResource("MatMetal")
+size = Vector3(1.5009766, 0.8, 2.3413086)
+
+[sub_resource type="BoxMesh" id="BoxMesh_wel7i"]
+material = SubResource("MatMetal")
+size = Vector3(1, 0.8, 2.194336)
+
+[sub_resource type="BoxMesh" id="BoxMesh_00dk3"]
+material = SubResource("MatMetal")
+size = Vector3(1.3930664, 0.8, 2.4589844)
+
+[sub_resource type="BoxMesh" id="BoxMesh_au230"]
+material = SubResource("MatMetal")
+size = Vector3(1, 0.8, 2.557129)
+
+[sub_resource type="BoxMesh" id="BoxMesh_brj7t"]
+material = SubResource("MatMetal")
+size = Vector3(1, 0.8, 2.246582)
+
+[sub_resource type="BoxMesh" id="BoxMesh_mqn3m"]
+material = SubResource("MatMetal")
+size = Vector3(1, 0.8, 6.039551)
+
 [sub_resource type="StandardMaterial3D" id="MatCucumber"]
 albedo_color = Color(0.18, 0.34, 0.07, 1)
 roughness = 0.8
+
+[sub_resource type="BoxMesh" id="BoxMesh_3jnfb"]
+material = SubResource("MatMetal")
+size = Vector3(1, 0.8, 4.006714)
 
 [sub_resource type="BoxMesh" id="BoxMesh_v6cui"]
 material = SubResource("MatMetal")
@@ -192,14 +260,14 @@ roughness = 0.95
 [node name="KebabShop" type="Node3D" unique_id=559436482]
 
 [node name="Floor" type="MeshInstance3D" parent="." unique_id=2144488617]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 10.802673)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 5.0470886)
 material_override = SubResource("MatFloor")
 mesh = SubResource("BoxFloor")
 
 [node name="FloorCollision" type="StaticBody3D" parent="." unique_id=697040111]
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="FloorCollision" unique_id=1587773136]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 10.802673)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 5.086334)
 shape = SubResource("ShapeFloor")
 
 [node name="BackWall" type="StaticBody3D" parent="." unique_id=1196200093]
@@ -256,7 +324,7 @@ shape = SubResource("ShapeSideWall")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.575, -2.8)
 
 [node name="Collision" type="CollisionShape3D" parent="Counter" unique_id=1274107635]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1.1886399)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.4841237, 0.15831, 0.72233534)
 shape = SubResource("ShapeCounter")
 
 [node name="KitchenBackShelf" type="MeshInstance3D" parent="." unique_id=1005955309]
@@ -315,16 +383,6 @@ mesh = SubResource("BoxSmall")
 transform = Transform3D(1.5, 0, 0, 0, 2.7, 0, 0, 0, 1.8, 0.35536575, 0, -0.9695904)
 shape = SubResource("ShapeSmall")
 
-[node name="WindowLeft" type="MeshInstance3D" parent="." unique_id=1551778343]
-transform = Transform3D(0.08, 0, 0, 0, 1.2, 0, 0, 0, 3.8, -8.73, 1.75, 1.5)
-material_override = SubResource("MatGlass")
-mesh = SubResource("BoxSmall")
-
-[node name="WindowRight" type="MeshInstance3D" parent="." unique_id=1460546897]
-transform = Transform3D(0.08, 0, 0, 0, 1.2, 0, 0, 0, 3.8, 8.73, 1.75, 1.5)
-material_override = SubResource("MatGlass")
-mesh = SubResource("BoxSmall")
-
 [node name="eingang oben" type="MeshInstance3D" parent="." unique_id=1983536484]
 transform = Transform3D(2.7, 0, 0, 0, 0.55, 0, 0, 0, 0.25, 0, 2.9801617, 5.876078)
 material_override = SubResource("StandardMaterial3D_hsot5")
@@ -334,43 +392,43 @@ mesh = SubResource("BoxSmall")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 0.8, 1.5)
 
 [node name="Mesh" type="MeshInstance3D" parent="Table1" unique_id=1102744915]
-transform = Transform3D(2.2, 0, 0, 0, 0.25, 0, 0, 0, 1.4, -2.4011502, 0, 0.45780873)
+transform = Transform3D(2.2, 0, 0, 0, 0.25, 0, 0, 0, 1.4, -2.824607, 0, 0.8626642)
 material_override = SubResource("MatWood")
 mesh = SubResource("BoxSmall")
 
 [node name="Collision" type="CollisionShape3D" parent="Table1" unique_id=1909829891]
-transform = Transform3D(2.2, 0, 0, 0, 0.25, 0, 0, 0, 1.4, -2.395092, 0, 0.48070765)
+transform = Transform3D(2.2, 0, 0, 0, 0.25, 0, 0, 0, 1.4, -2.8185487, 0, 0.88556314)
 shape = SubResource("ShapeSmall")
 
 [node name="Table2" type="StaticBody3D" parent="." unique_id=858128262]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 0.8, 1.5)
 
 [node name="Mesh" type="MeshInstance3D" parent="Table2" unique_id=439723037]
-transform = Transform3D(2.2, 0, 0, 0, 0.25, 0, 0, 0, 1.4, 0, 0, 0.45780873)
+transform = Transform3D(2.2, 0, 0, 0, 0.25, 0, 0, 0, 1.4, 2.9572062, 0, 1.2182231)
 material_override = SubResource("MatWood")
 mesh = SubResource("BoxSmall")
 
 [node name="Collision" type="CollisionShape3D" parent="Table2" unique_id=893111253]
-transform = Transform3D(2.2, 0, 0, 0, 0.25, 0, 0, 0, 1.4, 0.01755333, 0.014683247, 0.4483559)
+transform = Transform3D(2.2, 0, 0, 0, 0.25, 0, 0, 0, 1.4, 2.9857154, 0.014683247, 1.2200141)
 shape = SubResource("ShapeSmall")
 
 [node name="Chair1" type="MeshInstance3D" parent="." unique_id=1560673258]
-transform = Transform3D(0.8, 0, 0, 0, 0.9, 0, 0, 0, 0.8, -6.4130826, 0.46468323, 0.39122987)
+transform = Transform3D(0.8, 0, 0, 0, 0.9, 0, 0, 0, 0.8, -6.8365393, 0.46468323, 0.79608536)
 material_override = SubResource("MatRed")
 mesh = SubResource("BoxSmall")
 
 [node name="Chair3" type="MeshInstance3D" parent="." unique_id=818654149]
-transform = Transform3D(0.8, 0, 0, 0, 0.9, 0, 0, 0, 0.8, -6.4130826, 0.46468323, 3.4104571)
+transform = Transform3D(0.8, 0, 0, 0, 0.9, 0, 0, 0, 0.8, -6.8365393, 0.46468323, 3.8153124)
 material_override = SubResource("MatRed")
 mesh = SubResource("BoxSmall")
 
 [node name="Chair2" type="MeshInstance3D" parent="." unique_id=1439333001]
-transform = Transform3D(0.8, 0, 0, 0, 0.9, 0, 0, 0, 0.8, 4, 0.45, 0.7155018)
+transform = Transform3D(0.8, 0, 0, 0, 0.9, 0, 0, 0, 0.8, 6.9572062, 0.45, 1.4759161)
 material_override = SubResource("MatRed")
 mesh = SubResource("BoxSmall")
 
 [node name="Chair4" type="MeshInstance3D" parent="." unique_id=1044669613]
-transform = Transform3D(0.8, 0, 0, 0, 0.9, 0, 0, 0, 0.8, 4, 0.45, 3.2978742)
+transform = Transform3D(0.8, 0, 0, 0, 0.9, 0, 0, 0, 0.8, 6.9572062, 0.45, 4.0582886)
 material_override = SubResource("MatRed")
 mesh = SubResource("BoxSmall")
 
@@ -400,6 +458,21 @@ environment = SubResource("Environment")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=889308388]
 transform = Transform3D(0.90630776, 0.34618863, -0.24240388, 0, 0.57357645, 0.81915206, 0.42261827, -0.74240386, 0.5198368, 0, 0, 0)
+light_energy = 0.7
+shadow_enabled = true
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="DirectionalLight3D" unique_id=281869593]
+transform = Transform3D(0.9063077, 0.3461886, -0.2424039, -2.9802322e-08, 0.57357645, 0.819152, 0.42261827, -0.7424039, 0.5198368, 1.6360996, -2.8740988, 2.0124657)
+light_energy = 0.7
+shadow_enabled = true
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="DirectionalLight3D/DirectionalLight3D" unique_id=948741222]
+transform = Transform3D(0.90630776, 0.34618866, -0.24240384, 2.9802322e-08, 0.57357657, 0.819152, 0.42261827, -0.74240386, 0.5198369, -5.6034226, -2.6954665, 1.325706)
+light_energy = 0.7
+shadow_enabled = true
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="DirectionalLight3D/DirectionalLight3D/DirectionalLight3D" unique_id=586079199]
+transform = Transform3D(0.90630776, 0.34618872, -0.24240398, 6.519258e-09, 0.5735764, 0.8191521, 0.4226184, -0.742404, 0.51983666, 7.840241, 8.612196, 4.2206206)
 light_energy = 0.7
 shadow_enabled = true
 
@@ -437,40 +510,14 @@ mesh = SubResource("BoxSmall")
 
 [node name="Test Ablage" type="Node" parent="." unique_id=1651331433]
 
-[node name="CeilingLight3" type="OmniLight3D" parent="Test Ablage" unique_id=1762253239]
-transform = Transform3D(-1, 0, -8.742277e-08, 0, 1, 0, 8.742277e-08, 0, -1, 4.3881164, 4.059645, 18.912033)
-light_color = Color(1, 0.92, 0.78, 1)
-light_energy = 5.0
-shadow_enabled = true
-omni_range = 8.0
-
-[node name="CeilingLight4" type="OmniLight3D" parent="Test Ablage" unique_id=1991501288]
-transform = Transform3D(-1, 0, -8.742277e-08, 0, 1, 0, 8.742277e-08, 0, -1, -4.00896, 3.4334006, 19.696362)
-light_color = Color(1, 0.82, 0.62, 1)
-light_energy = 5.0
-shadow_enabled = true
-omni_range = 8.0
-
-[node name="CeilingLight2" type="OmniLight3D" parent="Test Ablage" unique_id=669825707]
-transform = Transform3D(-4.3711385e-08, 0, 1, 0, 1, 0, -1, 0, -4.3711385e-08, -4.0660973, 3.3847013, 14.804658)
-light_color = Color(1, 0.92, 0.78, 1)
-light_energy = 5.0
-shadow_enabled = true
-omni_range = 8.0
-
-[node name="CeilingLight1" type="OmniLight3D" parent="Test Ablage" unique_id=816121389]
-transform = Transform3D(-4.3711385e-08, 0, 1, 0, 1, 0, -1, 0, -4.3711385e-08, 3.8186803, 3.3847013, 14.845936)
-light_color = Color(1, 0.82, 0.62, 1)
-light_energy = 5.0
-shadow_enabled = true
-omni_range = 8.0
-
 [node name="Kebab Theke" type="Node3D" parent="Test Ablage" unique_id=261146714]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.4902179, 0, -19.116041)
 
 [node name="Thekenkoerper" type="StaticBody3D" parent="Test Ablage/Kebab Theke" unique_id=2127103860]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.6, 17)
 
 [node name="Mesh" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Thekenkoerper" unique_id=617863252]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.0012321472)
 mesh = SubResource("BoxTestCounter")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Test Ablage/Kebab Theke/Thekenkoerper" unique_id=1974974666]
@@ -513,44 +560,44 @@ mesh = SubResource("BoxSmall")
 [node name="Zutaten" type="Node3D" parent="Test Ablage/Kebab Theke" unique_id=1058483079]
 
 [node name="Salatwanne" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten" unique_id=1038067378]
-transform = Transform3D(0.78, 0, 0, 0, 0.08, 0, 0, 0, 0.42, -0.45040023, 1.3598785, 17.05)
+transform = Transform3D(0.78, 0, 0, 0, 0.08, 0, 0, 0, 0.42, -0.45040023, 1.3598785, 16.906445)
 material_override = SubResource("MatMetal")
-mesh = SubResource("BoxSmall")
+mesh = SubResource("BoxMesh_6pmx1")
 
 [node name="Salat" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten" unique_id=794740063]
-transform = Transform3D(0.7, 0, 0, 0, 0.1, 0, 0, 0, 0.34, -0.45040023, 1.4498786, 17.05)
+transform = Transform3D(0.7, 0, 0, 0, 0.1, 0, 0, 0, 0.34, -0.45040023, 1.4498786, 16.895521)
 material_override = SubResource("MatLettuce")
-mesh = SubResource("BoxSmall")
+mesh = SubResource("BoxMesh_o7dl6")
 
 [node name="Tomatenwanne" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten" unique_id=174979748]
-transform = Transform3D(0.78, 0, 0, 0, 0.08, 0, 0, 0, 0.42, 0.6067531, 1.3612529, 17.05)
+transform = Transform3D(0.78, 0, 0, 0, 0.08, 0, 0, 0, 0.42, 0.6067531, 1.3612529, 16.913622)
 material_override = SubResource("MatMetal")
-mesh = SubResource("BoxSmall")
+mesh = SubResource("BoxMesh_f6pxk")
 
 [node name="Tomaten" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten" unique_id=1468185354]
-transform = Transform3D(0.7, 0, 0, 0, 0.1, 0, 0, 0, 0.34, 0.6067531, 1.4512529, 17.05)
+transform = Transform3D(0.7, 0, 0, 0, 0.1, 0, 0, 0, 0.34, 0.6067531, 1.4512529, 16.90067)
 material_override = SubResource("MatTomato")
-mesh = SubResource("BoxSmall")
+mesh = SubResource("BoxMesh_tf74o")
 
 [node name="Zwiebelwanne" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten" unique_id=963335762]
-transform = Transform3D(0.78, 0, 0, 0, 0.08, 0, 0, 0, 0.42, 1.55, 1.3601236, 17.05)
+transform = Transform3D(0.78, 0, 0, 0, 0.08, 0, 0, 0, 0.42, 1.55, 1.3601236, 16.88481)
 material_override = SubResource("MatMetal")
-mesh = SubResource("BoxSmall")
+mesh = SubResource("BoxMesh_ipmwm")
 
 [node name="Zwiebeln" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten" unique_id=1024667507]
-transform = Transform3D(0.7, 0, 0, 0, 0.1, 0, 0, 0, 0.34, 1.55, 1.4501237, 17.05)
+transform = Transform3D(0.7, 0, 0, 0, 0.1, 0, 0, 0, 0.34, 1.55, 1.4501237, 16.878174)
 material_override = SubResource("MatOnion")
-mesh = SubResource("BoxSmall")
+mesh = SubResource("BoxMesh_p23ri")
 
 [node name="Krautwanne" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten" unique_id=240952091]
-transform = Transform3D(0.62, 0, 0, 0, 0.08, 0, 0, 0, 0.42, 2.4025977, 1.3576487, 17.05)
+transform = Transform3D(0.62, 0, 0, 0, 0.08, 0, 0, 0, 0.42, 2.4025977, 1.3576487, 16.879683)
 material_override = SubResource("MatMetal")
-mesh = SubResource("BoxSmall")
+mesh = SubResource("BoxMesh_nrjn5")
 
 [node name="Kraut" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten" unique_id=644870592]
-transform = Transform3D(0.55, 0, 0, 0, 0.1, 0, 0, 0, 0.34, 2.4025977, 1.4476488, 17.05)
+transform = Transform3D(0.55, 0, 0, 0, 0.1, 0, 0, 0, 0.34, 2.4025977, 1.4476488, 16.878506)
 material_override = SubResource("MatCabbage")
-mesh = SubResource("BoxSmall")
+mesh = SubResource("BoxMesh_wuo8e")
 
 [node name="Sossen" type="Node3D" parent="Test Ablage/Kebab Theke/Zutaten" unique_id=2073087439]
 
@@ -575,49 +622,49 @@ material_override = SubResource("MatMetal")
 mesh = SubResource("BoxSmall")
 
 [node name="Salatblatt1" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten" unique_id=806979065]
-transform = Transform3D(0.23, 0, 0, 0, 0.045, 0, 0, 0, 0.18, -0.82040024, 1.4549345, 16.96)
+transform = Transform3D(0.23, 0, 0, 0, 0.045, 0, 0, 0, 0.18, -0.69287944, 1.4977269, 16.8377)
 material_override = SubResource("MatLettuce")
-mesh = SubResource("BoxSmall")
+mesh = SubResource("BoxMesh_qromb")
 
 [node name="Salatblatt2" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten" unique_id=84928169]
-transform = Transform3D(0.2, 0, 0, 0, 0.05, 0, 0, 0, 0.21, -0.3504002, 1.483074, 17.17)
+transform = Transform3D(0.2, 0, 0, 0, 0.05, 0, 0, 0, 0.21, -0.5096102, 1.483074, 16.988865)
 material_override = SubResource("MatCabbage")
-mesh = SubResource("BoxSmall")
+mesh = SubResource("BoxMesh_853is")
 
 [node name="Salatblatt3" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten" unique_id=910232682]
-transform = Transform3D(0.22, 0, 0, 0, 0.04, 0, 0, 0, 0.16, -0.20714986, 1.5398786, 16.93)
+transform = Transform3D(0.22, 0, 0, 0, 0.04, 0, 0, 0, 0.16, -0.3507315, 1.5281414, 16.822697)
 material_override = SubResource("MatLettuce")
-mesh = SubResource("BoxSmall")
+mesh = SubResource("BoxMesh_63lsx")
 
 [node name="Tomatenscheibe1" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten" unique_id=1388914196]
-transform = Transform3D(0.2, 0, 0, 0, 0.045, 0, 0, 0, 0.18, 0.25675312, 1.5153859, 16.94)
+transform = Transform3D(0.2, 0, 0, 0, 0.045, 0, 0, 0, 0.18, 0.30519223, 1.5061258, 16.83251)
 material_override = SubResource("MatTomato")
-mesh = SubResource("BoxSmall")
+mesh = SubResource("BoxMesh_wel7i")
 
 [node name="Tomatenscheibe2" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten" unique_id=1945767559]
-transform = Transform3D(0.18, 0, 0, 0, 0.045, 0, 0, 0, 0.18, 0.62675315, 1.4977825, 17.12)
+transform = Transform3D(0.18, 0, 0, 0, 0.045, 0, 0, 0, 0.18, 0.5913772, 1.4977825, 16.988693)
 material_override = SubResource("MatTomato")
-mesh = SubResource("BoxSmall")
+mesh = SubResource("BoxMesh_00dk3")
 
 [node name="Tomatenscheibe3" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten" unique_id=1237888570]
-transform = Transform3D(0.19, 0, 0, 0, 0.045, 0, 0, 0, 0.16, 0.8843197, 1.5251092, 16.94)
+transform = Transform3D(0.19, 0, 0, 0, 0.045, 0, 0, 0, 0.16, 0.8843197, 1.5251092, 16.81543)
 material_override = SubResource("MatTomato")
-mesh = SubResource("BoxSmall")
+mesh = SubResource("BoxMesh_au230")
 
 [node name="Zwiebelstreifen1" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten" unique_id=671035391]
-transform = Transform3D(0.1, 0, 0, 0, 0.04, 0, 0, 0, 0.24, 1.3032098, 1.5064337, 17.058908)
+transform = Transform3D(0.1, 0, 0, 0, 0.04, 0, 0, 0, 0.24, 1.3032098, 1.5064337, 16.909319)
 material_override = SubResource("MatOnion")
-mesh = SubResource("BoxSmall")
+mesh = SubResource("BoxMesh_brj7t")
 
 [node name="Zwiebelstreifen2" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten" unique_id=688457544]
-transform = Transform3D(0.24, 0, 0, 0, 0.04, 0, 0, 0, 0.09, 1.62, 1.4997025, 17.12)
+transform = Transform3D(0.24, 0, 0, 0, 0.04, 0, 0, 0, 0.09, 1.62, 1.4997025, 16.89322)
 material_override = SubResource("MatOnion")
-mesh = SubResource("BoxSmall")
+mesh = SubResource("BoxMesh_mqn3m")
 
 [node name="Gurkenstreifen" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten" unique_id=1695214652]
-transform = Transform3D(0.46, 0, 0, 0, 0.045, 0, 0, 0, 0.13, 2.4025977, 1.5145949, 16.98)
+transform = Transform3D(0.46, 0, 0, 0, 0.045, 0, 0, 0, 0.13, 2.4025977, 1.5145949, 16.84593)
 material_override = SubResource("MatCucumber")
-mesh = SubResource("BoxSmall")
+mesh = SubResource("BoxMesh_3jnfb")
 
 [node name="Seitenkasse" type="StaticBody3D" parent="Test Ablage/Kebab Theke" unique_id=806556078]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.02, 1.3, 16.68)
@@ -628,7 +675,7 @@ material_override = SubResource("MatWood")
 mesh = SubResource("BoxMesh_v6cui")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Test Ablage/Kebab Theke/Seitenkasse" unique_id=823446477]
-transform = Transform3D(0.9, 0, 0, 0, 0.1, 0, 0, 0, 0.9, -6.5786104, 0.20328712, 0)
+transform = Transform3D(0.9, 0, 0, 0, 0.1, 0, 0, 0, 0.9, -6.6086445, 0.20328712, 0.07520127)
 shape = SubResource("ShapeSmall")
 
 [node name="Kassenblock" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Seitenkasse" unique_id=2130210358]
