@@ -81,7 +81,7 @@ height = 1.65
 radial_segments = 32
 
 [sub_resource type="BoxShape3D" id="ShapeSmall"]
-size = Vector3(0.97171783, 0.8, 1.0048218)
+size = Vector3(0.97171783, 0.8, 0.9477463)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_hsot5"]
 albedo_color = Color(0.78039217, 0.72156864, 0.61960787, 1)
@@ -257,6 +257,37 @@ size = Vector3(1.4320679, 0.8, 1)
 albedo_color = Color(0.96, 0.95, 0.86, 1)
 roughness = 0.95
 
+[sub_resource type="BoxMesh" id="BoxMesh_f1n1m"]
+material = SubResource("MatMetal")
+size = Vector3(1, 0.8, 1.4501953)
+
+[sub_resource type="StandardMaterial3D" id="MatLavash"]
+albedo_color = Color(0.78, 0.54, 0.28, 1)
+roughness = 0.9
+
+[sub_resource type="BoxMesh" id="BoxMesh_j20ty"]
+material = SubResource("MatMetal")
+size = Vector3(1, 0.8, 1.4501953)
+
+[sub_resource type="StandardMaterial3D" id="MatOvenBrick"]
+albedo_color = Color(0.34, 0.12, 0.055, 1)
+roughness = 0.88
+
+[sub_resource type="BoxMesh" id="BoxMesh_sglm8"]
+material = SubResource("MatMetal")
+size = Vector3(1.3764648, 1.4776367, 1)
+
+[sub_resource type="StandardMaterial3D" id="MatFire"]
+albedo_color = Color(1, 0.21, 0.015, 1)
+roughness = 0.45
+emission_enabled = true
+emission = Color(1, 0.08, 0, 1)
+emission_energy_multiplier = 3.0
+
+[sub_resource type="BoxMesh" id="BoxMesh_33jpk"]
+material = SubResource("MatMetal")
+size = Vector3(1.7802734, 1.7642578, 1)
+
 [node name="KebabShop" type="Node3D" unique_id=559436482]
 
 [node name="Floor" type="MeshInstance3D" parent="." unique_id=2144488617]
@@ -363,13 +394,16 @@ transform = Transform3D(0.7, 0, 0, 0, 0.2, 0, 0, 0, 0.7, 0.30502558, 3.617907, -
 mesh = SubResource("Cylinder")
 
 [node name="Grill" type="StaticBody3D" parent="." unique_id=7977972]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.7, 0.55, -4.55)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.7, 0.55, -2.1499195)
+visible = false
 
 [node name="CuttingStation" type="StaticBody3D" parent="." unique_id=224642987]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.4, 0.65, -4.55)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.4, 0.65, -2.1499195)
+visible = false
 
 [node name="SauceStation" type="StaticBody3D" parent="." unique_id=329752695]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 0.55, -4.55)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 0.55, -2.1499195)
+visible = false
 
 [node name="Fridge" type="StaticBody3D" parent="." unique_id=1199270718]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.5, 1.35, -3.8)
@@ -380,7 +414,7 @@ material_override = SubResource("MatMetal")
 mesh = SubResource("BoxSmall")
 
 [node name="Collision" type="CollisionShape3D" parent="Fridge" unique_id=1448463917]
-transform = Transform3D(1.5, 0, 0, 0, 2.7, 0, 0, 0, 1.8, 0.35536575, 0, -0.9695904)
+transform = Transform3D(1.5, 0, 0, 0, 2.7, 0, 0, 0, 1.8, 0.35536575, 0, -1.4226596)
 shape = SubResource("ShapeSmall")
 
 [node name="eingang oben" type="MeshInstance3D" parent="." unique_id=1983536484]
@@ -717,3 +751,64 @@ mesh = SubResource("BoxSmall")
 transform = Transform3D(0.16, 0, 0, 0, 0.23, 0, 0, 0, 0.025, -6.1715565, 0.39852726, 0.23818016)
 material_override = SubResource("MatReceipt")
 mesh = SubResource("BoxSmall")
+
+[node name="LavashAblage" type="StaticBody3D" parent="Test Ablage/Kebab Theke" unique_id=791172196]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.95, 1.42, 17.65)
+
+[node name="Ablagebrett" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/LavashAblage" unique_id=274555217]
+transform = Transform3D(0.75, 0, 0, 0, 0.08, 0, 0, 0, 0.52, -2.360983, 0.0845654, -3.8082461)
+material_override = SubResource("MatWood")
+mesh = SubResource("BoxMesh_f1n1m")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Test Ablage/Kebab Theke/LavashAblage" unique_id=901578346]
+transform = Transform3D(0.75, 0, 0, 0, 0.08, 0, 0, 0, 0.52, -2.3721063, 0.112421036, -3.7738795)
+shape = SubResource("ShapeSmall")
+
+[node name="Lavash1" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/LavashAblage" unique_id=757998424]
+transform = Transform3D(0.62, 0, 0, 0, 0.035, 0, 0, 0, 0.4, -2.3600218, 0.121328354, -3.8046618)
+material_override = SubResource("MatLavash")
+mesh = SubResource("BoxMesh_j20ty")
+
+[node name="Lavash2" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/LavashAblage" unique_id=438256945]
+transform = Transform3D(0.57, 0, 0.12, 0, 0.035, 0, -0.1, 0, 0.38, -2.3300216, 0.20132828, -3.7423673)
+material_override = SubResource("MatLavash")
+mesh = SubResource("BoxMesh_j20ty")
+
+[node name="Lavash3" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/LavashAblage" unique_id=2118168401]
+transform = Transform3D(0.6, 0, -0.09, 0, 0.035, 0, 0.08, 0, 0.39, -2.3800218, 0.28132832, -3.7561984)
+material_override = SubResource("MatLavash")
+mesh = SubResource("BoxMesh_j20ty")
+
+[node name="LavashOfen" type="StaticBody3D" parent="Test Ablage/Kebab Theke" unique_id=1931714340]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.35, 0.72, 16.65)
+
+[node name="Ofenkoerper" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/LavashOfen" unique_id=158233105]
+transform = Transform3D(0.82, 0, 0, 0, 0.9, 0, 0, 0, 0.72, 7.8637586, 1.120374, -2.684236)
+material_override = SubResource("MatOvenBrick")
+mesh = SubResource("BoxSmall")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Test Ablage/Kebab Theke/LavashOfen" unique_id=251325660]
+transform = Transform3D(0.82, 0, 0, 0, 0.9, 0, 0, 0, 0.72, 7.94569, 1.1353209, -2.6045375)
+shape = SubResource("ShapeSmall")
+
+[node name="Ofenoeffnung" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/LavashOfen" unique_id=1887855893]
+transform = Transform3D(0.48, 0, 0, 0, 0.38, 0, 0, 0, 0.035, 7.8534164, 1.1512892, -2.306745)
+material_override = SubResource("MatDark")
+mesh = SubResource("BoxMesh_sglm8")
+
+[node name="Feuerschein" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/LavashOfen" unique_id=1825728473]
+transform = Transform3D(0.3, 0, 0, 0, 0.2, 0, 0, 0, 0.018, 7.852772, 1.1782033, -2.2820473)
+material_override = SubResource("MatFire")
+mesh = SubResource("BoxMesh_33jpk")
+
+[node name="Ofendach" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/LavashOfen" unique_id=1730490547]
+transform = Transform3D(0.93, 0, 0, 0, 0.08, 0, 0, 0, 0.83, 7.8637586, 0.75571465, -2.684236)
+material_override = SubResource("MatMetal")
+mesh = SubResource("BoxSmall")
+
+[node name="Ofenlicht" type="OmniLight3D" parent="Test Ablage/Kebab Theke/LavashOfen" unique_id=434657835]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.8588285, 1.0677233, -2.252006)
+light_color = Color(1, 0.25, 0.04, 1)
+light_energy = 1.4
+light_size = 0.35
+omni_range = 3.0
