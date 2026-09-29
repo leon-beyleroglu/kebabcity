@@ -18,25 +18,29 @@ roughness = 0.82
 
 [sub_resource type="BoxMesh" id="BoxWall"]
 material = SubResource("MatWall")
-size = Vector3(17.530884, 3.2, 0.25)
+size = Vector3(17.530884, 4.5492187, 0.25)
 
 [sub_resource type="BoxShape3D" id="ShapeWall"]
 size = Vector3(10.578186, 3.2, 0.25)
 
 [sub_resource type="BoxMesh" id="BoxMesh_ye7d8"]
 material = SubResource("MatWall")
-size = Vector3(12.860107, 3.2, 0.25)
+size = Vector3(12.860107, 4.4739013, 0.25)
 
 [sub_resource type="BoxMesh" id="BoxMesh_hsot5"]
 material = SubResource("MatWall")
-size = Vector3(12.520386, 3.2, 0.25)
+size = Vector3(12.520386, 4.509668, 0.25)
 
 [sub_resource type="BoxMesh" id="BoxSideWall"]
 material = SubResource("MatWall")
-size = Vector3(0.25, 3.2, 12)
+size = Vector3(0.25, 4.475, 12)
 
 [sub_resource type="BoxShape3D" id="ShapeSideWall"]
 size = Vector3(0.25, 3.2, 12)
+
+[sub_resource type="BoxMesh" id="BoxMesh_l0yxp"]
+material = SubResource("MatWall")
+size = Vector3(0.25, 4.5178466, 12)
 
 [sub_resource type="BoxShape3D" id="ShapeCounter"]
 size = Vector3(7.0980225, 1.2341797, 1.5786254)
@@ -51,9 +55,9 @@ albedo_color = Color(0.55, 0.58, 0.6, 1)
 metallic = 0.85
 roughness = 0.28
 
-[sub_resource type="BoxMesh" id="BoxSmall"]
+[sub_resource type="BoxMesh" id="BoxMesh_871jt"]
 material = SubResource("MatMetal")
-size = Vector3(1, 0.8, 1)
+size = Vector3(1, 1.2377594, 1)
 
 [sub_resource type="BoxShape3D" id="ShapeKitchenBackShelf"]
 size = Vector3(7, 0.2, 1.15)
@@ -61,6 +65,10 @@ size = Vector3(7, 0.2, 1.15)
 [sub_resource type="BoxMesh" id="BoxMesh_t8aj2"]
 material = SubResource("MatMetal")
 size = Vector3(1, 1.1958008, 1)
+
+[sub_resource type="BoxMesh" id="BoxSmall"]
+material = SubResource("MatMetal")
+size = Vector3(1, 1.4751419, 1)
 
 [sub_resource type="CylinderMesh" id="Cylinder"]
 material = SubResource("MatMetal")
@@ -80,19 +88,19 @@ bottom_radius = 0.7
 height = 1.65
 radial_segments = 32
 
+[sub_resource type="BoxMesh" id="BoxMesh_ebyhw"]
+material = SubResource("MatMetal")
+size = Vector3(1, 0.9592041, 1)
+
 [sub_resource type="BoxShape3D" id="ShapeSmall"]
-size = Vector3(0.97171783, 0.8, 0.9477463)
+size = Vector3(1.8901558, 0.8, 1.1522198)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_hsot5"]
 albedo_color = Color(0.78039217, 0.72156864, 0.61960787, 1)
 
-[sub_resource type="StandardMaterial3D" id="MatWood"]
-albedo_color = Color(0.38, 0.2, 0.09, 1)
-roughness = 0.7
-
-[sub_resource type="StandardMaterial3D" id="MatRed"]
-albedo_color = Color(0.55, 0.06, 0.035, 1)
-roughness = 0.55
+[sub_resource type="BoxMesh" id="BoxMesh_weg2u"]
+material = SubResource("MatMetal")
+size = Vector3(1, 3.5632873, 1)
 
 [sub_resource type="Environment" id="Environment"]
 background_mode = 1
@@ -111,9 +119,17 @@ albedo_color = Color(0.12, 0.1, 0.09, 1)
 metallic = 0.25
 roughness = 0.5
 
+[sub_resource type="BoxMesh" id="BoxMesh_778q6"]
+material = SubResource("MatMetal")
+size = Vector3(1, 1.2015823, 1)
+
 [sub_resource type="StandardMaterial3D" id="MatYellow"]
 albedo_color = Color(0.95, 0.6, 0.08, 1)
 roughness = 0.5
+
+[sub_resource type="StandardMaterial3D" id="MatWood"]
+albedo_color = Color(0.38, 0.2, 0.09, 1)
+roughness = 0.7
 
 [sub_resource type="BoxMesh" id="BoxTestCounter"]
 material = SubResource("MatWood")
@@ -147,11 +163,18 @@ size = Vector3(1, 1.639209, 1.3603516)
 material = SubResource("MatMetal")
 size = Vector3(1, 1.7330078, 1.4648438)
 
+[sub_resource type="BoxMesh" id="BoxMesh_wbuos"]
+material = SubResource("MatMetal")
+size = Vector3(1, 0.6323792, 1)
+
 [sub_resource type="StandardMaterial3D" id="MatSign"]
-albedo_color = Color(0.95, 0.18, 0.035, 1)
-emission_enabled = true
+albedo_color = Color(0, 0, 0, 1)
 emission = Color(0.95, 0.12, 0.02, 1)
 emission_energy_multiplier = 2.2
+
+[sub_resource type="BoxMesh" id="BoxMesh_0yh3i"]
+material = SubResource("MatMetal")
+size = Vector3(1, 2.7927125, 2.3793945)
 
 [sub_resource type="BoxMesh" id="BoxMesh_6pmx1"]
 material = SubResource("MatMetal")
@@ -273,6 +296,10 @@ size = Vector3(1, 0.8, 1.4501953)
 albedo_color = Color(0.34, 0.12, 0.055, 1)
 roughness = 0.88
 
+[sub_resource type="BoxMesh" id="BoxMesh_r2oap"]
+material = SubResource("MatMetal")
+size = Vector3(1, 1.1400368, 1)
+
 [sub_resource type="BoxMesh" id="BoxMesh_sglm8"]
 material = SubResource("MatMetal")
 size = Vector3(1.3764648, 1.4776367, 1)
@@ -288,10 +315,22 @@ emission_energy_multiplier = 3.0
 material = SubResource("MatMetal")
 size = Vector3(1.7802734, 1.7642578, 1)
 
+[sub_resource type="BoxMesh" id="BoxMesh_rm17s"]
+material = SubResource("MatMetal")
+size = Vector3(1.8790283, 1.4751419, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_a56cv"]
+material = SubResource("MatMetal")
+size = Vector3(1.8280029, 1.4751419, 1)
+
+[sub_resource type="StandardMaterial3D" id="MatRed"]
+albedo_color = Color(0.55, 0.06, 0.035, 1)
+roughness = 0.55
+
 [node name="KebabShop" type="Node3D" unique_id=559436482]
 
 [node name="Floor" type="MeshInstance3D" parent="." unique_id=2144488617]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 5.0470886)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011563301, 0, 5.0552034)
 material_override = SubResource("MatFloor")
 mesh = SubResource("BoxFloor")
 
@@ -305,7 +344,7 @@ shape = SubResource("ShapeFloor")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.6, -5.875)
 
 [node name="Mesh" type="MeshInstance3D" parent="BackWall" unique_id=832768864]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.004211426, 0, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.004211426, 0.6746093, 0)
 mesh = SubResource("BoxWall")
 
 [node name="Collision" type="CollisionShape3D" parent="BackWall" unique_id=2012523530]
@@ -315,7 +354,7 @@ shape = SubResource("ShapeWall")
 transform = Transform3D(0.65, 0, 0, 0, 1, 0, 0, 0, 1, -6.2, 1.6, 5.875)
 
 [node name="Mesh" type="MeshInstance3D" parent="FrontWallLeft" unique_id=1078924085]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.1507573, 0, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.1507573, 0.6369506, 0)
 mesh = SubResource("BoxMesh_ye7d8")
 
 [node name="Collision" type="CollisionShape3D" parent="FrontWallLeft" unique_id=1783023936]
@@ -326,7 +365,7 @@ shape = SubResource("ShapeWall")
 transform = Transform3D(0.65, 0, 0, 0, 1, 0, 0, 0, 1, 6.2, 1.6, 5.875)
 
 [node name="Mesh" type="MeshInstance3D" parent="FrontWallRight" unique_id=185786909]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.9014287, 0, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.9014287, 0.6548339, 0)
 mesh = SubResource("BoxMesh_hsot5")
 
 [node name="Collision" type="CollisionShape3D" parent="FrontWallRight" unique_id=543958810]
@@ -337,6 +376,7 @@ shape = SubResource("ShapeWall")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8.875, 1.6, 0)
 
 [node name="Mesh" type="MeshInstance3D" parent="LeftWall" unique_id=1361801842]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.6374999, 0)
 mesh = SubResource("BoxSideWall")
 
 [node name="Collision" type="CollisionShape3D" parent="LeftWall" unique_id=1111548401]
@@ -346,7 +386,8 @@ shape = SubResource("ShapeSideWall")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8.875, 1.6, 0)
 
 [node name="Mesh" type="MeshInstance3D" parent="RightWall" unique_id=574072898]
-mesh = SubResource("BoxSideWall")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.65892327, 0)
+mesh = SubResource("BoxMesh_l0yxp")
 
 [node name="Collision" type="CollisionShape3D" parent="RightWall" unique_id=1382367547]
 shape = SubResource("ShapeSideWall")
@@ -359,9 +400,9 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.4841237, 0.15831, 0.722335
 shape = SubResource("ShapeCounter")
 
 [node name="KitchenBackShelf" type="MeshInstance3D" parent="." unique_id=1005955309]
-transform = Transform3D(7, 0, 0, 0, 0.25, 0, 0, 0, 1.15, -0.91877294, 1.3706589, -5.170214)
+transform = Transform3D(7, 0, 0, 0, 0.25, 0, 0, 0, 1.15, -0.91877294, 1.3360866, -5.170214)
 material_override = SubResource("StandardMaterial3D_t8aj2")
-mesh = SubResource("BoxSmall")
+mesh = SubResource("BoxMesh_871jt")
 
 [node name="KitchenBackShelfCollision" type="StaticBody3D" parent="." unique_id=873622873]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.91877294, 1.3706589, -5.170214)
@@ -378,7 +419,7 @@ mesh = SubResource("BoxMesh_t8aj2")
 transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, -3.9592829, 0.6649709, -2.4962418)
 
 [node name="Base" type="MeshInstance3D" parent="DonerSpit" unique_id=1536134390]
-transform = Transform3D(1.35, 0, 0, 0, 0.75, 0, 0, 0, 1.35, 0.30502558, 1.5179071, -5.176435)
+transform = Transform3D(1.35, 0, 0, 0, 0.75, 0, 0, 0, 1.35, 0.30502558, 1.3736784, -5.176435)
 mesh = SubResource("BoxSmall")
 
 [node name="Pole" type="MeshInstance3D" parent="DonerSpit" unique_id=352803591]
@@ -409,65 +450,49 @@ visible = false
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.5, 1.35, -3.8)
 
 [node name="Mesh" type="MeshInstance3D" parent="Fridge" unique_id=507782226]
-transform = Transform3D(1.5, 0, 0, 0, 2.7, 0, 0, 0, 1.8, 0.36563778, 0, -0.97055507)
+transform = Transform3D(1.5, 0, 0, 0, 2.7, 0, 0, 0, 1.8, 0.36563778, 0.020054936, -0.97055507)
 material_override = SubResource("MatMetal")
-mesh = SubResource("BoxSmall")
+mesh = SubResource("BoxMesh_ebyhw")
 
 [node name="Collision" type="CollisionShape3D" parent="Fridge" unique_id=1448463917]
 transform = Transform3D(1.5, 0, 0, 0, 2.7, 0, 0, 0, 1.8, 0.35536575, 0, -1.4226596)
 shape = SubResource("ShapeSmall")
 
 [node name="eingang oben" type="MeshInstance3D" parent="." unique_id=1983536484]
-transform = Transform3D(2.7, 0, 0, 0, 0.55, 0, 0, 0, 0.25, 0, 2.9801617, 5.876078)
+transform = Transform3D(2.7, 0, 0, 0, 0.55, 0, 0, 0, 0.25, 0, 3.520091, 5.876078)
 material_override = SubResource("StandardMaterial3D_hsot5")
-mesh = SubResource("BoxSmall")
-
-[node name="Table1" type="StaticBody3D" parent="." unique_id=817401843]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 0.8, 1.5)
-
-[node name="Mesh" type="MeshInstance3D" parent="Table1" unique_id=1102744915]
-transform = Transform3D(2.2, 0, 0, 0, 0.25, 0, 0, 0, 1.4, -2.824607, 0, 0.8626642)
-material_override = SubResource("MatWood")
-mesh = SubResource("BoxSmall")
-
-[node name="Collision" type="CollisionShape3D" parent="Table1" unique_id=1909829891]
-transform = Transform3D(2.2, 0, 0, 0, 0.25, 0, 0, 0, 1.4, -2.8185487, 0, 0.88556314)
-shape = SubResource("ShapeSmall")
-
-[node name="Table2" type="StaticBody3D" parent="." unique_id=858128262]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4, 0.8, 1.5)
-
-[node name="Mesh" type="MeshInstance3D" parent="Table2" unique_id=439723037]
-transform = Transform3D(2.2, 0, 0, 0, 0.25, 0, 0, 0, 1.4, 2.9572062, 0, 1.2182231)
-material_override = SubResource("MatWood")
-mesh = SubResource("BoxSmall")
-
-[node name="Collision" type="CollisionShape3D" parent="Table2" unique_id=893111253]
-transform = Transform3D(2.2, 0, 0, 0, 0.25, 0, 0, 0, 1.4, 2.9857154, 0.014683247, 1.2200141)
-shape = SubResource("ShapeSmall")
-
-[node name="Chair1" type="MeshInstance3D" parent="." unique_id=1560673258]
-transform = Transform3D(0.8, 0, 0, 0, 0.9, 0, 0, 0, 0.8, -6.8365393, 0.46468323, 0.79608536)
-material_override = SubResource("MatRed")
-mesh = SubResource("BoxSmall")
-
-[node name="Chair3" type="MeshInstance3D" parent="." unique_id=818654149]
-transform = Transform3D(0.8, 0, 0, 0, 0.9, 0, 0, 0, 0.8, -6.8365393, 0.46468323, 3.8153124)
-material_override = SubResource("MatRed")
-mesh = SubResource("BoxSmall")
-
-[node name="Chair2" type="MeshInstance3D" parent="." unique_id=1439333001]
-transform = Transform3D(0.8, 0, 0, 0, 0.9, 0, 0, 0, 0.8, 6.9572062, 0.45, 1.4759161)
-material_override = SubResource("MatRed")
-mesh = SubResource("BoxSmall")
-
-[node name="Chair4" type="MeshInstance3D" parent="." unique_id=1044669613]
-transform = Transform3D(0.8, 0, 0, 0, 0.9, 0, 0, 0, 0.8, 6.9572062, 0.45, 4.0582886)
-material_override = SubResource("MatRed")
-mesh = SubResource("BoxSmall")
+mesh = SubResource("BoxMesh_weg2u")
 
 [node name="CeilingLight1" type="OmniLight3D" parent="." unique_id=1822949857]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 2.6955612, 1)
+light_color = Color(1, 0.82, 0.62, 1)
+light_energy = 5.0
+shadow_enabled = true
+omni_range = 8.0
+
+[node name="CeilingLight1" type="OmniLight3D" parent="CeilingLight1" unique_id=114435090]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.4749074, -0.4547274, -3.9889054)
+light_color = Color(1, 0.82, 0.62, 1)
+light_energy = 5.0
+shadow_enabled = true
+omni_range = 8.0
+
+[node name="CeilingLight1" type="OmniLight3D" parent="CeilingLight1/CeilingLight1" unique_id=1794765826]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 11.137207, -0.4547274, 1.0744276)
+light_color = Color(1, 0.82, 0.62, 1)
+light_energy = 5.0
+shadow_enabled = true
+omni_range = 8.0
+
+[node name="CeilingLight2" type="OmniLight3D" parent="CeilingLight1/CeilingLight1" unique_id=1903406685]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.3079019, 1.2497818, 6.1652875)
+light_color = Color(1, 0.82, 0.62, 1)
+light_energy = 5.0
+shadow_enabled = true
+omni_range = 8.0
+
+[node name="CeilingLight1" type="OmniLight3D" parent="CeilingLight1/CeilingLight1/CeilingLight2" unique_id=323554849]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 11.137207, -0.4547274, 1.0744276)
 light_color = Color(1, 0.82, 0.62, 1)
 light_energy = 5.0
 shadow_enabled = true
@@ -501,12 +526,27 @@ light_energy = 0.7
 shadow_enabled = true
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="DirectionalLight3D/DirectionalLight3D" unique_id=948741222]
-transform = Transform3D(0.90630776, 0.34618866, -0.24240384, 2.9802322e-08, 0.57357657, 0.819152, 0.42261827, -0.74240386, 0.5198369, -5.6034226, -2.6954665, 1.325706)
+transform = Transform3D(0.90630776, 0.34618863, -0.24240386, 2.9802322e-08, 0.57357657, 0.819152, 0.42261827, -0.74240386, 0.5198369, -7.204673, -0.9275491, 2.4956121)
 light_energy = 0.7
 shadow_enabled = true
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="DirectionalLight3D/DirectionalLight3D/DirectionalLight3D" unique_id=586079199]
 transform = Transform3D(0.90630776, 0.34618872, -0.24240398, 6.519258e-09, 0.5735764, 0.8191521, 0.4226184, -0.742404, 0.51983666, 7.840241, 8.612196, 4.2206206)
+light_energy = 0.7
+shadow_enabled = true
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="DirectionalLight3D/DirectionalLight3D/DirectionalLight3D/DirectionalLight3D" unique_id=1544957439]
+transform = Transform3D(0.9063077, 0.3461888, -0.24240407, 8.940697e-08, 0.5735762, 0.81915224, 0.42261854, -0.7424038, 0.5198366, 0.4890275, 4.341922, -1.3502402)
+light_energy = 0.7
+shadow_enabled = true
+
+[node name="DirectionalLight3D2" type="DirectionalLight3D" parent="DirectionalLight3D/DirectionalLight3D/DirectionalLight3D" unique_id=488479425]
+transform = Transform3D(0.90630776, 0.34618866, -0.24240397, -3.7252903e-08, 0.57357657, 0.81915206, 0.42261827, -0.74240375, 0.51983684, 1.4173775, 0.5658684, -3.5285614)
+light_energy = 0.7
+shadow_enabled = true
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="DirectionalLight3D/DirectionalLight3D/DirectionalLight3D/DirectionalLight3D2" unique_id=1767188946]
+transform = Transform3D(0.90630776, 0.34618863, -0.2424038, -2.9802322e-08, 0.57357633, 0.81915206, 0.4226182, -0.74240386, 0.5198368, 5.049081, 5.9342217, 0.9703369)
 light_energy = 0.7
 shadow_enabled = true
 
@@ -523,9 +563,9 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.7549808, 0)
 current = true
 
 [node name="DecorativeMenuBoard" type="MeshInstance3D" parent="." unique_id=1271968411]
-transform = Transform3D(2.2, 0, 0, 0, 1.3, 0, 0, 0, 0.12, -6.8, 2.2, -5.72)
+transform = Transform3D(2.2, 0, 0, 0, 1.3, 0, 0, 0, 0.12, -6.8, 2.1521258, -5.72)
 material_override = SubResource("MatDark")
-mesh = SubResource("BoxSmall")
+mesh = SubResource("BoxMesh_778q6")
 
 [node name="MenuPanel1" type="MeshInstance3D" parent="." unique_id=218660974]
 transform = Transform3D(0.08, 0, 0, 0, 0.08, 0, 0, 0, 0.08, -7.4, 2.2, -5.55)
@@ -582,14 +622,14 @@ material_override = SubResource("MatMetal")
 mesh = SubResource("BoxMesh_dnwpt")
 
 [node name="MenueTafel" type="MeshInstance3D" parent="Test Ablage/Kebab Theke" unique_id=2011322295]
-transform = Transform3D(2.8, 0, 0, 0, 0.8, 0, 0, 0, 0.08, 0, 2.904776, 17.74291)
+transform = Transform3D(2.8, 0, 0, 0, 0.8, 0, 0, 0, 0.08, 0, 2.8865368, 17.74291)
 material_override = SubResource("MatDark")
-mesh = SubResource("BoxSmall")
+mesh = SubResource("BoxMesh_wbuos")
 
 [node name="Leuchtschrift" type="MeshInstance3D" parent="Test Ablage/Kebab Theke" unique_id=1607386610]
-transform = Transform3D(2.5, 0, 0, 0, 0.15, 0, 0, 0, 0.05, 0, 2.904776, 17.676804)
+transform = Transform3D(2.5, 0, 0, 0, 0.15, 0, 0, 0, 0.05, 0, 2.8118222, 17.642319)
 material_override = SubResource("MatSign")
-mesh = SubResource("BoxSmall")
+mesh = SubResource("BoxMesh_0yh3i")
 
 [node name="Zutaten" type="Node3D" parent="Test Ablage/Kebab Theke" unique_id=1058483079]
 
@@ -783,9 +823,9 @@ mesh = SubResource("BoxMesh_j20ty")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.35, 0.72, 16.65)
 
 [node name="Ofenkoerper" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/LavashOfen" unique_id=158233105]
-transform = Transform3D(0.82, 0, 0, 0, 0.9, 0, 0, 0, 0.72, 7.8637586, 1.120374, -2.684236)
+transform = Transform3D(0.82, 0, 0, 0, 0.9, 0, 0, 0, 0.72, 7.8637586, 0.9695767, -2.684236)
 material_override = SubResource("MatOvenBrick")
-mesh = SubResource("BoxSmall")
+mesh = SubResource("BoxMesh_r2oap")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Test Ablage/Kebab Theke/LavashOfen" unique_id=251325660]
 transform = Transform3D(0.82, 0, 0, 0, 0.9, 0, 0, 0, 0.72, 7.94569, 1.1353209, -2.6045375)
@@ -808,7 +848,367 @@ mesh = SubResource("BoxSmall")
 
 [node name="Ofenlicht" type="OmniLight3D" parent="Test Ablage/Kebab Theke/LavashOfen" unique_id=434657835]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.8588285, 1.0677233, -2.252006)
-light_color = Color(1, 0.25, 0.04, 1)
-light_energy = 1.4
-light_size = 0.35
+light_color = Color(0.5812474, 0.12953006, 0.011650816, 1)
+light_energy = 5.295
+light_indirect_energy = 0.975
+light_volumetric_fog_energy = 0.785
+light_size = 0.788
 omni_range = 3.0
+
+[node name="Tisch + Quad Stuhl" type="Node3D" parent="." unique_id=12718783]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.026535, 0, 10.463013)
+
+[node name="Tisch" type="StaticBody3D" parent="Tisch + Quad Stuhl" unique_id=22852693]
+
+[node name="Tischplatte" type="MeshInstance3D" parent="Tisch + Quad Stuhl/Tisch" unique_id=1476191308]
+transform = Transform3D(1.8, 0, 0, 0, 0.15, 0, 0, 0, 1.2, 0.79391575, 1.4094851, -8.316921)
+material_override = SubResource("MatWood")
+mesh = SubResource("BoxMesh_rm17s")
+
+[node name="Kantenleiste" type="MeshInstance3D" parent="Tisch + Quad Stuhl/Tisch" unique_id=957462284]
+transform = Transform3D(1.9, 0, 0, 0, 0.05, 0, 0, 0, 1.3, 0.7866025, 1.4091336, -8.315609)
+material_override = SubResource("MatMetal")
+mesh = SubResource("BoxMesh_a56cv")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Tisch + Quad Stuhl/Tisch" unique_id=2034235180]
+transform = Transform3D(1.8, 0, 0, 0, 0.15, 0, 0, 0, 1.2, 0.82659435, 1.4903933, -8.339706)
+shape = SubResource("ShapeSmall")
+
+[node name="BeinVorneLinks" type="MeshInstance3D" parent="Tisch + Quad Stuhl/Tisch" unique_id=1517651130]
+transform = Transform3D(0.1, 0, 0, 0, 1.1, 0, 0, 0, 0.1, -0.72000027, 0.6773404, -7.895609)
+material_override = SubResource("MatMetal")
+mesh = SubResource("BoxSmall")
+
+[node name="BeinVorneRechts" type="MeshInstance3D" parent="Tisch + Quad Stuhl/Tisch" unique_id=1770769320]
+transform = Transform3D(0.1, 0, 0, 0, 1.1, 0, 0, 0, 0.1, 2.3346405, 0.6960639, -7.895609)
+material_override = SubResource("MatMetal")
+mesh = SubResource("BoxSmall")
+
+[node name="BeinHintenLinks" type="MeshInstance3D" parent="Tisch + Quad Stuhl/Tisch" unique_id=1243238131]
+transform = Transform3D(0.1, 0, 0, 0, 1.1, 0, 0, 0, 0.1, -0.72000027, 0.6794571, -8.735609)
+material_override = SubResource("MatMetal")
+mesh = SubResource("BoxSmall")
+
+[node name="BeinHintenRechts" type="MeshInstance3D" parent="Tisch + Quad Stuhl/Tisch" unique_id=2138905488]
+transform = Transform3D(0.1, 0, 0, 0, 1.1, 0, 0, 0, 0.1, 2.3346405, 0.6773404, -8.735609)
+material_override = SubResource("MatMetal")
+mesh = SubResource("BoxSmall")
+
+[node name="Stuhl" type="StaticBody3D" parent="Tisch + Quad Stuhl" unique_id=1129577108]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1.65)
+
+[node name="Sitz" type="MeshInstance3D" parent="Tisch + Quad Stuhl/Stuhl" unique_id=786843078]
+transform = Transform3D(0.88, 0, 0, 0, 0.14, 0, 0, 0, 0.8, 0, 1.11899, -8.315609)
+material_override = SubResource("MatRed")
+mesh = SubResource("BoxSmall")
+
+[node name="Sitzkante" type="MeshInstance3D" parent="Tisch + Quad Stuhl/Stuhl" unique_id=1969073149]
+transform = Transform3D(0.96, 0, 0, 0, 0.05, 0, 0, 0, 0.88, 0, 0.97898996, -8.315609)
+material_override = SubResource("MatWood")
+mesh = SubResource("BoxSmall")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Tisch + Quad Stuhl/Stuhl" unique_id=787330442]
+transform = Transform3D(0.88, 0, 0, 0, 0.14, 0, 0, 0, 0.8, 0, 1.176168, -8.315609)
+visible = false
+shape = SubResource("ShapeSmall")
+
+[node name="Rueckenlehne" type="MeshInstance3D" parent="Tisch + Quad Stuhl/Stuhl" unique_id=1235217626]
+transform = Transform3D(0.88, 0, 0, 0, 0.68, 0, 0, 0, 0.12, 0, 1.7347429, -7.975609)
+material_override = SubResource("MatRed")
+mesh = SubResource("BoxSmall")
+
+[node name="RueckenrahmenOben" type="MeshInstance3D" parent="Tisch + Quad Stuhl/Stuhl" unique_id=722826548]
+transform = Transform3D(0.98, 0, 0, 0, 0.07, 0, 0, 0, 0.16, 0, 2.27899, -7.975609)
+material_override = SubResource("MatWood")
+mesh = SubResource("BoxSmall")
+
+[node name="StuhlbeinVorneLinks" type="MeshInstance3D" parent="Tisch + Quad Stuhl/Stuhl" unique_id=149845216]
+transform = Transform3D(0.09, 0, 0, 0, 0.75, 0, 0, 0, 0.09, -0.34000003, 0.38679683, -8.585609)
+material_override = SubResource("MatMetal")
+mesh = SubResource("BoxSmall")
+
+[node name="StuhlbeinVorneRechts" type="MeshInstance3D" parent="Tisch + Quad Stuhl/Stuhl" unique_id=1349966334]
+transform = Transform3D(0.09, 0, 0, 0, 0.75, 0, 0, 0, 0.09, 0.34000015, 0.49734038, -8.585609)
+material_override = SubResource("MatMetal")
+mesh = SubResource("BoxSmall")
+
+[node name="StuhlbeinHintenLinks" type="MeshInstance3D" parent="Tisch + Quad Stuhl/Stuhl" unique_id=704355152]
+transform = Transform3D(0.09, 0, 0, 0, 0.75, 0, 0, 0, 0.09, -0.34000003, 0.2905383, -8.0456085)
+material_override = SubResource("MatMetal")
+mesh = SubResource("BoxSmall")
+
+[node name="StuhlbeinHintenRechts" type="MeshInstance3D" parent="Tisch + Quad Stuhl/Stuhl" unique_id=2136223856]
+transform = Transform3D(0.09, 0, 0, 0, 0.75, 0, 0, 0, 0.09, 0.34000015, 0.49734038, -8.0456085)
+material_override = SubResource("MatMetal")
+mesh = SubResource("BoxSmall")
+
+[node name="Stuhl" type="StaticBody3D" parent="Tisch + Quad Stuhl/Stuhl" unique_id=194013863]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.6958885, 0, -0.009997368)
+
+[node name="Sitz" type="MeshInstance3D" parent="Tisch + Quad Stuhl/Stuhl/Stuhl" unique_id=1431359272]
+transform = Transform3D(0.88, 0, 0, 0, 0.14, 0, 0, 0, 0.8, 0, 1.11899, -8.315609)
+material_override = SubResource("MatRed")
+mesh = SubResource("BoxSmall")
+
+[node name="Sitzkante" type="MeshInstance3D" parent="Tisch + Quad Stuhl/Stuhl/Stuhl" unique_id=2043179155]
+transform = Transform3D(0.96, 0, 0, 0, 0.05, 0, 0, 0, 0.88, 0, 0.97898996, -8.315609)
+material_override = SubResource("MatWood")
+mesh = SubResource("BoxSmall")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Tisch + Quad Stuhl/Stuhl/Stuhl" unique_id=896790697]
+transform = Transform3D(0.88, 0, 0, 0, 0.14, 0, 0, 0, 0.8, 0, 1.176168, -8.315609)
+visible = false
+shape = SubResource("ShapeSmall")
+
+[node name="Rueckenlehne" type="MeshInstance3D" parent="Tisch + Quad Stuhl/Stuhl/Stuhl" unique_id=1519036786]
+transform = Transform3D(0.88, 0, 0, 0, 0.68, 0, 0, 0, 0.12, 0, 1.7347429, -7.975609)
+material_override = SubResource("MatRed")
+mesh = SubResource("BoxSmall")
+
+[node name="RueckenrahmenOben" type="MeshInstance3D" parent="Tisch + Quad Stuhl/Stuhl/Stuhl" unique_id=360332906]
+transform = Transform3D(0.98, 0, 0, 0, 0.07, 0, 0, 0, 0.16, 0, 2.27899, -7.975609)
+material_override = SubResource("MatWood")
+mesh = SubResource("BoxSmall")
+
+[node name="StuhlbeinVorneLinks" type="MeshInstance3D" parent="Tisch + Quad Stuhl/Stuhl/Stuhl" unique_id=1535098915]
+transform = Transform3D(0.09, 0, 0, 0, 0.75, 0, 0, 0, 0.09, -0.34000003, 0.38679683, -8.585609)
+material_override = SubResource("MatMetal")
+mesh = SubResource("BoxSmall")
+
+[node name="StuhlbeinVorneRechts" type="MeshInstance3D" parent="Tisch + Quad Stuhl/Stuhl/Stuhl" unique_id=1153729922]
+transform = Transform3D(0.09, 0, 0, 0, 0.75, 0, 0, 0, 0.09, 0.34000015, 0.49734038, -8.585609)
+material_override = SubResource("MatMetal")
+mesh = SubResource("BoxSmall")
+
+[node name="StuhlbeinHintenLinks" type="MeshInstance3D" parent="Tisch + Quad Stuhl/Stuhl/Stuhl" unique_id=1292489770]
+transform = Transform3D(0.09, 0, 0, 0, 0.75, 0, 0, 0, 0.09, -0.34000003, 0.2905383, -8.0456085)
+material_override = SubResource("MatMetal")
+mesh = SubResource("BoxSmall")
+
+[node name="StuhlbeinHintenRechts" type="MeshInstance3D" parent="Tisch + Quad Stuhl/Stuhl/Stuhl" unique_id=45591039]
+transform = Transform3D(0.09, 0, 0, 0, 0.75, 0, 0, 0, 0.09, 0.34000015, 0.49734038, -8.0456085)
+material_override = SubResource("MatMetal")
+mesh = SubResource("BoxSmall")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="Tisch + Quad Stuhl" unique_id=2122753757]
+
+[node name="Sitz" type="MeshInstance3D" parent="Tisch + Quad Stuhl/StaticBody3D" unique_id=1080395000]
+transform = Transform3D(0.88, 0, 0, 0, 0.14, 0, 0, 0, 0.8, 0, 1.11899, -9.924583)
+material_override = SubResource("MatRed")
+mesh = SubResource("BoxSmall")
+
+[node name="Sitzkante" type="MeshInstance3D" parent="Tisch + Quad Stuhl/StaticBody3D" unique_id=1263213532]
+transform = Transform3D(0.96, 0, 0, 0, 0.05, 0, 0, 0, 0.88, 0, 0.97898996, -9.924583)
+material_override = SubResource("MatWood")
+mesh = SubResource("BoxSmall")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Tisch + Quad Stuhl/StaticBody3D" unique_id=390017955]
+transform = Transform3D(0.88, 0, 0, 0, 0.14, 0, 0, 0, 0.8, 0, 1.176168, -9.924583)
+shape = SubResource("ShapeSmall")
+
+[node name="Rueckenlehne" type="MeshInstance3D" parent="Tisch + Quad Stuhl/StaticBody3D" unique_id=1413225248]
+transform = Transform3D(0.88, 0, 0, 0, 0.68, 0, 0, 0, 0.12, 0, 1.73899, -10.269037)
+material_override = SubResource("MatRed")
+mesh = SubResource("BoxSmall")
+
+[node name="RueckenrahmenOben" type="MeshInstance3D" parent="Tisch + Quad Stuhl/StaticBody3D" unique_id=148417883]
+transform = Transform3D(0.98, 0, 0, 0, 0.07, 0, 0, 0, 0.16, 0, 2.27899, -10.269037)
+material_override = SubResource("MatWood")
+mesh = SubResource("BoxSmall")
+
+[node name="StuhlbeinVorneLinks" type="MeshInstance3D" parent="Tisch + Quad Stuhl/StaticBody3D" unique_id=2146860862]
+transform = Transform3D(0.09, 0, 0, 0, 0.75, 0, 0, 0, 0.09, -0.34000015, 0.38679683, -10.194584)
+material_override = SubResource("MatMetal")
+mesh = SubResource("BoxSmall")
+
+[node name="StuhlbeinVorneRechts" type="MeshInstance3D" parent="Tisch + Quad Stuhl/StaticBody3D" unique_id=1542961449]
+transform = Transform3D(0.09, 0, 0, 0, 0.75, 0, 0, 0, 0.09, 0.34000015, 0.49734038, -10.194584)
+material_override = SubResource("MatMetal")
+mesh = SubResource("BoxSmall")
+
+[node name="StuhlbeinHintenLinks" type="MeshInstance3D" parent="Tisch + Quad Stuhl/StaticBody3D" unique_id=966957590]
+transform = Transform3D(0.09, 0, 0, 0, 0.75, 0, 0, 0, 0.09, -0.34000015, 0.2905383, -9.654583)
+material_override = SubResource("MatMetal")
+mesh = SubResource("BoxSmall")
+
+[node name="StuhlbeinHintenRechts" type="MeshInstance3D" parent="Tisch + Quad Stuhl/StaticBody3D" unique_id=1470818534]
+transform = Transform3D(0.09, 0, 0, 0, 0.75, 0, 0, 0, 0.09, 0.34000015, 0.49734038, -9.654583)
+material_override = SubResource("MatMetal")
+mesh = SubResource("BoxSmall")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="Tisch + Quad Stuhl/StaticBody3D" unique_id=1203764089]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.6407337, 0, 0)
+
+[node name="Sitz" type="MeshInstance3D" parent="Tisch + Quad Stuhl/StaticBody3D/StaticBody3D" unique_id=1792036965]
+transform = Transform3D(0.88, 0, 0, 0, 0.14, 0, 0, 0, 0.8, 0, 1.11899, -9.924583)
+material_override = SubResource("MatRed")
+mesh = SubResource("BoxSmall")
+
+[node name="Sitzkante" type="MeshInstance3D" parent="Tisch + Quad Stuhl/StaticBody3D/StaticBody3D" unique_id=1602828085]
+transform = Transform3D(0.96, 0, 0, 0, 0.05, 0, 0, 0, 0.88, 0, 0.97898996, -9.924583)
+material_override = SubResource("MatWood")
+mesh = SubResource("BoxSmall")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Tisch + Quad Stuhl/StaticBody3D/StaticBody3D" unique_id=1969314139]
+transform = Transform3D(0.88, 0, 0, 0, 0.14, 0, 0, 0, 0.8, 0, 1.176168, -9.924583)
+shape = SubResource("ShapeSmall")
+
+[node name="Rueckenlehne" type="MeshInstance3D" parent="Tisch + Quad Stuhl/StaticBody3D/StaticBody3D" unique_id=345817368]
+transform = Transform3D(0.88, 0, 0, 0, 0.68, 0, 0, 0, 0.12, 0, 1.73899, -10.269037)
+material_override = SubResource("MatRed")
+mesh = SubResource("BoxSmall")
+
+[node name="RueckenrahmenOben" type="MeshInstance3D" parent="Tisch + Quad Stuhl/StaticBody3D/StaticBody3D" unique_id=1967965531]
+transform = Transform3D(0.98, 0, 0, 0, 0.07, 0, 0, 0, 0.16, 0, 2.27899, -10.269037)
+material_override = SubResource("MatWood")
+mesh = SubResource("BoxSmall")
+
+[node name="StuhlbeinVorneLinks" type="MeshInstance3D" parent="Tisch + Quad Stuhl/StaticBody3D/StaticBody3D" unique_id=323436163]
+transform = Transform3D(0.09, 0, 0, 0, 0.75, 0, 0, 0, 0.09, -0.34000015, 0.38679683, -10.194584)
+material_override = SubResource("MatMetal")
+mesh = SubResource("BoxSmall")
+
+[node name="StuhlbeinVorneRechts" type="MeshInstance3D" parent="Tisch + Quad Stuhl/StaticBody3D/StaticBody3D" unique_id=1878358232]
+transform = Transform3D(0.09, 0, 0, 0, 0.75, 0, 0, 0, 0.09, 0.34000015, 0.49734038, -10.194584)
+material_override = SubResource("MatMetal")
+mesh = SubResource("BoxSmall")
+
+[node name="StuhlbeinHintenLinks" type="MeshInstance3D" parent="Tisch + Quad Stuhl/StaticBody3D/StaticBody3D" unique_id=894090709]
+transform = Transform3D(0.09, 0, 0, 0, 0.75, 0, 0, 0, 0.09, -0.34000015, 0.2905383, -9.654583)
+material_override = SubResource("MatMetal")
+mesh = SubResource("BoxSmall")
+
+[node name="StuhlbeinHintenRechts" type="MeshInstance3D" parent="Tisch + Quad Stuhl/StaticBody3D/StaticBody3D" unique_id=263663313]
+transform = Transform3D(0.09, 0, 0, 0, 0.75, 0, 0, 0, 0.09, 0.34000015, 0.49734038, -9.654583)
+material_override = SubResource("MatMetal")
+mesh = SubResource("BoxSmall")
+
+[node name="Tisch + Two Stuhl" type="Node3D" parent="." unique_id=1271437328]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.8, 0, 11)
+
+[node name="Tisch" type="StaticBody3D" parent="Tisch + Two Stuhl" unique_id=413953594]
+
+[node name="Tischplatte" type="MeshInstance3D" parent="Tisch + Two Stuhl/Tisch" unique_id=1585581098]
+transform = Transform3D(1.8, 0, 0, 0, 0.15, 0, 0, 0, 1.2, 0.0027906895, 1.4862612, -8.316921)
+material_override = SubResource("MatWood")
+mesh = SubResource("BoxSmall")
+
+[node name="Kantenleiste" type="MeshInstance3D" parent="Tisch + Two Stuhl/Tisch" unique_id=967352370]
+transform = Transform3D(1.9, 0, 0, 0, 0.05, 0, 0, 0, 1.3, 0, 1.4091336, -8.315609)
+material_override = SubResource("MatMetal")
+mesh = SubResource("BoxSmall")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Tisch + Two Stuhl/Tisch" unique_id=2133149697]
+transform = Transform3D(1.8, 0, 0, 0, 0.15, 0, 0, 0, 1.2, 0, 1.4903933, -8.315609)
+shape = SubResource("ShapeSmall")
+
+[node name="BeinVorneLinks" type="MeshInstance3D" parent="Tisch + Two Stuhl/Tisch" unique_id=1809450216]
+transform = Transform3D(0.1, 0, 0, 0, 1.1, 0, 0, 0, 0.1, -0.72000027, 0.69269234, -7.895609)
+material_override = SubResource("MatMetal")
+mesh = SubResource("BoxSmall")
+
+[node name="BeinVorneRechts" type="MeshInstance3D" parent="Tisch + Two Stuhl/Tisch" unique_id=708400691]
+transform = Transform3D(0.1, 0, 0, 0, 1.1, 0, 0, 0, 0.1, 0.72000027, 0.69269234, -7.895609)
+material_override = SubResource("MatMetal")
+mesh = SubResource("BoxSmall")
+
+[node name="BeinHintenLinks" type="MeshInstance3D" parent="Tisch + Two Stuhl/Tisch" unique_id=87224916]
+transform = Transform3D(0.1, 0, 0, 0, 1.1, 0, 0, 0, 0.1, -0.72, 0.7387708, -8.735609)
+material_override = SubResource("MatMetal")
+mesh = SubResource("BoxSmall")
+
+[node name="BeinHintenRechts" type="MeshInstance3D" parent="Tisch + Two Stuhl/Tisch" unique_id=436350723]
+transform = Transform3D(0.1, 0, 0, 0, 1.1, 0, 0, 0, 0.1, 0.72000027, 0.69269234, -8.735609)
+material_override = SubResource("MatMetal")
+mesh = SubResource("BoxSmall")
+
+[node name="Stuhl" type="StaticBody3D" parent="Tisch + Two Stuhl" unique_id=684469884]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1.65)
+
+[node name="Sitz" type="MeshInstance3D" parent="Tisch + Two Stuhl/Stuhl" unique_id=1088543120]
+transform = Transform3D(0.88, 0, 0, 0, 0.14, 0, 0, 0, 0.8, 0, 1.11899, -8.315609)
+material_override = SubResource("MatRed")
+mesh = SubResource("BoxSmall")
+
+[node name="Sitzkante" type="MeshInstance3D" parent="Tisch + Two Stuhl/Stuhl" unique_id=676231105]
+transform = Transform3D(0.96, 0, 0, 0, 0.05, 0, 0, 0, 0.88, 0, 0.97898996, -8.315609)
+material_override = SubResource("MatWood")
+mesh = SubResource("BoxSmall")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Tisch + Two Stuhl/Stuhl" unique_id=1695945744]
+transform = Transform3D(0.88, 0, 0, 0, 0.14, 0, 0, 0, 0.8, 0, 1.176168, -8.315609)
+shape = SubResource("ShapeSmall")
+
+[node name="Rueckenlehne" type="MeshInstance3D" parent="Tisch + Two Stuhl/Stuhl" unique_id=1313877486]
+transform = Transform3D(0.88, 0, 0, 0, 0.68, 0, 0, 0, 0.12, 0, 1.73899, -7.975609)
+material_override = SubResource("MatRed")
+mesh = SubResource("BoxSmall")
+
+[node name="RueckenrahmenOben" type="MeshInstance3D" parent="Tisch + Two Stuhl/Stuhl" unique_id=1529091714]
+transform = Transform3D(0.98, 0, 0, 0, 0.07, 0, 0, 0, 0.16, 0, 2.27899, -7.975609)
+material_override = SubResource("MatWood")
+mesh = SubResource("BoxSmall")
+
+[node name="StuhlbeinVorneLinks" type="MeshInstance3D" parent="Tisch + Two Stuhl/Stuhl" unique_id=473036833]
+transform = Transform3D(0.09, 0, 0, 0, 0.75, 0, 0, 0, 0.09, -0.34000003, 0.38679683, -8.585609)
+material_override = SubResource("MatMetal")
+mesh = SubResource("BoxSmall")
+
+[node name="StuhlbeinVorneRechts" type="MeshInstance3D" parent="Tisch + Two Stuhl/Stuhl" unique_id=1809135878]
+transform = Transform3D(0.09, 0, 0, 0, 0.75, 0, 0, 0, 0.09, 0.34000015, 0.4197713, -8.585609)
+material_override = SubResource("MatMetal")
+mesh = SubResource("BoxSmall")
+
+[node name="StuhlbeinHintenLinks" type="MeshInstance3D" parent="Tisch + Two Stuhl/Stuhl" unique_id=1447520744]
+transform = Transform3D(0.09, 0, 0, 0, 0.75, 0, 0, 0, 0.09, -0.34000015, 0.50282335, -8.0456085)
+material_override = SubResource("MatMetal")
+mesh = SubResource("BoxSmall")
+
+[node name="StuhlbeinHintenRechts" type="MeshInstance3D" parent="Tisch + Two Stuhl/Stuhl" unique_id=1824550566]
+transform = Transform3D(0.09, 0, 0, 0, 0.75, 0, 0, 0, 0.09, 0.3399999, 0.2905383, -8.0456085)
+material_override = SubResource("MatMetal")
+mesh = SubResource("BoxSmall")
+
+[node name="Sitz" type="MeshInstance3D" parent="Tisch + Two Stuhl" unique_id=1612777220]
+transform = Transform3D(0.88, 0, 0, 0, 0.14, 0, 0, 0, 0.8, 0, 1.11899, -9.785219)
+material_override = SubResource("MatRed")
+mesh = SubResource("BoxSmall")
+
+[node name="Sitzkante" type="MeshInstance3D" parent="Tisch + Two Stuhl" unique_id=1129093477]
+transform = Transform3D(0.96, 0, 0, 0, 0.05, 0, 0, 0, 0.88, 0, 0.97898996, -9.785219)
+material_override = SubResource("MatWood")
+mesh = SubResource("BoxSmall")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Tisch + Two Stuhl" unique_id=1962527763]
+transform = Transform3D(0.88, 0, 0, 0, 0.14, 0, 0, 0, 0.8, 0, 1.176168, -9.785219)
+shape = SubResource("ShapeSmall")
+
+[node name="Rueckenlehne" type="MeshInstance3D" parent="Tisch + Two Stuhl" unique_id=1319865470]
+transform = Transform3D(0.88, 0, 0, 0, 0.68, 0, 0, 0, 0.12, 0, 1.73899, -10.111892)
+material_override = SubResource("MatRed")
+mesh = SubResource("BoxSmall")
+
+[node name="RueckenrahmenOben" type="MeshInstance3D" parent="Tisch + Two Stuhl" unique_id=1594362721]
+transform = Transform3D(0.98, 0, 0, 0, 0.07, 0, 0, 0, 0.16, 0, 2.27899, -10.111892)
+material_override = SubResource("MatWood")
+mesh = SubResource("BoxSmall")
+
+[node name="StuhlbeinVorneLinks" type="MeshInstance3D" parent="Tisch + Two Stuhl" unique_id=1473842533]
+transform = Transform3D(0.09, 0, 0, 0, 0.75, 0, 0, 0, 0.09, -0.34000015, 0.38679683, -10.05522)
+material_override = SubResource("MatMetal")
+mesh = SubResource("BoxSmall")
+
+[node name="StuhlbeinVorneRechts" type="MeshInstance3D" parent="Tisch + Two Stuhl" unique_id=1047961720]
+transform = Transform3D(0.09, 0, 0, 0, 0.75, 0, 0, 0, 0.09, 0.34000015, 0.2905383, -10.05522)
+material_override = SubResource("MatMetal")
+mesh = SubResource("BoxSmall")
+
+[node name="StuhlbeinHintenLinks" type="MeshInstance3D" parent="Tisch + Two Stuhl" unique_id=404194209]
+transform = Transform3D(0.09, 0, 0, 0, 0.75, 0, 0, 0, 0.09, -0.34000015, 0.46204913, -9.515219)
+material_override = SubResource("MatMetal")
+mesh = SubResource("BoxSmall")
+
+[node name="StuhlbeinHintenRechts" type="MeshInstance3D" parent="Tisch + Two Stuhl" unique_id=158229442]
+transform = Transform3D(0.09, 0, 0, 0, 0.75, 0, 0, 0, 0.09, 0.34000015, 0.2905383, -9.515219)
+material_override = SubResource("MatMetal")
+mesh = SubResource("BoxSmall")
