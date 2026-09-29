@@ -9,9 +9,13 @@ extends CharacterBody3D
 
 var gravity: float = ProjectSettings.get_setting("physics/3d/default_gravity")
 
+const FIRST_PERSON_POSITION := Vector3(0.0, 0.7549808, 0.0)
+
 func _ready() -> void:
 	Engine.max_fps = 60
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
+	camera.position = FIRST_PERSON_POSITION
+	camera.rotation = Vector3.ZERO
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -22,11 +26,7 @@ func _unhandled_input(event: InputEvent) -> void:
 
 			camera.rotate_x(-event.relative.y * mouse_sensitivity)
 
-			camera.rotation.x = clamp(
-				camera.rotation.x,
-				deg_to_rad(-89),
-				deg_to_rad(89)
-			)
+			camera.rotation.x = clamp(camera.rotation.x, deg_to_rad(-85), deg_to_rad(85))
 
 	if event.is_action_pressed("ui_cancel"):
 		Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
