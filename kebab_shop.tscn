@@ -388,12 +388,16 @@ material = SubResource("MatMetal")
 size = Vector3(1, 1.4751419, 1.2021484)
 
 [sub_resource type="StandardMaterial3D" id="MatConcrete"]
-albedo_color = Color(0.35489458, 0.1719454, 0.06858608, 1)
+albedo_color = Color(0.19215687, 0.2, 0.20784314, 1)
 roughness = 0.88
 
 [sub_resource type="BoxMesh" id="BoxMesh_n18ko"]
 material = SubResource("MatMetal")
 size = Vector3(0.50305176, 1.4751419, 1.0490723)
+
+[sub_resource type="BoxMesh" id="BoxMesh_rxwc3"]
+material = SubResource("MatMetal")
+size = Vector3(1.8576965, 1.4751419, 1.489502)
 
 [sub_resource type="StandardMaterial3D" id="MatStreetLine"]
 albedo_color = Color(0.92, 0.72, 0.18, 1)
@@ -424,6 +428,13 @@ size = Vector3(1.4545898, 1.2448952, 1.4047852)
 [sub_resource type="BoxMesh" id="BoxMesh_gxeq2"]
 material = SubResource("MatMetal")
 size = Vector3(1.4482422, 1.4751419, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_yg2gp"]
+albedo_color = Color(0.23039475, 0.25518024, 0.2679616, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_nnl6w"]
+material = SubResource("MatMetal")
+size = Vector3(0.46020508, 0.88844985, 0.25048828)
 
 [sub_resource type="BoxMesh" id="BoxMesh_0dgb0"]
 material = SubResource("MatMetal")
@@ -1474,7 +1485,7 @@ mesh = SubResource("BoxSmall")
 [node name="StadtAussenbereich" type="Node3D" parent="." unique_id=1873372650]
 
 [node name="Strasse" type="MeshInstance3D" parent="StadtAussenbereich" unique_id=1408603355]
-transform = Transform3D(9, 0, 0, 0, 0.1, 0, 0, 0, 7, 0, 0.12, 14.469238)
+transform = Transform3D(9, 0, 0, 0, 0.1, 0, 0, 0, 7, 0, 0.0012775585, 14.469238)
 material_override = SubResource("MatAsphalt")
 mesh = SubResource("BoxMesh_qgk83")
 
@@ -1482,6 +1493,11 @@ mesh = SubResource("BoxMesh_qgk83")
 transform = Transform3D(-3.934025e-07, 0, 1.45, 0, 0.13, 0, -9, 0, -6.338151e-08, 0.14007707, 0.0032587945, 7.992426)
 material_override = SubResource("MatConcrete")
 mesh = SubResource("BoxMesh_n18ko")
+
+[node name="GehwegVorLaden2" type="MeshInstance3D" parent="StadtAussenbereich" unique_id=338276778]
+transform = Transform3D(-8.999998, 0, -1.2676303e-07, 0, 0.13, 0, 7.8680483e-07, 0, -1.4499999, 12.69952, -0.014846474, 11.321606)
+material_override = SubResource("MatConcrete")
+mesh = SubResource("BoxMesh_rxwc3")
 
 [node name="Mittellinie1" type="MeshInstance3D" parent="StadtAussenbereich" unique_id=676396700]
 transform = Transform3D(-6.9938215e-09, 0, 1.15, 0, 0.025, 0, -0.15999998, 0, -5.0268095e-08, 3.155985, 0.23, 12.441484)
@@ -1603,14 +1619,38 @@ omni_range = 6.0
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.2, 0.65, 13.2)
 
 [node name="Karosserie" type="MeshInstance3D" parent="StadtAussenbereich/ParkendesAuto" unique_id=779535383]
-transform = Transform3D(1.25, 0, 0, 0, 0.55, 0, 0, 0, 0.7, -0.76692915, 0.24563462, 0.057593346)
+transform = Transform3D(1.25, 0, 0, 0, 0.55, 0, 0, 0, 0.7, -0.76692915, 0.07617706, 0.057593346)
 material_override = SubResource("MatCarBlue")
 mesh = SubResource("BoxMesh_pximh")
 
 [node name="Dach" type="MeshInstance3D" parent="StadtAussenbereich/ParkendesAuto" unique_id=2082320404]
-transform = Transform3D(0.7, 0, 0, 0, 0.35, 0, 0, 0, 0.58, -0.75525975, 0.7214192, 0.06833458)
+transform = Transform3D(0.7, 0, 0, 0, 0.35, 0, 0, 0, 0.58, -0.75525975, 0.55196166, 0.06833458)
 material_override = SubResource("MatCityWindow")
 mesh = SubResource("BoxMesh_gxeq2")
+
+[node name="Dach2" type="MeshInstance3D" parent="StadtAussenbereich/ParkendesAuto" unique_id=949265393]
+transform = Transform3D(0.7, 0, 0, 0, 0.35, 0, 0, 0, 0.58, -0.24460244, -0.40765458, -0.47040462)
+material_override = SubResource("MatCityWindow")
+material_overlay = SubResource("StandardMaterial3D_yg2gp")
+mesh = SubResource("BoxMesh_nnl6w")
+
+[node name="Dach3" type="MeshInstance3D" parent="StadtAussenbereich/ParkendesAuto" unique_id=1432509001]
+transform = Transform3D(0.7, 0, 0, 0, 0.35, 0, 0, 0, 0.58, -1.3738616, -0.40765458, -0.47040462)
+material_override = SubResource("MatCityWindow")
+material_overlay = SubResource("StandardMaterial3D_yg2gp")
+mesh = SubResource("BoxMesh_nnl6w")
+
+[node name="Dach4" type="MeshInstance3D" parent="StadtAussenbereich/ParkendesAuto" unique_id=827030038]
+transform = Transform3D(0.7, 0, 0, 0, 0.35, 0, 0, 0, 0.58, -0.24460244, -0.40765458, 0.5227976)
+material_override = SubResource("MatCityWindow")
+material_overlay = SubResource("StandardMaterial3D_yg2gp")
+mesh = SubResource("BoxMesh_nnl6w")
+
+[node name="Dach5" type="MeshInstance3D" parent="StadtAussenbereich/ParkendesAuto" unique_id=1805145634]
+transform = Transform3D(0.7, 0, 0, 0, 0.35, 0, 0, 0, 0.58, -1.3738616, -0.40765458, 0.5227976)
+material_override = SubResource("MatCityWindow")
+material_overlay = SubResource("StandardMaterial3D_yg2gp")
+mesh = SubResource("BoxMesh_nnl6w")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="StadtAussenbereich/ParkendesAuto" unique_id=733149637]
 transform = Transform3D(1.25, 0, 0, 0, 0.55, 0, 0, 0, 0.7, -0.762774, 0.3075707, 0.009602547)
