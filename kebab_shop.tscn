@@ -388,12 +388,16 @@ material = SubResource("MatMetal")
 size = Vector3(1, 1.4751419, 1.2021484)
 
 [sub_resource type="StandardMaterial3D" id="MatConcrete"]
-albedo_color = Color(0.19215687, 0.2, 0.20784314, 1)
+albedo_color = Color(0.16793782, 0.17505077, 0.18216363, 1)
 roughness = 0.88
 
 [sub_resource type="BoxMesh" id="BoxMesh_n18ko"]
 material = SubResource("MatMetal")
 size = Vector3(0.50305176, 1.4751419, 1.0490723)
+
+[sub_resource type="BoxMesh" id="BoxMesh_7t4f4"]
+material = SubResource("MatMetal")
+size = Vector3(0.6612854, 1.4751419, 1.0490723)
 
 [sub_resource type="BoxMesh" id="BoxMesh_rxwc3"]
 material = SubResource("MatMetal")
@@ -448,13 +452,34 @@ roughness = 0.9
 material = SubResource("MatMetal")
 size = Vector3(2.246582, 4.172141, 1.767334)
 
-[sub_resource type="BoxMesh" id="BoxMesh_qyx4r"]
-material = SubResource("MatMetal")
-size = Vector3(2.0429688, 1.4751419, 1)
-
 [sub_resource type="BoxMesh" id="BoxMesh_l3fpq"]
 material = SubResource("MatMetal")
 size = Vector3(1.6569824, 1.5652077, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_sk837"]
+material = SubResource("MatMetal")
+size = Vector3(1, 1.657615, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_hge6a"]
+material = SubResource("MatMetal")
+size = Vector3(1, 1.6911843, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_qyx4r"]
+material = SubResource("MatMetal")
+size = Vector3(2.0429688, 0.09352797, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_sk837"]
+albedo_color = Color(0.00018400386, 0.18381155, 0.6134392, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_hf8o1"]
+albedo_color = Color(0.62203085, 0.5217304, 3.85046e-07, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_carum"]
+material = SubResource("MatMetal")
+size = Vector3(2.0429688, 0.09352797, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_qjsj5"]
+albedo_color = Color(0.83305705, 0.24465796, 0.24402267, 1)
 
 [sub_resource type="StandardMaterial3D" id="MatGrass"]
 albedo_color = Color(0.12, 0.34, 0.09, 1)
@@ -1494,6 +1519,16 @@ transform = Transform3D(-3.934025e-07, 0, 1.45, 0, 0.13, 0, -9, 0, -6.338151e-08
 material_override = SubResource("MatConcrete")
 mesh = SubResource("BoxMesh_n18ko")
 
+[node name="GehwegVorLaden3" type="MeshInstance3D" parent="StadtAussenbereich" unique_id=994222131]
+transform = Transform3D(-3.934025e-07, 0, 1.45, 0, 0.13, 0, -9, 0, -6.338151e-08, 9.71775, 0.0032587945, 15.368465)
+material_override = SubResource("MatConcrete")
+mesh = SubResource("BoxMesh_7t4f4")
+
+[node name="GehwegVorLaden4" type="MeshInstance3D" parent="StadtAussenbereich" unique_id=128309859]
+transform = Transform3D(-3.934025e-07, 0, 1.45, 0, 0.13, 0, -9, 0, -6.338151e-08, 16.635897, 0.0032587945, 15.368465)
+material_override = SubResource("MatConcrete")
+mesh = SubResource("BoxMesh_7t4f4")
+
 [node name="GehwegVorLaden2" type="MeshInstance3D" parent="StadtAussenbereich" unique_id=338276778]
 transform = Transform3D(-8.999998, 0, -1.2676303e-07, 0, 0.13, 0, 7.8680483e-07, 0, -1.4499999, 12.69952, -0.014846474, 11.321606)
 material_override = SubResource("MatConcrete")
@@ -1518,7 +1553,7 @@ mesh = SubResource("BoxSmall")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.45, 2.5, 20.75)
 
 [node name="GebaeudeRechts" type="StaticBody3D" parent="StadtAussenbereich" unique_id=366005851]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.45, 2.5, 20.75)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 17.515907, 2.5, 20.75)
 
 [node name="Fassade" type="MeshInstance3D" parent="StadtAussenbereich/GebaeudeRechts" unique_id=1061414673]
 transform = Transform3D(3.55, 0, 0, 0, 6, 0, 0, 0, 2.2, 0.8832202, 0, -0.12528038)
@@ -1575,6 +1610,68 @@ material_override = SubResource("MatDark")
 mesh = SubResource("BoxSmall")
 
 [node name="Seitenfenster" type="MeshInstance3D" parent="StadtAussenbereich/GebaeudeRechts" unique_id=100773392]
+transform = Transform3D(0.035, 0, 0, 0, 0.72, 0, 0, 0, 0.78, 3.58, 0.7, 0)
+material_override = SubResource("MatCityWindow")
+mesh = SubResource("BoxSmall")
+
+[node name="GebaeudeRechts2" type="StaticBody3D" parent="StadtAussenbereich" unique_id=1388742064]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10.552061, 2.5, 20.75)
+
+[node name="Fassade" type="MeshInstance3D" parent="StadtAussenbereich/GebaeudeRechts2" unique_id=1218980132]
+transform = Transform3D(3.55, 0, 0, 0, 6, 0, 0, 0, 2.2, 0.8832202, 0, -0.12528038)
+material_override = SubResource("MatCityFacade")
+mesh = SubResource("BoxMesh_v6mwk")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StadtAussenbereich/GebaeudeRechts2" unique_id=855382348]
+transform = Transform3D(3.55, 0, 0, 0, 6, 0, 0, 0, 2.2, 0.6928749, 0.3711915, 0.22446251)
+shape = SubResource("ShapeSmall")
+
+[node name="Fenster1" type="MeshInstance3D" parent="StadtAussenbereich/GebaeudeRechts2" unique_id=479289990]
+transform = Transform3D(0.78, 0, 0, 0, 0.72, 0, 0, 0, 0.03, -0.79115176, 3.1956987, -2.1499996)
+material_override = SubResource("MatCityWindow")
+mesh = SubResource("BoxSmall")
+
+[node name="Fenster2" type="MeshInstance3D" parent="StadtAussenbereich/GebaeudeRechts2" unique_id=945787707]
+transform = Transform3D(0.78, 0, 0, 0, 0.72, 0, 0, 0, 0.03, 0.9088483, 3.1956987, -2.1499996)
+material_override = SubResource("MatCityWindow")
+mesh = SubResource("BoxSmall")
+
+[node name="Fenster3" type="MeshInstance3D" parent="StadtAussenbereich/GebaeudeRechts2" unique_id=1944208069]
+transform = Transform3D(0.78, 0, 0, 0, 0.72, 0, 0, 0, 0.03, 2.608848, 3.1956987, -2.1499996)
+material_override = SubResource("MatCityWindow")
+mesh = SubResource("BoxSmall")
+
+[node name="Fenster4" type="MeshInstance3D" parent="StadtAussenbereich/GebaeudeRechts2" unique_id=965939292]
+transform = Transform3D(0.78, 0, 0, 0, 0.72, 0, 0, 0, 0.03, -0.79115176, 1.3656712, -2.1499996)
+material_override = SubResource("MatCityWindow")
+mesh = SubResource("BoxSmall")
+
+[node name="Fenster5" type="MeshInstance3D" parent="StadtAussenbereich/GebaeudeRechts2" unique_id=919087322]
+transform = Transform3D(0.78, 0, 0, 0, 0.72, 0, 0, 0, 0.03, 0.9088483, 1.3656712, -2.1499996)
+material_override = SubResource("MatCityWindow")
+mesh = SubResource("BoxSmall")
+
+[node name="Fenster6" type="MeshInstance3D" parent="StadtAussenbereich/GebaeudeRechts2" unique_id=2009246097]
+transform = Transform3D(0.78, 0, 0, 0, 0.72, 0, 0, 0, 0.03, 2.608848, 1.3656712, -2.1499996)
+material_override = SubResource("MatCityWindow")
+mesh = SubResource("BoxSmall")
+
+[node name="Fenster7" type="MeshInstance3D" parent="StadtAussenbereich/GebaeudeRechts2" unique_id=936898372]
+transform = Transform3D(0.78, 0, 0, 0, 0.72, 0, 0, 0, 0.03, 0.9088483, -0.6937196, -2.1499996)
+material_override = SubResource("MatCityWindow")
+mesh = SubResource("BoxSmall")
+
+[node name="Fenster8" type="MeshInstance3D" parent="StadtAussenbereich/GebaeudeRechts2" unique_id=1480758644]
+transform = Transform3D(0.78, 0, 0, 0, 0.72, 0, 0, 0, 0.03, 2.608848, -0.6937196, -2.1499996)
+material_override = SubResource("MatCityWindow")
+mesh = SubResource("BoxSmall")
+
+[node name="Eingang" type="MeshInstance3D" parent="StadtAussenbereich/GebaeudeRechts2" unique_id=2126189979]
+transform = Transform3D(0.72, 0, 0, 0, 1.7, 0, 0, 0, 0.035, -0.8753109, -1.2655013, -2.2299995)
+material_override = SubResource("MatDark")
+mesh = SubResource("BoxSmall")
+
+[node name="Seitenfenster" type="MeshInstance3D" parent="StadtAussenbereich/GebaeudeRechts2" unique_id=1612680259]
 transform = Transform3D(0.035, 0, 0, 0, 0.72, 0, 0, 0, 0.78, 3.58, 0.7, 0)
 material_override = SubResource("MatCityWindow")
 mesh = SubResource("BoxSmall")
@@ -1666,75 +1763,474 @@ transform = Transform3D(0.85, 0, 0, 0, 0.8, 0, 0, 0, 0.85, -7.286605, 3.7860675,
 material_override = SubResource("MatLeaf")
 mesh = SubResource("BoxMesh_7cpnk")
 
-[node name="Avatar" type="StaticBody3D" parent="StadtAussenbereich" unique_id=662953966]
+[node name="Pflanzkuebel2" type="MeshInstance3D" parent="StadtAussenbereich" unique_id=363028478]
+transform = Transform3D(0.48, 0, 0, 0, 0.34, 0, 0, 0, 0.48, -7.3021803, 1.1155157, 15.409941)
+material_override = SubResource("MatConcrete")
+mesh = SubResource("BoxMesh_0dgb0")
+
+[node name="Baumkrone2" type="MeshInstance3D" parent="StadtAussenbereich" unique_id=504803278]
+transform = Transform3D(0.85, 0, 0, 0, 0.8, 0, 0, 0, 0.85, -7.286605, 3.7860675, 15.455367)
+material_override = SubResource("MatLeaf")
+mesh = SubResource("BoxMesh_7cpnk")
+
+[node name="Pflanzkuebel3" type="MeshInstance3D" parent="StadtAussenbereich" unique_id=427020001]
+transform = Transform3D(0.48, 0, 0, 0, 0.34, 0, 0, 0, 0.48, -7.3021803, 1.1155157, 18.416204)
+material_override = SubResource("MatConcrete")
+mesh = SubResource("BoxMesh_0dgb0")
+
+[node name="Baumkrone3" type="MeshInstance3D" parent="StadtAussenbereich" unique_id=1528869800]
+transform = Transform3D(0.85, 0, 0, 0, 0.8, 0, 0, 0, 0.85, -7.286605, 3.7860675, 18.46163)
+material_override = SubResource("MatLeaf")
+mesh = SubResource("BoxMesh_7cpnk")
+
+[node name="Avatar Skin Basic" type="StaticBody3D" parent="StadtAussenbereich" unique_id=662953966]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -15.216205, 0.08, 12.762842)
 
-[node name="Torso" type="MeshInstance3D" parent="StadtAussenbereich/Avatar" unique_id=335827748]
-transform = Transform3D(0.46, 0, 0, 0, 0.65, 0, 0, 0, 0.27, 0.004042864, 1.33, 0)
-material_override = SubResource("MatSleeve")
-mesh = SubResource("BoxMesh_qyx4r")
-
-[node name="Kopf" type="MeshInstance3D" parent="StadtAussenbereich/Avatar" unique_id=631435322]
-transform = Transform3D(0.3, 0, 0, 0, 0.28, 0, 0, 0, 0.3, -0.0038452148, 1.9864846, 0)
+[node name="Kopf" type="MeshInstance3D" parent="StadtAussenbereich/Avatar Skin Basic" unique_id=631435322]
+transform = Transform3D(0.29999998, 0, 0, 0, 0.27999997, 0, 0, 0, 0.29999998, -0.0038452148, 1.9864846, 0)
 material_override = SubResource("MatSkin")
 mesh = SubResource("BoxMesh_l3fpq")
 
-[node name="Haare" type="MeshInstance3D" parent="StadtAussenbereich/Avatar" unique_id=1332761459]
-transform = Transform3D(0.32, 0, 0, 0, 0.07, 0, 0, 0, 0.32, 0, 2.2246878, 0)
+[node name="Haare" type="MeshInstance3D" parent="StadtAussenbereich/Avatar Skin Basic" unique_id=1332761459]
+transform = Transform3D(0.32, 0, 0, 0, 0.07000001, 0, 0, 0, 0.32, 0, 2.2246878, 0)
 material_override = SubResource("MatHair")
 mesh = SubResource("BoxSmall")
 
-[node name="AugeLinks" type="MeshInstance3D" parent="StadtAussenbereich/Avatar" unique_id=825493662]
-transform = Transform3D(0.055, 0, 0, 0, 0.055, 0, 0, 0, 0.025, -0.099999905, 2.049094, -0.31000042)
+[node name="AugeLinks" type="MeshInstance3D" parent="StadtAussenbereich/Avatar Skin Basic" unique_id=825493662]
+transform = Transform3D(0.055, 0, 0, 0, 0.055, 0, 0, 0, 0.025, -0.09999943, 2.049094, -0.31000042)
 material_override = SubResource("MatDark")
 mesh = SubResource("BoxSmall")
 
-[node name="AugeRechts" type="MeshInstance3D" parent="StadtAussenbereich/Avatar" unique_id=1707123303]
-transform = Transform3D(0.055, 0, 0, 0, 0.055, 0, 0, 0, 0.025, 0.099999905, 2.049094, -0.31000042)
+[node name="AugeRechts" type="MeshInstance3D" parent="StadtAussenbereich/Avatar Skin Basic" unique_id=1707123303]
+transform = Transform3D(0.055, 0, 0, 0, 0.055, 0, 0, 0, 0.025, 0.09999943, 2.049094, -0.31000042)
 material_override = SubResource("MatDark")
 mesh = SubResource("BoxSmall")
 
-[node name="ArmLinks" type="MeshInstance3D" parent="StadtAussenbereich/Avatar" unique_id=789722353]
-transform = Transform3D(0.12, 0, 0, 0, 0.58, 0, 0, 0, 0.12, -0.52, 1.33, 0)
+[node name="ArmLinks" type="MeshInstance3D" parent="StadtAussenbereich/Avatar Skin Basic" unique_id=789722353]
+transform = Transform3D(0.11999999, 0, 0, 0, 0.58, 0, 0, 0, 0.11999999, -0.5199995, 1.33, 0)
 material_override = SubResource("MatSleeve")
 mesh = SubResource("BoxSmall")
 
-[node name="ArmRechts" type="MeshInstance3D" parent="StadtAussenbereich/Avatar" unique_id=1351476392]
-transform = Transform3D(0.12, 0, 0, 0, 0.58, 0, 0, 0, 0.12, 0.52, 1.33, 0)
+[node name="ArmRechts" type="MeshInstance3D" parent="StadtAussenbereich/Avatar Skin Basic" unique_id=1351476392]
+transform = Transform3D(0.11999999, 0, 0, 0, 0.58, 0, 0, 0, 0.11999999, 0.5199995, 1.33, 0)
 material_override = SubResource("MatSleeve")
 mesh = SubResource("BoxSmall")
 
-[node name="HandLinks" type="MeshInstance3D" parent="StadtAussenbereich/Avatar" unique_id=1751375443]
-transform = Transform3D(0.14, 0, 0, 0, 0.14, 0, 0, 0, 0.14, -0.52, 0.83, 0)
+[node name="HandLinks" type="MeshInstance3D" parent="StadtAussenbereich/Avatar Skin Basic" unique_id=1751375443]
+transform = Transform3D(0.14, 0, 0, 0, 0.14, 0, 0, 0, 0.14, -0.5199995, 0.83, 0)
 material_override = SubResource("MatSkin")
 mesh = SubResource("BoxSmall")
 
-[node name="HandRechts" type="MeshInstance3D" parent="StadtAussenbereich/Avatar" unique_id=999054951]
-transform = Transform3D(0.14, 0, 0, 0, 0.14, 0, 0, 0, 0.14, 0.52, 0.83, 0)
+[node name="HandRechts" type="MeshInstance3D" parent="StadtAussenbereich/Avatar Skin Basic" unique_id=999054951]
+transform = Transform3D(0.14, 0, 0, 0, 0.14, 0, 0, 0, 0.14, 0.5199995, 0.83, 0)
 material_override = SubResource("MatSkin")
 mesh = SubResource("BoxSmall")
 
-[node name="BeinLinks" type="MeshInstance3D" parent="StadtAussenbereich/Avatar" unique_id=640096017]
+[node name="BeinLinks" type="MeshInstance3D" parent="StadtAussenbereich/Avatar Skin Basic" unique_id=640096017]
 transform = Transform3D(0.17, 0, 0, 0, 0.55, 0, 0, 0, 0.17, -0.22, 0.42, 0)
 material_override = SubResource("MatTrousers")
 mesh = SubResource("BoxSmall")
 
-[node name="BeinRechts" type="MeshInstance3D" parent="StadtAussenbereich/Avatar" unique_id=1238363771]
-transform = Transform3D(0.17, 0, 0, 0, 0.55, 0, 0, 0, 0.17, 0.22, 0.42, 0)
+[node name="BeinRechts" type="MeshInstance3D" parent="StadtAussenbereich/Avatar Skin Basic" unique_id=1238363771]
+transform = Transform3D(0.17, 0, 0, 0, 0.55, 0, 0, 0, 0.17, 0.22000027, 0.42000002, 0)
 material_override = SubResource("MatTrousers")
 mesh = SubResource("BoxSmall")
 
-[node name="SchuhLinks" type="MeshInstance3D" parent="StadtAussenbereich/Avatar" unique_id=1743899778]
+[node name="Kopf2" type="MeshInstance3D" parent="StadtAussenbereich/Avatar Skin Basic" unique_id=1073129559]
+transform = Transform3D(0.29999998, 0, 0, 0, 0.27999997, 0, 0, 0, 0.29999998, -0.0038452148, 1.9864846, 0)
+material_override = SubResource("MatSkin")
+mesh = SubResource("BoxMesh_l3fpq")
+
+[node name="Haare2" type="MeshInstance3D" parent="StadtAussenbereich/Avatar Skin Basic" unique_id=1454159795]
+transform = Transform3D(0.32, 0, 0, 0, 0.07000001, 0, 0, 0, 0.32, 0, 2.2246878, 0)
+material_override = SubResource("MatHair")
+mesh = SubResource("BoxSmall")
+
+[node name="AugeLinks2" type="MeshInstance3D" parent="StadtAussenbereich/Avatar Skin Basic" unique_id=1249987487]
+transform = Transform3D(0.055, 0, 0, 0, 0.055, 0, 0, 0, 0.025, -0.09999943, 2.049094, -0.31000042)
+material_override = SubResource("MatDark")
+mesh = SubResource("BoxSmall")
+
+[node name="AugeRechts2" type="MeshInstance3D" parent="StadtAussenbereich/Avatar Skin Basic" unique_id=1130053790]
+transform = Transform3D(0.055, 0, 0, 0, 0.055, 0, 0, 0, 0.025, 0.09999943, 2.049094, -0.31000042)
+material_override = SubResource("MatDark")
+mesh = SubResource("BoxSmall")
+
+[node name="ArmLinks2" type="MeshInstance3D" parent="StadtAussenbereich/Avatar Skin Basic" unique_id=2038625124]
+transform = Transform3D(0.11999999, 0, 0, 0, 0.58, 0, 0, 0, 0.11999999, -0.5199995, 1.33, 0)
+material_override = SubResource("MatSleeve")
+mesh = SubResource("BoxSmall")
+
+[node name="ArmRechts2" type="MeshInstance3D" parent="StadtAussenbereich/Avatar Skin Basic" unique_id=1938443025]
+transform = Transform3D(0.11999999, 0, 0, 0, 0.58, 0, 0, 0, 0.11999999, 0.5199995, 1.33, 0)
+material_override = SubResource("MatSleeve")
+mesh = SubResource("BoxSmall")
+
+[node name="HandLinks2" type="MeshInstance3D" parent="StadtAussenbereich/Avatar Skin Basic" unique_id=1606005529]
+transform = Transform3D(0.14, 0, 0, 0, 0.14, 0, 0, 0, 0.14, -0.5199995, 0.83, 0)
+material_override = SubResource("MatSkin")
+mesh = SubResource("BoxSmall")
+
+[node name="HandRechts2" type="MeshInstance3D" parent="StadtAussenbereich/Avatar Skin Basic" unique_id=2040088381]
+transform = Transform3D(0.14, 0, 0, 0, 0.14, 0, 0, 0, 0.14, 0.5199995, 0.83, 0)
+material_override = SubResource("MatSkin")
+mesh = SubResource("BoxSmall")
+
+[node name="BeinLinks2" type="MeshInstance3D" parent="StadtAussenbereich/Avatar Skin Basic" unique_id=1109795016]
+transform = Transform3D(0.17, 0, 0, 0, 0.55, 0, 0, 0, 0.17, -0.22000027, 0.4701801, 0)
+material_override = SubResource("MatTrousers")
+mesh = SubResource("BoxMesh_sk837")
+
+[node name="BeinRechts2" type="MeshInstance3D" parent="StadtAussenbereich/Avatar Skin Basic" unique_id=651987049]
+transform = Transform3D(0.17, 0, 0, 0, 0.55, 0, 0, 0, 0.17, 0.22000027, 0.47941166, 0)
+material_override = SubResource("MatTrousers")
+mesh = SubResource("BoxMesh_hge6a")
+
+[node name="SchuhLinks" type="MeshInstance3D" parent="StadtAussenbereich/Avatar Skin Basic" unique_id=1743899778]
 transform = Transform3D(0.2, 0, 0, 0, 0.1, 0, 0, 0, 0.3, -0.22, 0.08, -0.08)
 material_override = SubResource("MatHair")
 mesh = SubResource("BoxSmall")
 
-[node name="SchuhRechts" type="MeshInstance3D" parent="StadtAussenbereich/Avatar" unique_id=1316054125]
+[node name="SchuhRechts" type="MeshInstance3D" parent="StadtAussenbereich/Avatar Skin Basic" unique_id=1316054125]
 transform = Transform3D(0.2, 0, 0, 0, 0.1, 0, 0, 0, 0.3, 0.22, 0.08, -0.08)
 material_override = SubResource("MatHair")
 mesh = SubResource("BoxSmall")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="StadtAussenbereich/Avatar" unique_id=1097021388]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StadtAussenbereich/Avatar Skin Basic" unique_id=1097021388]
+transform = Transform3D(0.5, 0, 0, 0, 1.55, 0, 0, 0, 0.36, 0, 1.16, 0)
+shape = SubResource("ShapeSmall")
+
+[node name="Avatar Skin Basic2" type="StaticBody3D" parent="StadtAussenbereich" unique_id=136574385]
+transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, -3.7075453, 0.08, 12.762842)
+
+[node name="Torso" type="MeshInstance3D" parent="StadtAussenbereich/Avatar Skin Basic2" unique_id=457163331]
+transform = Transform3D(0.46, 0, 0, 0, 0.6499999, 0, 0, 0, 0.26999998, 0.0040426254, 1.7790245, 0)
+material_override = SubResource("MatSleeve")
+mesh = SubResource("BoxMesh_qyx4r")
+
+[node name="Torso3" type="MeshInstance3D" parent="StadtAussenbereich/Avatar Skin Basic2" unique_id=1345013132]
+transform = Transform3D(0.46, 0, 0, 0, 0.6499999, 0, 0, 0, 0.26999998, 0.0040426254, 1.7790245, 0)
+material_override = SubResource("MatSleeve")
+material_overlay = SubResource("StandardMaterial3D_sk837")
+mesh = SubResource("BoxMesh_qyx4r")
+
+[node name="Kopf" type="MeshInstance3D" parent="StadtAussenbereich/Avatar Skin Basic2" unique_id=439911214]
+transform = Transform3D(0.29999998, 0, 0, 0, 0.27999997, 0, 0, 0, 0.29999998, -0.0038452148, 1.9864846, 0)
+material_override = SubResource("MatSkin")
+mesh = SubResource("BoxMesh_l3fpq")
+
+[node name="Haare" type="MeshInstance3D" parent="StadtAussenbereich/Avatar Skin Basic2" unique_id=373571056]
+transform = Transform3D(0.32, 0, 0, 0, 0.07000001, 0, 0, 0, 0.32, 0, 2.2246878, 0)
+material_override = SubResource("MatHair")
+mesh = SubResource("BoxSmall")
+
+[node name="ArmLinks" type="MeshInstance3D" parent="StadtAussenbereich/Avatar Skin Basic2" unique_id=1069896380]
+transform = Transform3D(0.11999999, 0, 0, 0, 0.58, 0, 0, 0, 0.11999999, -0.5199995, 1.33, 0)
+material_override = SubResource("MatSleeve")
+mesh = SubResource("BoxSmall")
+
+[node name="ArmRechts" type="MeshInstance3D" parent="StadtAussenbereich/Avatar Skin Basic2" unique_id=104539914]
+transform = Transform3D(0.11999999, 0, 0, 0, 0.58, 0, 0, 0, 0.11999999, 0.5199995, 1.33, 0)
+material_override = SubResource("MatSleeve")
+mesh = SubResource("BoxSmall")
+
+[node name="HandLinks" type="MeshInstance3D" parent="StadtAussenbereich/Avatar Skin Basic2" unique_id=720038192]
+transform = Transform3D(0.14, 0, 0, 0, 0.14, 0, 0, 0, 0.14, -0.5199995, 0.83, 0)
+material_override = SubResource("MatSkin")
+mesh = SubResource("BoxSmall")
+
+[node name="HandRechts" type="MeshInstance3D" parent="StadtAussenbereich/Avatar Skin Basic2" unique_id=1447528701]
+transform = Transform3D(0.14, 0, 0, 0, 0.14, 0, 0, 0, 0.14, 0.5199995, 0.83, 0)
+material_override = SubResource("MatSkin")
+mesh = SubResource("BoxSmall")
+
+[node name="BeinLinks" type="MeshInstance3D" parent="StadtAussenbereich/Avatar Skin Basic2" unique_id=1356829978]
+transform = Transform3D(0.17, 0, 0, 0, 0.55, 0, 0, 0, 0.17, -0.22, 0.42, 0)
+material_override = SubResource("MatTrousers")
+mesh = SubResource("BoxSmall")
+
+[node name="BeinRechts" type="MeshInstance3D" parent="StadtAussenbereich/Avatar Skin Basic2" unique_id=1611759385]
+transform = Transform3D(0.17, 0, 0, 0, 0.55, 0, 0, 0, 0.17, 0.22000027, 0.42000002, 0)
+material_override = SubResource("MatTrousers")
+mesh = SubResource("BoxSmall")
+
+[node name="Torso2" type="MeshInstance3D" parent="StadtAussenbereich/Avatar Skin Basic2" unique_id=817678370]
+transform = Transform3D(0.46, 0, 0, 0, 0.6499999, 0, 0, 0, 0.26999998, 0.0040426254, 1.6610417, 0)
+material_override = SubResource("MatSleeve")
+material_overlay = SubResource("StandardMaterial3D_sk837")
+mesh = SubResource("BoxMesh_qyx4r")
+
+[node name="Torso4" type="MeshInstance3D" parent="StadtAussenbereich/Avatar Skin Basic2" unique_id=837337794]
+transform = Transform3D(0.46, 0, 0, 0, 0.6499999, 0, 0, 0, 0.26999998, 0.0040426254, 1.7790245, 0)
+material_override = SubResource("MatSleeve")
+material_overlay = SubResource("StandardMaterial3D_sk837")
+mesh = SubResource("BoxMesh_qyx4r")
+
+[node name="Torso5" type="MeshInstance3D" parent="StadtAussenbereich/Avatar Skin Basic2" unique_id=1490241818]
+transform = Transform3D(0.46, 0, 0, 0, 0.6499999, 0, 0, 0, 0.26999998, 0.0040426254, 1.5536124, 0)
+material_override = SubResource("MatSleeve")
+material_overlay = SubResource("StandardMaterial3D_sk837")
+mesh = SubResource("BoxMesh_qyx4r")
+
+[node name="Torso6" type="MeshInstance3D" parent="StadtAussenbereich/Avatar Skin Basic2" unique_id=1240393084]
+transform = Transform3D(0.46, 0, 0, 0, 0.6499999, 0, 0, 0, 0.26999998, 0.0040426254, 1.7146792, 0)
+material_overlay = SubResource("StandardMaterial3D_hf8o1")
+mesh = SubResource("BoxMesh_carum")
+
+[node name="Torso7" type="MeshInstance3D" parent="StadtAussenbereich/Avatar Skin Basic2" unique_id=343612553]
+transform = Transform3D(0.46, 0, 0, 0, 0.6499999, 0, 0, 0, 0.26999998, 0.0040426254, 1.605064, 0)
+material_overlay = SubResource("StandardMaterial3D_hf8o1")
+mesh = SubResource("BoxMesh_carum")
+
+[node name="Torso8" type="MeshInstance3D" parent="StadtAussenbereich/Avatar Skin Basic2" unique_id=1676390343]
+transform = Transform3D(0.46, 0, 0, 0, 0.6499999, 0, 0, 0, 0.26999998, 0.0040426254, 1.7790245, 0)
+material_override = SubResource("MatSleeve")
+material_overlay = SubResource("StandardMaterial3D_sk837")
+mesh = SubResource("BoxMesh_qyx4r")
+
+[node name="Torso9" type="MeshInstance3D" parent="StadtAussenbereich/Avatar Skin Basic2" unique_id=1928446897]
+transform = Transform3D(0.46, 0, 0, 0, 0.6499999, 0, 0, 0, 0.26999998, 0.0040426254, 1.6610417, 0)
+material_override = SubResource("MatSleeve")
+material_overlay = SubResource("StandardMaterial3D_sk837")
+mesh = SubResource("BoxMesh_qyx4r")
+
+[node name="Torso13" type="MeshInstance3D" parent="StadtAussenbereich/Avatar Skin Basic2" unique_id=908294548]
+transform = Transform3D(0.46, 0, 0, 0, 0.6499999, 0, 0, 0, 0.26999998, 0.0040426254, 1.3355465, 0)
+material_override = SubResource("MatSleeve")
+material_overlay = SubResource("StandardMaterial3D_sk837")
+mesh = SubResource("BoxMesh_qyx4r")
+
+[node name="Torso14" type="MeshInstance3D" parent="StadtAussenbereich/Avatar Skin Basic2" unique_id=762721522]
+transform = Transform3D(0.46, 0, 0, 0, 0.6499999, 0, 0, 0, 0.26999998, 0.0040426254, 1.4966134, 0)
+material_overlay = SubResource("StandardMaterial3D_hf8o1")
+mesh = SubResource("BoxMesh_carum")
+
+[node name="Torso15" type="MeshInstance3D" parent="StadtAussenbereich/Avatar Skin Basic2" unique_id=932374325]
+transform = Transform3D(0.46, 0, 0, 0, 0.6499999, 0, 0, 0, 0.26999998, 0.0040426254, 1.3869982, 0)
+material_overlay = SubResource("StandardMaterial3D_hf8o1")
+mesh = SubResource("BoxMesh_carum")
+
+[node name="Torso16" type="MeshInstance3D" parent="StadtAussenbereich/Avatar Skin Basic2" unique_id=1943606734]
+transform = Transform3D(0.46, 0, 0, 0, 0.6499999, 0, 0, 0, 0.26999998, 0.0040426254, 1.4429759, 0)
+material_override = SubResource("MatSleeve")
+material_overlay = SubResource("StandardMaterial3D_sk837")
+mesh = SubResource("BoxMesh_qyx4r")
+
+[node name="Torso17" type="MeshInstance3D" parent="StadtAussenbereich/Avatar Skin Basic2" unique_id=372431233]
+transform = Transform3D(0.46, 0, 0, 0, 0.6499999, 0, 0, 0, 0.26999998, 0.0040426254, 1.1140505, 0)
+material_override = SubResource("MatSleeve")
+material_overlay = SubResource("StandardMaterial3D_sk837")
+mesh = SubResource("BoxMesh_qyx4r")
+
+[node name="Torso18" type="MeshInstance3D" parent="StadtAussenbereich/Avatar Skin Basic2" unique_id=1351200048]
+transform = Transform3D(0.46, 0, 0, 0, 0.6499999, 0, 0, 0, 0.26999998, 0.0040426254, 1.2751174, 0)
+material_overlay = SubResource("StandardMaterial3D_hf8o1")
+mesh = SubResource("BoxMesh_carum")
+
+[node name="Torso19" type="MeshInstance3D" parent="StadtAussenbereich/Avatar Skin Basic2" unique_id=1651495395]
+transform = Transform3D(0.46, 0, 0, 0, 0.6499999, 0, 0, 0, 0.26999998, 0.0040426254, 1.1655022, 0)
+material_overlay = SubResource("StandardMaterial3D_hf8o1")
+mesh = SubResource("BoxMesh_carum")
+
+[node name="Torso20" type="MeshInstance3D" parent="StadtAussenbereich/Avatar Skin Basic2" unique_id=529429747]
+transform = Transform3D(0.46, 0, 0, 0, 0.6499999, 0, 0, 0, 0.26999998, 0.0040426254, 1.2214799, 0)
+material_override = SubResource("MatSleeve")
+material_overlay = SubResource("StandardMaterial3D_sk837")
+mesh = SubResource("BoxMesh_qyx4r")
+
+[node name="Torso21" type="MeshInstance3D" parent="StadtAussenbereich/Avatar Skin Basic2" unique_id=1825351670]
+transform = Transform3D(0.46, 0, 0, 0, 0.6499999, 0, 0, 0, 0.26999998, 0.0040426254, 0.89715713, 0)
+material_override = SubResource("MatSleeve")
+material_overlay = SubResource("StandardMaterial3D_sk837")
+mesh = SubResource("BoxMesh_qyx4r")
+
+[node name="Torso22" type="MeshInstance3D" parent="StadtAussenbereich/Avatar Skin Basic2" unique_id=1860934627]
+transform = Transform3D(0.46, 0, 0, 0, 0.6499999, 0, 0, 0, 0.26999998, 0.0040426254, 1.058224, 0)
+material_overlay = SubResource("StandardMaterial3D_hf8o1")
+mesh = SubResource("BoxMesh_carum")
+
+[node name="Torso23" type="MeshInstance3D" parent="StadtAussenbereich/Avatar Skin Basic2" unique_id=1293640852]
+transform = Transform3D(0.46, 0, 0, 0, 0.6499999, 0, 0, 0, 0.26999998, 0.0040426254, 0.9486088, 0)
+material_overlay = SubResource("StandardMaterial3D_hf8o1")
+mesh = SubResource("BoxMesh_carum")
+
+[node name="Torso24" type="MeshInstance3D" parent="StadtAussenbereich/Avatar Skin Basic2" unique_id=548867595]
+transform = Transform3D(0.46, 0, 0, 0, 0.6499999, 0, 0, 0, 0.26999998, 0.0040426254, 1.0045865, 0)
+material_override = SubResource("MatSleeve")
+material_overlay = SubResource("StandardMaterial3D_sk837")
+mesh = SubResource("BoxMesh_qyx4r")
+
+[node name="Torso10" type="MeshInstance3D" parent="StadtAussenbereich/Avatar Skin Basic2" unique_id=536293436]
+transform = Transform3D(0.46, 0, 0, 0, 0.6499999, 0, 0, 0, 0.26999998, 0.0040426254, 1.5536124, 0)
+material_override = SubResource("MatSleeve")
+material_overlay = SubResource("StandardMaterial3D_sk837")
+mesh = SubResource("BoxMesh_qyx4r")
+
+[node name="Torso25" type="MeshInstance3D" parent="StadtAussenbereich/Avatar Skin Basic2" unique_id=16958853]
+transform = Transform3D(-2.0107239e-08, 0, 0.26999998, 0, 0.6499999, 0, -0.46, 0, -1.1802074e-08, 0.0071668625, 1.7790245, 11.5357)
+material_override = SubResource("MatSleeve")
+material_overlay = SubResource("StandardMaterial3D_qjsj5")
+mesh = SubResource("BoxMesh_qyx4r")
+
+[node name="Torso26" type="MeshInstance3D" parent="StadtAussenbereich/Avatar Skin Basic2" unique_id=1423062101]
+transform = Transform3D(-2.0107239e-08, 0, 0.26999998, 0, 0.6499999, 0, -0.46, 0, -1.1802074e-08, 0.0071668625, 1.6610417, 11.5357)
+material_override = SubResource("MatSleeve")
+material_overlay = SubResource("StandardMaterial3D_qjsj5")
+mesh = SubResource("BoxMesh_qyx4r")
+
+[node name="Torso27" type="MeshInstance3D" parent="StadtAussenbereich/Avatar Skin Basic2" unique_id=1596563652]
+transform = Transform3D(-2.0107239e-08, 0, 0.26999998, 0, 0.6499999, 0, -0.46, 0, -1.1802074e-08, 0.0071668625, 1.7146792, 11.5357)
+material_overlay = SubResource("StandardMaterial3D_hf8o1")
+mesh = SubResource("BoxMesh_carum")
+
+[node name="Torso28" type="MeshInstance3D" parent="StadtAussenbereich/Avatar Skin Basic2" unique_id=1658999996]
+transform = Transform3D(-2.0107239e-08, 0, 0.26999998, 0, 0.6499999, 0, -0.46, 0, -1.1802074e-08, 0.0071668625, 1.605064, 11.5357)
+material_overlay = SubResource("StandardMaterial3D_hf8o1")
+mesh = SubResource("BoxMesh_carum")
+
+[node name="Torso29" type="MeshInstance3D" parent="StadtAussenbereich/Avatar Skin Basic2" unique_id=64088301]
+transform = Transform3D(-2.0107239e-08, 0, 0.26999998, 0, 0.6499999, 0, -0.46, 0, -1.1802074e-08, 0.0071668625, 1.3355465, 11.5357)
+material_override = SubResource("MatSleeve")
+material_overlay = SubResource("StandardMaterial3D_qjsj5")
+mesh = SubResource("BoxMesh_qyx4r")
+
+[node name="Torso41" type="MeshInstance3D" parent="StadtAussenbereich/Avatar Skin Basic2" unique_id=1524262732]
+transform = Transform3D(-2.0107239e-08, 0, 0.26999998, 0, 0.6499999, 0, -0.46, 0, -1.1802074e-08, 0.0071668625, 1.219953, 11.5357)
+material_override = SubResource("MatSleeve")
+material_overlay = SubResource("StandardMaterial3D_qjsj5")
+mesh = SubResource("BoxMesh_qyx4r")
+
+[node name="Torso30" type="MeshInstance3D" parent="StadtAussenbereich/Avatar Skin Basic2" unique_id=1872197286]
+transform = Transform3D(-2.0107239e-08, 0, 0.26999998, 0, 0.6499999, 0, -0.46, 0, -1.1802074e-08, 0.0071668625, 1.4966134, 11.5357)
+material_overlay = SubResource("StandardMaterial3D_hf8o1")
+mesh = SubResource("BoxMesh_carum")
+
+[node name="Torso31" type="MeshInstance3D" parent="StadtAussenbereich/Avatar Skin Basic2" unique_id=802559973]
+transform = Transform3D(-2.0107239e-08, 0, 0.26999998, 0, 0.6499999, 0, -0.46, 0, -1.1802074e-08, 0.0071668625, 1.3869982, 11.5357)
+material_overlay = SubResource("StandardMaterial3D_hf8o1")
+mesh = SubResource("BoxMesh_carum")
+
+[node name="Torso32" type="MeshInstance3D" parent="StadtAussenbereich/Avatar Skin Basic2" unique_id=1644323288]
+transform = Transform3D(-2.0107239e-08, 0, 0.26999998, 0, 0.6499999, 0, -0.46, 0, -1.1802074e-08, 0.0071668625, 1.4429759, 11.5357)
+material_override = SubResource("MatSleeve")
+material_overlay = SubResource("StandardMaterial3D_qjsj5")
+mesh = SubResource("BoxMesh_qyx4r")
+
+[node name="Torso33" type="MeshInstance3D" parent="StadtAussenbereich/Avatar Skin Basic2" unique_id=1883969300]
+transform = Transform3D(-2.0107239e-08, 0, 0.26999998, 0, 0.6499999, 0, -0.46, 0, -1.1802074e-08, 0.0071668625, 1.1140505, 11.5357)
+material_override = SubResource("MatSleeve")
+material_overlay = SubResource("StandardMaterial3D_qjsj5")
+mesh = SubResource("BoxMesh_qyx4r")
+
+[node name="Torso34" type="MeshInstance3D" parent="StadtAussenbereich/Avatar Skin Basic2" unique_id=1583864474]
+transform = Transform3D(-2.0107239e-08, 0, 0.26999998, 0, 0.6499999, 0, -0.46, 0, -1.1802074e-08, 0.0071668625, 1.2751174, 11.5357)
+material_overlay = SubResource("StandardMaterial3D_hf8o1")
+mesh = SubResource("BoxMesh_carum")
+
+[node name="Torso35" type="MeshInstance3D" parent="StadtAussenbereich/Avatar Skin Basic2" unique_id=2039784351]
+transform = Transform3D(-2.0107239e-08, 0, 0.26999998, 0, 0.6499999, 0, -0.46, 0, -1.1802074e-08, 0.0071668625, 1.1655022, 11.5357)
+material_overlay = SubResource("StandardMaterial3D_hf8o1")
+mesh = SubResource("BoxMesh_carum")
+
+[node name="Torso36" type="MeshInstance3D" parent="StadtAussenbereich/Avatar Skin Basic2" unique_id=621369295]
+transform = Transform3D(-2.0107239e-08, 0, 0.26999998, 0, 0.6499999, 0, -0.46, 0, -1.1802074e-08, 0.0071668625, 0.89715713, 11.5357)
+material_override = SubResource("MatSleeve")
+material_overlay = SubResource("StandardMaterial3D_qjsj5")
+mesh = SubResource("BoxMesh_qyx4r")
+
+[node name="Torso37" type="MeshInstance3D" parent="StadtAussenbereich/Avatar Skin Basic2" unique_id=825414676]
+transform = Transform3D(-2.0107239e-08, 0, 0.26999998, 0, 0.6499999, 0, -0.46, 0, -1.1802074e-08, 0.0071668625, 1.058224, 11.5357)
+material_overlay = SubResource("StandardMaterial3D_hf8o1")
+mesh = SubResource("BoxMesh_carum")
+
+[node name="Torso38" type="MeshInstance3D" parent="StadtAussenbereich/Avatar Skin Basic2" unique_id=772114848]
+transform = Transform3D(-2.0107239e-08, 0, 0.26999998, 0, 0.6499999, 0, -0.46, 0, -1.1802074e-08, 0.0071668625, 0.9486088, 11.5357)
+material_overlay = SubResource("StandardMaterial3D_hf8o1")
+mesh = SubResource("BoxMesh_carum")
+
+[node name="Torso39" type="MeshInstance3D" parent="StadtAussenbereich/Avatar Skin Basic2" unique_id=1348260572]
+transform = Transform3D(-2.0107239e-08, 0, 0.26999998, 0, 0.6499999, 0, -0.46, 0, -1.1802074e-08, 0.0071668625, 1.0045865, 11.5357)
+material_override = SubResource("MatSleeve")
+material_overlay = SubResource("StandardMaterial3D_qjsj5")
+mesh = SubResource("BoxMesh_qyx4r")
+
+[node name="Torso40" type="MeshInstance3D" parent="StadtAussenbereich/Avatar Skin Basic2" unique_id=298986686]
+transform = Transform3D(-2.0107239e-08, 0, 0.26999998, 0, 0.6499999, 0, -0.46, 0, -1.1802074e-08, 0.0071668625, 1.5536124, 11.5357)
+material_override = SubResource("MatSleeve")
+material_overlay = SubResource("StandardMaterial3D_qjsj5")
+mesh = SubResource("BoxMesh_qyx4r")
+
+[node name="Torso11" type="MeshInstance3D" parent="StadtAussenbereich/Avatar Skin Basic2" unique_id=1948032694]
+transform = Transform3D(0.46, 0, 0, 0, 0.6499999, 0, 0, 0, 0.26999998, 0.0040426254, 1.7146792, 0)
+material_overlay = SubResource("StandardMaterial3D_hf8o1")
+mesh = SubResource("BoxMesh_carum")
+
+[node name="Torso12" type="MeshInstance3D" parent="StadtAussenbereich/Avatar Skin Basic2" unique_id=688128807]
+transform = Transform3D(0.46, 0, 0, 0, 0.6499999, 0, 0, 0, 0.26999998, 0.0040426254, 1.605064, 0)
+material_overlay = SubResource("StandardMaterial3D_hf8o1")
+mesh = SubResource("BoxMesh_carum")
+
+[node name="Kopf2" type="MeshInstance3D" parent="StadtAussenbereich/Avatar Skin Basic2" unique_id=1038072747]
+transform = Transform3D(0.29999998, 0, 0, 0, 0.27999997, 0, 0, 0, 0.29999998, -0.0038452148, 1.9864846, 0)
+material_override = SubResource("MatSkin")
+mesh = SubResource("BoxMesh_l3fpq")
+
+[node name="Haare2" type="MeshInstance3D" parent="StadtAussenbereich/Avatar Skin Basic2" unique_id=1738666752]
+transform = Transform3D(0.32, 0, 0, 0, 0.07000001, 0, 0, 0, 0.32, 0, 2.2246878, 0)
+material_override = SubResource("MatHair")
+mesh = SubResource("BoxSmall")
+
+[node name="AugeLinks2" type="MeshInstance3D" parent="StadtAussenbereich/Avatar Skin Basic2" unique_id=1719145122]
+transform = Transform3D(0.055, 0, 0, 0, 0.055, 0, 0, 0, 0.025, -0.09999943, 2.049094, -0.19719028)
+material_override = SubResource("MatDark")
+mesh = SubResource("BoxSmall")
+
+[node name="AugeRechts2" type="MeshInstance3D" parent="StadtAussenbereich/Avatar Skin Basic2" unique_id=1486313974]
+transform = Transform3D(0.055, 0, 0, 0, 0.055, 0, 0, 0, 0.025, 0.09999943, 2.049094, -0.19719028)
+material_override = SubResource("MatDark")
+mesh = SubResource("BoxSmall")
+
+[node name="ArmLinks2" type="MeshInstance3D" parent="StadtAussenbereich/Avatar Skin Basic2" unique_id=1915408224]
+transform = Transform3D(0.11999999, 0, 0, 0, 0.58, 0, 0, 0, 0.11999999, -0.5199995, 1.33, 0)
+material_override = SubResource("MatSleeve")
+mesh = SubResource("BoxSmall")
+
+[node name="ArmRechts2" type="MeshInstance3D" parent="StadtAussenbereich/Avatar Skin Basic2" unique_id=2055177796]
+transform = Transform3D(0.11999999, 0, 0, 0, 0.58, 0, 0, 0, 0.11999999, 0.5199995, 1.33, 0)
+material_override = SubResource("MatSleeve")
+mesh = SubResource("BoxSmall")
+
+[node name="HandLinks2" type="MeshInstance3D" parent="StadtAussenbereich/Avatar Skin Basic2" unique_id=231586939]
+transform = Transform3D(0.14, 0, 0, 0, 0.14, 0, 0, 0, 0.14, -0.5199995, 0.83, 0)
+material_override = SubResource("MatSkin")
+mesh = SubResource("BoxSmall")
+
+[node name="HandRechts2" type="MeshInstance3D" parent="StadtAussenbereich/Avatar Skin Basic2" unique_id=212481701]
+transform = Transform3D(0.14, 0, 0, 0, 0.14, 0, 0, 0, 0.14, 0.5199995, 0.83, 0)
+material_override = SubResource("MatSkin")
+mesh = SubResource("BoxSmall")
+
+[node name="BeinLinks2" type="MeshInstance3D" parent="StadtAussenbereich/Avatar Skin Basic2" unique_id=2109197645]
+transform = Transform3D(0.17, 0, 0, 0, 0.55, 0, 0, 0, 0.17, -0.22, 0.42, 0)
+material_override = SubResource("MatTrousers")
+mesh = SubResource("BoxSmall")
+
+[node name="BeinRechts2" type="MeshInstance3D" parent="StadtAussenbereich/Avatar Skin Basic2" unique_id=749887953]
+transform = Transform3D(0.17, 0, 0, 0, 0.55, 0, 0, 0, 0.17, 0.22000027, 0.42000002, 0)
+material_override = SubResource("MatTrousers")
+mesh = SubResource("BoxSmall")
+
+[node name="SchuhLinks" type="MeshInstance3D" parent="StadtAussenbereich/Avatar Skin Basic2" unique_id=1429589866]
+transform = Transform3D(0.2, 0, 0, 0, 0.1, 0, 0, 0, 0.3, -0.22, 0.08, -0.08)
+material_override = SubResource("MatHair")
+mesh = SubResource("BoxSmall")
+
+[node name="SchuhRechts" type="MeshInstance3D" parent="StadtAussenbereich/Avatar Skin Basic2" unique_id=1360576294]
+transform = Transform3D(0.2, 0, 0, 0, 0.1, 0, 0, 0, 0.3, 0.22, 0.08, -0.08)
+material_override = SubResource("MatHair")
+mesh = SubResource("BoxSmall")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StadtAussenbereich/Avatar Skin Basic2" unique_id=1922192169]
 transform = Transform3D(0.5, 0, 0, 0, 1.55, 0, 0, 0, 0.36, 0, 1.16, 0)
 shape = SubResource("ShapeSmall")
 
