@@ -1805,8 +1805,7 @@ transform = Transform3D(60, 0, 0, 0, 0.1, 0, 0, 0, 60, 0, 0, 0)
 shape = SubResource("ShapeSmall")
 
 [node name="Avatar gala" type="StaticBody3D" parent="." unique_id=662953966]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -15.216205, 0.08, 12.762842)
-visible = false
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.39239025, 0.08, 17.722675)
 
 [node name="Kopf" type="MeshInstance3D" parent="Avatar gala" unique_id=631435322]
 transform = Transform3D(0.29999998, 0, 0, 0, 0.27999997, 0, 0, 0, 0.29999998, -0.0038452148, 1.9864846, 0)
@@ -2017,8 +2016,7 @@ material_overlay = SubResource("StandardMaterial3D_qjsj5")
 mesh = SubResource("BoxMesh_qyx4r")
 
 [node name="Avatar Fener" type="StaticBody3D" parent="." unique_id=136574385]
-transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, -3.7075453, 0.08, 12.762842)
-visible = false
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.652986, 0.08, 17.751186)
 
 [node name="Torso" type="MeshInstance3D" parent="Avatar Fener" unique_id=457163331]
 transform = Transform3D(0.46, 0, 0, 0, 0.6499999, 0, 0, 0, 0.26999998, 0.0040426254, 1.7790245, 0)
@@ -2258,6 +2256,7 @@ transform = Transform3D(0.5, 0, 0, 0, 1.55, 0, 0, 0, 0.36, 0, 1.16, 0)
 shape = SubResource("ShapeSmall")
 
 [node name="avatar bjk" type="Node3D" parent="." unique_id=1420177732]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10.71418, 0, 10.01306)
 
 [node name="trikot box" type="MeshInstance3D" parent="avatar bjk" unique_id=888933420]
 transform = Transform3D(2, 0, 0, 0, 1.025, 0, 0, 0, 0.3, -11.843459, 1.2785937, 7.7774496)
@@ -2282,7 +2281,7 @@ mesh = SubResource("BoxSmall")
 transform = Transform3D(-0.261, 0, -2.1855694e-06, 0, 0.151, 0, 2.2817344e-08, 0, -25, -11.803236, 1.2825656, 7.6248035)
 texture = ExtResource("2_t8aj2")
 
-[node name="Sprite3D - trikot2" type="Sprite3D" parent="avatar bjk" unique_id=624740752]
+[node name="Sprite3D - trikot hinten" type="Sprite3D" parent="avatar bjk" unique_id=624740752]
 transform = Transform3D(0.06, 0, 0, 0, 0.05, 0, 0, 0, 5.949, -11.82861, 1.2720038, 7.9286776)
 texture = ExtResource("3_hsot5")
 
