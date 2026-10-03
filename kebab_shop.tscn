@@ -1818,24 +1818,14 @@ transform = Transform3D(0.32, 0, 0, 0, 0.07000001, 0, 0, 0, 0.32, 0, 2.2246878, 
 material_override = SubResource("MatHair")
 mesh = SubResource("BoxSmall")
 
-[node name="Haare2" type="MeshInstance3D" parent="Avatar gala" unique_id=1454159795]
-transform = Transform3D(0.32, 0, 0, 0, 0.07000001, 0, 0, 0, 0.32, 0, 2.2246878, 0)
-material_override = SubResource("MatHair")
-mesh = SubResource("BoxSmall")
-
 [node name="AugeLinks" type="MeshInstance3D" parent="Avatar gala" unique_id=825493662]
-transform = Transform3D(0.055, 0, 0, 0, 0.055, 0, 0, 0, 0.025, -0.09999943, 2.049094, -0.31000042)
+transform = Transform3D(0.055, 0, 0, 0, 0.055, 0, 0, 0, 0.025, -0.09999943, 2.049094, -0.2016983)
 material_override = SubResource("MatDark")
 mesh = SubResource("BoxSmall")
 
 [node name="ArmLinks" type="MeshInstance3D" parent="Avatar gala" unique_id=789722353]
 transform = Transform3D(0.11999999, 0, 0, 0, 0.58, 0, 0, 0, 0.11999999, -0.5199995, 1.33, 0)
 material_override = SubResource("MatSleeve")
-mesh = SubResource("BoxSmall")
-
-[node name="AugeRechts2" type="MeshInstance3D" parent="Avatar gala" unique_id=1130053790]
-transform = Transform3D(0.055, 0, 0, 0, 0.055, 0, 0, 0, 0.025, 0.09999943, 2.049094, -0.31000042)
-material_override = SubResource("MatDark")
 mesh = SubResource("BoxSmall")
 
 [node name="ArmRechts" type="MeshInstance3D" parent="Avatar gala" unique_id=1351476392]
@@ -1854,7 +1844,7 @@ material_override = SubResource("MatTrousers")
 mesh = SubResource("BoxSmall")
 
 [node name="AugeRechts" type="MeshInstance3D" parent="Avatar gala" unique_id=1707123303]
-transform = Transform3D(0.055, 0, 0, 0, 0.055, 0, 0, 0, 0.025, 0.09999943, 2.049094, -0.31000042)
+transform = Transform3D(0.055, 0, 0, 0, 0.055, 0, 0, 0, 0.025, 0.09999943, 2.049094, -0.2016983)
 material_override = SubResource("MatDark")
 mesh = SubResource("BoxSmall")
 
@@ -1867,16 +1857,6 @@ mesh = SubResource("BoxSmall")
 transform = Transform3D(0.14, 0, 0, 0, 0.14, 0, 0, 0, 0.14, 0.5199995, 0.83, 0)
 material_override = SubResource("MatSkin")
 mesh = SubResource("BoxSmall")
-
-[node name="AugeLinks2" type="MeshInstance3D" parent="Avatar gala" unique_id=1249987487]
-transform = Transform3D(0.055, 0, 0, 0, 0.055, 0, 0, 0, 0.025, -0.09999943, 2.049094, -0.31000042)
-material_override = SubResource("MatDark")
-mesh = SubResource("BoxSmall")
-
-[node name="Kopf2" type="MeshInstance3D" parent="Avatar gala" unique_id=1073129559]
-transform = Transform3D(0.29999998, 0, 0, 0, 0.27999997, 0, 0, 0, 0.29999998, -0.0038452148, 1.9864846, 0)
-material_override = SubResource("MatSkin")
-mesh = SubResource("BoxMesh_l3fpq")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Avatar gala" unique_id=1097021388]
 transform = Transform3D(0.5, 0, 0, 0, 1.55, 0, 0, 0, 0.36, 0, 1.16, 0)
@@ -1946,11 +1926,6 @@ transform = Transform3D(0.29999998, 0, 0, 0, 0.27999997, 0, 0, 0, 0.29999998, -1
 material_override = SubResource("MatSkin")
 mesh = SubResource("BoxMesh_l3fpq")
 
-[node name="Haare" type="MeshInstance3D" parent="avatar bjk" unique_id=1336384064]
-transform = Transform3D(0.32, 0, 0, 0, 0.07000001, 0, 0, 0, 0.32, -11.800088, 2.2246878, 7.744179)
-material_override = SubResource("MatHair")
-mesh = SubResource("BoxSmall")
-
 [node name="Haare2" type="MeshInstance3D" parent="avatar bjk" unique_id=1653211451]
 transform = Transform3D(0.32, 0, 0, 0, 0.07000001, 0, 0, 0, 0.32, -11.800088, 2.2246878, 7.744179)
 material_override = SubResource("MatHair")
@@ -1964,19 +1939,9 @@ texture = ExtResource("2_t8aj2")
 transform = Transform3D(0.06, 0, 0, 0, 0.05, 0, 0, 0, 5.949, -11.82861, 1.2720038, 7.9286776)
 texture = ExtResource("3_hsot5")
 
-[node name="AugeLinks" type="MeshInstance3D" parent="avatar bjk" unique_id=992314614]
-transform = Transform3D(0.055, 0, 0, 0, 0.055, 0, 0, 0, 0.025, -11.900087, 2.049094, 7.4341784)
-material_override = SubResource("MatDark")
-mesh = SubResource("BoxSmall")
-
 [node name="ArmLinks" type="MeshInstance3D" parent="avatar bjk" unique_id=593441284]
 transform = Transform3D(0.11999999, 0, 0, 0, 0.58, 0, 0, 0, 0.11999999, -12.320087, 1.33, 7.744179)
 material_override = SubResource("MatSleeve")
-mesh = SubResource("BoxSmall")
-
-[node name="AugeRechts2" type="MeshInstance3D" parent="avatar bjk" unique_id=923285788]
-transform = Transform3D(0.055, 0, 0, 0, 0.055, 0, 0, 0, 0.025, -11.7000885, 2.049094, 7.4341784)
-material_override = SubResource("MatDark")
 mesh = SubResource("BoxSmall")
 
 [node name="ArmRechts" type="MeshInstance3D" parent="avatar bjk" unique_id=2051562943]
@@ -1995,7 +1960,7 @@ material_override = SubResource("MatTrousers")
 mesh = SubResource("BoxSmall")
 
 [node name="AugeRechts" type="MeshInstance3D" parent="avatar bjk" unique_id=1980696944]
-transform = Transform3D(0.055, 0, 0, 0, 0.055, 0, 0, 0, 0.025, -11.7000885, 2.049094, 7.4341784)
+transform = Transform3D(0.055, 0, 0, 0, 0.055, 0, 0, 0, 0.025, -11.7000885, 2.049094, 7.540104)
 material_override = SubResource("MatDark")
 mesh = SubResource("BoxSmall")
 
@@ -2010,14 +1975,9 @@ material_override = SubResource("MatSkin")
 mesh = SubResource("BoxSmall")
 
 [node name="AugeLinks2" type="MeshInstance3D" parent="avatar bjk" unique_id=1553058477]
-transform = Transform3D(0.055, 0, 0, 0, 0.055, 0, 0, 0, 0.025, -11.900087, 2.049094, 7.4341784)
+transform = Transform3D(0.055, 0, 0, 0, 0.055, 0, 0, 0, 0.025, -11.900087, 2.049094, 7.540104)
 material_override = SubResource("MatDark")
 mesh = SubResource("BoxSmall")
-
-[node name="Kopf2" type="MeshInstance3D" parent="avatar bjk" unique_id=2018919040]
-transform = Transform3D(0.29999998, 0, 0, 0, 0.27999997, 0, 0, 0, 0.29999998, -11.803933, 1.9864846, 7.744179)
-material_override = SubResource("MatSkin")
-mesh = SubResource("BoxMesh_l3fpq")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="avatar bjk" unique_id=1096400294]
 transform = Transform3D(0.5, 0, 0, 0, 1.55, 0, 0, 0, 0.36, -11.800088, 1.16, 7.744179)
