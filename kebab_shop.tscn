@@ -2,10 +2,10 @@
 
 [ext_resource type="Script" uid="uid://c0rl8h6ne4ir" path="res://player.gd" id="1_player"]
 [ext_resource type="Texture2D" uid="uid://7o3bjm4v6brx" path="res://gahinten.jpg" id="2_dnwpt"]
-[ext_resource type="Texture2D" uid="uid://db85hmwop5d5e" path="res://bjk1.jpg" id="2_t8aj2"]
-[ext_resource type="Texture2D" uid="uid://bvmmw30sa4s2q" path="res://bjk1hinten.jpg" id="3_hsot5"]
+[ext_resource type="Texture2D" uid="uid://bir75ofhwlwup" path="res://bjk1.jpg" id="2_t8aj2"]
 [ext_resource type="Texture2D" uid="uid://fh0htpsx3u6v" path="res://ga1.jpg" id="3_v6cui"]
 [ext_resource type="Texture2D" uid="uid://dsmjvcgs6uqdq" path="res://fb1.jpg" id="4_j7xc5"]
+[ext_resource type="Texture2D" uid="uid://nfsmfqdjew13" path="res://bjkhinten.jpg" id="5_dnwpt"]
 [ext_resource type="Texture2D" uid="uid://fvcheoqkvxim" path="res://fbhinten.jpg" id="5_h3k53"]
 
 [sub_resource type="StandardMaterial3D" id="MatFloor"]
@@ -1936,8 +1936,8 @@ transform = Transform3D(-0.261, 0, -2.1855694e-06, 0, 0.151, 0, 2.2817344e-08, 0
 texture = ExtResource("2_t8aj2")
 
 [node name="Sprite3D - trikot hinten" type="Sprite3D" parent="avatar bjk" unique_id=624740752]
-transform = Transform3D(0.06, 0, 0, 0, 0.05, 0, 0, 0, 5.949, -11.82861, 1.2720038, 7.9286776)
-texture = ExtResource("3_hsot5")
+transform = Transform3D(0.265, 0, 0, 0, 0.165, 0, 0, 0, 5.949, -11.866101, 1.2944305, 7.9286785)
+texture = ExtResource("5_dnwpt")
 
 [node name="ArmLinks" type="MeshInstance3D" parent="avatar bjk" unique_id=593441284]
 transform = Transform3D(0.11999999, 0, 0, 0, 0.58, 0, 0, 0, 0.11999999, -12.320087, 1.33, 7.744179)
