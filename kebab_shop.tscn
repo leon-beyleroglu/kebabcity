@@ -3,6 +3,7 @@
 [ext_resource type="Script" uid="uid://c0rl8h6ne4ir" path="res://player.gd" id="1_player"]
 [ext_resource type="Texture2D" uid="uid://7o3bjm4v6brx" path="res://gahinten.jpg" id="2_dnwpt"]
 [ext_resource type="Texture2D" uid="uid://bir75ofhwlwup" path="res://bjk1.jpg" id="2_t8aj2"]
+[ext_resource type="Texture2D" uid="uid://byb7pr78mpgwm" path="res://abdukopf.jpg" id="3_6pmx1"]
 [ext_resource type="Texture2D" uid="uid://fh0htpsx3u6v" path="res://ga1.jpg" id="3_v6cui"]
 [ext_resource type="Texture2D" uid="uid://dsmjvcgs6uqdq" path="res://fb1.jpg" id="4_j7xc5"]
 [ext_resource type="Texture2D" uid="uid://nfsmfqdjew13" path="res://bjkhinten.jpg" id="5_dnwpt"]
@@ -125,7 +126,7 @@ roughness = 0.76
 size = Vector3(0.24, 0.2178125, 0.22)
 
 [sub_resource type="StandardMaterial3D" id="MatSkin"]
-albedo_color = Color(0.72, 0.42, 0.25, 1)
+albedo_color = Color(0.9647059, 0.8352941, 0.78039217, 1)
 roughness = 0.72
 
 [sub_resource type="BoxMesh" id="HandPalmMesh"]
@@ -1813,16 +1814,6 @@ transform = Transform3D(0.29999998, 0, 0, 0, 0.27999997, 0, 0, 0, 0.29999998, -0
 material_override = SubResource("MatSkin")
 mesh = SubResource("BoxMesh_l3fpq")
 
-[node name="Haare" type="MeshInstance3D" parent="Avatar gala" unique_id=1332761459]
-transform = Transform3D(0.32, 0, 0, 0, 0.07000001, 0, 0, 0, 0.32, 0, 2.2246878, 0)
-material_override = SubResource("MatHair")
-mesh = SubResource("BoxSmall")
-
-[node name="AugeLinks" type="MeshInstance3D" parent="Avatar gala" unique_id=825493662]
-transform = Transform3D(0.055, 0, 0, 0, 0.055, 0, 0, 0, 0.025, -0.09999943, 2.049094, -0.2016983)
-material_override = SubResource("MatDark")
-mesh = SubResource("BoxSmall")
-
 [node name="ArmLinks" type="MeshInstance3D" parent="Avatar gala" unique_id=789722353]
 transform = Transform3D(0.11999999, 0, 0, 0, 0.58, 0, 0, 0, 0.11999999, -0.5199995, 1.33, 0)
 material_override = SubResource("MatSleeve")
@@ -1841,11 +1832,6 @@ mesh = SubResource("BoxSmall")
 [node name="BeinLinks" type="MeshInstance3D" parent="Avatar gala" unique_id=640096017]
 transform = Transform3D(0.17, 0, 0, 0, 0.55, 0, 0, 0, 0.17, -0.22, 0.42, 0)
 material_override = SubResource("MatTrousers")
-mesh = SubResource("BoxSmall")
-
-[node name="AugeRechts" type="MeshInstance3D" parent="Avatar gala" unique_id=1707123303]
-transform = Transform3D(0.055, 0, 0, 0, 0.055, 0, 0, 0, 0.025, 0.09999943, 2.049094, -0.2016983)
-material_override = SubResource("MatDark")
 mesh = SubResource("BoxSmall")
 
 [node name="BeinRechts" type="MeshInstance3D" parent="Avatar gala" unique_id=1238363771]
@@ -1909,6 +1895,10 @@ mesh = SubResource("BoxMesh_qyx4r")
 [node name="Sprite3D - trikot" type="Sprite3D" parent="Avatar gala" unique_id=1876684866]
 transform = Transform3D(-0.261, 0, -2.1855694e-06, 0, 0.151, 0, 2.2817344e-08, 0, -25, -0.025449812, 1.2825656, -0.11146164)
 texture = ExtResource("2_dnwpt")
+
+[node name="Sprite3D - trikot2" type="Sprite3D" parent="Avatar gala" unique_id=2141451296]
+transform = Transform3D(-0.191, 0, -3.774895e-06, 0, 0.116, 0, 2.8840198e-08, 0, -25, -0.0057831407, 1.9928719, -0.15112686)
+texture = ExtResource("3_6pmx1")
 
 [node name="Sprite3D - trikot hinten" type="Sprite3D" parent="Avatar gala" unique_id=1600288418]
 transform = Transform3D(0.235, 0, 0, 0, 0.155, 0, 0, 0, 5.949, -0.018942356, 1.2720038, 0.19241142)
