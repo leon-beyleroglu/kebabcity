@@ -3,6 +3,8 @@
 [ext_resource type="Script" uid="uid://c0rl8h6ne4ir" path="res://player.gd" id="1_player"]
 [ext_resource type="Texture2D" uid="uid://db85hmwop5d5e" path="res://bjk1.jpg" id="2_t8aj2"]
 [ext_resource type="Texture2D" uid="uid://bvmmw30sa4s2q" path="res://bjk1hinten.jpg" id="3_hsot5"]
+[ext_resource type="Texture2D" uid="uid://dsmjvcgs6uqdq" path="res://fb1.jpg" id="4_j7xc5"]
+[ext_resource type="Texture2D" uid="uid://fvcheoqkvxim" path="res://fbhinten.jpg" id="5_h3k53"]
 
 [sub_resource type="StandardMaterial3D" id="MatFloor"]
 albedo_color = Color(0.306494, 0.30649397, 0.30649397, 1)
@@ -422,6 +424,22 @@ albedo_color = Color(0.06, 0.24, 0.38, 1)
 metallic = 0.25
 roughness = 0.18
 
+[sub_resource type="BoxMesh" id="BoxMesh_0dgb0"]
+material = SubResource("MatMetal")
+size = Vector3(1, 7.8711658, 1)
+
+[sub_resource type="StandardMaterial3D" id="MatLeaf"]
+albedo_color = Color(0.08, 0.28, 0.1, 1)
+roughness = 0.9
+
+[sub_resource type="BoxMesh" id="BoxMesh_7cpnk"]
+material = SubResource("MatMetal")
+size = Vector3(2.246582, 4.172141, 1.767334)
+
+[sub_resource type="StandardMaterial3D" id="MatGrass"]
+albedo_color = Color(0.12, 0.34, 0.09, 1)
+roughness = 0.95
+
 [sub_resource type="StandardMaterial3D" id="MatCarBlue"]
 albedo_color = Color(0.035, 0.17, 0.45, 1)
 metallic = 0.55
@@ -441,22 +459,6 @@ albedo_color = Color(0.23039475, 0.25518024, 0.2679616, 1)
 [sub_resource type="BoxMesh" id="BoxMesh_nnl6w"]
 material = SubResource("MatMetal")
 size = Vector3(0.46020508, 0.88844985, 0.25048828)
-
-[sub_resource type="BoxMesh" id="BoxMesh_0dgb0"]
-material = SubResource("MatMetal")
-size = Vector3(1, 7.8711658, 1)
-
-[sub_resource type="StandardMaterial3D" id="MatLeaf"]
-albedo_color = Color(0.08, 0.28, 0.1, 1)
-roughness = 0.9
-
-[sub_resource type="BoxMesh" id="BoxMesh_7cpnk"]
-material = SubResource("MatMetal")
-size = Vector3(2.246582, 4.172141, 1.767334)
-
-[sub_resource type="StandardMaterial3D" id="MatGrass"]
-albedo_color = Color(0.12, 0.34, 0.09, 1)
-roughness = 0.95
 
 [sub_resource type="BoxMesh" id="BoxMesh_l3fpq"]
 material = SubResource("MatMetal")
@@ -488,7 +490,7 @@ size = Vector3(2.0429688, 0.09352797, 1)
 albedo_color = Color(0.00018400386, 0.18381155, 0.6134392, 1)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_wkg2w"]
-albedo_color = Color(0, 0, 0, 1)
+albedo_color = Color(0.07450981, 0.17254902, 0.40784314, 1)
 
 [sub_resource type="BoxMesh" id="BoxMesh_2ofg4"]
 material = SubResource("StandardMaterial3D_wkg2w")
@@ -1721,47 +1723,6 @@ light_color = Color(1, 0.68, 0.28, 1)
 light_energy = 2.2
 omni_range = 6.0
 
-[node name="ParkendesAuto" type="StaticBody3D" parent="StadtAussenbereich" unique_id=1334721801]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.2, 0.65, 13.2)
-
-[node name="Karosserie" type="MeshInstance3D" parent="StadtAussenbereich/ParkendesAuto" unique_id=779535383]
-transform = Transform3D(1.25, 0, 0, 0, 0.55, 0, 0, 0, 0.7, -0.76692915, 0.07617706, 0.057593346)
-material_override = SubResource("MatCarBlue")
-mesh = SubResource("BoxMesh_pximh")
-
-[node name="Dach" type="MeshInstance3D" parent="StadtAussenbereich/ParkendesAuto" unique_id=2082320404]
-transform = Transform3D(0.7, 0, 0, 0, 0.35, 0, 0, 0, 0.58, -0.75525975, 0.55196166, 0.06833458)
-material_override = SubResource("MatCityWindow")
-mesh = SubResource("BoxMesh_gxeq2")
-
-[node name="Dach2" type="MeshInstance3D" parent="StadtAussenbereich/ParkendesAuto" unique_id=949265393]
-transform = Transform3D(0.7, 0, 0, 0, 0.35, 0, 0, 0, 0.58, -0.24460244, -0.40765458, -0.47040462)
-material_override = SubResource("MatCityWindow")
-material_overlay = SubResource("StandardMaterial3D_yg2gp")
-mesh = SubResource("BoxMesh_nnl6w")
-
-[node name="Dach3" type="MeshInstance3D" parent="StadtAussenbereich/ParkendesAuto" unique_id=1432509001]
-transform = Transform3D(0.7, 0, 0, 0, 0.35, 0, 0, 0, 0.58, -1.3738616, -0.40765458, -0.47040462)
-material_override = SubResource("MatCityWindow")
-material_overlay = SubResource("StandardMaterial3D_yg2gp")
-mesh = SubResource("BoxMesh_nnl6w")
-
-[node name="Dach4" type="MeshInstance3D" parent="StadtAussenbereich/ParkendesAuto" unique_id=827030038]
-transform = Transform3D(0.7, 0, 0, 0, 0.35, 0, 0, 0, 0.58, -0.24460244, -0.40765458, 0.5227976)
-material_override = SubResource("MatCityWindow")
-material_overlay = SubResource("StandardMaterial3D_yg2gp")
-mesh = SubResource("BoxMesh_nnl6w")
-
-[node name="Dach5" type="MeshInstance3D" parent="StadtAussenbereich/ParkendesAuto" unique_id=1805145634]
-transform = Transform3D(0.7, 0, 0, 0, 0.35, 0, 0, 0, 0.58, -1.3738616, -0.40765458, 0.5227976)
-material_override = SubResource("MatCityWindow")
-material_overlay = SubResource("StandardMaterial3D_yg2gp")
-mesh = SubResource("BoxMesh_nnl6w")
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="StadtAussenbereich/ParkendesAuto" unique_id=733149637]
-transform = Transform3D(1.25, 0, 0, 0, 0.55, 0, 0, 0, 0.7, -0.762774, 0.3075707, 0.009602547)
-shape = SubResource("ShapeSmall")
-
 [node name="Pflanzkuebel" type="MeshInstance3D" parent="StadtAussenbereich" unique_id=1279985182]
 transform = Transform3D(0.48, 0, 0, 0, 0.34, 0, 0, 0, 0.48, -7.3021803, 1.1155157, 12.765595)
 material_override = SubResource("MatConcrete")
@@ -1802,6 +1763,47 @@ mesh = SubResource("BoxSmall")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="StadtAussenbereich/GrasUmgebung" unique_id=1498455853]
 transform = Transform3D(60, 0, 0, 0, 0.1, 0, 0, 0, 60, 0, 0, 0)
+shape = SubResource("ShapeSmall")
+
+[node name="TOFAS" type="StaticBody3D" parent="." unique_id=1334721801]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.2, 0.65, 13.2)
+
+[node name="Karosserie" type="MeshInstance3D" parent="TOFAS" unique_id=779535383]
+transform = Transform3D(1.25, 0, 0, 0, 0.55, 0, 0, 0, 0.7, -0.76692915, 0.07617706, 0.057593346)
+material_override = SubResource("MatCarBlue")
+mesh = SubResource("BoxMesh_pximh")
+
+[node name="Dach" type="MeshInstance3D" parent="TOFAS" unique_id=2082320404]
+transform = Transform3D(0.7, 0, 0, 0, 0.35, 0, 0, 0, 0.58, -0.75525975, 0.55196166, 0.06833458)
+material_override = SubResource("MatCityWindow")
+mesh = SubResource("BoxMesh_gxeq2")
+
+[node name="Dach2" type="MeshInstance3D" parent="TOFAS" unique_id=949265393]
+transform = Transform3D(0.7, 0, 0, 0, 0.35, 0, 0, 0, 0.58, -0.24460244, -0.40765458, -0.47040462)
+material_override = SubResource("MatCityWindow")
+material_overlay = SubResource("StandardMaterial3D_yg2gp")
+mesh = SubResource("BoxMesh_nnl6w")
+
+[node name="Dach3" type="MeshInstance3D" parent="TOFAS" unique_id=1432509001]
+transform = Transform3D(0.7, 0, 0, 0, 0.35, 0, 0, 0, 0.58, -1.3738616, -0.40765458, -0.47040462)
+material_override = SubResource("MatCityWindow")
+material_overlay = SubResource("StandardMaterial3D_yg2gp")
+mesh = SubResource("BoxMesh_nnl6w")
+
+[node name="Dach4" type="MeshInstance3D" parent="TOFAS" unique_id=827030038]
+transform = Transform3D(0.7, 0, 0, 0, 0.35, 0, 0, 0, 0.58, -0.24460244, -0.40765458, 0.5227976)
+material_override = SubResource("MatCityWindow")
+material_overlay = SubResource("StandardMaterial3D_yg2gp")
+mesh = SubResource("BoxMesh_nnl6w")
+
+[node name="Dach5" type="MeshInstance3D" parent="TOFAS" unique_id=1805145634]
+transform = Transform3D(0.7, 0, 0, 0, 0.35, 0, 0, 0, 0.58, -1.3738616, -0.40765458, 0.5227976)
+material_override = SubResource("MatCityWindow")
+material_overlay = SubResource("StandardMaterial3D_yg2gp")
+mesh = SubResource("BoxMesh_nnl6w")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="TOFAS" unique_id=733149637]
+transform = Transform3D(1.25, 0, 0, 0, 0.55, 0, 0, 0, 0.7, -0.762774, 0.3075707, 0.009602547)
 shape = SubResource("ShapeSmall")
 
 [node name="Avatar gala" type="StaticBody3D" parent="." unique_id=662953966]
@@ -2016,18 +2018,7 @@ material_overlay = SubResource("StandardMaterial3D_qjsj5")
 mesh = SubResource("BoxMesh_qyx4r")
 
 [node name="Avatar Fener" type="StaticBody3D" parent="." unique_id=136574385]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.652986, 0.08, 17.751186)
-
-[node name="Torso" type="MeshInstance3D" parent="Avatar Fener" unique_id=457163331]
-transform = Transform3D(0.46, 0, 0, 0, 0.6499999, 0, 0, 0, 0.26999998, 0.0040426254, 1.7790245, 0)
-material_override = SubResource("MatSleeve")
-mesh = SubResource("BoxMesh_qyx4r")
-
-[node name="Torso3" type="MeshInstance3D" parent="Avatar Fener" unique_id=1345013132]
-transform = Transform3D(0.46, 0, 0, 0, 0.6499999, 0, 0, 0, 0.26999998, 0.0040426254, 1.7790245, 0)
-material_override = SubResource("MatSleeve")
-material_overlay = SubResource("StandardMaterial3D_sk837")
-mesh = SubResource("BoxMesh_qyx4r")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.7120857, 0.08, 17.751186)
 
 [node name="Kopf" type="MeshInstance3D" parent="Avatar Fener" unique_id=439911214]
 transform = Transform3D(0.29999998, 0, 0, 0, 0.27999997, 0, 0, 0, 0.29999998, -0.0038452148, 1.9864846, 0)
@@ -2069,127 +2060,11 @@ transform = Transform3D(0.17, 0, 0, 0, 0.55, 0, 0, 0, 0.17, 0.22000027, 0.420000
 material_override = SubResource("MatTrousers")
 mesh = SubResource("BoxSmall")
 
-[node name="Torso2" type="MeshInstance3D" parent="Avatar Fener" unique_id=817678370]
-transform = Transform3D(0.46, 0, 0, 0, 0.6499999, 0, 0, 0, 0.26999998, 0.0040426254, 1.6610417, 0)
-material_override = SubResource("MatSleeve")
-material_overlay = SubResource("StandardMaterial3D_sk837")
-mesh = SubResource("BoxMesh_qyx4r")
-
-[node name="Torso4" type="MeshInstance3D" parent="Avatar Fener" unique_id=837337794]
-transform = Transform3D(0.46, 0, 0, 0, 0.6499999, 0, 0, 0, 0.26999998, 0.0040426254, 1.7790245, 0)
-material_override = SubResource("MatSleeve")
-material_overlay = SubResource("StandardMaterial3D_sk837")
-mesh = SubResource("BoxMesh_qyx4r")
-
 [node name="Torso5" type="MeshInstance3D" parent="Avatar Fener" unique_id=1490241818]
 transform = Transform3D(0.46, 0, 0, 0, 0.6499999, 0, 0, 0, 0.26999998, 0.0040426254, 1.5536124, 0)
 material_override = SubResource("MatSleeve")
 material_overlay = SubResource("StandardMaterial3D_sk837")
 mesh = SubResource("BoxMesh_qyx4r")
-
-[node name="Torso6" type="MeshInstance3D" parent="Avatar Fener" unique_id=1240393084]
-transform = Transform3D(0.46, 0, 0, 0, 0.6499999, 0, 0, 0, 0.26999998, 0.0040426254, 1.7146792, 0)
-material_overlay = SubResource("StandardMaterial3D_hf8o1")
-mesh = SubResource("BoxMesh_carum")
-
-[node name="Torso7" type="MeshInstance3D" parent="Avatar Fener" unique_id=343612553]
-transform = Transform3D(0.46, 0, 0, 0, 0.6499999, 0, 0, 0, 0.26999998, 0.0040426254, 1.605064, 0)
-material_overlay = SubResource("StandardMaterial3D_hf8o1")
-mesh = SubResource("BoxMesh_carum")
-
-[node name="Torso8" type="MeshInstance3D" parent="Avatar Fener" unique_id=1676390343]
-transform = Transform3D(0.46, 0, 0, 0, 0.6499999, 0, 0, 0, 0.26999998, 0.0040426254, 1.7790245, 0)
-material_override = SubResource("MatSleeve")
-material_overlay = SubResource("StandardMaterial3D_sk837")
-mesh = SubResource("BoxMesh_qyx4r")
-
-[node name="Torso9" type="MeshInstance3D" parent="Avatar Fener" unique_id=1928446897]
-transform = Transform3D(0.46, 0, 0, 0, 0.6499999, 0, 0, 0, 0.26999998, 0.0040426254, 1.6610417, 0)
-material_override = SubResource("MatSleeve")
-material_overlay = SubResource("StandardMaterial3D_sk837")
-mesh = SubResource("BoxMesh_qyx4r")
-
-[node name="Torso13" type="MeshInstance3D" parent="Avatar Fener" unique_id=908294548]
-transform = Transform3D(0.46, 0, 0, 0, 0.6499999, 0, 0, 0, 0.26999998, 0.0040426254, 1.3355465, 0)
-material_override = SubResource("MatSleeve")
-material_overlay = SubResource("StandardMaterial3D_sk837")
-mesh = SubResource("BoxMesh_qyx4r")
-
-[node name="Torso14" type="MeshInstance3D" parent="Avatar Fener" unique_id=762721522]
-transform = Transform3D(0.46, 0, 0, 0, 0.6499999, 0, 0, 0, 0.26999998, 0.0040426254, 1.4966134, 0)
-material_overlay = SubResource("StandardMaterial3D_hf8o1")
-mesh = SubResource("BoxMesh_carum")
-
-[node name="Torso15" type="MeshInstance3D" parent="Avatar Fener" unique_id=932374325]
-transform = Transform3D(0.46, 0, 0, 0, 0.6499999, 0, 0, 0, 0.26999998, 0.0040426254, 1.3869982, 0)
-material_overlay = SubResource("StandardMaterial3D_hf8o1")
-mesh = SubResource("BoxMesh_carum")
-
-[node name="Torso16" type="MeshInstance3D" parent="Avatar Fener" unique_id=1943606734]
-transform = Transform3D(0.46, 0, 0, 0, 0.6499999, 0, 0, 0, 0.26999998, 0.0040426254, 1.4429759, 0)
-material_override = SubResource("MatSleeve")
-material_overlay = SubResource("StandardMaterial3D_sk837")
-mesh = SubResource("BoxMesh_qyx4r")
-
-[node name="Torso17" type="MeshInstance3D" parent="Avatar Fener" unique_id=372431233]
-transform = Transform3D(0.46, 0, 0, 0, 0.6499999, 0, 0, 0, 0.26999998, 0.0040426254, 1.1140505, 0)
-material_override = SubResource("MatSleeve")
-material_overlay = SubResource("StandardMaterial3D_sk837")
-mesh = SubResource("BoxMesh_qyx4r")
-
-[node name="Torso18" type="MeshInstance3D" parent="Avatar Fener" unique_id=1351200048]
-transform = Transform3D(0.46, 0, 0, 0, 0.6499999, 0, 0, 0, 0.26999998, 0.0040426254, 1.2751174, 0)
-material_overlay = SubResource("StandardMaterial3D_hf8o1")
-mesh = SubResource("BoxMesh_carum")
-
-[node name="Torso19" type="MeshInstance3D" parent="Avatar Fener" unique_id=1651495395]
-transform = Transform3D(0.46, 0, 0, 0, 0.6499999, 0, 0, 0, 0.26999998, 0.0040426254, 1.1655022, 0)
-material_overlay = SubResource("StandardMaterial3D_hf8o1")
-mesh = SubResource("BoxMesh_carum")
-
-[node name="Torso20" type="MeshInstance3D" parent="Avatar Fener" unique_id=529429747]
-transform = Transform3D(0.46, 0, 0, 0, 0.6499999, 0, 0, 0, 0.26999998, 0.0040426254, 1.2214799, 0)
-material_override = SubResource("MatSleeve")
-material_overlay = SubResource("StandardMaterial3D_sk837")
-mesh = SubResource("BoxMesh_qyx4r")
-
-[node name="Torso21" type="MeshInstance3D" parent="Avatar Fener" unique_id=1825351670]
-transform = Transform3D(0.46, 0, 0, 0, 0.6499999, 0, 0, 0, 0.26999998, 0.0040426254, 0.89715713, 0)
-material_override = SubResource("MatSleeve")
-material_overlay = SubResource("StandardMaterial3D_sk837")
-mesh = SubResource("BoxMesh_qyx4r")
-
-[node name="Torso22" type="MeshInstance3D" parent="Avatar Fener" unique_id=1860934627]
-transform = Transform3D(0.46, 0, 0, 0, 0.6499999, 0, 0, 0, 0.26999998, 0.0040426254, 1.058224, 0)
-material_overlay = SubResource("StandardMaterial3D_hf8o1")
-mesh = SubResource("BoxMesh_carum")
-
-[node name="Torso23" type="MeshInstance3D" parent="Avatar Fener" unique_id=1293640852]
-transform = Transform3D(0.46, 0, 0, 0, 0.6499999, 0, 0, 0, 0.26999998, 0.0040426254, 0.9486088, 0)
-material_overlay = SubResource("StandardMaterial3D_hf8o1")
-mesh = SubResource("BoxMesh_carum")
-
-[node name="Torso24" type="MeshInstance3D" parent="Avatar Fener" unique_id=548867595]
-transform = Transform3D(0.46, 0, 0, 0, 0.6499999, 0, 0, 0, 0.26999998, 0.0040426254, 1.0045865, 0)
-material_override = SubResource("MatSleeve")
-material_overlay = SubResource("StandardMaterial3D_sk837")
-mesh = SubResource("BoxMesh_qyx4r")
-
-[node name="Torso10" type="MeshInstance3D" parent="Avatar Fener" unique_id=536293436]
-transform = Transform3D(0.46, 0, 0, 0, 0.6499999, 0, 0, 0, 0.26999998, 0.0040426254, 1.5536124, 0)
-material_override = SubResource("MatSleeve")
-material_overlay = SubResource("StandardMaterial3D_sk837")
-mesh = SubResource("BoxMesh_qyx4r")
-
-[node name="Torso11" type="MeshInstance3D" parent="Avatar Fener" unique_id=1948032694]
-transform = Transform3D(0.46, 0, 0, 0, 0.6499999, 0, 0, 0, 0.26999998, 0.0040426254, 1.7146792, 0)
-material_overlay = SubResource("StandardMaterial3D_hf8o1")
-mesh = SubResource("BoxMesh_carum")
-
-[node name="Torso12" type="MeshInstance3D" parent="Avatar Fener" unique_id=688128807]
-transform = Transform3D(0.46, 0, 0, 0, 0.6499999, 0, 0, 0, 0.26999998, 0.0040426254, 1.605064, 0)
-material_overlay = SubResource("StandardMaterial3D_hf8o1")
-mesh = SubResource("BoxMesh_carum")
 
 [node name="Kopf2" type="MeshInstance3D" parent="Avatar Fener" unique_id=1038072747]
 transform = Transform3D(0.29999998, 0, 0, 0, 0.27999997, 0, 0, 0, 0.29999998, -0.0038452148, 1.9864846, 0)
@@ -2254,6 +2129,18 @@ mesh = SubResource("BoxSmall")
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Avatar Fener" unique_id=1922192169]
 transform = Transform3D(0.5, 0, 0, 0, 1.55, 0, 0, 0, 0.36, 0, 1.16, 0)
 shape = SubResource("ShapeSmall")
+
+[node name="trikot box" type="MeshInstance3D" parent="Avatar Fener" unique_id=1909233369]
+transform = Transform3D(2, 0, 0, 0, 1.025, 0, 0, 0, 0.3, -0.012393951, 1.2403637, -0.018842697)
+mesh = SubResource("BoxMesh_2ofg4")
+
+[node name="Sprite3D - trikot" type="Sprite3D" parent="Avatar Fener" unique_id=1941558751]
+transform = Transform3D(-0.25, 0, -3.774895e-06, 0, 0.151, 0, 3.774895e-08, 0, -25, -0.016988754, 1.2443357, -0.17148781)
+texture = ExtResource("4_j7xc5")
+
+[node name="Sprite3D - trikot hinten" type="Sprite3D" parent="Avatar Fener" unique_id=146328123]
+transform = Transform3D(0.24, 0, 0, 0, 0.15, 0, 0, 0, 5.949, -0.013628006, 1.2413557, 0.13912582)
+texture = ExtResource("5_h3k53")
 
 [node name="avatar bjk" type="Node3D" parent="." unique_id=1420177732]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10.71418, 0, 10.01306)
