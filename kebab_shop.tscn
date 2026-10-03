@@ -1,8 +1,10 @@
 [gd_scene format=3 uid="uid://cbckxa8ja78vt"]
 
 [ext_resource type="Script" uid="uid://c0rl8h6ne4ir" path="res://player.gd" id="1_player"]
+[ext_resource type="Texture2D" uid="uid://7o3bjm4v6brx" path="res://gahinten.jpg" id="2_dnwpt"]
 [ext_resource type="Texture2D" uid="uid://db85hmwop5d5e" path="res://bjk1.jpg" id="2_t8aj2"]
 [ext_resource type="Texture2D" uid="uid://bvmmw30sa4s2q" path="res://bjk1hinten.jpg" id="3_hsot5"]
+[ext_resource type="Texture2D" uid="uid://fh0htpsx3u6v" path="res://ga1.jpg" id="3_v6cui"]
 [ext_resource type="Texture2D" uid="uid://dsmjvcgs6uqdq" path="res://fb1.jpg" id="4_j7xc5"]
 [ext_resource type="Texture2D" uid="uid://fvcheoqkvxim" path="res://fbhinten.jpg" id="5_h3k53"]
 
@@ -472,28 +474,25 @@ size = Vector3(1, 1.657615, 1)
 material = SubResource("MatMetal")
 size = Vector3(1, 1.6911843, 1)
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_qjsj5"]
-albedo_color = Color(0.83305705, 0.24465796, 0.24402267, 1)
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_6pmx1"]
+albedo_color = Color(0.87981135, 3.2488256e-06, 9.62615e-07, 1)
 
 [sub_resource type="BoxMesh" id="BoxMesh_qyx4r"]
-material = SubResource("MatMetal")
-size = Vector3(2.0429688, 0.09352797, 1)
+material = SubResource("StandardMaterial3D_6pmx1")
+size = Vector3(0.44030762, 1.0515137, 1)
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_hf8o1"]
-albedo_color = Color(0.62203085, 0.5217304, 3.85046e-07, 1)
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_j7xc5"]
+albedo_color = Color(0.105882354, 0.14509805, 0.3019608, 1)
 
-[sub_resource type="BoxMesh" id="BoxMesh_carum"]
-material = SubResource("MatMetal")
-size = Vector3(2.0429688, 0.09352797, 1)
+[sub_resource type="BoxMesh" id="BoxMesh_hf8o1"]
+material = SubResource("StandardMaterial3D_j7xc5")
+size = Vector3(0.44030762, 1.0515137, 1)
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_sk837"]
-albedo_color = Color(0.00018400386, 0.18381155, 0.6134392, 1)
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_wkg2w"]
-albedo_color = Color(0.07450981, 0.17254902, 0.40784314, 1)
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_carum"]
+albedo_color = Color(0, 0, 0, 1)
 
 [sub_resource type="BoxMesh" id="BoxMesh_2ofg4"]
-material = SubResource("StandardMaterial3D_wkg2w")
+material = SubResource("StandardMaterial3D_carum")
 size = Vector3(0.44030762, 1.0515137, 1)
 
 [node name="KebabShop" type="Node3D" unique_id=559436482]
@@ -1923,99 +1922,17 @@ transform = Transform3D(0.17, 0, 0, 0, 0.55, 0, 0, 0, 0.17, 0.22000027, 0.479411
 material_override = SubResource("MatTrousers")
 mesh = SubResource("BoxMesh_hge6a")
 
-[node name="Torso25" type="MeshInstance3D" parent="Avatar gala" unique_id=553559354]
-transform = Transform3D(0.46, 0, 0, 0, 0.6499999, 0, 0, 0, 0.26999998, -0.004527092, 1.7790245, 0.016274452)
-material_override = SubResource("MatSleeve")
-material_overlay = SubResource("StandardMaterial3D_qjsj5")
+[node name="trikot box" type="MeshInstance3D" parent="Avatar gala" unique_id=1996352980]
+transform = Transform3D(2, 0, 0, 0, 1.025, 0, 0, 0, 0.3, -0.033791065, 1.2785937, 0.04118538)
 mesh = SubResource("BoxMesh_qyx4r")
 
-[node name="Torso26" type="MeshInstance3D" parent="Avatar gala" unique_id=530487579]
-transform = Transform3D(0.46, 0, 0, 0, 0.6499999, 0, 0, 0, 0.26999998, -0.004527092, 1.6610417, 0.016274452)
-material_override = SubResource("MatSleeve")
-material_overlay = SubResource("StandardMaterial3D_qjsj5")
-mesh = SubResource("BoxMesh_qyx4r")
+[node name="Sprite3D - trikot" type="Sprite3D" parent="Avatar gala" unique_id=1876684866]
+transform = Transform3D(-0.261, 0, -2.1855694e-06, 0, 0.151, 0, 2.2817344e-08, 0, -25, -0.025449812, 1.2825656, -0.11146164)
+texture = ExtResource("2_dnwpt")
 
-[node name="Torso29" type="MeshInstance3D" parent="Avatar gala" unique_id=806603215]
-transform = Transform3D(0.46, 0, 0, 0, 0.6499999, 0, 0, 0, 0.26999998, -0.004527092, 1.3355465, 0.016274452)
-material_override = SubResource("MatSleeve")
-material_overlay = SubResource("StandardMaterial3D_qjsj5")
-mesh = SubResource("BoxMesh_qyx4r")
-
-[node name="Torso41" type="MeshInstance3D" parent="Avatar gala" unique_id=2068478710]
-transform = Transform3D(0.46, 0, 0, 0, 0.6499999, 0, 0, 0, 0.26999998, -0.004527092, 1.219953, 0.016274452)
-material_override = SubResource("MatSleeve")
-material_overlay = SubResource("StandardMaterial3D_qjsj5")
-mesh = SubResource("BoxMesh_qyx4r")
-
-[node name="Torso28" type="MeshInstance3D" parent="Avatar gala" unique_id=1011495281]
-transform = Transform3D(0.46, 0, 0, 0, 0.6499999, 0, 0, 0, 0.26999998, -0.004527092, 1.605064, 0.016274452)
-material_overlay = SubResource("StandardMaterial3D_hf8o1")
-mesh = SubResource("BoxMesh_carum")
-
-[node name="Torso27" type="MeshInstance3D" parent="Avatar gala" unique_id=262225352]
-transform = Transform3D(0.46, 0, 0, 0, 0.6499999, 0, 0, 0, 0.26999998, -0.004527092, 1.7146792, 0.016274452)
-material_overlay = SubResource("StandardMaterial3D_hf8o1")
-mesh = SubResource("BoxMesh_carum")
-
-[node name="Torso30" type="MeshInstance3D" parent="Avatar gala" unique_id=392479648]
-transform = Transform3D(0.46, 0, 0, 0, 0.6499999, 0, 0, 0, 0.26999998, -0.004527092, 1.4966134, 0.016274452)
-material_overlay = SubResource("StandardMaterial3D_hf8o1")
-mesh = SubResource("BoxMesh_carum")
-
-[node name="Torso33" type="MeshInstance3D" parent="Avatar gala" unique_id=1395422683]
-transform = Transform3D(0.46, 0, 0, 0, 0.6499999, 0, 0, 0, 0.26999998, -0.004527092, 1.1140505, 0.016274452)
-material_override = SubResource("MatSleeve")
-material_overlay = SubResource("StandardMaterial3D_qjsj5")
-mesh = SubResource("BoxMesh_qyx4r")
-
-[node name="Torso31" type="MeshInstance3D" parent="Avatar gala" unique_id=906759134]
-transform = Transform3D(0.46, 0, 0, 0, 0.6499999, 0, 0, 0, 0.26999998, -0.004527092, 1.3869982, 0.016274452)
-material_overlay = SubResource("StandardMaterial3D_hf8o1")
-mesh = SubResource("BoxMesh_carum")
-
-[node name="Torso35" type="MeshInstance3D" parent="Avatar gala" unique_id=2052816726]
-transform = Transform3D(0.46, 0, 0, 0, 0.6499999, 0, 0, 0, 0.26999998, -0.004527092, 1.1655022, 0.016274452)
-material_overlay = SubResource("StandardMaterial3D_hf8o1")
-mesh = SubResource("BoxMesh_carum")
-
-[node name="Torso34" type="MeshInstance3D" parent="Avatar gala" unique_id=722586292]
-transform = Transform3D(0.46, 0, 0, 0, 0.6499999, 0, 0, 0, 0.26999998, -0.004527092, 1.2751174, 0.016274452)
-material_overlay = SubResource("StandardMaterial3D_hf8o1")
-mesh = SubResource("BoxMesh_carum")
-
-[node name="Torso37" type="MeshInstance3D" parent="Avatar gala" unique_id=777101100]
-transform = Transform3D(0.46, 0, 0, 0, 0.6499999, 0, 0, 0, 0.26999998, -0.004527092, 1.058224, 0.016274452)
-material_overlay = SubResource("StandardMaterial3D_hf8o1")
-mesh = SubResource("BoxMesh_carum")
-
-[node name="Torso36" type="MeshInstance3D" parent="Avatar gala" unique_id=1025602641]
-transform = Transform3D(0.46, 0, 0, 0, 0.6499999, 0, 0, 0, 0.26999998, -0.004527092, 0.89715713, 0.016274452)
-material_override = SubResource("MatSleeve")
-material_overlay = SubResource("StandardMaterial3D_qjsj5")
-mesh = SubResource("BoxMesh_qyx4r")
-
-[node name="Torso32" type="MeshInstance3D" parent="Avatar gala" unique_id=1430379439]
-transform = Transform3D(0.46, 0, 0, 0, 0.6499999, 0, 0, 0, 0.26999998, -0.004527092, 1.4429759, 0.016274452)
-material_override = SubResource("MatSleeve")
-material_overlay = SubResource("StandardMaterial3D_qjsj5")
-mesh = SubResource("BoxMesh_qyx4r")
-
-[node name="Torso38" type="MeshInstance3D" parent="Avatar gala" unique_id=1901846328]
-transform = Transform3D(0.46, 0, 0, 0, 0.6499999, 0, 0, 0, 0.26999998, -0.004527092, 0.9486088, 0.016274452)
-material_overlay = SubResource("StandardMaterial3D_hf8o1")
-mesh = SubResource("BoxMesh_carum")
-
-[node name="Torso39" type="MeshInstance3D" parent="Avatar gala" unique_id=724358852]
-transform = Transform3D(0.46, 0, 0, 0, 0.6499999, 0, 0, 0, 0.26999998, -0.004527092, 1.0045865, 0.016274452)
-material_override = SubResource("MatSleeve")
-material_overlay = SubResource("StandardMaterial3D_qjsj5")
-mesh = SubResource("BoxMesh_qyx4r")
-
-[node name="Torso40" type="MeshInstance3D" parent="Avatar gala" unique_id=1605256691]
-transform = Transform3D(0.46, 0, 0, 0, 0.6499999, 0, 0, 0, 0.26999998, -0.004527092, 1.5536124, 0.016274452)
-material_override = SubResource("MatSleeve")
-material_overlay = SubResource("StandardMaterial3D_qjsj5")
-mesh = SubResource("BoxMesh_qyx4r")
+[node name="Sprite3D - trikot hinten" type="Sprite3D" parent="Avatar gala" unique_id=1600288418]
+transform = Transform3D(0.235, 0, 0, 0, 0.155, 0, 0, 0, 5.949, -0.018942356, 1.2720038, 0.19241142)
+texture = ExtResource("3_v6cui")
 
 [node name="Avatar Fener" type="StaticBody3D" parent="." unique_id=136574385]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.7120857, 0.08, 17.751186)
@@ -2059,12 +1976,6 @@ mesh = SubResource("BoxSmall")
 transform = Transform3D(0.17, 0, 0, 0, 0.55, 0, 0, 0, 0.17, 0.22000027, 0.42000002, 0)
 material_override = SubResource("MatTrousers")
 mesh = SubResource("BoxSmall")
-
-[node name="Torso5" type="MeshInstance3D" parent="Avatar Fener" unique_id=1490241818]
-transform = Transform3D(0.46, 0, 0, 0, 0.6499999, 0, 0, 0, 0.26999998, 0.0040426254, 1.5536124, 0)
-material_override = SubResource("MatSleeve")
-material_overlay = SubResource("StandardMaterial3D_sk837")
-mesh = SubResource("BoxMesh_qyx4r")
 
 [node name="Kopf2" type="MeshInstance3D" parent="Avatar Fener" unique_id=1038072747]
 transform = Transform3D(0.29999998, 0, 0, 0, 0.27999997, 0, 0, 0, 0.29999998, -0.0038452148, 1.9864846, 0)
@@ -2132,7 +2043,7 @@ shape = SubResource("ShapeSmall")
 
 [node name="trikot box" type="MeshInstance3D" parent="Avatar Fener" unique_id=1909233369]
 transform = Transform3D(2, 0, 0, 0, 1.025, 0, 0, 0, 0.3, -0.012393951, 1.2403637, -0.018842697)
-mesh = SubResource("BoxMesh_2ofg4")
+mesh = SubResource("BoxMesh_hf8o1")
 
 [node name="Sprite3D - trikot" type="Sprite3D" parent="Avatar Fener" unique_id=1941558751]
 transform = Transform3D(-0.25, 0, -3.774895e-06, 0, 0.151, 0, 3.774895e-08, 0, -25, -0.016988754, 1.2443357, -0.17148781)
@@ -2165,7 +2076,7 @@ material_override = SubResource("MatHair")
 mesh = SubResource("BoxSmall")
 
 [node name="Sprite3D - trikot" type="Sprite3D" parent="avatar bjk" unique_id=1840369272]
-transform = Transform3D(-0.261, 0, -2.1855694e-06, 0, 0.151, 0, 2.2817344e-08, 0, -25, -11.803236, 1.2825656, 7.6248035)
+transform = Transform3D(-0.261, 0, -2.1855694e-06, 0, 0.151, 0, 2.2817344e-08, 0, -25, -11.837499, 1.2825656, 7.6248035)
 texture = ExtResource("2_t8aj2")
 
 [node name="Sprite3D - trikot hinten" type="Sprite3D" parent="avatar bjk" unique_id=624740752]
