@@ -481,18 +481,18 @@ albedo_color = Color(0.87981135, 3.2488256e-06, 9.62615e-07, 1)
 material = SubResource("StandardMaterial3D_6pmx1")
 size = Vector3(0.44030762, 1.0515137, 1)
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_j7xc5"]
-albedo_color = Color(0.105882354, 0.14509805, 0.3019608, 1)
-
-[sub_resource type="BoxMesh" id="BoxMesh_hf8o1"]
-material = SubResource("StandardMaterial3D_j7xc5")
-size = Vector3(0.44030762, 1.0515137, 1)
-
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_carum"]
 albedo_color = Color(0, 0, 0, 1)
 
 [sub_resource type="BoxMesh" id="BoxMesh_2ofg4"]
 material = SubResource("StandardMaterial3D_carum")
+size = Vector3(0.44030762, 1.0515137, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_j7xc5"]
+albedo_color = Color(0.105882354, 0.14509805, 0.3019608, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_hf8o1"]
+material = SubResource("StandardMaterial3D_j7xc5")
 size = Vector3(0.44030762, 1.0515137, 1)
 
 [node name="KebabShop" type="Node3D" unique_id=559436482]
@@ -1934,125 +1934,6 @@ texture = ExtResource("2_dnwpt")
 transform = Transform3D(0.235, 0, 0, 0, 0.155, 0, 0, 0, 5.949, -0.018942356, 1.2720038, 0.19241142)
 texture = ExtResource("3_v6cui")
 
-[node name="Avatar Fener" type="StaticBody3D" parent="." unique_id=136574385]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.7120857, 0.08, 17.751186)
-
-[node name="Kopf" type="MeshInstance3D" parent="Avatar Fener" unique_id=439911214]
-transform = Transform3D(0.29999998, 0, 0, 0, 0.27999997, 0, 0, 0, 0.29999998, -0.0038452148, 1.9864846, 0)
-material_override = SubResource("MatSkin")
-mesh = SubResource("BoxMesh_l3fpq")
-
-[node name="Haare" type="MeshInstance3D" parent="Avatar Fener" unique_id=373571056]
-transform = Transform3D(0.32, 0, 0, 0, 0.07000001, 0, 0, 0, 0.32, 0, 2.2246878, 0)
-material_override = SubResource("MatHair")
-mesh = SubResource("BoxSmall")
-
-[node name="ArmLinks" type="MeshInstance3D" parent="Avatar Fener" unique_id=1069896380]
-transform = Transform3D(0.11999999, 0, 0, 0, 0.58, 0, 0, 0, 0.11999999, -0.5199995, 1.33, 0)
-material_override = SubResource("MatSleeve")
-mesh = SubResource("BoxSmall")
-
-[node name="ArmRechts" type="MeshInstance3D" parent="Avatar Fener" unique_id=104539914]
-transform = Transform3D(0.11999999, 0, 0, 0, 0.58, 0, 0, 0, 0.11999999, 0.5199995, 1.33, 0)
-material_override = SubResource("MatSleeve")
-mesh = SubResource("BoxSmall")
-
-[node name="HandLinks" type="MeshInstance3D" parent="Avatar Fener" unique_id=720038192]
-transform = Transform3D(0.14, 0, 0, 0, 0.14, 0, 0, 0, 0.14, -0.5199995, 0.83, 0)
-material_override = SubResource("MatSkin")
-mesh = SubResource("BoxSmall")
-
-[node name="HandRechts" type="MeshInstance3D" parent="Avatar Fener" unique_id=1447528701]
-transform = Transform3D(0.14, 0, 0, 0, 0.14, 0, 0, 0, 0.14, 0.5199995, 0.83, 0)
-material_override = SubResource("MatSkin")
-mesh = SubResource("BoxSmall")
-
-[node name="BeinLinks" type="MeshInstance3D" parent="Avatar Fener" unique_id=1356829978]
-transform = Transform3D(0.17, 0, 0, 0, 0.55, 0, 0, 0, 0.17, -0.22, 0.42, 0)
-material_override = SubResource("MatTrousers")
-mesh = SubResource("BoxSmall")
-
-[node name="BeinRechts" type="MeshInstance3D" parent="Avatar Fener" unique_id=1611759385]
-transform = Transform3D(0.17, 0, 0, 0, 0.55, 0, 0, 0, 0.17, 0.22000027, 0.42000002, 0)
-material_override = SubResource("MatTrousers")
-mesh = SubResource("BoxSmall")
-
-[node name="Kopf2" type="MeshInstance3D" parent="Avatar Fener" unique_id=1038072747]
-transform = Transform3D(0.29999998, 0, 0, 0, 0.27999997, 0, 0, 0, 0.29999998, -0.0038452148, 1.9864846, 0)
-material_override = SubResource("MatSkin")
-mesh = SubResource("BoxMesh_l3fpq")
-
-[node name="Haare2" type="MeshInstance3D" parent="Avatar Fener" unique_id=1738666752]
-transform = Transform3D(0.32, 0, 0, 0, 0.07000001, 0, 0, 0, 0.32, 0, 2.2246878, 0)
-material_override = SubResource("MatHair")
-mesh = SubResource("BoxSmall")
-
-[node name="AugeLinks2" type="MeshInstance3D" parent="Avatar Fener" unique_id=1719145122]
-transform = Transform3D(0.055, 0, 0, 0, 0.055, 0, 0, 0, 0.025, -0.09999943, 2.049094, -0.19719028)
-material_override = SubResource("MatDark")
-mesh = SubResource("BoxSmall")
-
-[node name="AugeRechts2" type="MeshInstance3D" parent="Avatar Fener" unique_id=1486313974]
-transform = Transform3D(0.055, 0, 0, 0, 0.055, 0, 0, 0, 0.025, 0.09999943, 2.049094, -0.19719028)
-material_override = SubResource("MatDark")
-mesh = SubResource("BoxSmall")
-
-[node name="ArmLinks2" type="MeshInstance3D" parent="Avatar Fener" unique_id=1915408224]
-transform = Transform3D(0.11999999, 0, 0, 0, 0.58, 0, 0, 0, 0.11999999, -0.5199995, 1.33, 0)
-material_override = SubResource("MatSleeve")
-mesh = SubResource("BoxSmall")
-
-[node name="ArmRechts2" type="MeshInstance3D" parent="Avatar Fener" unique_id=2055177796]
-transform = Transform3D(0.11999999, 0, 0, 0, 0.58, 0, 0, 0, 0.11999999, 0.5199995, 1.33, 0)
-material_override = SubResource("MatSleeve")
-mesh = SubResource("BoxSmall")
-
-[node name="HandLinks2" type="MeshInstance3D" parent="Avatar Fener" unique_id=231586939]
-transform = Transform3D(0.14, 0, 0, 0, 0.14, 0, 0, 0, 0.14, -0.5199995, 0.83, 0)
-material_override = SubResource("MatSkin")
-mesh = SubResource("BoxSmall")
-
-[node name="HandRechts2" type="MeshInstance3D" parent="Avatar Fener" unique_id=212481701]
-transform = Transform3D(0.14, 0, 0, 0, 0.14, 0, 0, 0, 0.14, 0.5199995, 0.83, 0)
-material_override = SubResource("MatSkin")
-mesh = SubResource("BoxSmall")
-
-[node name="BeinLinks2" type="MeshInstance3D" parent="Avatar Fener" unique_id=2109197645]
-transform = Transform3D(0.17, 0, 0, 0, 0.55, 0, 0, 0, 0.17, -0.22, 0.42, 0)
-material_override = SubResource("MatTrousers")
-mesh = SubResource("BoxSmall")
-
-[node name="BeinRechts2" type="MeshInstance3D" parent="Avatar Fener" unique_id=749887953]
-transform = Transform3D(0.17, 0, 0, 0, 0.55, 0, 0, 0, 0.17, 0.22000027, 0.42000002, 0)
-material_override = SubResource("MatTrousers")
-mesh = SubResource("BoxSmall")
-
-[node name="SchuhLinks" type="MeshInstance3D" parent="Avatar Fener" unique_id=1429589866]
-transform = Transform3D(0.2, 0, 0, 0, 0.1, 0, 0, 0, 0.3, -0.22, 0.08, -0.08)
-material_override = SubResource("MatHair")
-mesh = SubResource("BoxSmall")
-
-[node name="SchuhRechts" type="MeshInstance3D" parent="Avatar Fener" unique_id=1360576294]
-transform = Transform3D(0.2, 0, 0, 0, 0.1, 0, 0, 0, 0.3, 0.22, 0.08, -0.08)
-material_override = SubResource("MatHair")
-mesh = SubResource("BoxSmall")
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Avatar Fener" unique_id=1922192169]
-transform = Transform3D(0.5, 0, 0, 0, 1.55, 0, 0, 0, 0.36, 0, 1.16, 0)
-shape = SubResource("ShapeSmall")
-
-[node name="trikot box" type="MeshInstance3D" parent="Avatar Fener" unique_id=1909233369]
-transform = Transform3D(2, 0, 0, 0, 1.025, 0, 0, 0, 0.3, -0.012393951, 1.2403637, -0.018842697)
-mesh = SubResource("BoxMesh_hf8o1")
-
-[node name="Sprite3D - trikot" type="Sprite3D" parent="Avatar Fener" unique_id=1941558751]
-transform = Transform3D(-0.25, 0, -3.774895e-06, 0, 0.151, 0, 3.774895e-08, 0, -25, -0.016988754, 1.2443357, -0.17148781)
-texture = ExtResource("4_j7xc5")
-
-[node name="Sprite3D - trikot hinten" type="Sprite3D" parent="Avatar Fener" unique_id=146328123]
-transform = Transform3D(0.24, 0, 0, 0, 0.15, 0, 0, 0, 5.949, -0.013628006, 1.2413557, 0.13912582)
-texture = ExtResource("5_h3k53")
-
 [node name="avatar bjk" type="Node3D" parent="." unique_id=1420177732]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10.71418, 0, 10.01306)
 
@@ -2181,3 +2062,122 @@ mesh = SubResource("BoxSmall")
 transform = Transform3D(0.17, 0, 0, 0, 0.55, 0, 0, 0, 0.17, -11.580088, 0.47941166, 7.744179)
 material_override = SubResource("MatTrousers")
 mesh = SubResource("BoxMesh_hge6a")
+
+[node name="Avatar Fener" type="StaticBody3D" parent="." unique_id=136574385]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.7120857, 0.08, 17.751186)
+
+[node name="Kopf" type="MeshInstance3D" parent="Avatar Fener" unique_id=439911214]
+transform = Transform3D(0.29999998, 0, 0, 0, 0.27999997, 0, 0, 0, 0.29999998, -0.0038452148, 1.9864846, 0)
+material_override = SubResource("MatSkin")
+mesh = SubResource("BoxMesh_l3fpq")
+
+[node name="Haare" type="MeshInstance3D" parent="Avatar Fener" unique_id=373571056]
+transform = Transform3D(0.32, 0, 0, 0, 0.07000001, 0, 0, 0, 0.32, 0, 2.2246878, 0)
+material_override = SubResource("MatHair")
+mesh = SubResource("BoxSmall")
+
+[node name="ArmLinks" type="MeshInstance3D" parent="Avatar Fener" unique_id=1069896380]
+transform = Transform3D(0.11999999, 0, 0, 0, 0.58, 0, 0, 0, 0.11999999, -0.5199995, 1.33, 0)
+material_override = SubResource("MatSleeve")
+mesh = SubResource("BoxSmall")
+
+[node name="ArmRechts" type="MeshInstance3D" parent="Avatar Fener" unique_id=104539914]
+transform = Transform3D(0.11999999, 0, 0, 0, 0.58, 0, 0, 0, 0.11999999, 0.5199995, 1.33, 0)
+material_override = SubResource("MatSleeve")
+mesh = SubResource("BoxSmall")
+
+[node name="HandLinks" type="MeshInstance3D" parent="Avatar Fener" unique_id=720038192]
+transform = Transform3D(0.14, 0, 0, 0, 0.14, 0, 0, 0, 0.14, -0.5199995, 0.83, 0)
+material_override = SubResource("MatSkin")
+mesh = SubResource("BoxSmall")
+
+[node name="HandRechts" type="MeshInstance3D" parent="Avatar Fener" unique_id=1447528701]
+transform = Transform3D(0.14, 0, 0, 0, 0.14, 0, 0, 0, 0.14, 0.5199995, 0.83, 0)
+material_override = SubResource("MatSkin")
+mesh = SubResource("BoxSmall")
+
+[node name="BeinLinks" type="MeshInstance3D" parent="Avatar Fener" unique_id=1356829978]
+transform = Transform3D(0.17, 0, 0, 0, 0.55, 0, 0, 0, 0.17, -0.22, 0.42, 0)
+material_override = SubResource("MatTrousers")
+mesh = SubResource("BoxSmall")
+
+[node name="BeinRechts" type="MeshInstance3D" parent="Avatar Fener" unique_id=1611759385]
+transform = Transform3D(0.17, 0, 0, 0, 0.55, 0, 0, 0, 0.17, 0.22000027, 0.42000002, 0)
+material_override = SubResource("MatTrousers")
+mesh = SubResource("BoxSmall")
+
+[node name="Kopf2" type="MeshInstance3D" parent="Avatar Fener" unique_id=1038072747]
+transform = Transform3D(0.29999998, 0, 0, 0, 0.27999997, 0, 0, 0, 0.29999998, -0.0038452148, 1.9864846, 0)
+material_override = SubResource("MatSkin")
+mesh = SubResource("BoxMesh_l3fpq")
+
+[node name="Haare2" type="MeshInstance3D" parent="Avatar Fener" unique_id=1738666752]
+transform = Transform3D(0.32, 0, 0, 0, 0.07000001, 0, 0, 0, 0.32, 0, 2.2246878, 0)
+material_override = SubResource("MatHair")
+mesh = SubResource("BoxSmall")
+
+[node name="AugeLinks2" type="MeshInstance3D" parent="Avatar Fener" unique_id=1719145122]
+transform = Transform3D(0.055, 0, 0, 0, 0.055, 0, 0, 0, 0.025, -0.09999943, 2.049094, -0.19719028)
+material_override = SubResource("MatDark")
+mesh = SubResource("BoxSmall")
+
+[node name="AugeRechts2" type="MeshInstance3D" parent="Avatar Fener" unique_id=1486313974]
+transform = Transform3D(0.055, 0, 0, 0, 0.055, 0, 0, 0, 0.025, 0.09999943, 2.049094, -0.19719028)
+material_override = SubResource("MatDark")
+mesh = SubResource("BoxSmall")
+
+[node name="ArmLinks2" type="MeshInstance3D" parent="Avatar Fener" unique_id=1915408224]
+transform = Transform3D(0.11999999, 0, 0, 0, 0.58, 0, 0, 0, 0.11999999, -0.5199995, 1.33, 0)
+material_override = SubResource("MatSleeve")
+mesh = SubResource("BoxSmall")
+
+[node name="ArmRechts2" type="MeshInstance3D" parent="Avatar Fener" unique_id=2055177796]
+transform = Transform3D(0.11999999, 0, 0, 0, 0.58, 0, 0, 0, 0.11999999, 0.5199995, 1.33, 0)
+material_override = SubResource("MatSleeve")
+mesh = SubResource("BoxSmall")
+
+[node name="HandLinks2" type="MeshInstance3D" parent="Avatar Fener" unique_id=231586939]
+transform = Transform3D(0.14, 0, 0, 0, 0.14, 0, 0, 0, 0.14, -0.5199995, 0.83, 0)
+material_override = SubResource("MatSkin")
+mesh = SubResource("BoxSmall")
+
+[node name="HandRechts2" type="MeshInstance3D" parent="Avatar Fener" unique_id=212481701]
+transform = Transform3D(0.14, 0, 0, 0, 0.14, 0, 0, 0, 0.14, 0.5199995, 0.83, 0)
+material_override = SubResource("MatSkin")
+mesh = SubResource("BoxSmall")
+
+[node name="BeinLinks2" type="MeshInstance3D" parent="Avatar Fener" unique_id=2109197645]
+transform = Transform3D(0.17, 0, 0, 0, 0.55, 0, 0, 0, 0.17, -0.22, 0.42, 0)
+material_override = SubResource("MatTrousers")
+mesh = SubResource("BoxSmall")
+
+[node name="BeinRechts2" type="MeshInstance3D" parent="Avatar Fener" unique_id=749887953]
+transform = Transform3D(0.17, 0, 0, 0, 0.55, 0, 0, 0, 0.17, 0.22000027, 0.42000002, 0)
+material_override = SubResource("MatTrousers")
+mesh = SubResource("BoxSmall")
+
+[node name="SchuhLinks" type="MeshInstance3D" parent="Avatar Fener" unique_id=1429589866]
+transform = Transform3D(0.2, 0, 0, 0, 0.1, 0, 0, 0, 0.3, -0.22, 0.08, -0.08)
+material_override = SubResource("MatHair")
+mesh = SubResource("BoxSmall")
+
+[node name="SchuhRechts" type="MeshInstance3D" parent="Avatar Fener" unique_id=1360576294]
+transform = Transform3D(0.2, 0, 0, 0, 0.1, 0, 0, 0, 0.3, 0.22, 0.08, -0.08)
+material_override = SubResource("MatHair")
+mesh = SubResource("BoxSmall")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Avatar Fener" unique_id=1922192169]
+transform = Transform3D(0.5, 0, 0, 0, 1.55, 0, 0, 0, 0.36, 0, 1.16, 0)
+shape = SubResource("ShapeSmall")
+
+[node name="trikot box" type="MeshInstance3D" parent="Avatar Fener" unique_id=1909233369]
+transform = Transform3D(2, 0, 0, 0, 1.025, 0, 0, 0, 0.3, -0.012393951, 1.2403637, -0.018842697)
+mesh = SubResource("BoxMesh_hf8o1")
+
+[node name="Sprite3D - trikot" type="Sprite3D" parent="Avatar Fener" unique_id=1941558751]
+transform = Transform3D(-0.25, 0, -3.774895e-06, 0, 0.151, 0, 3.774895e-08, 0, -25, -0.016988754, 1.2443357, -0.17148781)
+texture = ExtResource("4_j7xc5")
+
+[node name="Sprite3D - trikot hinten" type="Sprite3D" parent="Avatar Fener" unique_id=146328123]
+transform = Transform3D(0.24, 0, 0, 0, 0.15, 0, 0, 0, 5.949, -0.013628006, 1.2413557, 0.13912582)
+texture = ExtResource("5_h3k53")
