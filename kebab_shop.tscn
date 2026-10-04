@@ -17,7 +17,7 @@ roughness = 0.9
 size = Vector3(18, 0.2, 11.943451)
 
 [sub_resource type="BoxMesh" id="BoxMesh_carum"]
-size = Vector3(18, 0.2, 11.982346)
+size = Vector3(18.161194, 0.2, 12.20812)
 
 [sub_resource type="StandardMaterial3D" id="MatWall"]
 albedo_color = Color(0.78, 0.72, 0.62, 1)
@@ -446,6 +446,9 @@ size = Vector3(2.246582, 4.172141, 1.767334)
 albedo_color = Color(0.12, 0.34, 0.09, 1)
 roughness = 0.95
 
+[sub_resource type="BoxShape3D" id="BoxShape3D_v6cui"]
+size = Vector3(2.3209698, 1.3791993, 2.6036606)
+
 [sub_resource type="StandardMaterial3D" id="MatCarBlue"]
 albedo_color = Color(0.035, 0.17, 0.45, 1)
 metallic = 0.55
@@ -507,7 +510,7 @@ material_override = SubResource("MatFloor")
 mesh = SubResource("BoxFloor")
 
 [node name="Floor2" type="MeshInstance3D" parent="." unique_id=1114508677]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011563301, 4.5002966, -0.0007123947)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.035708427, 4.5002966, 0.034275055)
 material_override = SubResource("MatFloor")
 mesh = SubResource("BoxMesh_carum")
 
@@ -1732,32 +1735,32 @@ light_energy = 2.2
 omni_range = 6.0
 
 [node name="Pflanzkuebel" type="MeshInstance3D" parent="StadtAussenbereich" unique_id=1279985182]
-transform = Transform3D(0.48, 0, 0, 0, 0.34, 0, 0, 0, 0.48, -7.3021803, 1.1155157, 12.765595)
+transform = Transform3D(0.48, 0, 0, 0, 0.34, 0, 0, 0, 0.48, -14.045101, 1.1155157, 17.312477)
 material_override = SubResource("MatConcrete")
 mesh = SubResource("BoxMesh_0dgb0")
 
 [node name="Baumkrone" type="MeshInstance3D" parent="StadtAussenbereich" unique_id=631003719]
-transform = Transform3D(0.85, 0, 0, 0, 0.8, 0, 0, 0, 0.85, -7.286605, 3.7860675, 12.811022)
+transform = Transform3D(0.85, 0, 0, 0, 0.8, 0, 0, 0, 0.85, -14.029526, 3.7860675, 17.357904)
 material_override = SubResource("MatLeaf")
 mesh = SubResource("BoxMesh_7cpnk")
 
 [node name="Pflanzkuebel2" type="MeshInstance3D" parent="StadtAussenbereich" unique_id=363028478]
-transform = Transform3D(0.48, 0, 0, 0, 0.34, 0, 0, 0, 0.48, -7.3021803, 1.1155157, 15.409941)
+transform = Transform3D(0.48, 0, 0, 0, 0.34, 0, 0, 0, 0.48, -14.045101, 1.1155157, 19.956823)
 material_override = SubResource("MatConcrete")
 mesh = SubResource("BoxMesh_0dgb0")
 
 [node name="Baumkrone2" type="MeshInstance3D" parent="StadtAussenbereich" unique_id=504803278]
-transform = Transform3D(0.85, 0, 0, 0, 0.8, 0, 0, 0, 0.85, -7.286605, 3.7860675, 15.455367)
+transform = Transform3D(0.85, 0, 0, 0, 0.8, 0, 0, 0, 0.85, -14.029526, 3.7860675, 20.00225)
 material_override = SubResource("MatLeaf")
 mesh = SubResource("BoxMesh_7cpnk")
 
 [node name="Pflanzkuebel3" type="MeshInstance3D" parent="StadtAussenbereich" unique_id=427020001]
-transform = Transform3D(0.48, 0, 0, 0, 0.34, 0, 0, 0, 0.48, -7.3021803, 1.1155157, 18.416204)
+transform = Transform3D(0.48, 0, 0, 0, 0.34, 0, 0, 0, 0.48, -14.045101, 1.1155157, 22.963087)
 material_override = SubResource("MatConcrete")
 mesh = SubResource("BoxMesh_0dgb0")
 
 [node name="Baumkrone3" type="MeshInstance3D" parent="StadtAussenbereich" unique_id=1528869800]
-transform = Transform3D(0.85, 0, 0, 0, 0.8, 0, 0, 0, 0.85, -7.286605, 3.7860675, 18.46163)
+transform = Transform3D(0.85, 0, 0, 0, 0.8, 0, 0, 0, 0.85, -14.029526, 3.7860675, 23.008512)
 material_override = SubResource("MatLeaf")
 mesh = SubResource("BoxMesh_7cpnk")
 
@@ -1769,9 +1772,24 @@ transform = Transform3D(60, 0, 0, 0, 0.1, 0, 0, 0, 60, -0.07631445, -0.023650885
 material_override = SubResource("MatGrass")
 mesh = SubResource("BoxSmall")
 
+[node name="Grasebene2" type="MeshInstance3D" parent="StadtAussenbereich/GrasUmgebung" unique_id=823313869]
+transform = Transform3D(60, 0, 0, 0, 0.1, 0, 0, 0, 60, 58.471596, -0.023650885, -0.015674591)
+material_override = SubResource("MatGrass")
+mesh = SubResource("BoxSmall")
+
+[node name="Grasebene3" type="MeshInstance3D" parent="StadtAussenbereich/GrasUmgebung" unique_id=1157451728]
+transform = Transform3D(60, 0, 0, 0, 0.1, 0, 0, 0, 60, 58.471596, -0.023650885, 58.68053)
+material_override = SubResource("MatGrass")
+mesh = SubResource("BoxSmall")
+
+[node name="Grasebene4" type="MeshInstance3D" parent="StadtAussenbereich/GrasUmgebung" unique_id=249726097]
+transform = Transform3D(60, 0, 0, 0, 0.1, 0, 0, 0, 60, 0.24126434, -0.023650885, 58.68053)
+material_override = SubResource("MatGrass")
+mesh = SubResource("BoxSmall")
+
 [node name="CollisionShape3D" type="CollisionShape3D" parent="StadtAussenbereich/GrasUmgebung" unique_id=1498455853]
-transform = Transform3D(60, 0, 0, 0, 0.1, 0, 0, 0, 60, 0, 0, 0)
-shape = SubResource("ShapeSmall")
+transform = Transform3D(60, 0, 0, 0, 0.1, 0, 0, 0, 60, 26.775743, -0.061802864, 30.71576)
+shape = SubResource("BoxShape3D_v6cui")
 
 [node name="TOFAS" type="StaticBody3D" parent="." unique_id=1334721801]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.2, 0.65, 13.2)
