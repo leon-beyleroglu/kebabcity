@@ -8,6 +8,7 @@
 [ext_resource type="Texture2D" uid="uid://dsmjvcgs6uqdq" path="res://fb1.jpg" id="4_j7xc5"]
 [ext_resource type="Texture2D" uid="uid://nfsmfqdjew13" path="res://bjkhinten.jpg" id="5_dnwpt"]
 [ext_resource type="Texture2D" uid="uid://fvcheoqkvxim" path="res://fbhinten.jpg" id="5_h3k53"]
+[ext_resource type="PackedScene" path="res://ocean_view_hotel.tscn" id="9_6pmx1"]
 
 [sub_resource type="StandardMaterial3D" id="MatFloor"]
 albedo_color = Color(0, 0, 0, 1)
@@ -116,6 +117,14 @@ ambient_light_source = 3
 ambient_light_color = Color(0.72, 0.68, 0.6, 1)
 ambient_light_energy = 0.72
 tonemap_mode = 2
+tonemap_exposure = 1.1
+tonemap_white = 1.05
+glow_enabled = true
+glow_intensity = 0.35
+glow_bloom = 0.2
+fog_enabled = true
+fog_light_color = Color(0.95, 0.74, 0.55, 1)
+fog_density = 0.008
 
 [sub_resource type="CapsuleShape3D" id="PlayerShape"]
 radius = 0.45
@@ -489,6 +498,7 @@ roughness = 0.3
 albedo_color = Color(0.85, 0.05, 0.05, 1)
 emission_enabled = true
 emission = Color(0.85, 0.05, 0.05, 1)
+emission_energy_multiplier = 1.2
 
 [sub_resource type="StandardMaterial3D" id="MatTofasTailOrange"]
 albedo_color = Color(0.95, 0.5, 0, 1)
@@ -2398,3 +2408,6 @@ texture = ExtResource("4_j7xc5")
 [node name="Sprite3D - trikot hinten" type="Sprite3D" parent="Avatar Fener" unique_id=146328123]
 transform = Transform3D(0.24, 0, 0, 0, 0.15, 0, 0, 0, 5.949, -0.013628006, 1.2413557, 0.13912582)
 texture = ExtResource("5_h3k53")
+
+[node name="OceanViewHotel" parent="." unique_id=1876917207 instance=ExtResource("9_6pmx1")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 19.837439, 0, 2.1543522)
