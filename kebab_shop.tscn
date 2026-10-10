@@ -3,7 +3,6 @@
 [ext_resource type="Script" uid="uid://c0rl8h6ne4ir" path="res://player.gd" id="1_player"]
 [ext_resource type="Texture2D" uid="uid://7o3bjm4v6brx" path="res://gahinten.jpg" id="2_dnwpt"]
 [ext_resource type="Texture2D" uid="uid://bir75ofhwlwup" path="res://bjk1.jpg" id="2_t8aj2"]
-[ext_resource type="Script" uid="uid://dcib2ef3n568l" path="res://tofas.gd" id="2_tofas_script"]
 [ext_resource type="Texture2D" uid="uid://byb7pr78mpgwm" path="res://abdukopf.jpg" id="3_6pmx1"]
 [ext_resource type="Texture2D" uid="uid://fh0htpsx3u6v" path="res://ga1.jpg" id="3_v6cui"]
 [ext_resource type="Texture2D" uid="uid://dsmjvcgs6uqdq" path="res://fb1.jpg" id="4_j7xc5"]
@@ -730,12 +729,57 @@ omni_range = 8.0
 [node name="CeilingLight3" type="OmniLight3D" parent="CeilingLight1/CeilingLight1" unique_id=1419786753]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.730752, 1.9613214, 17.109983)
 light_color = Color(1, 0.82, 0.62, 1)
-light_energy = 9.577
+light_energy = 10.706
 light_indirect_energy = 5.825
 shadow_enabled = true
 omni_range = 8.0
 
 [node name="CeilingLight1" type="OmniLight3D" parent="CeilingLight1/CeilingLight1/CeilingLight3" unique_id=1620917044]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 11.137207, -0.4547274, 1.0744276)
+light_color = Color(1, 0.82, 0.62, 1)
+light_energy = 5.0
+shadow_enabled = true
+omni_range = 8.0
+
+[node name="CeilingLight6" type="OmniLight3D" parent="CeilingLight1/CeilingLight1" unique_id=1547062055]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.9924297, 3.6070828, 8.952093)
+light_color = Color(1, 0.82, 0.62, 1)
+light_energy = 10.706
+light_indirect_energy = 5.825
+shadow_enabled = true
+omni_range = 8.0
+
+[node name="CeilingLight1" type="OmniLight3D" parent="CeilingLight1/CeilingLight1/CeilingLight6" unique_id=442418230]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 11.137207, -0.4547274, 1.0744276)
+light_color = Color(1, 0.82, 0.62, 1)
+light_energy = 5.0
+shadow_enabled = true
+omni_range = 8.0
+
+[node name="CeilingLight4" type="OmniLight3D" parent="CeilingLight1/CeilingLight1" unique_id=1990420538]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.2910228, 1.9613214, 17.109983)
+light_color = Color(1, 0.82, 0.62, 1)
+light_energy = 10.706
+light_indirect_energy = 5.825
+shadow_enabled = true
+omni_range = 8.0
+
+[node name="CeilingLight1" type="OmniLight3D" parent="CeilingLight1/CeilingLight1/CeilingLight4" unique_id=351546315]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 11.137207, -0.4547274, 1.0744276)
+light_color = Color(1, 0.82, 0.62, 1)
+light_energy = 5.0
+shadow_enabled = true
+omni_range = 8.0
+
+[node name="CeilingLight5" type="OmniLight3D" parent="CeilingLight1/CeilingLight1" unique_id=174367300]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 23.957403, 1.9613214, 17.109983)
+light_color = Color(1, 0.82, 0.62, 1)
+light_energy = 10.706
+light_indirect_energy = 5.825
+shadow_enabled = true
+omni_range = 8.0
+
+[node name="CeilingLight1" type="OmniLight3D" parent="CeilingLight1/CeilingLight1/CeilingLight5" unique_id=1843037932]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 11.137207, -0.4547274, 1.0744276)
 light_color = Color(1, 0.82, 0.62, 1)
 light_energy = 5.0
@@ -1844,12 +1888,8 @@ mesh = SubResource("BoxSmall")
 transform = Transform3D(60, 0, 0, 0, 0.1, 0, 0, 0, 60, 26.775743, -0.061802864, 30.71576)
 shape = SubResource("BoxShape3D_v6cui")
 
-[node name="TOFAS" type="VehicleBody3D" parent="." unique_id=1334721801]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.696757, 0.35, 14.8961735)
-mass = 1050.0
-center_of_mass_mode = 1
-center_of_mass = Vector3(0, 0.12, 0)
-script = ExtResource("2_tofas_script")
+[node name="TOFAS" type="StaticBody3D" parent="." unique_id=1334721801]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.12887, 0.19248784, 15.670392)
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="TOFAS" unique_id=2056872301]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, 0)
@@ -1858,27 +1898,27 @@ shape = SubResource("ShapeTofasChassis")
 [node name="VisualModel" type="Node3D" parent="TOFAS" unique_id=1643002351]
 
 [node name="MotorhaubeFront" type="CSGBox3D" parent="TOFAS/VisualModel" unique_id=1477997136]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.4451953, -1.25)
-size = Vector3(1.64, 0.51039064, 1.45)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5351269, -1.25)
+size = Vector3(1.64, 0.6902539, 1.45)
 material = SubResource("MatTofasWhite")
 
 [node name="KofferraumHeck" type="CSGBox3D" parent="TOFAS/VisualModel" unique_id=671844047]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5275097, 1.3500004)
-size = Vector3(1.64, 0.63501954, 1.25)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.6045336, 1.3500013)
+size = Vector3(1.64, 0.7890674, 1.25)
 material = SubResource("MatTofasWhite")
 
 [node name="KabineUnten" type="CSGBox3D" parent="TOFAS/VisualModel" unique_id=523435854]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.52978027, 0.05000019)
-size = Vector3(1.64, 0.65956056, 1.4)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.6466894, 0.05000019)
+size = Vector3(1.64, 0.8933789, 1.4)
 material = SubResource("MatTofasWhite")
 
 [node name="DachAufbau" type="CSGBox3D" parent="TOFAS/VisualModel" unique_id=294708026]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.010019302, 0.97468245, 0.05000019)
-size = Vector3(1.6508985, 0.51421875, 1.55)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.058701515, 1.3846773, 0.05000019)
+size = Vector3(1.7883399, 0.51421875, 1.55)
 material = SubResource("MatTofasGlass")
 
 [node name="DachBlech" type="CSGBox3D" parent="TOFAS/VisualModel" unique_id=1942528986]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0023965836, 1.2417918, 0.05000019)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0023965836, 1.6517867, 0.05000019)
 size = Vector3(1.6849048, 0.04, 1.48)
 material = SubResource("MatTofasWhite")
 
