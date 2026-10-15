@@ -9,6 +9,7 @@
 [ext_resource type="Texture2D" uid="uid://nfsmfqdjew13" path="res://bjkhinten.jpg" id="5_dnwpt"]
 [ext_resource type="Texture2D" uid="uid://fvcheoqkvxim" path="res://fbhinten.jpg" id="5_h3k53"]
 [ext_resource type="Script" uid="uid://b1lc58mnkun6w" path="res://city_expansion.gd" id="10_city_expansion"]
+[ext_resource type="Script" uid="uid://bufallvmof5b4" path="res://prep_station.gd" id="11_prep_station"]
 
 [sub_resource type="StandardMaterial3D" id="MatFloor"]
 albedo_color = Color(0, 0, 0, 1)
@@ -77,6 +78,38 @@ size = Vector3(7, 0.2, 1.15)
 material = SubResource("MatMetal")
 size = Vector3(1, 1.1958008, 1)
 
+[sub_resource type="StandardMaterial3D" id="MatKnifeMount"]
+albedo_color = Color(0.24, 0.12, 0.065, 1)
+roughness = 0.72
+
+[sub_resource type="BoxMesh" id="MeshKnifeMount"]
+material = SubResource("MatKnifeMount")
+size = Vector3(0.52, 1, 0.1)
+
+[sub_resource type="BoxShape3D" id="ShapeKnifeMount"]
+size = Vector3(0.52, 1, 0.1)
+
+[sub_resource type="StandardMaterial3D" id="MatKnifeBlade"]
+albedo_color = Color(0.72, 0.76, 0.78, 1)
+metallic = 0.9
+roughness = 0.22
+
+[sub_resource type="BoxMesh" id="MeshKnifeHook"]
+material = SubResource("MatKnifeBlade")
+size = Vector3(0.09, 0.09, 0.2)
+
+[sub_resource type="BoxMesh" id="MeshKnifeBlade"]
+material = SubResource("MatKnifeBlade")
+size = Vector3(0.16, 0.56, 0.045)
+
+[sub_resource type="StandardMaterial3D" id="MatKnifeHandle"]
+albedo_color = Color(0.12, 0.055, 0.035, 1)
+roughness = 0.78
+
+[sub_resource type="BoxMesh" id="MeshKnifeHandle"]
+material = SubResource("MatKnifeHandle")
+size = Vector3(0.12, 0.34, 0.09)
+
 [sub_resource type="BoxMesh" id="BoxSmall"]
 material = SubResource("MatMetal")
 size = Vector3(1, 1.4751419, 1)
@@ -104,7 +137,7 @@ material = SubResource("MatMetal")
 size = Vector3(1, 0.9592041, 1)
 
 [sub_resource type="BoxShape3D" id="ShapeSmall"]
-size = Vector3(1.4234338, 1.3791993, 1.5957487)
+size = Vector3(1.4234338, 1.3791993, 1.1816634)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_hsot5"]
 albedo_color = Color(0.78039217, 0.72156864, 0.61960787, 1)
@@ -582,10 +615,52 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.91877294, 1.3706589, -5.17
 [node name="CollisionShape3D" type="CollisionShape3D" parent="KitchenBackShelfCollision" unique_id=234483679]
 shape = SubResource("ShapeKitchenBackShelf")
 
+[node name="ZubereitungsAblage" type="StaticBody3D" parent="KitchenBackShelfCollision" unique_id=1247723930]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.1901411, 0)
+collision_layer = 129
+collision_mask = 0
+script = ExtResource("11_prep_station")
+surface_size = Vector3(2.6, 0.14, 1)
+metadata/assembly_station = true
+
 [node name="KitchenBackShelf2" type="MeshInstance3D" parent="." unique_id=1157267575]
 transform = Transform3D(6, 0, 0, 0, 1, 0, 0, 0, 1, -0.91877294, 0.6891401, -5.170214)
 material_override = SubResource("StandardMaterial3D_t8aj2")
 mesh = SubResource("BoxMesh_t8aj2")
+
+[node name="KnifeWallMount" type="StaticBody3D" parent="." unique_id=537123794 groups=["knife_mount"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.72, 2, -5.68)
+collision_layer = 128
+collision_mask = 0
+metadata/knife_mount = true
+
+[node name="Backplate" type="MeshInstance3D" parent="KnifeWallMount" unique_id=19220567]
+mesh = SubResource("MeshKnifeMount")
+
+[node name="MountCollision" type="CollisionShape3D" parent="KnifeWallMount" unique_id=1177370559]
+shape = SubResource("ShapeKnifeMount")
+
+[node name="HookLeft" type="MeshInstance3D" parent="KnifeWallMount" unique_id=1405421513]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.12, -0.42, 0.12)
+mesh = SubResource("MeshKnifeHook")
+
+[node name="HookRight" type="MeshInstance3D" parent="KnifeWallMount" unique_id=1750377457]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.12, -0.42, 0.12)
+mesh = SubResource("MeshKnifeHook")
+
+[node name="KnifeSnap" type="Marker3D" parent="KnifeWallMount" unique_id=2114877019]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0.12)
+
+[node name="KnifePreview" type="Node3D" parent="KnifeWallMount" unique_id=2134331589]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.15)
+
+[node name="Blade" type="MeshInstance3D" parent="KnifeWallMount/KnifePreview" unique_id=303344672]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.18, 0)
+mesh = SubResource("MeshKnifeBlade")
+
+[node name="Handle" type="MeshInstance3D" parent="KnifeWallMount/KnifePreview" unique_id=1722920841]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.31, 0)
+mesh = SubResource("MeshKnifeHandle")
 
 [node name="DonerSpit" type="Node3D" parent="." unique_id=231999689]
 transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, -3.9592829, 0.6649709, -2.4962418)
@@ -1153,6 +1228,7 @@ omni_range = 3.0
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.026535, 0, 10.463013)
 
 [node name="Tisch" type="StaticBody3D" parent="Tisch + Quad Stuhl" unique_id=22852693]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.28183174)
 
 [node name="Tischplatte" type="MeshInstance3D" parent="Tisch + Quad Stuhl/Tisch" unique_id=1476191308]
 transform = Transform3D(1.8, 0, 0, 0, 0.15, 0, 0, 0, 1.2, 0.79391575, 1.4094851, -8.316921)
@@ -1285,6 +1361,7 @@ material_override = SubResource("MatMetal")
 mesh = SubResource("BoxSmall")
 
 [node name="StaticBody3D" type="StaticBody3D" parent="Tisch + Quad Stuhl" unique_id=2122753757]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.5452738)
 
 [node name="Sitz" type="MeshInstance3D" parent="Tisch + Quad Stuhl/StaticBody3D" unique_id=1080395000]
 transform = Transform3D(0.88, 0, 0, 0, 0.14, 0, 0, 0, 0.8, 0, 1.11899, -9.924583)
@@ -1344,7 +1421,7 @@ material_override = SubResource("MatWood")
 mesh = SubResource("BoxSmall")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Tisch + Quad Stuhl/StaticBody3D/StaticBody3D" unique_id=1969314139]
-transform = Transform3D(0.88, 0, 0, 0, 0.14, 0, 0, 0, 0.8, 0, 1.176168, -9.924583)
+transform = Transform3D(0.88, 0, 0, 0, 0.14, 0, 0, 0, 0.8, 0, 1.176168, -9.758949)
 shape = SubResource("ShapeSmall")
 
 [node name="Rueckenlehne" type="MeshInstance3D" parent="Tisch + Quad Stuhl/StaticBody3D/StaticBody3D" unique_id=345817368]

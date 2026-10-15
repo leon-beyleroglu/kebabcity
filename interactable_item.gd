@@ -35,8 +35,3 @@ func restore() -> void:
 	collision_layer = 1 << 7
 	if is_instance_valid(source_visual):
 		source_visual.visible = true
-
-func prompt(holding_something: bool) -> String:
-	if holding_something:
-		return "Drücke [E], um %s auszutauschen" % display_name
-	return "Drücke [E], um %s aufzuheben" % display_name

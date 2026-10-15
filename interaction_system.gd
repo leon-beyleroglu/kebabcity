@@ -6,6 +6,7 @@ const DonerMeatStationScript = preload("res://doner_meat_station.gd")
 
 const INTERACTION_RANGE := 2.8
 const INTERACTION_LAYER := 1 << 7
+const PREP_ITEM_LAYER := 1 << 8
 const CUT_DURATION := 1.0
 
 var player: CharacterBody3D
@@ -16,6 +17,11 @@ var held_item: Area3D
 var held_visual: Node3D
 var focused_item: Area3D
 var focused_meat: Area3D
+var focused_prep: Node3D
+var focused_knife_mount: Node3D
+var focus_hit_position := Vector3.ZERO
+var held_origin_station: Node3D
+var held_origin_transform := Transform3D.IDENTITY
 var meat_visual: MeshInstance3D
 var cut_progress := 0.0
 var cut_sound_timer := 0.0
@@ -23,9 +29,6 @@ var cut_anim_time := 0.0
 var portions_created := 0
 
 var ui_layer: CanvasLayer
-var prompt_panel: PanelContainer
-var prompt_label: Label
-var held_label: Label
 var progress_bar: ProgressBar
 var crosshair: Label
 var cut_audio: AudioStreamPlayer
@@ -80,35 +83,6 @@ func _setup_ui() -> void:
 	crosshair.size = Vector2(20, 26)
 	root.add_child(crosshair)
 
-	prompt_panel = PanelContainer.new()
-	prompt_panel.set_anchors_preset(Control.PRESET_CENTER_BOTTOM)
-	prompt_panel.position = Vector2(-220, -112)
-	prompt_panel.size = Vector2(440, 54)
-	var panel_style := StyleBoxFlat.new()
-	panel_style.bg_color = Color(0.035, 0.045, 0.06, 0.88)
-	panel_style.border_color = Color(0.95, 0.45, 0.26, 0.9)
-	panel_style.set_border_width_all(2)
-	panel_style.set_corner_radius_all(8)
-	panel_style.content_margin_left = 16
-	panel_style.content_margin_right = 16
-	prompt_panel.add_theme_stylebox_override("panel", panel_style)
-	root.add_child(prompt_panel)
-	prompt_label = Label.new()
-	prompt_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	prompt_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
-	prompt_label.add_theme_font_size_override("font_size", 18)
-	prompt_label.add_theme_color_override("font_color", Color("fff0d2"))
-	prompt_panel.add_child(prompt_label)
-	prompt_panel.visible = false
-
-	held_label = Label.new()
-	held_label.position = Vector2(26, 26)
-	held_label.size = Vector2(420, 60)
-	held_label.add_theme_font_size_override("font_size", 17)
-	held_label.add_theme_color_override("font_color", Color("ffe0a6"))
-	held_label.text = "Hände frei"
-	root.add_child(held_label)
-
 	progress_bar = ProgressBar.new()
 	progress_bar.set_anchors_preset(Control.PRESET_CENTER_BOTTOM)
 	progress_bar.position = Vector2(-180, -50)
@@ -156,7 +130,11 @@ func _register_scene_targets() -> void:
 	meat_visual = root.get_node_or_null("DonerSpit/Meat") as MeshInstance3D
 	if meat_visual:
 		_register_meat_station(meat_visual)
-		_spawn_knife(meat_visual.global_position + Vector3(0.85, -0.78, 0.9))
+	var knife_mount := root.get_node_or_null("KnifeWallMount") as StaticBody3D
+	var knife_snap := root.get_node_or_null("KnifeWallMount/KnifeSnap") as Marker3D
+	var knife_visual := root.get_node_or_null("KnifeWallMount/KnifePreview") as Node3D
+	if knife_mount and knife_snap and knife_visual:
+		_register_mounted_knife(knife_mount, knife_snap, knife_visual)
 
 func _register_existing_item(visual: MeshInstance3D, id: String, label: String) -> void:
 	if not visual or not visual.mesh:
@@ -176,18 +154,14 @@ func _register_meat_station(visual: MeshInstance3D) -> void:
 	station.global_transform = visual.global_transform
 	_add_box_collider(station, visual.mesh.get_aabb().size * 1.35)
 
-func _spawn_knife(world_position: Vector3) -> void:
+func _register_mounted_knife(mount: StaticBody3D, snap: Marker3D, visual: Node3D) -> void:
 	var item: Area3D = InteractableItemScript.new()
 	item.name = "KnifePickup"
-	get_tree().current_scene.add_child(item)
-	item.global_position = world_position
-	item.rotation = Vector3(0.05, 0.25, -0.12)
-	var visual := Node3D.new()
-	visual.name = "KnifeOnCounter"
-	item.add_child(visual)
-	_create_item_model(visual, "knife", false)
+	mount.add_child(item)
+	item.global_transform = snap.global_transform
 	_add_box_collider(item, Vector3(0.38, 0.16, 0.9))
 	item.configure("knife", "Messer", visual)
+	item.set_meta("knife_mount_owner", mount)
 
 func _add_box_collider(parent: Area3D, size: Vector3) -> void:
 	var collision := CollisionShape3D.new()
@@ -204,6 +178,8 @@ func _process(delta: float) -> void:
 	if not first_person:
 		focused_item = null
 		focused_meat = null
+		focused_prep = null
+		focused_knife_mount = null
 		_reset_cutting()
 		return
 	_update_focus()
@@ -213,38 +189,41 @@ func _process(delta: float) -> void:
 func _update_focus() -> void:
 	focused_item = null
 	focused_meat = null
+	focused_prep = null
+	focused_knife_mount = null
 	var query := PhysicsRayQueryParameters3D.create(camera.global_position, camera.global_position - camera.global_basis.z * INTERACTION_RANGE, INTERACTION_LAYER)
 	query.collide_with_areas = true
-	query.collide_with_bodies = false
+	query.collide_with_bodies = true
 	var hit := camera.get_world_3d().direct_space_state.intersect_ray(query)
 	if hit.is_empty():
 		return
+	focus_hit_position = hit["position"]
 	var collider: Object = hit.get("collider")
 	if collider is Area3D and collider.has_meta("interactable") and collider.available:
 		focused_item = collider
 	elif collider is Area3D and collider.has_meta("doner_meat_station"):
 		focused_meat = collider
+	elif collider is Node3D and (collider.is_in_group("knife_mount") or collider.has_meta("knife_mount")):
+		focused_knife_mount = collider
+	elif collider is Node3D and (collider.is_in_group("prep_surface") or collider.has_meta("assembly_station")):
+		focused_prep = collider
 
 func _update_prompt() -> void:
-	prompt_panel.visible = false
 	progress_bar.visible = false
-	if focused_item:
-		prompt_label.text = focused_item.prompt(held_item != null)
-		prompt_panel.visible = true
-	elif focused_meat:
-		if held_item and held_item.item_id == "knife":
-			prompt_label.text = "Halte [LMB], um Dönerfleisch zu schneiden"
-			progress_bar.visible = true
-			progress_bar.value = cut_progress / CUT_DURATION
-		else:
-			prompt_label.text = "Du brauchst ein Messer zum Schneiden"
-		prompt_panel.visible = true
+	if focused_meat and held_item and held_item.item_id == "knife":
+		progress_bar.visible = true
+		progress_bar.value = cut_progress / CUT_DURATION
 
 func _unhandled_input(event: InputEvent) -> void:
 	if not player or player.third_person or not camera.current:
 		return
 	if event.is_action_pressed("interact"):
-		if focused_item:
+		if focused_knife_mount and held_item and held_item.item_id == "knife":
+			_place_knife_on_mount(focused_knife_mount)
+		elif focused_prep and held_item:
+			if held_item.item_id != "knife":
+				_place_held_on_prep(focused_prep, focus_hit_position)
+		elif focused_item:
 			_pickup(focused_item)
 		elif held_item:
 			_return_held()
@@ -256,24 +235,133 @@ func _unhandled_input(event: InputEvent) -> void:
 func _pickup(item: Area3D) -> void:
 	if held_item:
 		_return_held()
+	held_origin_station = item.get_meta("prep_station", null) as Node3D
+	if is_instance_valid(held_origin_station):
+		held_origin_transform = item.global_transform
+		held_origin_station.call("remove_item", item)
+	else:
+		held_origin_transform = Transform3D.IDENTITY
 	held_item = item
 	held_item.pickup()
 	held_visual = Node3D.new()
 	held_visual.name = "Held_%s" % item.item_id
 	hold_socket.add_child(held_visual)
 	_create_item_model(held_visual, item.item_id, true)
-	held_label.text = "In der Hand: %s\n[E] ablegen  •  [Q] zurücklegen" % item.display_name
 
 func _return_held() -> void:
 	if not held_item:
 		return
+	var item := held_item
+	var origin_station := held_origin_station
+	var origin_transform := held_origin_transform
 	if is_instance_valid(held_visual):
 		held_visual.queue_free()
-	held_item.restore()
+	item.restore()
+	if is_instance_valid(origin_station) and is_instance_valid(item):
+		item.global_transform = origin_transform
+		origin_station.call("place_item", item, item.item_id, origin_transform.origin)
 	held_item = null
 	held_visual = null
-	held_label.text = "Hände frei"
+	held_origin_station = null
+	held_origin_transform = Transform3D.IDENTITY
 	_reset_cutting()
+
+
+func _place_held_on_prep(station: Node3D, hit_position: Vector3) -> void:
+	if not held_item or not is_instance_valid(station):
+		return
+	if not is_instance_valid(held_item.source_visual) or held_item.source_visual.get_parent() != held_item:
+		var placed_visual := Node3D.new()
+		placed_visual.name = "PlacedVisual"
+		held_item.add_child(placed_visual)
+		_create_item_model(placed_visual, held_item.item_id, false)
+		held_item.source_visual = placed_visual
+	else:
+		held_item.source_visual.visible = true
+
+	if held_item.get_parent() != station:
+		held_item.reparent(station, true)
+	held_item.global_transform = Transform3D(Basis.IDENTITY, held_item.global_position)
+
+	for child in held_item.find_children("*", "CollisionShape3D", true, false):
+		var shape := child as CollisionShape3D
+		if shape:
+			shape.disabled = false
+			var box_shape := shape.shape as BoxShape3D
+			if box_shape:
+				box_shape.size = _item_collision_size(held_item.item_id)
+
+	var reset_metadata: Array[StringName] = [&"origin_position", &"spawn_point", &"return_to_origin", &"return_timer"]
+	for metadata_key in reset_metadata:
+		if held_item.has_meta(metadata_key):
+			held_item.remove_meta(metadata_key)
+	for child in held_item.find_children("*", "Timer", true, false):
+		var return_timer := child as Timer
+		if return_timer:
+			return_timer.stop()
+
+	_freeze_item_physics(held_item)
+	held_item.available = true
+	held_item.collision_layer = INTERACTION_LAYER | PREP_ITEM_LAYER
+	held_item.collision_mask = 0
+	var snap_position: Vector3 = station.call("place_item", held_item, held_item.item_id, hit_position)
+	held_item.global_position = snap_position
+	held_item.global_rotation = Vector3(0, player.global_rotation.y, 0)
+	held_item.original_transform = held_item.global_transform
+
+	if is_instance_valid(held_visual):
+		held_visual.queue_free()
+	held_item = null
+	held_visual = null
+	held_origin_station = null
+	held_origin_transform = Transform3D.IDENTITY
+	_reset_cutting()
+
+
+func _freeze_item_physics(item: Node) -> void:
+	var rigid_item := item as RigidBody3D
+	if rigid_item:
+		rigid_item.freeze = true
+		rigid_item.linear_velocity = Vector3.ZERO
+		rigid_item.angular_velocity = Vector3.ZERO
+
+
+func _place_knife_on_mount(mount: Node3D) -> void:
+	if not held_item or held_item.item_id != "knife" or not is_instance_valid(mount):
+		return
+	var snap := mount.get_node_or_null("KnifeSnap") as Marker3D
+	if not snap:
+		return
+	if held_item.get_parent() != mount:
+		held_item.reparent(mount, true)
+	if is_instance_valid(held_item.source_visual):
+		held_item.source_visual.visible = true
+	_freeze_item_physics(held_item)
+	held_item.available = true
+	held_item.collision_layer = INTERACTION_LAYER
+	held_item.collision_mask = 0
+	held_item.global_transform = snap.global_transform
+	held_item.original_transform = held_item.global_transform
+	held_item.set_meta("knife_mount_owner", mount)
+	if is_instance_valid(held_visual):
+		held_visual.queue_free()
+	held_item = null
+	held_visual = null
+	held_origin_station = null
+	held_origin_transform = Transform3D.IDENTITY
+	_reset_cutting()
+
+
+func _item_collision_size(item_id: String) -> Vector3:
+	match item_id:
+		"knife":
+			return Vector3(0.38, 0.16, 0.9)
+		"lavash":
+			return Vector3(0.55, 0.2, 0.4)
+		"cut_meat":
+			return Vector3(0.42, 0.22, 0.42)
+		_:
+			return Vector3(0.5, 0.3, 0.5)
 
 func _update_cutting(delta: float) -> void:
 	var can_cut: bool = focused_meat != null and held_item != null and held_item.item_id == "knife"
