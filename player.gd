@@ -24,6 +24,7 @@ var motion_blend := 0.0
 var idle_time := 0.0
 
 const HumanHand = preload("res://human_hand.gd")
+const InteractionSystem = preload("res://interaction_system.gd")
 
 var gravity: float = ProjectSettings.get_setting("physics/3d/default_gravity")
 var third_person := false
@@ -50,6 +51,10 @@ func _ready() -> void:
 	camera.add_child(first_person_hands)
 	_build_first_person_hands()
 	_build_doner_worker()
+	var interaction_system := InteractionSystem.new()
+	interaction_system.name = "InteractionSystem"
+	add_child(interaction_system)
+	interaction_system.setup(self, camera, first_person_hands)
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventKey and event.pressed and not event.echo and event.keycode == KEY_F5:
