@@ -8,7 +8,7 @@
 [ext_resource type="Texture2D" uid="uid://dsmjvcgs6uqdq" path="res://fb1.jpg" id="4_j7xc5"]
 [ext_resource type="Texture2D" uid="uid://nfsmfqdjew13" path="res://bjkhinten.jpg" id="5_dnwpt"]
 [ext_resource type="Texture2D" uid="uid://fvcheoqkvxim" path="res://fbhinten.jpg" id="5_h3k53"]
-[ext_resource type="PackedScene" path="res://ocean_view_hotel.tscn" id="9_6pmx1"]
+[ext_resource type="Script" uid="uid://b1lc58mnkun6w" path="res://city_expansion.gd" id="10_city_expansion"]
 
 [sub_resource type="StandardMaterial3D" id="MatFloor"]
 albedo_color = Color(0, 0, 0, 1)
@@ -19,6 +19,9 @@ size = Vector3(18, 0.2, 11.943451)
 
 [sub_resource type="BoxMesh" id="BoxMesh_carum"]
 size = Vector3(18.161194, 0.2, 12.20812)
+
+[sub_resource type="BoxShape3D" id="ShapeFloor"]
+size = Vector3(18, 0.2, 11.943451)
 
 [sub_resource type="StandardMaterial3D" id="MatWall"]
 albedo_color = Color(0.78, 0.72, 0.62, 1)
@@ -127,28 +130,12 @@ fog_light_color = Color(0.95, 0.74, 0.55, 1)
 fog_density = 0.008
 
 [sub_resource type="CapsuleShape3D" id="PlayerShape"]
-radius = 0.45
+radius = 0.6
 height = 2.356006
 
 [sub_resource type="StandardMaterial3D" id="MatSleeve"]
 albedo_color = Color(0.045, 0.12, 0.22, 1)
 roughness = 0.76
-
-[sub_resource type="BoxMesh" id="BoxMesh_5ew0i"]
-size = Vector3(0.24, 0.2178125, 0.22)
-
-[sub_resource type="StandardMaterial3D" id="MatSkin"]
-albedo_color = Color(0.9647059, 0.8352941, 0.78039217, 1)
-roughness = 0.72
-
-[sub_resource type="BoxMesh" id="HandPalmMesh"]
-size = Vector3(0.23, 0.12, 0.3)
-
-[sub_resource type="BoxMesh" id="HandFingerMesh"]
-size = Vector3(0.042, 0.055, 0.18)
-
-[sub_resource type="BoxMesh" id="HandArmMesh"]
-size = Vector3(0.24, 0.20560546, 0.22)
 
 [sub_resource type="BoxMesh" id="PlayerTorsoMesh"]
 size = Vector3(0.62, 0.82, 0.34)
@@ -159,6 +146,10 @@ roughness = 0.55
 
 [sub_resource type="BoxMesh" id="PlayerApronMesh"]
 size = Vector3(0.4, 0.53, 0.045)
+
+[sub_resource type="StandardMaterial3D" id="MatSkin"]
+albedo_color = Color(0.9647059, 0.8352941, 0.78039217, 1)
+roughness = 0.72
 
 [sub_resource type="SphereMesh" id="PlayerHeadMesh"]
 radius = 0.19
@@ -398,66 +389,6 @@ size = Vector3(1.8790283, 1.4751419, 1)
 material = SubResource("MatMetal")
 size = Vector3(1.8280029, 1.4751419, 1)
 
-[sub_resource type="StandardMaterial3D" id="MatAsphalt"]
-albedo_color = Color(0.075, 0.08, 0.09, 1)
-roughness = 0.94
-
-[sub_resource type="BoxMesh" id="BoxMesh_qgk83"]
-material = SubResource("MatMetal")
-size = Vector3(1, 1.4751419, 1.2021484)
-
-[sub_resource type="StandardMaterial3D" id="MatConcrete"]
-albedo_color = Color(0.16793782, 0.17505077, 0.18216363, 1)
-roughness = 0.88
-
-[sub_resource type="BoxMesh" id="BoxMesh_n18ko"]
-material = SubResource("MatMetal")
-size = Vector3(0.50305176, 1.4751419, 1.0490723)
-
-[sub_resource type="BoxMesh" id="BoxMesh_7t4f4"]
-material = SubResource("MatMetal")
-size = Vector3(0.6612854, 1.4751419, 1.0490723)
-
-[sub_resource type="BoxMesh" id="BoxMesh_rxwc3"]
-material = SubResource("MatMetal")
-size = Vector3(1.8576965, 1.4751419, 1.489502)
-
-[sub_resource type="StandardMaterial3D" id="MatStreetLine"]
-albedo_color = Color(0.92, 0.72, 0.18, 1)
-roughness = 0.58
-
-[sub_resource type="StandardMaterial3D" id="MatCityFacade"]
-albedo_color = Color(0.48, 0.3, 0.19, 1)
-roughness = 0.82
-
-[sub_resource type="BoxMesh" id="BoxMesh_v6mwk"]
-material = SubResource("MatMetal")
-size = Vector3(1.4975891, 1.4751419, 1.833374)
-
-[sub_resource type="StandardMaterial3D" id="MatCityWindow"]
-albedo_color = Color(0.06, 0.24, 0.38, 1)
-metallic = 0.25
-roughness = 0.18
-
-[sub_resource type="BoxMesh" id="BoxMesh_0dgb0"]
-material = SubResource("MatMetal")
-size = Vector3(1, 7.8711658, 1)
-
-[sub_resource type="StandardMaterial3D" id="MatLeaf"]
-albedo_color = Color(0.08, 0.28, 0.1, 1)
-roughness = 0.9
-
-[sub_resource type="BoxMesh" id="BoxMesh_7cpnk"]
-material = SubResource("MatMetal")
-size = Vector3(2.246582, 4.172141, 1.767334)
-
-[sub_resource type="StandardMaterial3D" id="MatGrass"]
-albedo_color = Color(0.12, 0.34, 0.09, 1)
-roughness = 0.95
-
-[sub_resource type="BoxShape3D" id="BoxShape3D_v6cui"]
-size = Vector3(2.3209698, 1.3791993, 2.6036606)
-
 [sub_resource type="BoxShape3D" id="ShapeTofasChassis"]
 size = Vector3(1.7, 0.9, 4.2)
 
@@ -577,6 +508,9 @@ material_override = SubResource("MatFloor")
 mesh = SubResource("BoxMesh_carum")
 
 [node name="FloorCollision" type="StaticBody3D" parent="." unique_id=697040111]
+
+[node name="FloorShape" type="CollisionShape3D" parent="FloorCollision" unique_id=915111853]
+shape = SubResource("ShapeFloor")
 
 [node name="BackWall" type="StaticBody3D" parent="." unique_id=1196200093]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.6, -5.875)
@@ -860,70 +794,7 @@ shape = SubResource("PlayerShape")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.7549808, 0)
 current = true
 
-[node name="FirstPersonHands" type="Node3D" parent="Player/Camera3D" unique_id=967626768]
-
-[node name="LinkerArm" type="MeshInstance3D" parent="Player/Camera3D/FirstPersonHands" unique_id=1617559517]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.3240586, -0.53935146, -0.53999996)
-material_override = SubResource("MatSleeve")
-mesh = SubResource("BoxMesh_5ew0i")
-
-[node name="LinkeHand" type="MeshInstance3D" parent="Player/Camera3D/FirstPersonHands" unique_id=66372260]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.31160235, -0.46044528, -0.72)
-material_override = SubResource("MatSkin")
-mesh = SubResource("HandPalmMesh")
-
-[node name="LinkerFinger1" type="MeshInstance3D" parent="Player/Camera3D/FirstPersonHands" unique_id=1543065741]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.39160234, -0.46044528, -0.94000006)
-material_override = SubResource("MatSkin")
-mesh = SubResource("HandFingerMesh")
-
-[node name="LinkerFinger2" type="MeshInstance3D" parent="Player/Camera3D/FirstPersonHands" unique_id=2034303072]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.33476865, -0.46044528, -0.96000004)
-material_override = SubResource("MatSkin")
-mesh = SubResource("HandFingerMesh")
-
-[node name="LinkerFinger3" type="MeshInstance3D" parent="Player/Camera3D/FirstPersonHands" unique_id=1770769281]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.28160232, -0.46044528, -0.96000004)
-material_override = SubResource("MatSkin")
-mesh = SubResource("HandFingerMesh")
-
-[node name="LinkerDaumen" type="MeshInstance3D" parent="Player/Camera3D/FirstPersonHands" unique_id=537093791]
-transform = Transform3D(0.82, 0, -0.32, 0, 1, 0, 0.32, 0, 0.82, -0.17160232, -0.48044527, -0.79999995)
-material_override = SubResource("MatSkin")
-mesh = SubResource("HandFingerMesh")
-
-[node name="RechterArm" type="MeshInstance3D" parent="Player/Camera3D/FirstPersonHands" unique_id=1717171952]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.33052763, -0.53324795, -0.541307)
-material_override = SubResource("MatSleeve")
-mesh = SubResource("HandArmMesh")
-
-[node name="RechteHand" type="MeshInstance3D" parent="Player/Camera3D/FirstPersonHands" unique_id=987742488]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.3101187, -0.46044528, -0.72)
-material_override = SubResource("MatSkin")
-mesh = SubResource("HandPalmMesh")
-
-[node name="RechterFinger1" type="MeshInstance3D" parent="Player/Camera3D/FirstPersonHands" unique_id=1325339309]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.3901187, -0.46044528, -0.94000006)
-material_override = SubResource("MatSkin")
-mesh = SubResource("HandFingerMesh")
-
-[node name="RechterFinger2" type="MeshInstance3D" parent="Player/Camera3D/FirstPersonHands" unique_id=1685717400]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.33511868, -0.46044528, -0.96000004)
-material_override = SubResource("MatSkin")
-mesh = SubResource("HandFingerMesh")
-
-[node name="RechterFinger3" type="MeshInstance3D" parent="Player/Camera3D/FirstPersonHands" unique_id=1528437063]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.2801187, -0.46044528, -0.96000004)
-material_override = SubResource("MatSkin")
-mesh = SubResource("HandFingerMesh")
-
-[node name="RechterDaumen" type="MeshInstance3D" parent="Player/Camera3D/FirstPersonHands" unique_id=900369773]
-transform = Transform3D(0.82, 0, 0.32, 0, 1, 0, -0.32, 0, 0.82, 0.17011869, -0.48044527, -0.79999995)
-material_override = SubResource("MatSkin")
-mesh = SubResource("HandFingerMesh")
-
 [node name="EigenesAvatarModell" type="Node3D" parent="Player" unique_id=10809920]
-visible = false
 
 [node name="Koerper" type="MeshInstance3D" parent="Player/EigenesAvatarModell" unique_id=740175213]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.1, 0)
@@ -1636,268 +1507,6 @@ transform = Transform3D(0.09, 0, 0, 0, 0.75, 0, 0, 0, 0.09, 0.34000015, 0.290538
 material_override = SubResource("MatMetal")
 mesh = SubResource("BoxSmall")
 
-[node name="StadtAussenbereich" type="Node3D" parent="." unique_id=1873372650]
-
-[node name="Strasse" type="MeshInstance3D" parent="StadtAussenbereich" unique_id=1408603355]
-transform = Transform3D(9, 0, 0, 0, 0.1, 0, 0, 0, 7, 0, 0.0012775585, 14.469238)
-material_override = SubResource("MatAsphalt")
-mesh = SubResource("BoxMesh_qgk83")
-
-[node name="GehwegVorLaden" type="MeshInstance3D" parent="StadtAussenbereich" unique_id=809292951]
-transform = Transform3D(-3.934025e-07, 0, 1.45, 0, 0.13, 0, -9, 0, -6.338151e-08, 0.14007707, 0.0032587945, 7.992426)
-material_override = SubResource("MatConcrete")
-mesh = SubResource("BoxMesh_n18ko")
-
-[node name="GehwegVorLaden3" type="MeshInstance3D" parent="StadtAussenbereich" unique_id=994222131]
-transform = Transform3D(-3.934025e-07, 0, 1.45, 0, 0.13, 0, -9, 0, -6.338151e-08, 9.71775, 0.0032587945, 15.368465)
-material_override = SubResource("MatConcrete")
-mesh = SubResource("BoxMesh_7t4f4")
-
-[node name="GehwegVorLaden4" type="MeshInstance3D" parent="StadtAussenbereich" unique_id=128309859]
-transform = Transform3D(-3.934025e-07, 0, 1.45, 0, 0.13, 0, -9, 0, -6.338151e-08, 16.635897, 0.0032587945, 15.368465)
-material_override = SubResource("MatConcrete")
-mesh = SubResource("BoxMesh_7t4f4")
-
-[node name="GehwegVorLaden2" type="MeshInstance3D" parent="StadtAussenbereich" unique_id=338276778]
-transform = Transform3D(-8.999998, 0, -1.2676303e-07, 0, 0.13, 0, 7.8680483e-07, 0, -1.4499999, 12.69952, -0.014846474, 11.321606)
-material_override = SubResource("MatConcrete")
-mesh = SubResource("BoxMesh_rxwc3")
-
-[node name="Mittellinie1" type="MeshInstance3D" parent="StadtAussenbereich" unique_id=676396700]
-transform = Transform3D(-6.9938215e-09, 0, 1.15, 0, 0.025, 0, -0.15999998, 0, -5.0268095e-08, -2.5294693, 0.23, 12.441484)
-material_override = SubResource("MatStreetLine")
-mesh = SubResource("BoxSmall")
-
-[node name="Mittellinie2" type="MeshInstance3D" parent="StadtAussenbereich" unique_id=562927690]
-transform = Transform3D(-6.993822e-09, 0, 1.15, 0, 0.025, 0, -0.16, 0, -5.0268095e-08, -2.5078292, 0.23, 14.5)
-material_override = SubResource("MatStreetLine")
-mesh = SubResource("BoxSmall")
-
-[node name="Mittellinie3" type="MeshInstance3D" parent="StadtAussenbereich" unique_id=681711119]
-transform = Transform3D(-6.993822e-09, 0, 1.15, 0, 0.025, 0, -0.16, 0, -5.0268095e-08, -2.512763, 0.23, 16.398455)
-material_override = SubResource("MatStreetLine")
-mesh = SubResource("BoxSmall")
-
-[node name="GebaeudeLinks" type="StaticBody3D" parent="StadtAussenbereich" unique_id=1443447185]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.45, 2.5, 20.75)
-
-[node name="GebaeudeRechts" type="StaticBody3D" parent="StadtAussenbereich" unique_id=366005851]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 17.515907, 2.5, 20.75)
-
-[node name="Fassade" type="MeshInstance3D" parent="StadtAussenbereich/GebaeudeRechts" unique_id=1061414673]
-transform = Transform3D(3.55, 0, 0, 0, 6, 0, 0, 0, 2.2, 0.8832202, 0, -0.12528038)
-material_override = SubResource("MatCityFacade")
-mesh = SubResource("BoxMesh_v6mwk")
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="StadtAussenbereich/GebaeudeRechts" unique_id=1250316807]
-transform = Transform3D(3.55, 0, 0, 0, 6, 0, 0, 0, 2.2, 0.6928749, 0.3711915, 0.22446251)
-shape = SubResource("ShapeSmall")
-
-[node name="Fenster1" type="MeshInstance3D" parent="StadtAussenbereich/GebaeudeRechts" unique_id=1892528794]
-transform = Transform3D(0.78, 0, 0, 0, 0.72, 0, 0, 0, 0.03, -0.79115176, 3.1956987, -2.1499996)
-material_override = SubResource("MatCityWindow")
-mesh = SubResource("BoxSmall")
-
-[node name="Fenster2" type="MeshInstance3D" parent="StadtAussenbereich/GebaeudeRechts" unique_id=1901698631]
-transform = Transform3D(0.78, 0, 0, 0, 0.72, 0, 0, 0, 0.03, 0.9088483, 3.1956987, -2.1499996)
-material_override = SubResource("MatCityWindow")
-mesh = SubResource("BoxSmall")
-
-[node name="Fenster3" type="MeshInstance3D" parent="StadtAussenbereich/GebaeudeRechts" unique_id=2042489461]
-transform = Transform3D(0.78, 0, 0, 0, 0.72, 0, 0, 0, 0.03, 2.608848, 3.1956987, -2.1499996)
-material_override = SubResource("MatCityWindow")
-mesh = SubResource("BoxSmall")
-
-[node name="Fenster4" type="MeshInstance3D" parent="StadtAussenbereich/GebaeudeRechts" unique_id=584863699]
-transform = Transform3D(0.78, 0, 0, 0, 0.72, 0, 0, 0, 0.03, -0.79115176, 1.3656712, -2.1499996)
-material_override = SubResource("MatCityWindow")
-mesh = SubResource("BoxSmall")
-
-[node name="Fenster5" type="MeshInstance3D" parent="StadtAussenbereich/GebaeudeRechts" unique_id=542766594]
-transform = Transform3D(0.78, 0, 0, 0, 0.72, 0, 0, 0, 0.03, 0.9088483, 1.3656712, -2.1499996)
-material_override = SubResource("MatCityWindow")
-mesh = SubResource("BoxSmall")
-
-[node name="Fenster6" type="MeshInstance3D" parent="StadtAussenbereich/GebaeudeRechts" unique_id=1374315731]
-transform = Transform3D(0.78, 0, 0, 0, 0.72, 0, 0, 0, 0.03, 2.608848, 1.3656712, -2.1499996)
-material_override = SubResource("MatCityWindow")
-mesh = SubResource("BoxSmall")
-
-[node name="Fenster7" type="MeshInstance3D" parent="StadtAussenbereich/GebaeudeRechts" unique_id=1628805492]
-transform = Transform3D(0.78, 0, 0, 0, 0.72, 0, 0, 0, 0.03, 0.9088483, -0.6937196, -2.1499996)
-material_override = SubResource("MatCityWindow")
-mesh = SubResource("BoxSmall")
-
-[node name="Fenster8" type="MeshInstance3D" parent="StadtAussenbereich/GebaeudeRechts" unique_id=944792412]
-transform = Transform3D(0.78, 0, 0, 0, 0.72, 0, 0, 0, 0.03, 2.608848, -0.6937196, -2.1499996)
-material_override = SubResource("MatCityWindow")
-mesh = SubResource("BoxSmall")
-
-[node name="Eingang" type="MeshInstance3D" parent="StadtAussenbereich/GebaeudeRechts" unique_id=346237284]
-transform = Transform3D(0.72, 0, 0, 0, 1.7, 0, 0, 0, 0.035, -0.8753109, -1.2655013, -2.2299995)
-material_override = SubResource("MatDark")
-mesh = SubResource("BoxSmall")
-
-[node name="Seitenfenster" type="MeshInstance3D" parent="StadtAussenbereich/GebaeudeRechts" unique_id=100773392]
-transform = Transform3D(0.035, 0, 0, 0, 0.72, 0, 0, 0, 0.78, 3.58, 0.7, 0)
-material_override = SubResource("MatCityWindow")
-mesh = SubResource("BoxSmall")
-
-[node name="GebaeudeRechts2" type="StaticBody3D" parent="StadtAussenbereich" unique_id=1388742064]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10.552061, 2.5, 20.75)
-
-[node name="Fassade" type="MeshInstance3D" parent="StadtAussenbereich/GebaeudeRechts2" unique_id=1218980132]
-transform = Transform3D(3.55, 0, 0, 0, 6, 0, 0, 0, 2.2, 0.8832202, 0, -0.12528038)
-material_override = SubResource("MatCityFacade")
-mesh = SubResource("BoxMesh_v6mwk")
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="StadtAussenbereich/GebaeudeRechts2" unique_id=855382348]
-transform = Transform3D(3.55, 0, 0, 0, 6, 0, 0, 0, 2.2, 0.6928749, 0.3711915, 0.22446251)
-shape = SubResource("ShapeSmall")
-
-[node name="Fenster1" type="MeshInstance3D" parent="StadtAussenbereich/GebaeudeRechts2" unique_id=479289990]
-transform = Transform3D(0.78, 0, 0, 0, 0.72, 0, 0, 0, 0.03, -0.79115176, 3.1956987, -2.1499996)
-material_override = SubResource("MatCityWindow")
-mesh = SubResource("BoxSmall")
-
-[node name="Fenster2" type="MeshInstance3D" parent="StadtAussenbereich/GebaeudeRechts2" unique_id=945787707]
-transform = Transform3D(0.78, 0, 0, 0, 0.72, 0, 0, 0, 0.03, 0.9088483, 3.1956987, -2.1499996)
-material_override = SubResource("MatCityWindow")
-mesh = SubResource("BoxSmall")
-
-[node name="Fenster3" type="MeshInstance3D" parent="StadtAussenbereich/GebaeudeRechts2" unique_id=1944208069]
-transform = Transform3D(0.78, 0, 0, 0, 0.72, 0, 0, 0, 0.03, 2.608848, 3.1956987, -2.1499996)
-material_override = SubResource("MatCityWindow")
-mesh = SubResource("BoxSmall")
-
-[node name="Fenster4" type="MeshInstance3D" parent="StadtAussenbereich/GebaeudeRechts2" unique_id=965939292]
-transform = Transform3D(0.78, 0, 0, 0, 0.72, 0, 0, 0, 0.03, -0.79115176, 1.3656712, -2.1499996)
-material_override = SubResource("MatCityWindow")
-mesh = SubResource("BoxSmall")
-
-[node name="Fenster5" type="MeshInstance3D" parent="StadtAussenbereich/GebaeudeRechts2" unique_id=919087322]
-transform = Transform3D(0.78, 0, 0, 0, 0.72, 0, 0, 0, 0.03, 0.9088483, 1.3656712, -2.1499996)
-material_override = SubResource("MatCityWindow")
-mesh = SubResource("BoxSmall")
-
-[node name="Fenster6" type="MeshInstance3D" parent="StadtAussenbereich/GebaeudeRechts2" unique_id=2009246097]
-transform = Transform3D(0.78, 0, 0, 0, 0.72, 0, 0, 0, 0.03, 2.608848, 1.3656712, -2.1499996)
-material_override = SubResource("MatCityWindow")
-mesh = SubResource("BoxSmall")
-
-[node name="Fenster7" type="MeshInstance3D" parent="StadtAussenbereich/GebaeudeRechts2" unique_id=936898372]
-transform = Transform3D(0.78, 0, 0, 0, 0.72, 0, 0, 0, 0.03, 0.9088483, -0.6937196, -2.1499996)
-material_override = SubResource("MatCityWindow")
-mesh = SubResource("BoxSmall")
-
-[node name="Fenster8" type="MeshInstance3D" parent="StadtAussenbereich/GebaeudeRechts2" unique_id=1480758644]
-transform = Transform3D(0.78, 0, 0, 0, 0.72, 0, 0, 0, 0.03, 2.608848, -0.6937196, -2.1499996)
-material_override = SubResource("MatCityWindow")
-mesh = SubResource("BoxSmall")
-
-[node name="Eingang" type="MeshInstance3D" parent="StadtAussenbereich/GebaeudeRechts2" unique_id=2126189979]
-transform = Transform3D(0.72, 0, 0, 0, 1.7, 0, 0, 0, 0.035, -0.8753109, -1.2655013, -2.2299995)
-material_override = SubResource("MatDark")
-mesh = SubResource("BoxSmall")
-
-[node name="Seitenfenster" type="MeshInstance3D" parent="StadtAussenbereich/GebaeudeRechts2" unique_id=1612680259]
-transform = Transform3D(0.035, 0, 0, 0, 0.72, 0, 0, 0, 0.78, 3.58, 0.7, 0)
-material_override = SubResource("MatCityWindow")
-mesh = SubResource("BoxSmall")
-
-[node name="LaterneLinks" type="Node3D" parent="StadtAussenbereich" unique_id=387675688]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.4, 0, 10.2)
-
-[node name="Mast" type="MeshInstance3D" parent="StadtAussenbereich/LaterneLinks" unique_id=52420543]
-transform = Transform3D(0.1, 0, 0, 0, 1.65, 0, 0, 0, 0.1, 0, 1.98, 0)
-mesh = SubResource("Cylinder")
-
-[node name="Lampe" type="MeshInstance3D" parent="StadtAussenbereich/LaterneLinks" unique_id=1659000833]
-transform = Transform3D(0.28, 0, 0, 0, 0.12, 0, 0, 0, 0.28, 0, 3.9, 0)
-material_override = SubResource("MatYellow")
-mesh = SubResource("BoxSmall")
-
-[node name="Licht" type="OmniLight3D" parent="StadtAussenbereich/LaterneLinks" unique_id=450568079]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.72, 0)
-light_color = Color(1, 0.68, 0.28, 1)
-light_energy = 2.2
-omni_range = 6.0
-
-[node name="LaterneRechts" type="Node3D" parent="StadtAussenbereich" unique_id=491446931]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.4, 0, 18.7)
-
-[node name="Mast" type="MeshInstance3D" parent="StadtAussenbereich/LaterneRechts" unique_id=1379086944]
-transform = Transform3D(0.1, 0, 0, 0, 1.65, 0, 0, 0, 0.1, -7.2473245, 1.98, -4.191164)
-mesh = SubResource("Cylinder")
-
-[node name="Lampe" type="MeshInstance3D" parent="StadtAussenbereich/LaterneRechts" unique_id=825885741]
-transform = Transform3D(0.28, 0, 0, 0, 0.12, 0, 0, 0, 0.28, -7.2473245, 3.9, -4.191164)
-material_override = SubResource("MatYellow")
-mesh = SubResource("BoxSmall")
-
-[node name="Licht" type="OmniLight3D" parent="StadtAussenbereich/LaterneRechts" unique_id=1242643690]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.2473245, 3.72, -4.191164)
-light_color = Color(1, 0.68, 0.28, 1)
-light_energy = 2.2
-omni_range = 6.0
-
-[node name="Pflanzkuebel" type="MeshInstance3D" parent="StadtAussenbereich" unique_id=1279985182]
-transform = Transform3D(0.48, 0, 0, 0, 0.34, 0, 0, 0, 0.48, -14.045101, 1.1155157, 17.312477)
-material_override = SubResource("MatConcrete")
-mesh = SubResource("BoxMesh_0dgb0")
-
-[node name="Baumkrone" type="MeshInstance3D" parent="StadtAussenbereich" unique_id=631003719]
-transform = Transform3D(0.85, 0, 0, 0, 0.8, 0, 0, 0, 0.85, -14.029526, 3.7860675, 17.357904)
-material_override = SubResource("MatLeaf")
-mesh = SubResource("BoxMesh_7cpnk")
-
-[node name="Pflanzkuebel2" type="MeshInstance3D" parent="StadtAussenbereich" unique_id=363028478]
-transform = Transform3D(0.48, 0, 0, 0, 0.34, 0, 0, 0, 0.48, -14.045101, 1.1155157, 19.956823)
-material_override = SubResource("MatConcrete")
-mesh = SubResource("BoxMesh_0dgb0")
-
-[node name="Baumkrone2" type="MeshInstance3D" parent="StadtAussenbereich" unique_id=504803278]
-transform = Transform3D(0.85, 0, 0, 0, 0.8, 0, 0, 0, 0.85, -14.029526, 3.7860675, 20.00225)
-material_override = SubResource("MatLeaf")
-mesh = SubResource("BoxMesh_7cpnk")
-
-[node name="Pflanzkuebel3" type="MeshInstance3D" parent="StadtAussenbereich" unique_id=427020001]
-transform = Transform3D(0.48, 0, 0, 0, 0.34, 0, 0, 0, 0.48, -14.045101, 1.1155157, 22.963087)
-material_override = SubResource("MatConcrete")
-mesh = SubResource("BoxMesh_0dgb0")
-
-[node name="Baumkrone3" type="MeshInstance3D" parent="StadtAussenbereich" unique_id=1528869800]
-transform = Transform3D(0.85, 0, 0, 0, 0.8, 0, 0, 0, 0.85, -14.029526, 3.7860675, 23.008512)
-material_override = SubResource("MatLeaf")
-mesh = SubResource("BoxMesh_7cpnk")
-
-[node name="GrasUmgebung" type="StaticBody3D" parent="StadtAussenbereich" unique_id=776127876]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.13, 5)
-
-[node name="Grasebene" type="MeshInstance3D" parent="StadtAussenbereich/GrasUmgebung" unique_id=966920196]
-transform = Transform3D(60, 0, 0, 0, 0.1, 0, 0, 0, 60, -0.07631445, -0.023650885, -0.015674591)
-material_override = SubResource("MatGrass")
-mesh = SubResource("BoxSmall")
-
-[node name="Grasebene2" type="MeshInstance3D" parent="StadtAussenbereich/GrasUmgebung" unique_id=823313869]
-transform = Transform3D(60, 0, 0, 0, 0.1, 0, 0, 0, 60, 58.471596, -0.023650885, -0.015674591)
-material_override = SubResource("MatGrass")
-mesh = SubResource("BoxSmall")
-
-[node name="Grasebene3" type="MeshInstance3D" parent="StadtAussenbereich/GrasUmgebung" unique_id=1157451728]
-transform = Transform3D(60, 0, 0, 0, 0.1, 0, 0, 0, 60, 58.471596, -0.023650885, 58.68053)
-material_override = SubResource("MatGrass")
-mesh = SubResource("BoxSmall")
-
-[node name="Grasebene4" type="MeshInstance3D" parent="StadtAussenbereich/GrasUmgebung" unique_id=249726097]
-transform = Transform3D(60, 0, 0, 0, 0.1, 0, 0, 0, 60, 0.24126434, -0.023650885, 58.68053)
-material_override = SubResource("MatGrass")
-mesh = SubResource("BoxSmall")
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="StadtAussenbereich/GrasUmgebung" unique_id=1498455853]
-transform = Transform3D(60, 0, 0, 0, 0.1, 0, 0, 0, 60, 26.775743, -0.061802864, 30.71576)
-shape = SubResource("BoxShape3D_v6cui")
-
 [node name="TOFAS" type="StaticBody3D" parent="." unique_id=1334721801]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.12887, 0.19248784, 15.670392)
 
@@ -2409,5 +2018,5 @@ texture = ExtResource("4_j7xc5")
 transform = Transform3D(0.24, 0, 0, 0, 0.15, 0, 0, 0, 5.949, -0.013628006, 1.2413557, 0.13912582)
 texture = ExtResource("5_h3k53")
 
-[node name="OceanViewHotel" parent="." unique_id=1876917207 instance=ExtResource("9_6pmx1")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 19.837439, 0, 2.1543522)
+[node name="CityExpansion" type="Node3D" parent="." unique_id=698820750]
+script = ExtResource("10_city_expansion")
