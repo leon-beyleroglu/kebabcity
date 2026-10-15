@@ -232,21 +232,23 @@ func _unhandled_input(event: InputEvent) -> void:
 		_return_held()
 		get_viewport().set_input_as_handled()
 
-func _pickup(item: Area3D) -> void:
+func _pickup(target: Area3D) -> void:
 	if held_item:
 		_return_held()
-	held_origin_station = item.get_meta("prep_station", null) as Node3D
+	held_origin_station = null
+	if target.has_meta("prep_station"):
+		held_origin_station = target.get_meta("prep_station") as Node3D
 	if is_instance_valid(held_origin_station):
-		held_origin_transform = item.global_transform
-		held_origin_station.call("remove_item", item)
+		held_origin_transform = target.global_transform
+		held_origin_station.call("remove_item", target)
 	else:
 		held_origin_transform = Transform3D.IDENTITY
-	held_item = item
+	held_item = target
 	held_item.pickup()
 	held_visual = Node3D.new()
-	held_visual.name = "Held_%s" % item.item_id
+	held_visual.name = "Held_%s" % target.item_id
 	hold_socket.add_child(held_visual)
-	_create_item_model(held_visual, item.item_id, true)
+	_create_item_model(held_visual, target.item_id, true)
 
 func _return_held() -> void:
 	if not held_item:
@@ -400,7 +402,7 @@ func _spawn_meat_portion() -> void:
 	item.name = "CutMeatPortion_%02d" % portions_created
 	get_tree().current_scene.add_child(item)
 	var row := (portions_created - 1) % 4
-	var stack := (portions_created - 1) / 4
+	var stack := floori(float(portions_created - 1) / 4.0)
 	item.global_position = meat_visual.global_position + Vector3(0.7 + row * 0.24, -0.95 + stack * 0.08, 1.0)
 	var visual := Node3D.new()
 	visual.name = "FreshCutMeat"
@@ -414,17 +416,17 @@ func _create_item_model(parent: Node3D, id: String, held: bool) -> void:
 		"salad":
 			_add_bowl(parent, Color("d9d4c5"))
 			for i in range(9):
-				var leaf := _box(parent, Vector3((i % 3 - 1) * 0.09, 0.04 + (i / 3) * 0.025, (i % 2) * 0.09 - 0.045), Vector3(0.14, 0.035, 0.1), Color("4f9d49"))
+				var leaf := _box(parent, Vector3((i % 3 - 1) * 0.09, 0.04 + floori(float(i) / 3.0) * 0.025, (i % 2) * 0.09 - 0.045), Vector3(0.14, 0.035, 0.1), Color("4f9d49"))
 				leaf.rotation.y = i * 0.73
 		"tomato":
 			_add_bowl(parent, Color("d9d4c5"))
 			for i in range(7):
-				var slice := _cylinder(parent, Vector3((i % 3 - 1) * 0.09, 0.05 + (i / 3) * 0.025, (i % 2) * 0.08 - 0.04), 0.075, 0.018, Color("d94b3e"))
+				var slice := _cylinder(parent, Vector3((i % 3 - 1) * 0.09, 0.05 + floori(float(i) / 3.0) * 0.025, (i % 2) * 0.08 - 0.04), 0.075, 0.018, Color("d94b3e"))
 				slice.rotation = Vector3(0, i * 0.7, 0.05)
 		"cucumber":
 			_add_bowl(parent, Color("d9d4c5"))
 			for i in range(8):
-				var strip := _box(parent, Vector3((i % 4 - 1.5) * 0.055, 0.065 + (i / 4) * 0.035, (i % 2) * 0.07 - 0.035), Vector3(0.045, 0.035, 0.25), Color("498448"))
+				var strip := _box(parent, Vector3((i % 4 - 1.5) * 0.055, 0.065 + floori(float(i) / 4.0) * 0.035, (i % 2) * 0.07 - 0.035), Vector3(0.045, 0.035, 0.25), Color("498448"))
 				strip.rotation.y = (i - 3) * 0.12
 		"lavash":
 			for i in range(3):
@@ -437,7 +439,7 @@ func _create_item_model(parent: Node3D, id: String, held: bool) -> void:
 		"cut_meat":
 			_add_bowl(parent, Color("b9b0a0"))
 			for i in range(11):
-				var shaving := _box(parent, Vector3((i % 4 - 1.5) * 0.055, 0.045 + (i / 4) * 0.025, (i % 3 - 1) * 0.05), Vector3(0.045, 0.035, 0.2), Color("824029"))
+				var shaving := _box(parent, Vector3((i % 4 - 1.5) * 0.055, 0.045 + floori(float(i) / 4.0) * 0.025, (i % 3 - 1) * 0.05), Vector3(0.045, 0.035, 0.2), Color("824029"))
 				shaving.rotation.y = i * 0.77
 	if held:
 		parent.scale = Vector3.ONE * (0.85 if id != "knife" else 1.0)
@@ -448,7 +450,7 @@ func _add_bowl(parent: Node3D, color: Color) -> void:
 	var bowl := _cylinder(parent, Vector3(0, -0.035, 0), 0.24, 0.08, color)
 	bowl.scale.z = 0.72
 
-func _box(parent: Node3D, position: Vector3, size: Vector3, color: Color, metallic := 0.0) -> MeshInstance3D:
+func _box(parent: Node3D, new_position: Vector3, size: Vector3, color: Color, metallic := 0.0) -> MeshInstance3D:
 	var material := StandardMaterial3D.new()
 	material.albedo_color = color
 	material.roughness = 0.55
@@ -458,11 +460,11 @@ func _box(parent: Node3D, position: Vector3, size: Vector3, color: Color, metall
 	mesh.material = material
 	var instance := MeshInstance3D.new()
 	instance.mesh = mesh
-	instance.position = position
+	instance.position = new_position
 	parent.add_child(instance)
 	return instance
 
-func _cylinder(parent: Node3D, position: Vector3, radius: float, height: float, color: Color) -> MeshInstance3D:
+func _cylinder(parent: Node3D, new_position: Vector3, radius: float, height: float, color: Color) -> MeshInstance3D:
 	var material := StandardMaterial3D.new()
 	material.albedo_color = color
 	material.roughness = 0.68
@@ -474,6 +476,6 @@ func _cylinder(parent: Node3D, position: Vector3, radius: float, height: float, 
 	mesh.material = material
 	var instance := MeshInstance3D.new()
 	instance.mesh = mesh
-	instance.position = position
+	instance.position = new_position
 	parent.add_child(instance)
 	return instance

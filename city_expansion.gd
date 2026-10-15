@@ -31,9 +31,9 @@ func _mat(color: Color, emission: float = 0.0) -> StandardMaterial3D:
 	_materials[key] = material
 	return material
 
-func _box(parent: Node3D, name: String, pos: Vector3, size: Vector3, color: Color, solid := false, emission := 0.0) -> MeshInstance3D:
+func _box(parent: Node3D, item_name: String, pos: Vector3, size: Vector3, color: Color, solid := false, emission := 0.0) -> MeshInstance3D:
 	var mesh_instance := MeshInstance3D.new()
-	mesh_instance.name = name
+	mesh_instance.name = item_name
 	var mesh := BoxMesh.new()
 	mesh.size = size
 	mesh.material = _mat(color, emission)
@@ -42,7 +42,7 @@ func _box(parent: Node3D, name: String, pos: Vector3, size: Vector3, color: Colo
 	parent.add_child(mesh_instance)
 	if solid:
 		var body := StaticBody3D.new()
-		body.name = name + "Collision"
+		body.name = item_name + "Collision"
 		body.position = pos
 		var shape_node := CollisionShape3D.new()
 		var shape := BoxShape3D.new()
@@ -64,9 +64,9 @@ func _add_ground_collision() -> void:
 	ground_body.add_child(ground_shape)
 	add_child(ground_body)
 
-func _cylinder(parent: Node3D, name: String, pos: Vector3, radius: float, height: float, color: Color) -> void:
+func _cylinder(parent: Node3D, item_name: String, pos: Vector3, radius: float, height: float, color: Color) -> void:
 	var item := MeshInstance3D.new()
-	item.name = name
+	item.name = item_name
 	var mesh := CylinderMesh.new()
 	mesh.top_radius = radius
 	mesh.bottom_radius = radius
@@ -145,9 +145,9 @@ func _road_z(z: float) -> void:
 	for x in range(-62, 64, 8):
 		_box(self, "Dashed lane marking", Vector3(float(x), 0.018, z), Vector3(3.5, 0.025, 0.13), PAINT)
 
-func _build_building(x: float, z: float, seed: int) -> void:
+func _build_building(x: float, z: float, seed_val: int) -> void:
 	var building := Node3D.new()
-	building.name = "Pastel block %02d" % seed
+	building.name = "Pastel block %02d" % seed_val
 	building.position = Vector3(x, 0, z)
 	add_child(building)
 	var width := _rng.randf_range(10.0, 15.0)
@@ -161,32 +161,32 @@ func _build_building(x: float, z: float, seed: int) -> void:
 	_box(building, "Left deco pilaster", Vector3(-width * 0.47, height * 0.5, -depth * 0.51), Vector3(0.3, height + 0.18, 0.28), Color("f8dfbd"))
 	_box(building, "Right deco pilaster", Vector3(width * 0.47, height * 0.5, -depth * 0.51), Vector3(0.3, height + 0.18, 0.28), Color("f8dfbd"))
 	# Recessed colored vertical facade bands and repeated bright windows.
-	for floor in range(floors):
-		var wy := 1.25 + float(floor) * 3.1
+	for floor_idx in range(floors):
+		var wy := 1.25 + float(floor_idx) * 3.1
 		for col in range(3):
 			var wx := -width * 0.32 + float(col) * width * 0.32
 			_box(building, "Window", Vector3(wx, wy, -depth * 0.505), Vector3(1.35, 1.65, 0.12), Color("82b8c3"), false, 0.12)
 			_box(building, "Window mullion", Vector3(wx, wy, -depth * 0.55), Vector3(0.07, 1.65, 0.08), Color("f8dfbd"))
 			_box(building, "Window crossbar", Vector3(wx, wy, -depth * 0.55), Vector3(1.35, 0.07, 0.08), Color("f8dfbd"))
 			_box(building, "Window ledge", Vector3(wx, wy - 0.9, -depth * 0.54), Vector3(1.65, 0.14, 0.35), Color("f7d7ab"))
-			if floor > 0 and col != 1:
+			if floor_idx > 0 and col != 1:
 				_add_balcony(building, wx, wy - 0.1, -depth * 0.72)
-		_box(building, "Horizontal deco trim", Vector3(0, 0.55 + float(floor) * 3.1, -depth * 0.52), Vector3(width + 0.25, 0.2, 0.28), Color("fae5bf"))
+		_box(building, "Horizontal deco trim", Vector3(0, 0.55 + float(floor_idx) * 3.1, -depth * 0.52), Vector3(width + 0.25, 0.2, 0.28), Color("fae5bf"))
 	_box(building, "Shop awning", Vector3(0, 2.45, -depth * 0.57), Vector3(width * 0.46, 0.3, 1.15), Color("e75e58"))
 	_box(building, "Storefront glass", Vector3(0, 1.15, -depth * 0.525), Vector3(width * 0.76, 1.95, 0.1), Color("527b83"), false, 0.08)
 	_box(building, "Storefront door", Vector3(width * 0.31, 1.05, -depth * 0.59), Vector3(1.0, 2.1, 0.15), Color("d7c5a5"))
 	_box(building, "Neon shop sign", Vector3(0, 2.95, -depth * 0.65), Vector3(width * 0.48, 0.58, 0.16), Color("ff5fa2"), false, 2.4)
-	var sign := Label3D.new()
-	sign.name = "Art deco shop lettering"
-	sign.text = ["OCEAN VIEW", "MOTEL", "SUNSET CLUB", "PALM HOTEL", "VICE MARKET", "CORAL BAY"][seed % 6]
-	sign.font_size = 48
-	sign.pixel_size = 0.012
-	sign.position = Vector3(0, 2.95, -depth * 0.75)
-	sign.rotation.y = PI
-	sign.modulate = Color("fff0c8")
-	sign.outline_size = 5
-	sign.outline_modulate = Color("66234e")
-	building.add_child(sign)
+	var sign_val := Label3D.new()
+	sign_val.name = "Art deco shop lettering"
+	sign_val.text = ["OCEAN VIEW", "MOTEL", "SUNSET CLUB", "PALM HOTEL", "VICE MARKET", "CORAL BAY"][seed_val % 6]
+	sign_val.font_size = 48
+	sign_val.pixel_size = 0.012
+	sign_val.position = Vector3(0, 2.95, -depth * 0.75)
+	sign_val.rotation.y = PI
+	sign_val.modulate = Color("fff0c8")
+	sign_val.outline_size = 5
+	sign_val.outline_modulate = Color("66234e")
+	building.add_child(sign_val)
 	_add_rooftop_details(building, width, height, depth)
 
 func _add_balcony(parent: Node3D, x: float, y: float, z: float) -> void:

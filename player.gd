@@ -161,19 +161,19 @@ func _material(color: Color, metallic := 0.0) -> StandardMaterial3D:
 	material.metallic = metallic
 	return material
 
-func _box(parent: Node3D, node_name: String, position: Vector3, size: Vector3, material: Material, rotation := Vector3.ZERO) -> MeshInstance3D:
+func _box(parent: Node3D, node_name: String, new_position: Vector3, size: Vector3, material: Material, new_rotation := Vector3.ZERO) -> MeshInstance3D:
 	var instance := MeshInstance3D.new()
 	instance.name = node_name
 	var mesh := BoxMesh.new()
 	mesh.size = size
 	mesh.material = material
 	instance.mesh = mesh
-	instance.position = position
-	instance.rotation = rotation
+	instance.position = new_position
+	instance.rotation = new_rotation
 	parent.add_child(instance)
 	return instance
 
-func _sphere(parent: Node3D, node_name: String, position: Vector3, scale: Vector3, material: Material) -> MeshInstance3D:
+func _sphere(parent: Node3D, node_name: String, new_position: Vector3, new_scale: Vector3, material: Material) -> MeshInstance3D:
 	var instance := MeshInstance3D.new()
 	instance.name = node_name
 	var mesh := SphereMesh.new()
@@ -183,12 +183,12 @@ func _sphere(parent: Node3D, node_name: String, position: Vector3, scale: Vector
 	mesh.rings = 12
 	mesh.material = material
 	instance.mesh = mesh
-	instance.position = position
-	instance.scale = scale
+	instance.position = new_position
+	instance.scale = new_scale
 	parent.add_child(instance)
 	return instance
 
-func _capsule(parent: Node3D, node_name: String, position: Vector3, radius: float, height: float, material: Material) -> MeshInstance3D:
+func _capsule(parent: Node3D, node_name: String, new_position: Vector3, radius: float, height: float, material: Material) -> MeshInstance3D:
 	var instance := MeshInstance3D.new()
 	instance.name = node_name
 	var mesh := CapsuleMesh.new()
@@ -198,7 +198,7 @@ func _capsule(parent: Node3D, node_name: String, position: Vector3, radius: floa
 	mesh.rings = 8
 	mesh.material = material
 	instance.mesh = mesh
-	instance.position = position
+	instance.position = new_position
 	parent.add_child(instance)
 	return instance
 
