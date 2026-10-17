@@ -107,28 +107,6 @@ func _build_city() -> void:
 	_add_pedestrians()
 	_add_intersections()
 	_add_street_furniture()
-	# Low, warm sunset with saturated coastal colors.
-	var world := WorldEnvironment.new()
-	world.name = "Vice City Evening"
-	var env := Environment.new()
-	env.background_mode = Environment.BG_SKY
-	var sky := Sky.new()
-	var sky_material := ProceduralSkyMaterial.new()
-	sky_material.sky_top_color = Color("253b68")
-	sky_material.sky_horizon_color = Color("f5a06f")
-	sky_material.ground_bottom_color = Color("292b43")
-	sky_material.ground_horizon_color = Color("d88767")
-	sky.sky_material = sky_material
-	env.sky = sky
-	env.ambient_light_source = Environment.AMBIENT_SOURCE_COLOR
-	env.ambient_light_color = Color("f0a77b")
-	env.ambient_light_energy = 0.6
-	env.tonemap_mode = Environment.TONE_MAPPER_FILMIC
-	env.glow_enabled = true
-	env.glow_intensity = 0.35
-	world.environment = env
-	add_child(world)
-
 func _road_x(x: float) -> void:
 	_box(self, "Avenue asphalt", Vector3(x, -0.03, 18), Vector3(10, 0.08, 150), ROAD_DARK, true)
 	for side in [-1.0, 1.0]:

@@ -6,10 +6,11 @@ extends CharacterBody3D
 @export var mouse_sensitivity := 0.002
 @export var acceleration := 20.0
 @export var deceleration := 26.0
+@export var hand_slot: Marker3D
 
 @onready var camera: Camera3D = $Camera3D
 @onready var legacy_avatar: Node3D = $EigenesAvatarModell
-var first_person_hands: Node3D
+@onready var first_person_hands: Node3D = $Camera3D/ArmsHolder
 var avatar_model: Node3D
 var arm_pivots: Array[Node3D] = []
 var leg_pivots: Array[Node3D] = []
@@ -46,15 +47,11 @@ func _ready() -> void:
 	camera_query.collision_mask = collision_mask
 	camera_query.margin = 0.04
 	legacy_avatar.visible = false
-	first_person_hands = Node3D.new()
-	first_person_hands.name = "FirstPersonHands"
-	camera.add_child(first_person_hands)
-	_build_first_person_hands()
 	_build_doner_worker()
 	var interaction_system := InteractionSystem.new()
 	interaction_system.name = "InteractionSystem"
 	add_child(interaction_system)
-	interaction_system.setup(self, camera, first_person_hands)
+	interaction_system.setup(self, camera, hand_slot)
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventKey and event.pressed and not event.echo and event.keycode == KEY_F5:
@@ -284,24 +281,6 @@ func _cook_cap(parent: Node3D, white: Material, trim: Material) -> void:
 	cap_band.scale = Vector3(1.0, 0.55, 0.88)
 	var cap := _sphere(parent, "White cook cap", Vector3(0, 1.31, 0.015), Vector3(0.48, 0.35, 0.43), white)
 	cap.rotation.z = -0.035
-
-func _build_first_person_hands() -> void:
-	var skin := _material(Color("bd805c"))
-	var shirt := _material(Color("173f59"))
-	var cuff := _material(Color("28536a"))
-	for side in [-1.0, 1.0]:
-		var wrist := Vector3(side * 0.29, -0.29, -0.62)
-		_tapered_limb(first_person_hands, "Sleeve", Vector3(side * 0.52, -0.64, -0.1), Vector3(side * 0.43, -0.47, -0.32), 0.12, 0.097, shirt)
-		_tapered_limb(first_person_hands, "RolledCuff", Vector3(side * 0.44, -0.49, -0.29), Vector3(side * 0.42, -0.45, -0.34), 0.103, 0.097, cuff)
-		_tapered_limb(first_person_hands, "Forearm", Vector3(side * 0.43, -0.47, -0.32), wrist, 0.083, 0.055, skin)
-		var hand := HumanHand.new()
-		hand.name = "LeftHand" if side < 0 else "RightHand"
-		first_person_hands.add_child(hand)
-		hand.position = wrist
-		hand.rotation = Vector3(1.12, side * -0.22, side * -0.12)
-		hand.build(side)
-	for mesh in first_person_hands.find_children("*", "MeshInstance3D", true, false):
-		mesh.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 
 func _tapered_limb(parent: Node3D, node_name: String, start: Vector3, end: Vector3, start_radius: float, end_radius: float, material: Material) -> void:
 	var mesh := CylinderMesh.new()

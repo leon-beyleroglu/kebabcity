@@ -11,8 +11,7 @@ const CUT_DURATION := 1.0
 
 var player: CharacterBody3D
 var camera: Camera3D
-var hand_parent: Node3D
-var hold_socket: Node3D
+var hold_socket: Marker3D
 var held_item: Area3D
 var held_visual: Node3D
 var focused_item: Area3D
@@ -32,13 +31,14 @@ var ui_layer: CanvasLayer
 var progress_bar: ProgressBar
 var crosshair: Label
 var cut_audio: AudioStreamPlayer
+var pickup_templates: Dictionary = {}
 
-func setup(owner_player: CharacterBody3D, view_camera: Camera3D, hands: Node3D) -> void:
+func setup(owner_player: CharacterBody3D, view_camera: Camera3D, hand_slot: Marker3D) -> void:
 	player = owner_player
 	camera = view_camera
-	hand_parent = hands
+	hold_socket = hand_slot
+	_resolve_hold_socket()
 	_setup_input()
-	_setup_hold_socket()
 	_setup_ui()
 	_setup_audio()
 	call_deferred("_register_scene_targets")
@@ -54,13 +54,6 @@ func _setup_input() -> void:
 		var drop_key := InputEventKey.new()
 		drop_key.physical_keycode = KEY_Q
 		InputMap.action_add_event("drop_item", drop_key)
-
-func _setup_hold_socket() -> void:
-	hold_socket = Node3D.new()
-	hold_socket.name = "HeldItemSocket"
-	hold_socket.position = Vector3(0.37, -0.28, -0.72)
-	hold_socket.rotation = Vector3(-0.08, 0.16, 0.1)
-	hand_parent.add_child(hold_socket)
 
 func _setup_ui() -> void:
 	ui_layer = CanvasLayer.new()
@@ -123,9 +116,25 @@ func _make_cut_sound() -> AudioStreamWAV:
 
 func _register_scene_targets() -> void:
 	var root := get_tree().current_scene
+	_optimize_small_meshes(root.get_node_or_null("Test Ablage/Kebab Theke/Zutaten"))
+	var templates_root := root.get_node_or_null("Test Ablage/Kebab Theke/PickupTemplates") as Node3D
+	if templates_root:
+		_optimize_small_meshes(templates_root)
+		pickup_templates = {
+			"tomato": templates_root.get_node_or_null("TomatoPortion"),
+			"salad": templates_root.get_node_or_null("SaladPortion"),
+			"red_cabbage": templates_root.get_node_or_null("RedCabbagePortion"),
+			"cucumber": templates_root.get_node_or_null("CucumberPortion"),
+			"mayo": templates_root.get_node_or_null("MayoBottle"),
+			"ketchup": templates_root.get_node_or_null("KetchupBottle"),
+		}
+		templates_root.visible = false
 	_register_existing_item(root.get_node_or_null("Test Ablage/Kebab Theke/Zutaten/Salat"), "salad", "Salat")
 	_register_existing_item(root.get_node_or_null("Test Ablage/Kebab Theke/Zutaten/Tomaten"), "tomato", "Tomaten")
+	_register_existing_item(root.get_node_or_null("Test Ablage/Kebab Theke/Zutaten/Kraut"), "red_cabbage", "Lila Kraut")
 	_register_existing_item(root.get_node_or_null("Test Ablage/Kebab Theke/Zutaten/Gurkenstreifen"), "cucumber", "Gurken")
+	_register_existing_item(root.get_node_or_null("Test Ablage/Kebab Theke/Zutaten/Sossen/Mayonnaise"), "mayo", "Mayonnaise")
+	_register_existing_item(root.get_node_or_null("Test Ablage/Kebab Theke/Zutaten/Sossen/Ketchup"), "ketchup", "Ketchup")
 	_register_existing_item(root.get_node_or_null("Test Ablage/Kebab Theke/LavashAblage/Lavash3"), "lavash", "Lavash")
 	meat_visual = root.get_node_or_null("DonerSpit/Meat") as MeshInstance3D
 	if meat_visual:
@@ -134,18 +143,37 @@ func _register_scene_targets() -> void:
 	var knife_snap := root.get_node_or_null("KnifeWallMount/KnifeSnap") as Marker3D
 	var knife_visual := root.get_node_or_null("KnifeWallMount/KnifePreview") as Node3D
 	if knife_mount and knife_snap and knife_visual:
+		_optimize_small_meshes(knife_visual)
 		_register_mounted_knife(knife_mount, knife_snap, knife_visual)
 
-func _register_existing_item(visual: MeshInstance3D, id: String, label: String) -> void:
-	if not visual or not visual.mesh:
+func _optimize_small_meshes(root: Node) -> void:
+	if not is_instance_valid(root):
+		return
+	var root_mesh := root as MeshInstance3D
+	if root_mesh:
+		root_mesh.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+		root_mesh.gi_mode = GeometryInstance3D.GI_MODE_DISABLED
+	for mesh in root.find_children("*", "MeshInstance3D", true, false):
+		mesh.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+		mesh.gi_mode = GeometryInstance3D.GI_MODE_DISABLED
+
+func _register_existing_item(visual: Node3D, id: String, label: String) -> void:
+	if not visual:
 		push_warning("Interaktionsobjekt fehlt: %s" % label)
 		return
 	var item: Area3D = InteractableItemScript.new()
 	item.name = label + "Interaction"
 	get_tree().current_scene.add_child(item)
 	item.global_transform = visual.global_transform
-	_add_box_collider(item, visual.mesh.get_aabb().size * 1.35)
+	_add_box_collider(item, _counter_pickup_size(id))
 	item.configure(id, label, visual)
+
+func _counter_pickup_size(item_id: String) -> Vector3:
+	if item_id in ["mayo", "ketchup"]:
+		return Vector3(0.38, 0.9, 0.38)
+	if item_id == "lavash":
+		return Vector3(0.8, 0.2, 0.55)
+	return Vector3(0.9, 0.36, 0.66)
 
 func _register_meat_station(visual: MeshInstance3D) -> void:
 	var station: Area3D = DonerMeatStationScript.new()
@@ -245,10 +273,53 @@ func _pickup(target: Area3D) -> void:
 		held_origin_transform = Transform3D.IDENTITY
 	held_item = target
 	held_item.pickup()
-	held_visual = Node3D.new()
+	held_visual = _duplicate_pickup_template(target.item_id)
+	if not is_instance_valid(held_visual):
+		held_visual = Node3D.new()
+		_create_item_model(held_visual, target.item_id, true)
 	held_visual.name = "Held_%s" % target.item_id
-	hold_socket.add_child(held_visual)
-	_create_item_model(held_visual, target.item_id, true)
+	if not _attach_held_visual(held_visual):
+		_return_held()
+
+func _resolve_hold_socket() -> Marker3D:
+	if is_instance_valid(hold_socket):
+		return hold_socket
+	if is_instance_valid(camera):
+		hold_socket = camera.get_node_or_null("ArmsHolder/HandAttachmentPoint") as Marker3D
+		if not is_instance_valid(hold_socket):
+			hold_socket = Marker3D.new()
+			hold_socket.name = "RuntimeHandAttachmentPoint"
+			camera.add_child(hold_socket)
+			hold_socket.position = Vector3(0.37, -0.28, -0.72)
+			hold_socket.rotation = Vector3(-0.08, 0.16, 0.1)
+	return hold_socket
+
+func _attach_held_visual(visual: Node3D) -> bool:
+	var socket := _resolve_hold_socket()
+	if not is_instance_valid(socket) or not is_instance_valid(visual):
+		return false
+	if visual.get_parent() == null:
+		socket.add_child(visual)
+	elif visual.get_parent() != socket:
+		visual.reparent(socket, false)
+	visual.visible = true
+	visual.position = Vector3.ZERO
+	visual.rotation = Vector3.ZERO
+	visual.scale = Vector3.ONE * 0.85
+	return true
+
+func _duplicate_pickup_template(item_id: String) -> Node3D:
+	var template := pickup_templates.get(item_id) as Node3D
+	if not is_instance_valid(template):
+		return null
+	var copy := template.duplicate() as Node3D
+	if not is_instance_valid(copy) or copy == template:
+		return null
+	copy.visible = true
+	for mesh in copy.find_children("*", "MeshInstance3D", true, false):
+		mesh.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+		mesh.gi_mode = GeometryInstance3D.GI_MODE_DISABLED
+	return copy
 
 func _return_held() -> void:
 	if not held_item:
@@ -273,10 +344,16 @@ func _place_held_on_prep(station: Node3D, hit_position: Vector3) -> void:
 	if not held_item or not is_instance_valid(station):
 		return
 	if not is_instance_valid(held_item.source_visual) or held_item.source_visual.get_parent() != held_item:
-		var placed_visual := Node3D.new()
-		placed_visual.name = "PlacedVisual"
-		held_item.add_child(placed_visual)
-		_create_item_model(placed_visual, held_item.item_id, false)
+		var placed_visual := _duplicate_pickup_template(held_item.item_id)
+		if placed_visual:
+			placed_visual.name = "PlacedVisual"
+			held_item.add_child(placed_visual)
+			placed_visual.transform = Transform3D.IDENTITY
+		else:
+			placed_visual = Node3D.new()
+			placed_visual.name = "PlacedVisual"
+			held_item.add_child(placed_visual)
+			_create_item_model(placed_visual, held_item.item_id, false)
 		held_item.source_visual = placed_visual
 	else:
 		held_item.source_visual.visible = true
@@ -358,6 +435,8 @@ func _item_collision_size(item_id: String) -> Vector3:
 	match item_id:
 		"knife":
 			return Vector3(0.38, 0.16, 0.9)
+		"mayo", "ketchup":
+			return Vector3(0.34, 0.62, 0.34)
 		"lavash":
 			return Vector3(0.55, 0.2, 0.4)
 		"cut_meat":
@@ -413,21 +492,6 @@ func _spawn_meat_portion() -> void:
 
 func _create_item_model(parent: Node3D, id: String, held: bool) -> void:
 	match id:
-		"salad":
-			_add_bowl(parent, Color("d9d4c5"))
-			for i in range(9):
-				var leaf := _box(parent, Vector3((i % 3 - 1) * 0.09, 0.04 + floori(float(i) / 3.0) * 0.025, (i % 2) * 0.09 - 0.045), Vector3(0.14, 0.035, 0.1), Color("4f9d49"))
-				leaf.rotation.y = i * 0.73
-		"tomato":
-			_add_bowl(parent, Color("d9d4c5"))
-			for i in range(7):
-				var slice := _cylinder(parent, Vector3((i % 3 - 1) * 0.09, 0.05 + floori(float(i) / 3.0) * 0.025, (i % 2) * 0.08 - 0.04), 0.075, 0.018, Color("d94b3e"))
-				slice.rotation = Vector3(0, i * 0.7, 0.05)
-		"cucumber":
-			_add_bowl(parent, Color("d9d4c5"))
-			for i in range(8):
-				var strip := _box(parent, Vector3((i % 4 - 1.5) * 0.055, 0.065 + floori(float(i) / 4.0) * 0.035, (i % 2) * 0.07 - 0.035), Vector3(0.045, 0.035, 0.25), Color("498448"))
-				strip.rotation.y = (i - 3) * 0.12
 		"lavash":
 			for i in range(3):
 				var bread := _box(parent, Vector3(0, i * 0.035, 0), Vector3(0.48, 0.025, 0.32), Color("d9ad6d"))
@@ -445,6 +509,7 @@ func _create_item_model(parent: Node3D, id: String, held: bool) -> void:
 		parent.scale = Vector3.ONE * (0.85 if id != "knife" else 1.0)
 	for mesh in parent.find_children("*", "MeshInstance3D", true, false):
 		mesh.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+		mesh.gi_mode = GeometryInstance3D.GI_MODE_DISABLED
 
 func _add_bowl(parent: Node3D, color: Color) -> void:
 	var bowl := _cylinder(parent, Vector3(0, -0.035, 0), 0.24, 0.08, color)
