@@ -22,13 +22,13 @@ var focused_meat: Area3D
 var focused_prep: Node3D
 var focused_knife_mount: Node3D
 var focused_oven: StaticBody3D
+var focused_sauce_bin: Area3D
 var focus_hit_position := Vector3.ZERO
 var held_origin_station: Node3D
 var held_origin_transform := Transform3D.IDENTITY
 var meat_visual: Node3D
 var meat_spawn_point: Marker3D
 var cut_progress := 0.0
-var cut_sound_timer := 0.0
 var cut_anim_time := 0.0
 var cut_requires_release := false
 var portions_created := 0
@@ -40,11 +40,10 @@ var oven_heating_elements: Node3D
 var oven_slot_visual: Node3D
 var oven_state := OvenState.IDLE
 var oven_time_left := 0.0
+var held_sauce_home: Node3D
 
 var ui_layer: CanvasLayer
-var progress_bar: ProgressBar
 var crosshair: Label
-var cut_audio: AudioStreamPlayer
 var pickup_templates: Dictionary = {}
 
 func setup(owner_player: CharacterBody3D, view_camera: Camera3D, hand_slot: Marker3D) -> void:
@@ -54,7 +53,6 @@ func setup(owner_player: CharacterBody3D, view_camera: Camera3D, hand_slot: Mark
 	_resolve_hold_socket()
 	_setup_input()
 	_setup_ui()
-	_setup_audio()
 	call_deferred("_register_scene_targets")
 
 func _setup_input() -> void:
@@ -90,44 +88,6 @@ func _setup_ui() -> void:
 	crosshair.size = Vector2(20, 26)
 	root.add_child(crosshair)
 
-	progress_bar = ProgressBar.new()
-	progress_bar.set_anchors_preset(Control.PRESET_CENTER_BOTTOM)
-	progress_bar.position = Vector2(-180, -50)
-	progress_bar.size = Vector2(360, 14)
-	progress_bar.min_value = 0
-	progress_bar.max_value = 1
-	progress_bar.show_percentage = false
-	progress_bar.visible = false
-	root.add_child(progress_bar)
-
-func _setup_audio() -> void:
-	cut_audio = AudioStreamPlayer.new()
-	cut_audio.name = "GeneratedCutSound"
-	cut_audio.volume_db = -7.0
-	cut_audio.stream = _make_cut_sound()
-	add_child(cut_audio)
-
-func _make_cut_sound() -> AudioStreamWAV:
-	var sample_rate := 22050
-	var duration := 0.16
-	var count := int(sample_rate * duration)
-	var data := PackedByteArray()
-	data.resize(count * 2)
-	var rng := RandomNumberGenerator.new()
-	rng.seed = 4571
-	for i in range(count):
-		var t := float(i) / float(sample_rate)
-		var envelope := pow(1.0 - t / duration, 2.2)
-		var scrape := sin(TAU * (880.0 - t * 2100.0) * t) * 0.55
-		var noise := rng.randf_range(-1.0, 1.0) * 0.35
-		data.encode_s16(i * 2, int(clampf((scrape + noise) * envelope, -1.0, 1.0) * 26000.0))
-	var stream := AudioStreamWAV.new()
-	stream.format = AudioStreamWAV.FORMAT_16_BITS
-	stream.mix_rate = sample_rate
-	stream.stereo = false
-	stream.data = data
-	return stream
-
 func _register_scene_targets() -> void:
 	var root := get_tree().current_scene
 	_optimize_small_meshes(root.get_node_or_null("Test Ablage/Kebab Theke/Zutaten"))
@@ -140,8 +100,10 @@ func _register_scene_targets() -> void:
 			"red_cabbage": templates_root.get_node_or_null("RedCabbagePortion"),
 			"onion": templates_root.get_node_or_null("OnionPortion"),
 			"cucumber": templates_root.get_node_or_null("CucumberPortion"),
-			"mayo": templates_root.get_node_or_null("MayoBottle"),
-			"ketchup": templates_root.get_node_or_null("KetchupBottle"),
+			"garlic_sauce_ladle": templates_root.get_node_or_null("GarlicSauceLadle"),
+			"cocktail_sauce_ladle": templates_root.get_node_or_null("CocktailSauceLadle"),
+			"garlic_sauce": templates_root.get_node_or_null("GarlicSaucePortion"),
+			"cocktail_sauce": templates_root.get_node_or_null("CocktailSaucePortion"),
 			"lavash": templates_root.get_node_or_null("LavashPiece"),
 			"baked_lavash": templates_root.get_node_or_null("ToastedLavashTemplate"),
 			"cut_meat": templates_root.get_node_or_null("MeatPortion"),
@@ -152,8 +114,6 @@ func _register_scene_targets() -> void:
 	_register_existing_item(root.get_node_or_null("Test Ablage/Kebab Theke/Zutaten/Kraut"), "red_cabbage", "Lila Kraut")
 	_register_existing_item(root.get_node_or_null("Test Ablage/Kebab Theke/Zutaten/Zwiebeln"), "onion", "Zwiebeln")
 	_register_existing_item(root.get_node_or_null("Test Ablage/Kebab Theke/Zutaten/Gurkenstreifen"), "cucumber", "Gurken")
-	_register_existing_item(root.get_node_or_null("Test Ablage/Kebab Theke/Zutaten/Sossen/Mayonnaise"), "mayo", "Mayonnaise")
-	_register_existing_item(root.get_node_or_null("Test Ablage/Kebab Theke/Zutaten/Sossen/Ketchup"), "ketchup", "Ketchup")
 	_register_existing_item(root.get_node_or_null("Test Ablage/Kebab Theke/LavashAblage/Lavash1"), "lavash", "Lavash")
 	_register_existing_item(root.get_node_or_null("Test Ablage/Kebab Theke/LavashAblage/Lavash2"), "lavash", "Lavash")
 	_register_existing_item(root.get_node_or_null("Test Ablage/Kebab Theke/LavashAblage/Lavash3"), "lavash", "Lavash")
@@ -200,8 +160,6 @@ func _register_existing_item(visual: Node3D, id: String, label: String) -> void:
 		item.set_meta("single_portion_source", true)
 
 func _counter_pickup_size(item_id: String) -> Vector3:
-	if item_id in ["mayo", "ketchup"]:
-		return Vector3(0.38, 0.9, 0.38)
 	if item_id == "lavash":
 		return Vector3(0.8, 0.2, 0.55)
 	return Vector3(0.9, 0.36, 0.66)
@@ -243,10 +201,10 @@ func _process(delta: float) -> void:
 		focused_prep = null
 		focused_knife_mount = null
 		focused_oven = null
+		focused_sauce_bin = null
 		_reset_cutting()
 		return
 	_update_focus()
-	_update_prompt()
 	_update_cutting(delta)
 
 func _update_focus() -> void:
@@ -255,6 +213,7 @@ func _update_focus() -> void:
 	focused_prep = null
 	focused_knife_mount = null
 	focused_oven = null
+	focused_sauce_bin = null
 	var query := PhysicsRayQueryParameters3D.create(camera.global_position, camera.global_position - camera.global_basis.z * INTERACTION_RANGE, INTERACTION_LAYER)
 	query.collide_with_areas = true
 	query.collide_with_bodies = true
@@ -263,8 +222,12 @@ func _update_focus() -> void:
 		return
 	focus_hit_position = hit["position"]
 	var collider: Object = hit.get("collider")
-	if collider is Area3D and collider.has_meta("interactable") and collider.available and not held_item:
+	if collider is Area3D and collider.has_meta("sauce_ladle_id"):
+		focused_sauce_bin = collider
+	elif collider is Area3D and collider.has_meta("interactable") and collider.available and not held_item:
 		focused_item = collider
+	elif collider is Area3D and collider.has_meta("prep_station"):
+		focused_prep = collider.get_meta("prep_station") as Node3D
 	elif collider is Area3D and collider.has_meta("doner_meat_station"):
 		focused_meat = collider
 	elif collider is StaticBody3D and collider.has_meta("oven_interaction"):
@@ -274,12 +237,6 @@ func _update_focus() -> void:
 	elif collider is Node3D and (collider.is_in_group("prep_surface") or collider.has_meta("assembly_station")):
 		focused_prep = collider
 
-func _update_prompt() -> void:
-	progress_bar.visible = false
-	if focused_meat and held_item and held_item.item_id == "knife":
-		progress_bar.visible = true
-		progress_bar.value = cut_progress / CUT_DURATION
-
 func _unhandled_input(event: InputEvent) -> void:
 	if not player or player.third_person or not camera.current:
 		return
@@ -288,8 +245,12 @@ func _unhandled_input(event: InputEvent) -> void:
 			_place_knife_on_mount(focused_knife_mount)
 		elif focused_oven:
 			_interact_with_oven()
+		elif focused_sauce_bin:
+			_interact_with_sauce_bin(focused_sauce_bin)
 		elif focused_prep and held_item:
-			if held_item.item_id != "knife":
+			if _is_sauce_ladle(held_item.item_id):
+				_apply_sauce_to_prep(focused_prep, focus_hit_position)
+			elif held_item.item_id != "knife":
 				_place_held_on_prep(focused_prep, focus_hit_position)
 		elif focused_item and not held_item:
 			_pickup(focused_item)
@@ -306,6 +267,7 @@ func _pickup(target: Area3D) -> void:
 	if target.has_meta("single_portion_source"):
 		_pickup_single_portion(target)
 		return
+	var placed_visual := target.source_visual as Node3D
 	held_origin_station = null
 	if target.has_meta("prep_station"):
 		held_origin_station = target.get_meta("prep_station") as Node3D
@@ -316,7 +278,7 @@ func _pickup(target: Area3D) -> void:
 		held_origin_transform = Transform3D.IDENTITY
 	held_item = target
 	held_item.pickup()
-	held_visual = _duplicate_pickup_template(target.item_id)
+	held_visual = placed_visual if is_instance_valid(held_origin_station) and is_instance_valid(placed_visual) else _duplicate_pickup_template(target.item_id)
 	if not is_instance_valid(held_visual):
 		if target.item_id != "knife":
 			_return_held()
@@ -345,6 +307,96 @@ func _pickup_single_portion(source: Area3D) -> void:
 	held_visual.name = "Held_%s" % source.item_id
 	if not _attach_held_visual(held_visual):
 		_return_held()
+
+
+func _is_sauce_ladle(item_id: String) -> bool:
+	return item_id == "garlic_sauce_ladle" or item_id == "cocktail_sauce_ladle"
+
+
+func _interact_with_sauce_bin(bin: Area3D) -> void:
+	if not is_instance_valid(bin):
+		return
+	var ladle_id := String(bin.get_meta("sauce_ladle_id", ""))
+	if held_item:
+		if held_item.item_id == ladle_id:
+			_return_sauce_ladle()
+		return
+	_pickup_sauce_ladle(bin, ladle_id)
+
+
+func _pickup_sauce_ladle(bin: Area3D, ladle_id: String) -> void:
+	if held_item or not _is_sauce_ladle(ladle_id):
+		return
+	var visual := _duplicate_pickup_template(ladle_id)
+	var home := bin.get_parent().get_node_or_null("SauceLadle") as Node3D
+	if not is_instance_valid(visual) or not is_instance_valid(home):
+		if is_instance_valid(visual):
+			visual.queue_free()
+		return
+	var item: Area3D = InteractableItemScript.new()
+	item.name = "Held_%s" % ladle_id
+	get_tree().current_scene.add_child(item)
+	item.global_transform = bin.global_transform
+	_add_box_collider(item, _item_collision_size(ladle_id))
+	item.configure(ladle_id, String(bin.get_meta("sauce_label", "Soßenkelle")), null, true)
+	item.pickup()
+	held_item = item
+	held_visual = visual
+	held_sauce_home = home
+	held_origin_station = null
+	held_origin_transform = Transform3D.IDENTITY
+	held_sauce_home.visible = false
+	if not _attach_held_visual(held_visual):
+		_return_sauce_ladle()
+
+
+func _apply_sauce_to_prep(station: Node3D, hit_position: Vector3) -> void:
+	if not is_instance_valid(held_item) or not _is_sauce_ladle(held_item.item_id):
+		return
+	var portion_id := "garlic_sauce" if held_item.item_id == "garlic_sauce_ladle" else "cocktail_sauce"
+	var portion_label := "Knoblauchsoße" if portion_id == "garlic_sauce" else "Cocktailsoße"
+	var portion_visual := _duplicate_pickup_template(portion_id)
+	if not is_instance_valid(portion_visual):
+		return
+	var portion: Area3D = InteractableItemScript.new()
+	portion.name = "%sPortion" % portion_id.to_pascal_case()
+	get_tree().current_scene.add_child(portion)
+	portion.global_transform = station.global_transform
+	_add_box_collider(portion, _item_collision_size(portion_id))
+	portion.configure(portion_id, portion_label, portion_visual)
+	var target_slot := station.call("place_item", portion, portion_id, hit_position) as Marker3D
+	if not is_instance_valid(target_slot):
+		portion.queue_free()
+		portion_visual.queue_free()
+		return
+	portion.reparent(target_slot, false)
+	portion.transform = Transform3D.IDENTITY
+	target_slot.add_child(portion_visual)
+	portion_visual.transform = Transform3D.IDENTITY
+	portion_visual.scale = Vector3.ONE
+	portion_visual.visible = true
+	portion.source_visual = portion_visual
+	portion.consumed_on_pickup = false
+	portion.available = true
+	portion.collision_layer = INTERACTION_LAYER | PREP_ITEM_LAYER
+	portion.collision_mask = 0
+	portion.original_transform = portion.global_transform
+	_return_sauce_ladle()
+
+
+func _return_sauce_ladle() -> void:
+	if is_instance_valid(held_visual):
+		held_visual.queue_free()
+	if is_instance_valid(held_item):
+		held_item.queue_free()
+	if is_instance_valid(held_sauce_home):
+		held_sauce_home.visible = true
+	held_item = null
+	held_visual = null
+	held_sauce_home = null
+	held_origin_station = null
+	held_origin_transform = Transform3D.IDENTITY
+	_reset_cutting()
 
 func _resolve_hold_socket() -> Marker3D:
 	if is_instance_valid(hold_socket):
@@ -389,43 +441,45 @@ func _duplicate_pickup_template(item_id: String) -> Node3D:
 func _return_held() -> void:
 	if not held_item:
 		return
+	if _is_sauce_ladle(held_item.item_id):
+		_return_sauce_ladle()
+		return
 	var item := held_item
 	var origin_station := held_origin_station
 	var origin_transform := held_origin_transform
+	if is_instance_valid(origin_station) and is_instance_valid(held_visual):
+		_place_held_on_prep(origin_station, origin_transform.origin)
+		return
 	if is_instance_valid(held_visual):
 		held_visual.queue_free()
 	item.restore()
-	if is_instance_valid(origin_station) and is_instance_valid(item):
-		item.global_transform = origin_transform
-		origin_station.call("place_item", item, item.item_id, origin_transform.origin)
 	held_item = null
 	held_visual = null
+	held_sauce_home = null
 	held_origin_station = null
 	held_origin_transform = Transform3D.IDENTITY
 	_reset_cutting()
 
 
 func _place_held_on_prep(station: Node3D, hit_position: Vector3) -> void:
-	if not held_item or not is_instance_valid(station):
+	if not held_item or not is_instance_valid(held_visual) or not is_instance_valid(station):
 		return
-	if not is_instance_valid(held_item.source_visual) or held_item.source_visual.get_parent() != held_item:
-		var placed_visual := _duplicate_pickup_template(held_item.item_id)
-		if placed_visual:
-			placed_visual.name = "PlacedVisual"
-			held_item.add_child(placed_visual)
-			placed_visual.transform = Transform3D.IDENTITY
-		else:
-			placed_visual = Node3D.new()
-			placed_visual.name = "PlacedVisual"
-			held_item.add_child(placed_visual)
-			_create_item_model(placed_visual, held_item.item_id, false)
-		held_item.source_visual = placed_visual
-	else:
-		held_item.source_visual.visible = true
+	var target_slot := station.call("place_item", held_item, held_item.item_id, hit_position) as Marker3D
+	if not is_instance_valid(target_slot):
+		return
+	var previous_visual := held_item.source_visual as Node3D
+	if is_instance_valid(previous_visual) and previous_visual != held_visual and previous_visual.get_parent() == held_item:
+		previous_visual.queue_free()
 
-	if held_item.get_parent() != station:
-		held_item.reparent(station, true)
-	held_item.global_transform = Transform3D(Basis.IDENTITY, held_item.global_position)
+	if held_item.get_parent() != target_slot:
+		held_item.reparent(target_slot, false)
+	held_item.transform = Transform3D.IDENTITY
+	if held_visual.get_parent() != target_slot:
+		held_visual.reparent(target_slot, false)
+	held_visual.position = Vector3.ZERO
+	held_visual.rotation = Vector3.ZERO
+	held_visual.visible = true
+	held_item.source_visual = held_visual
 
 	for child in held_item.find_children("*", "CollisionShape3D", true, false):
 		var shape := child as CollisionShape3D
@@ -449,13 +503,8 @@ func _place_held_on_prep(station: Node3D, hit_position: Vector3) -> void:
 	held_item.available = true
 	held_item.collision_layer = INTERACTION_LAYER | PREP_ITEM_LAYER
 	held_item.collision_mask = 0
-	var snap_position: Vector3 = station.call("place_item", held_item, held_item.item_id, hit_position)
-	held_item.global_position = snap_position
-	held_item.global_rotation = Vector3(0, player.global_rotation.y, 0)
 	held_item.original_transform = held_item.global_transform
 
-	if is_instance_valid(held_visual):
-		held_visual.queue_free()
 	held_item = null
 	held_visual = null
 	held_origin_station = null
@@ -501,8 +550,10 @@ func _item_collision_size(item_id: String) -> Vector3:
 	match item_id:
 		"knife":
 			return Vector3(0.38, 0.16, 0.9)
-		"mayo", "ketchup":
-			return Vector3(0.34, 0.62, 0.34)
+		"garlic_sauce_ladle", "cocktail_sauce_ladle":
+			return Vector3(0.7, 0.2, 0.34)
+		"garlic_sauce", "cocktail_sauce":
+			return Vector3(0.4, 0.08, 0.34)
 		"lavash":
 			return Vector3(0.55, 0.2, 0.4)
 		"baked_lavash":
@@ -616,14 +667,10 @@ func _update_cutting(delta: float) -> void:
 		return
 	cut_progress += delta
 	cut_anim_time += delta
-	cut_sound_timer -= delta
 	if held_visual:
 		var stroke := sin(cut_anim_time * 24.0)
 		held_visual.rotation = Vector3(0.45 + stroke * 0.22, 0.05, -0.55 + stroke * 0.32)
 		held_visual.position = Vector3(0, stroke * 0.055, 0)
-	if cut_sound_timer <= 0.0:
-		cut_audio.play()
-		cut_sound_timer = 0.28
 	if cut_progress >= CUT_DURATION:
 		_spawn_meat_portion()
 		cut_requires_release = true
@@ -633,7 +680,6 @@ func _update_cutting(delta: float) -> void:
 func _reset_cutting() -> void:
 	cut_progress = 0.0
 	cut_anim_time = 0.0
-	cut_sound_timer = 0.0
 	cut_requires_release = false
 	if held_visual:
 		held_visual.rotation = Vector3.ZERO

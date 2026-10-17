@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+  <defs>
+    <radialGradient id="flesh" cx="46%" cy="42%" r="58%">
+      <stop offset="0" stop-color="#ff6958"/>
+      <stop offset="0.62" stop-color="#e92d25"/>
+      <stop offset="0.9" stop-color="#b71318"/>
+      <stop offset="1" stop-color="#711018"/>
+    </radialGradient>
+    <radialGradient id="gel" cx="50%" cy="45%" r="65%">
+      <stop offset="0" stop-color="#ffbd58" stop-opacity="0.92"/>
+      <stop offset="0.55" stop-color="#ff7f38" stop-opacity="0.76"/>
+      <stop offset="1" stop-color="#c51f1d" stop-opacity="0.18"/>
+    </radialGradient>
+  </defs>
+  <circle cx="256" cy="256" r="250" fill="#65101a"/>
+  <circle cx="256" cy="256" r="238" fill="url(#flesh)" stroke="#ff8a72" stroke-width="5"/>
+  <circle cx="256" cy="256" r="205" fill="none" stroke="#a51018" stroke-width="8" opacity="0.62"/>
+  <g fill="url(#gel)" stroke="#ff6b48" stroke-width="6">
+    <path d="M251 235 C186 223 136 177 147 126 C209 133 243 173 251 235Z"/>
+    <path d="M277 239 C291 174 333 139 386 148 C374 207 336 238 277 239Z"/>
+    <path d="M273 273 C338 280 378 318 374 375 C313 369 280 333 273 273Z"/>
+    <path d="M238 273 C225 335 186 373 130 365 C141 307 178 278 238 273Z"/>
+  </g>
+  <path d="M256 202 L275 232 L310 235 L283 257 L291 292 L257 278 L226 296 L230 260 L202 239 L237 233Z" fill="#f6c65f" stroke="#d84b2e" stroke-width="5"/>
+  <g fill="#ffe5a4" stroke="#d58a3c" stroke-width="2">
+    <ellipse cx="190" cy="168" rx="8" ry="15" transform="rotate(-42 190 168)"/>
+    <ellipse cx="219" cy="188" rx="7" ry="14" transform="rotate(-25 219 188)"/>
+    <ellipse cx="328" cy="183" rx="8" ry="15" transform="rotate(39 328 183)"/>
+    <ellipse cx="350" cy="210" rx="7" ry="14" transform="rotate(52 350 210)"/>
+    <ellipse cx="324" cy="326" rx="8" ry="15" transform="rotate(-38 324 326)"/>
+    <ellipse cx="350" cy="348" rx="7" ry="14" transform="rotate(-49 350 348)"/>
+    <ellipse cx="188" cy="332" rx="8" ry="15" transform="rotate(40 188 332)"/>
+    <ellipse cx="161" cy="349" rx="7" ry="14" transform="rotate(51 161 349)"/>
+  </g>
+  <g fill="none" stroke="#ff9b7b" stroke-width="3" opacity="0.55">
+    <path d="M88 252 C119 225 122 195 115 167"/>
+    <path d="M424 258 C394 226 391 196 398 168"/>
+    <path d="M255 87 C229 112 202 116 176 108"/>
+    <path d="M259 425 C285 399 312 395 338 405"/>
+  </g>
+</svg>

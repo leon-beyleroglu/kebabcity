@@ -23,6 +23,10 @@ func _ready() -> void:
 	set_meta("assembly_station", true)
 	collision_layer = 1 | INTERACTION_LAYER
 	collision_mask = 0
+	if get_node_or_null("PrepWorktop"):
+		if not get_node_or_null("IngredientDetection"):
+			_build_detection_area()
+		return
 	if get_node_or_null("Schneidebrett"):
 		return
 	_build_surface()
@@ -88,8 +92,13 @@ func _build_detection_area() -> void:
 	detection_area.area_exited.connect(_on_item_area_exited)
 
 
-func place_item(item: Area3D, item_id: String, hit_position: Vector3) -> Vector3:
+func place_item(item: Area3D, item_id: String, hit_position: Vector3) -> Marker3D:
 	var slot: int = _find_best_free_slot(hit_position)
+	if slot < 0:
+		return null
+	var target_slot := _slot_marker(slot)
+	if not is_instance_valid(target_slot):
+		return null
 	occupied_slots[slot] = item
 	item.set_meta("prep_slot", slot)
 	item.set_meta("prep_station", self)
@@ -97,7 +106,7 @@ func place_item(item: Area3D, item_id: String, hit_position: Vector3) -> Vector3
 	item.collision_layer = INTERACTION_LAYER | PREP_ITEM_LAYER
 	item.collision_mask = 0
 	_register_item(item)
-	return to_global(_slot_position(slot))
+	return target_slot
 
 
 func remove_item(item: Area3D) -> void:
@@ -134,7 +143,7 @@ func _find_best_free_slot(hit_position: Vector3) -> int:
 			best_slot = slot
 	if best_slot >= 0:
 		return best_slot
-	return _oldest_slot()
+	return -1
 
 
 func _oldest_slot() -> int:
@@ -154,6 +163,17 @@ func _slot_position(slot: int) -> Vector3:
 	var x := -usable_x * 0.5 + usable_x * (float(column) + 0.5) / float(snap_columns)
 	var z := -usable_z * 0.5 + usable_z * (float(row) + 0.5) / float(snap_rows)
 	return Vector3(x, surface_size.y * 0.5 + 0.13, z)
+
+
+func _slot_marker(slot: int) -> Marker3D:
+	var slots := get_node_or_null("ItemSlots") as Node3D
+	if is_instance_valid(slots) and slot < slots.get_child_count():
+		return slots.get_child(slot) as Marker3D
+	var marker := Marker3D.new()
+	marker.name = "RuntimeSlot%02d" % (slot + 1)
+	marker.position = _slot_position(slot)
+	add_child(marker)
+	return marker
 
 
 func _register_item(item: Area3D) -> void:
