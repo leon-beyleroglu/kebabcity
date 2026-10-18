@@ -8,19 +8,18 @@ signal ingredient_removed(item_id: String, item: Area3D)
 const INTERACTION_LAYER := 1 << 7
 const PREP_ITEM_LAYER := 1 << 8
 
-@export var surface_size := Vector3(2.6, 0.14, 1.45)
-@export var snap_columns := 4
-@export var snap_rows := 2
+@export var surface_size := Vector3(7.0, 0.14, 1.15)
 
 var current_ingredients: Array[String] = []
 var current_items: Array[Area3D] = []
-var occupied_slots: Dictionary = {}
 var detection_area: Area3D
 
 
 func _ready() -> void:
 	add_to_group("prep_surface")
+	add_to_group("work_surface")
 	set_meta("assembly_station", true)
+	set_meta("work_surface", true)
 	collision_layer = 1 | INTERACTION_LAYER
 	collision_mask = 0
 	if get_node_or_null("PrepWorktop"):
@@ -92,30 +91,20 @@ func _build_detection_area() -> void:
 	detection_area.area_exited.connect(_on_item_area_exited)
 
 
-func place_item(item: Area3D, item_id: String, hit_position: Vector3) -> Marker3D:
-	var slot: int = _find_best_free_slot(hit_position)
-	if slot < 0:
-		return null
-	var target_slot := _slot_marker(slot)
-	if not is_instance_valid(target_slot):
-		return null
-	occupied_slots[slot] = item
-	item.set_meta("prep_slot", slot)
+func place_item(item: Area3D, item_id: String, _hit_position: Vector3) -> Node3D:
 	item.set_meta("prep_station", self)
 	item.set_meta("ingredient_id", item_id)
 	item.collision_layer = INTERACTION_LAYER | PREP_ITEM_LAYER
 	item.collision_mask = 0
 	_register_item(item)
-	return target_slot
+	return self
 
 
 func remove_item(item: Area3D) -> void:
 	if not is_instance_valid(item):
 		return
-	var slot: int = int(item.get_meta("prep_slot", -1))
-	if occupied_slots.get(slot) == item:
-		occupied_slots.erase(slot)
-	item.remove_meta("prep_slot")
+	if item.has_meta("prep_slot"):
+		item.remove_meta("prep_slot")
 	item.remove_meta("prep_station")
 	_unregister_item(item)
 
@@ -128,52 +117,6 @@ func has_ingredients(required: Array[String]) -> bool:
 			return false
 		remaining.remove_at(index)
 	return true
-
-
-func _find_best_free_slot(hit_position: Vector3) -> int:
-	var best_slot := -1
-	var best_distance: float = INF
-	var slot_count: int = snap_columns * snap_rows
-	for slot in range(slot_count):
-		if occupied_slots.has(slot) and is_instance_valid(occupied_slots[slot]):
-			continue
-		var distance := to_global(_slot_position(slot)).distance_squared_to(hit_position)
-		if distance < best_distance:
-			best_distance = distance
-			best_slot = slot
-	if best_slot >= 0:
-		return best_slot
-	return -1
-
-
-func _oldest_slot() -> int:
-	for slot in occupied_slots.keys():
-		var old_item: Area3D = occupied_slots[slot]
-		if not is_instance_valid(old_item):
-			occupied_slots.erase(slot)
-			return int(slot)
-	return 0
-
-
-func _slot_position(slot: int) -> Vector3:
-	var column: int = slot % snap_columns
-	var row: int = floori(float(slot) / float(snap_columns))
-	var usable_x := surface_size.x - 0.48
-	var usable_z := surface_size.z - 0.42
-	var x := -usable_x * 0.5 + usable_x * (float(column) + 0.5) / float(snap_columns)
-	var z := -usable_z * 0.5 + usable_z * (float(row) + 0.5) / float(snap_rows)
-	return Vector3(x, surface_size.y * 0.5 + 0.13, z)
-
-
-func _slot_marker(slot: int) -> Marker3D:
-	var slots := get_node_or_null("ItemSlots") as Node3D
-	if is_instance_valid(slots) and slot < slots.get_child_count():
-		return slots.get_child(slot) as Marker3D
-	var marker := Marker3D.new()
-	marker.name = "RuntimeSlot%02d" % (slot + 1)
-	marker.position = _slot_position(slot)
-	add_child(marker)
-	return marker
 
 
 func _register_item(item: Area3D) -> void:
@@ -205,9 +148,7 @@ func _on_item_area_entered(area: Area3D) -> void:
 func _on_item_area_exited(area: Area3D) -> void:
 	if not current_items.has(area):
 		return
-	var slot: int = int(area.get_meta("prep_slot", -1))
-	if occupied_slots.get(slot) == area:
-		occupied_slots.erase(slot)
-	area.remove_meta("prep_slot")
+	if area.has_meta("prep_slot"):
+		area.remove_meta("prep_slot")
 	area.remove_meta("prep_station")
 	_unregister_item(area)

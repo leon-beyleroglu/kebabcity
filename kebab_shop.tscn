@@ -90,7 +90,7 @@ material = SubResource("MatWall")
 size = Vector3(0.25, 4.5178466, 12)
 
 [sub_resource type="BoxShape3D" id="ShapeCounter"]
-size = Vector3(7.0980225, 1.2341797, 1.5786254)
+size = Vector3(7.7783813, 1.2341797, 1.5786254)
 
 [sub_resource type="StandardMaterial3D" id="MatInteriorStainless"]
 resource_name = "Brushed Stainless Steel"
@@ -111,10 +111,10 @@ size = Vector3(1.149292, 1.2377594, 1)
 size = Vector3(7, 0.2, 1.15)
 
 [sub_resource type="BoxMesh" id="MeshInteriorPrepWorktop"]
-size = Vector3(2.6, 0.14, 1)
+size = Vector3(7, 0.14, 1.15)
 
 [sub_resource type="BoxShape3D" id="ShapeInteriorPrepWorktop"]
-size = Vector3(2.6, 0.14, 1)
+size = Vector3(7, 0.14, 1.15)
 
 [sub_resource type="StandardMaterial3D" id="MatOvenSteel"]
 resource_name = "Brushed Oven Steel"
@@ -469,20 +469,28 @@ size = Vector3(1, 1.2015823, 1)
 albedo_color = Color(0.95, 0.6, 0.08, 1)
 roughness = 0.5
 
-[sub_resource type="StandardMaterial3D" id="MatWood"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_nrjn5"]
 albedo_color = Color(0.38, 0.2, 0.09, 1)
 roughness = 0.7
 
 [sub_resource type="BoxMesh" id="BoxTestCounter"]
-material = SubResource("MatWood")
-size = Vector3(6.8, 1.2, 1.1975342)
+material = SubResource("StandardMaterial3D_nrjn5")
+size = Vector3(7.552222, 1.2, 1.1975342)
 
 [sub_resource type="BoxShape3D" id="ShapeTestCounter"]
 size = Vector3(6.8, 1.2, 1.2)
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_wuo8e"]
+albedo_color = Color(0.12, 0.1, 0.09, 1)
+metallic = 0.25
+roughness = 0.5
+
 [sub_resource type="BoxMesh" id="BoxTestCounterTop"]
-material = SubResource("MatDark")
-size = Vector3(7.1, 0.14, 1.5)
+material = SubResource("StandardMaterial3D_wuo8e")
+size = Vector3(7.773633, 0.14, 1.5)
+
+[sub_resource type="BoxShape3D" id="ShapeCounterWorkSurface"]
+size = Vector3(7.773633, 0.14, 1.5)
 
 [sub_resource type="StandardMaterial3D" id="MatCounterGlass"]
 resource_name = "Clear Blue-White Sneeze Guard"
@@ -722,6 +730,10 @@ roughness = 0.95
 [sub_resource type="BoxMesh" id="BoxMesh_f1n1m"]
 material = SubResource("MatMetal")
 size = Vector3(1, 0.8, 1.4501953)
+
+[sub_resource type="StandardMaterial3D" id="MatWood"]
+albedo_color = Color(0.38, 0.2, 0.09, 1)
+roughness = 0.7
 
 [sub_resource type="BoxMesh" id="BoxMesh_rm17s"]
 material = SubResource("MatMetal")
@@ -992,7 +1004,7 @@ shape = SubResource("ShapeSideWall")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.575, -2.8)
 
 [node name="Collision" type="CollisionShape3D" parent="Counter" unique_id=1274107635]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.4841237, 0.15831, 0.72233534)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.1439443, 0.15831, 0.72233534)
 shape = SubResource("ShapeCounter")
 
 [node name="KitchenBackShelf" type="MeshInstance3D" parent="." unique_id=1005955309]
@@ -1006,13 +1018,13 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.91877294, 1.3706589, -5.17
 [node name="CollisionShape3D" type="CollisionShape3D" parent="KitchenBackShelfCollision" unique_id=234483679]
 shape = SubResource("ShapeKitchenBackShelf")
 
-[node name="ZubereitungsAblage" type="StaticBody3D" parent="KitchenBackShelfCollision" unique_id=1247723930]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.1901411, 0)
+[node name="ZubereitungsAblage" type="StaticBody3D" parent="KitchenBackShelfCollision" unique_id=1247723930 groups=["work_surface"]]
+transform = Transform3D(0.5, 0, 0, 0, 1, 0, 0, 0, 0.8, 0.035862923, 0.19014108, 0.054788113)
 collision_layer = 129
 collision_mask = 0
 script = ExtResource("11_prep_station")
-surface_size = Vector3(2.6, 0.14, 1)
 metadata/assembly_station = true
+metadata/work_surface = true
 
 [node name="PrepWorktop" type="MeshInstance3D" parent="KitchenBackShelfCollision/ZubereitungsAblage" unique_id=1431995680]
 material_override = SubResource("MatInteriorStainless")
@@ -1021,34 +1033,8 @@ mesh = SubResource("MeshInteriorPrepWorktop")
 [node name="SurfaceCollision" type="CollisionShape3D" parent="KitchenBackShelfCollision/ZubereitungsAblage" unique_id=2009869621]
 shape = SubResource("ShapeInteriorPrepWorktop")
 
-[node name="ItemSlots" type="Node3D" parent="KitchenBackShelfCollision/ZubereitungsAblage" unique_id=941146397]
-
-[node name="Slot01" type="Marker3D" parent="KitchenBackShelfCollision/ZubereitungsAblage/ItemSlots" unique_id=351415059]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.795, 0.2, -0.145)
-
-[node name="Slot02" type="Marker3D" parent="KitchenBackShelfCollision/ZubereitungsAblage/ItemSlots" unique_id=1643733088]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.265, 0.2, -0.145)
-
-[node name="Slot03" type="Marker3D" parent="KitchenBackShelfCollision/ZubereitungsAblage/ItemSlots" unique_id=1187505407]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.265, 0.2, -0.145)
-
-[node name="Slot04" type="Marker3D" parent="KitchenBackShelfCollision/ZubereitungsAblage/ItemSlots" unique_id=1029855682]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.795, 0.2, -0.145)
-
-[node name="Slot05" type="Marker3D" parent="KitchenBackShelfCollision/ZubereitungsAblage/ItemSlots" unique_id=468077582]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.795, 0.2, 0.145)
-
-[node name="Slot06" type="Marker3D" parent="KitchenBackShelfCollision/ZubereitungsAblage/ItemSlots" unique_id=1233609400]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.265, 0.2, 0.145)
-
-[node name="Slot07" type="Marker3D" parent="KitchenBackShelfCollision/ZubereitungsAblage/ItemSlots" unique_id=1895897568]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.265, 0.2, 0.145)
-
-[node name="Slot08" type="Marker3D" parent="KitchenBackShelfCollision/ZubereitungsAblage/ItemSlots" unique_id=1920279776]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.795, 0.2, 0.145)
-
 [node name="Oven" type="StaticBody3D" parent="KitchenBackShelfCollision" unique_id=21441124 groups=["oven_interaction"]]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.41163, 0.13, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.5401824, 0.13, 0)
 collision_layer = 129
 collision_mask = 0
 metadata/oven_interaction = true
@@ -1396,7 +1382,13 @@ mesh = SubResource("MeshFirstPersonForearm")
 transform = Transform3D(0.9923943, 0.078189164, 0.09507882, 0.052156504, 0.4325493, -0.90010047, -0.111504376, 0.89821357, 0.4251814, -0.29, -0.29, -0.62)
 
 [node name="Palm" type="MeshInstance3D" parent="Player/Camera3D/ArmsHolder/LeftArm/Hand" unique_id=232484296]
-transform = Transform3D(0.18947865, -0.011750076, 0.005576945, 0.013038616, 0.23779836, -0.051141843, -0.0052797287, 0.16557133, 0.07384721, -0.0051521063, -0.10648155, 0.06733036)
+transform = Transform3D(0.18938842, -0.012211716, 0.006141482, 0.0142663885, 0.2287534, -0.05490365, -0.005346324, 0.17782812, 0.07104838, -0.008004844, -0.07270193, 0.06932688)
+material_override = SubResource("MatFirstPersonSkin")
+cast_shadow = 0
+mesh = SubResource("MeshFirstPersonPalm")
+
+[node name="Palm2" type="MeshInstance3D" parent="Player/Camera3D/ArmsHolder/LeftArm/Hand" unique_id=174215146]
+transform = Transform3D(0.18938844, -0.012211714, 0.006141483, 0.014266389, 0.2287534, -0.054903653, -0.005346328, 0.17782813, 0.07104838, 0.57530475, -0.026744366, 0.12521243)
 material_override = SubResource("MatFirstPersonSkin")
 cast_shadow = 0
 mesh = SubResource("MeshFirstPersonPalm")
@@ -1453,12 +1445,6 @@ mesh = SubResource("MeshFirstPersonForearm")
 
 [node name="Hand" type="Node3D" parent="Player/Camera3D/ArmsHolder/RightArm" unique_id=1062072309]
 transform = Transform3D(0.9923943, -0.078189164, -0.09507882, -0.052156504, 0.4325493, -0.90010047, 0.111504376, 0.89821357, 0.4251814, 0.29, -0.29, -0.62)
-
-[node name="Palm" type="MeshInstance3D" parent="Player/Camera3D/ArmsHolder/RightArm/Hand" unique_id=692339845]
-transform = Transform3D(0.18947865, 0.011750076, -0.005576945, -0.013038616, 0.23779836, -0.051141843, 0.0052797287, 0.16557133, 0.07384721, 0.0051521063, -0.10648155, 0.06733036)
-material_override = SubResource("MatFirstPersonSkin")
-cast_shadow = 0
-mesh = SubResource("MeshFirstPersonPalm")
 
 [node name="Thumb" type="MeshInstance3D" parent="Player/Camera3D/ArmsHolder/RightArm/Hand" unique_id=1878786985]
 transform = Transform3D(0.70071244, -0.6585774, -0.2743683, 0.6546428, 0.7463992, -0.119712204, 0.28362802, -0.09572937, 0.9541442, -0.095, -0.11, 0.018)
@@ -1585,7 +1571,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.4902179, 0, -19.116041)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.6, 17)
 
 [node name="Mesh" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Thekenkoerper" unique_id=617863252]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.0012321472)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.3761108, 0, -0.0012321472)
 material_override = SubResource("MatCounterCladding")
 mesh = SubResource("BoxTestCounter")
 
@@ -1593,9 +1579,18 @@ mesh = SubResource("BoxTestCounter")
 shape = SubResource("ShapeTestCounter")
 
 [node name="Arbeitsplatte" type="MeshInstance3D" parent="Test Ablage/Kebab Theke" unique_id=181629757]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.27, 17)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.33681643, 1.27, 17)
 material_override = SubResource("MatInteriorStainless")
 mesh = SubResource("BoxTestCounterTop")
+
+[node name="ArbeitsplatteWorkSurface" type="StaticBody3D" parent="Test Ablage/Kebab Theke" unique_id=1865684067 groups=["work_surface"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.33681643, 1.27, 17)
+collision_layer = 129
+collision_mask = 0
+metadata/work_surface = true
+
+[node name="SurfaceCollision" type="CollisionShape3D" parent="Test Ablage/Kebab Theke/ArbeitsplatteWorkSurface" unique_id=890048404]
+shape = SubResource("ShapeCounterWorkSurface")
 
 [node name="Glasfront" type="MeshInstance3D" parent="Test Ablage/Kebab Theke" unique_id=630860907]
 transform = Transform3D(3.15, 0, 0, 0, 0.65, 0, 0, 0, 0.045, -0.051108647, 1.9526007, 17.6622)
@@ -1784,7 +1779,7 @@ mesh = SubResource("MeshCabbageStrip")
 [node name="Sossen" type="Node3D" parent="Test Ablage/Kebab Theke/Zutaten" unique_id=2073087439]
 
 [node name="GarlicSauceBin" type="Node3D" parent="Test Ablage/Kebab Theke/Zutaten/Sossen" unique_id=2028713831]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.82, 1.42, 16.95)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.1402109, 1.42, 16.691706)
 
 [node name="GNContainer" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten/Sossen/GarlicSauceBin" unique_id=827061220]
 material_override = SubResource("MatInteriorStainless")
@@ -1829,7 +1824,7 @@ metadata/sauce_label = "Knoblauchsoße"
 shape = SubResource("ShapeSauceBinInteraction")
 
 [node name="CocktailSauceBin" type="Node3D" parent="Test Ablage/Kebab Theke/Zutaten/Sossen" unique_id=802506595]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.43, 1.42, 16.95)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.7819314, 1.42, 16.69077)
 
 [node name="GNContainer" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten/Sossen/CocktailSauceBin" unique_id=527632641]
 material_override = SubResource("MatInteriorStainless")
@@ -2111,7 +2106,7 @@ material_override = SubResource("MatReceipt")
 mesh = SubResource("BoxSmall")
 
 [node name="LavashAblage" type="StaticBody3D" parent="Test Ablage/Kebab Theke" unique_id=791172196]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.8549333, 1.42, 17.798853)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.175043, 1.42, 17.798853)
 
 [node name="Ablagebrett" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/LavashAblage" unique_id=274555217]
 transform = Transform3D(0.75, 0, 0, 0, 0.08, 0, 0, 0, 0.52, -2.360983, 0.0845654, -3.8082461)
