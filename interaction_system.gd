@@ -26,6 +26,7 @@ var focused_oven: StaticBody3D
 var focused_sauce_bin: Area3D
 var focused_trash_can: StaticBody3D
 var focused_durum_assembly: Area3D
+var focused_customer: CharacterBody3D
 var focus_hit_position := Vector3.ZERO
 var focus_hit_normal := Vector3.UP
 var held_origin_station: Node3D
@@ -168,8 +169,9 @@ func _register_existing_item(visual: Node3D, id: String, label: String) -> void:
 	item.global_transform = visual.global_transform
 	_add_box_collider(item, _counter_pickup_size(id))
 	item.configure(id, label, visual)
-	if id != "lavash":
-		item.set_meta("single_portion_source", true)
+	item.set_meta("single_portion_source", true)
+	if id == "lavash":
+		item.set_meta("infinite_supply", true)
 
 func _counter_pickup_size(item_id: String) -> Vector3:
 	if item_id == "lavash":
@@ -216,6 +218,7 @@ func _process(delta: float) -> void:
 		focused_sauce_bin = null
 		focused_trash_can = null
 		focused_durum_assembly = null
+		focused_customer = null
 		_reset_cutting()
 		return
 	_update_focus()
@@ -230,6 +233,7 @@ func _update_focus() -> void:
 	focused_sauce_bin = null
 	focused_trash_can = null
 	focused_durum_assembly = null
+	focused_customer = null
 	focus_hit_normal = Vector3.UP
 	var query := PhysicsRayQueryParameters3D.create(camera.global_position, camera.global_position - camera.global_basis.z * INTERACTION_RANGE, INTERACTION_LAYER)
 	query.collide_with_areas = true
@@ -240,7 +244,9 @@ func _update_focus() -> void:
 	focus_hit_position = hit["position"]
 	focus_hit_normal = (hit.get("normal", Vector3.UP) as Vector3).normalized()
 	var collider: Object = hit.get("collider")
-	if collider is Area3D and (collider.is_in_group("durum_assembly") or collider.has_meta("durum_assembly")):
+	if collider is CharacterBody3D and (collider.is_in_group("customer_npc") or collider.has_meta("customer_npc")):
+		focused_customer = collider
+	elif collider is Area3D and (collider.is_in_group("durum_assembly") or collider.has_meta("durum_assembly")):
 		focused_durum_assembly = collider
 	elif collider is StaticBody3D and (collider.is_in_group("trash_can") or collider.has_meta("trash_can")):
 		focused_trash_can = collider
@@ -261,7 +267,9 @@ func _unhandled_input(event: InputEvent) -> void:
 	if not player or player.third_person or not camera.current:
 		return
 	if event.is_action_pressed("interact"):
-		if focused_trash_can:
+		if focused_customer:
+			_interact_with_customer(focused_customer)
+		elif focused_trash_can:
 			_discard_held_item()
 		elif focused_durum_assembly and held_item:
 			if _is_sauce_ladle(held_item.item_id):
@@ -454,6 +462,7 @@ func _roll_durum(assembly: Area3D) -> bool:
 	finished_item.global_transform = assembly.global_transform
 	_add_box_collider(finished_item, _item_collision_size("finished_durum"))
 	finished_item.configure("finished_durum", "Fertiges Dürüm", null, true)
+	finished_item.set_meta("durum_data", {"ingredients": ingredients.duplicate()})
 	finished_item.set_meta("durum_ingredients", ingredients.duplicate())
 	finished_item.pickup()
 	held_item = finished_item
@@ -471,6 +480,36 @@ func _roll_durum(assembly: Area3D) -> bool:
 	focused_durum_assembly = null
 	_reset_cutting()
 	return true
+
+
+func _interact_with_customer(customer: CharacterBody3D) -> void:
+	if not is_instance_valid(customer) or not is_instance_valid(held_item):
+		return
+	if held_item.item_id != "finished_durum" or not customer.has_method("try_accept_durum"):
+		return
+	var durum_data: Dictionary = {}
+	var stored_data: Variant = held_item.get_meta("durum_data", {})
+	if stored_data is Dictionary:
+		durum_data = (stored_data as Dictionary).duplicate(true)
+	if not durum_data.has("ingredients"):
+		durum_data["ingredients"] = held_item.get_meta("durum_ingredients", []).duplicate()
+	if not bool(customer.call("try_accept_durum", durum_data)):
+		return
+	var accepted_item := held_item
+	var accepted_visual := held_visual
+	var source_visual := accepted_item.source_visual as Node3D
+	if is_instance_valid(accepted_visual):
+		accepted_visual.queue_free()
+	if is_instance_valid(source_visual) and source_visual != accepted_visual:
+		source_visual.queue_free()
+	accepted_item.queue_free()
+	held_item = null
+	held_visual = null
+	held_sauce_home = null
+	held_origin_station = null
+	held_origin_transform = Transform3D.IDENTITY
+	focused_customer = null
+	_reset_cutting()
 
 
 func _interact_with_sauce_bin(bin: Area3D) -> void:

@@ -2,11 +2,9 @@
 
 [ext_resource type="Script" uid="uid://c0rl8h6ne4ir" path="res://player.gd" id="1_player"]
 [ext_resource type="Texture2D" uid="uid://7o3bjm4v6brx" path="res://gahinten.jpg" id="2_dnwpt"]
-[ext_resource type="Texture2D" uid="uid://bir75ofhwlwup" path="res://bjk1.jpg" id="2_t8aj2"]
 [ext_resource type="Texture2D" uid="uid://byb7pr78mpgwm" path="res://abdukopf.jpg" id="3_6pmx1"]
 [ext_resource type="Texture2D" uid="uid://fh0htpsx3u6v" path="res://ga1.jpg" id="3_v6cui"]
 [ext_resource type="Texture2D" uid="uid://dsmjvcgs6uqdq" path="res://fb1.jpg" id="4_j7xc5"]
-[ext_resource type="Texture2D" uid="uid://nfsmfqdjew13" path="res://bjkhinten.jpg" id="5_dnwpt"]
 [ext_resource type="Texture2D" uid="uid://fvcheoqkvxim" path="res://fbhinten.jpg" id="5_h3k53"]
 [ext_resource type="Script" uid="uid://b1lc58mnkun6w" path="res://city_expansion.gd" id="10_city_expansion"]
 [ext_resource type="Script" uid="uid://bufallvmof5b4" path="res://prep_station.gd" id="11_prep_station"]
@@ -15,6 +13,7 @@
 [ext_resource type="Texture2D" uid="uid://d5r0e5l62c0i" path="res://textures/ingredients/onion_slice.svg" id="14_onion"]
 [ext_resource type="Texture2D" uid="uid://y00b5ito7pia" path="res://textures/ingredients/lettuce_leaf.svg" id="15_lettuce"]
 [ext_resource type="Texture2D" uid="uid://bwn4i5lpbgp37" path="res://textures/ingredients/red_cabbage_strip.svg" id="16_cabbage"]
+[ext_resource type="PackedScene" path="res://CustomerNPC.tscn" id="17_customer_npc"]
 
 [sub_resource type="StandardMaterial3D" id="MatInteriorFloorTile"]
 resource_name = "Non-Slip Terracotta Floor Tile"
@@ -1272,13 +1271,6 @@ albedo_color = Color(0.87981135, 3.2488256e-06, 9.62615e-07, 1)
 
 [sub_resource type="BoxMesh" id="BoxMesh_qyx4r"]
 material = SubResource("StandardMaterial3D_6pmx1")
-size = Vector3(0.44030762, 1.0515137, 1)
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_carum"]
-albedo_color = Color(0, 0, 0, 1)
-
-[sub_resource type="BoxMesh" id="BoxMesh_2ofg4"]
-material = SubResource("StandardMaterial3D_carum")
 size = Vector3(0.44030762, 1.0515137, 1)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_j7xc5"]
@@ -4360,114 +4352,16 @@ texture = ExtResource("3_6pmx1")
 transform = Transform3D(0.235, 0, 0, 0, 0.155, 0, 0, 0, 5.949, -0.018942356, 1.2720038, 0.19241142)
 texture = ExtResource("3_v6cui")
 
-[node name="avatar bjk" type="Node3D" parent="." unique_id=1420177732]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 10.71418, 0, 10.01306)
+[node name="CustomerSpawnPoint" type="Marker3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.2, 0.11, 5.25)
 
-[node name="trikot box" type="MeshInstance3D" parent="avatar bjk" unique_id=888933420]
-transform = Transform3D(2, 0, 0, 0, 1.025, 0, 0, 0, 0.3, -11.843459, 1.2785937, 7.7774496)
-mesh = SubResource("BoxMesh_2ofg4")
+[node name="CounterStopPoint" type="Marker3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.2, 0.11, -0.72)
 
-[node name="Kopf" type="MeshInstance3D" parent="avatar bjk" unique_id=2120661995]
-transform = Transform3D(0.29999998, 0, 0, 0, 0.27999997, 0, 0, 0, 0.29999998, -11.803933, 1.9864846, 7.744179)
-material_override = SubResource("MatSkin")
-mesh = SubResource("BoxMesh_l3fpq")
-
-[node name="Haare2" type="MeshInstance3D" parent="avatar bjk" unique_id=1653211451]
-transform = Transform3D(0.32, 0, 0, 0, 0.07000001, 0, 0, 0, 0.32, -11.800088, 2.2246878, 7.744179)
-material_override = SubResource("MatHair")
-mesh = SubResource("BoxSmall")
-
-[node name="Sprite3D - trikot" type="Sprite3D" parent="avatar bjk" unique_id=1840369272]
-transform = Transform3D(-0.261, 0, -2.1855694e-06, 0, 0.151, 0, 2.2817344e-08, 0, -25, -11.837499, 1.2825656, 7.6248035)
-texture = ExtResource("2_t8aj2")
-
-[node name="Sprite3D - trikot hinten" type="Sprite3D" parent="avatar bjk" unique_id=624740752]
-transform = Transform3D(0.265, 0, 0, 0, 0.165, 0, 0, 0, 5.949, -11.866101, 1.2944305, 7.9286785)
-texture = ExtResource("5_dnwpt")
-
-[node name="ArmLinks" type="MeshInstance3D" parent="avatar bjk" unique_id=593441284]
-transform = Transform3D(0.11999999, 0, 0, 0, 0.58, 0, 0, 0, 0.11999999, -12.320087, 1.33, 7.744179)
-material_override = SubResource("MatSleeve")
-mesh = SubResource("BoxSmall")
-
-[node name="ArmRechts" type="MeshInstance3D" parent="avatar bjk" unique_id=2051562943]
-transform = Transform3D(0.11999999, 0, 0, 0, 0.58, 0, 0, 0, 0.11999999, -11.280088, 1.33, 7.744179)
-material_override = SubResource("MatSleeve")
-mesh = SubResource("BoxSmall")
-
-[node name="HandLinks" type="MeshInstance3D" parent="avatar bjk" unique_id=967241579]
-transform = Transform3D(0.14, 0, 0, 0, 0.14, 0, 0, 0, 0.14, -12.320087, 0.83, 7.744179)
-material_override = SubResource("MatSkin")
-mesh = SubResource("BoxSmall")
-
-[node name="BeinLinks" type="MeshInstance3D" parent="avatar bjk" unique_id=399214573]
-transform = Transform3D(0.17, 0, 0, 0, 0.55, 0, 0, 0, 0.17, -12.020088, 0.42, 7.744179)
-material_override = SubResource("MatTrousers")
-mesh = SubResource("BoxSmall")
-
-[node name="AugeRechts" type="MeshInstance3D" parent="avatar bjk" unique_id=1980696944]
-transform = Transform3D(0.055, 0, 0, 0, 0.055, 0, 0, 0, 0.025, -11.7000885, 2.049094, 7.540104)
-material_override = SubResource("MatDark")
-mesh = SubResource("BoxSmall")
-
-[node name="BeinRechts" type="MeshInstance3D" parent="avatar bjk" unique_id=1196677461]
-transform = Transform3D(0.17, 0, 0, 0, 0.55, 0, 0, 0, 0.17, -11.580088, 0.42000002, 7.744179)
-material_override = SubResource("MatTrousers")
-mesh = SubResource("BoxSmall")
-
-[node name="HandRechts" type="MeshInstance3D" parent="avatar bjk" unique_id=1944970771]
-transform = Transform3D(0.14, 0, 0, 0, 0.14, 0, 0, 0, 0.14, -11.280088, 0.83, 7.744179)
-material_override = SubResource("MatSkin")
-mesh = SubResource("BoxSmall")
-
-[node name="AugeLinks2" type="MeshInstance3D" parent="avatar bjk" unique_id=1553058477]
-transform = Transform3D(0.055, 0, 0, 0, 0.055, 0, 0, 0, 0.025, -11.900087, 2.049094, 7.540104)
-material_override = SubResource("MatDark")
-mesh = SubResource("BoxSmall")
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="avatar bjk" unique_id=1096400294]
-transform = Transform3D(0.5, 0, 0, 0, 1.55, 0, 0, 0, 0.36, -11.800088, 1.16, 7.744179)
-shape = SubResource("ShapeSmall")
-
-[node name="ArmRechts2" type="MeshInstance3D" parent="avatar bjk" unique_id=1512617512]
-transform = Transform3D(0.11999999, 0, 0, 0, 0.58, 0, 0, 0, 0.11999999, -11.280088, 1.33, 7.744179)
-material_override = SubResource("MatSleeve")
-mesh = SubResource("BoxSmall")
-
-[node name="ArmLinks2" type="MeshInstance3D" parent="avatar bjk" unique_id=512584711]
-transform = Transform3D(0.11999999, 0, 0, 0, 0.58, 0, 0, 0, 0.11999999, -12.320087, 1.33, 7.744179)
-material_override = SubResource("MatSleeve")
-mesh = SubResource("BoxSmall")
-
-[node name="HandRechts2" type="MeshInstance3D" parent="avatar bjk" unique_id=1050367092]
-transform = Transform3D(0.14, 0, 0, 0, 0.14, 0, 0, 0, 0.14, -11.280088, 0.83, 7.744179)
-material_override = SubResource("MatSkin")
-mesh = SubResource("BoxSmall")
-
-[node name="BeinLinks2" type="MeshInstance3D" parent="avatar bjk" unique_id=903703458]
-transform = Transform3D(0.17, 0, 0, 0, 0.55, 0, 0, 0, 0.17, -12.020088, 0.4701801, 7.744179)
-material_override = SubResource("MatTrousers")
-mesh = SubResource("BoxMesh_sk837")
-
-[node name="HandLinks2" type="MeshInstance3D" parent="avatar bjk" unique_id=512727941]
-transform = Transform3D(0.14, 0, 0, 0, 0.14, 0, 0, 0, 0.14, -12.320087, 0.83, 7.744179)
-material_override = SubResource("MatSkin")
-mesh = SubResource("BoxSmall")
-
-[node name="SchuhLinks" type="MeshInstance3D" parent="avatar bjk" unique_id=841734783]
-transform = Transform3D(0.2, 0, 0, 0, 0.1, 0, 0, 0, 0.3, -12.020088, 0.08, 7.664179)
-material_override = SubResource("MatHair")
-mesh = SubResource("BoxSmall")
-
-[node name="SchuhRechts" type="MeshInstance3D" parent="avatar bjk" unique_id=1655591817]
-transform = Transform3D(0.2, 0, 0, 0, 0.1, 0, 0, 0, 0.3, -11.580088, 0.08, 7.664179)
-material_override = SubResource("MatHair")
-mesh = SubResource("BoxSmall")
-
-[node name="BeinRechts2" type="MeshInstance3D" parent="avatar bjk" unique_id=595755523]
-transform = Transform3D(0.17, 0, 0, 0, 0.55, 0, 0, 0, 0.17, -11.580088, 0.47941166, 7.744179)
-material_override = SubResource("MatTrousers")
-mesh = SubResource("BoxMesh_hge6a")
+[node name="BJKCustomer" parent="." instance=ExtResource("17_customer_npc")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.2, 0.11, 5.25)
+spawn_point_path = NodePath("../CustomerSpawnPoint")
+counter_stop_point_path = NodePath("../CounterStopPoint")
 
 [node name="Avatar Fener" type="StaticBody3D" parent="." unique_id=136574385]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.7120857, 0.08, 17.751186)
