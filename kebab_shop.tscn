@@ -90,13 +90,16 @@ material = SubResource("MatWall")
 size = Vector3(0.25, 4.5178466, 12)
 
 [sub_resource type="BoxShape3D" id="ShapeCounter"]
-size = Vector3(7.7783813, 1.2341797, 1.5786254)
+size = Vector3(8.001373, 1.2341797, 1.5786254)
 
 [sub_resource type="StandardMaterial3D" id="MatInteriorStainless"]
-resource_name = "Brushed Stainless Steel"
-albedo_color = Color(0.63, 0.66, 0.68, 1)
-metallic = 0.75
-roughness = 0.28
+resource_name = "Brushed Stainless Steel 304"
+albedo_color = Color(0.62, 0.65, 0.68, 1)
+metallic = 0.85
+metallic_specular = 0.92
+roughness = 0.25
+anisotropy_enabled = true
+anisotropy = 0.58
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_f6pxk"]
 albedo_color = Color(0, 0, 0, 1)
@@ -197,14 +200,14 @@ albedo_color = Color(0.34, 0.075, 0.035, 1)
 metallic_specular = 0.38
 roughness = 0.42
 
-[sub_resource type="StandardMaterial3D" id="MatMetal"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_qromb"]
 albedo_color = Color(0, 0, 0, 1)
 metallic = 0.85
 roughness = 0.28
 
 [sub_resource type="BoxMesh" id="BoxMesh_t8aj2"]
-material = SubResource("MatMetal")
-size = Vector3(1, 1.1958008, 1)
+material = SubResource("StandardMaterial3D_qromb")
+size = Vector3(1.2491455, 1.1958008, 1)
 
 [sub_resource type="StandardMaterial3D" id="MatCounterLaminate"]
 resource_name = "Warm Walnut Counter Laminate"
@@ -243,6 +246,11 @@ roughness = 0.78
 [sub_resource type="BoxMesh" id="MeshKnifeHandle"]
 material = SubResource("MatKnifeHandle")
 size = Vector3(0.12, 0.34, 0.09)
+
+[sub_resource type="StandardMaterial3D" id="MatMetal"]
+albedo_color = Color(0, 0, 0, 1)
+metallic = 0.85
+roughness = 0.28
 
 [sub_resource type="BoxMesh" id="BoxSmall"]
 material = SubResource("MatMetal")
@@ -469,16 +477,49 @@ size = Vector3(1, 1.2015823, 1)
 albedo_color = Color(0.95, 0.6, 0.08, 1)
 roughness = 0.5
 
+[sub_resource type="StandardMaterial3D" id="MatCounterBodySteel"]
+resource_name = "Refrigerated Counter Satin Stainless"
+albedo_color = Color(0.42, 0.46, 0.49, 1)
+metallic = 0.9
+metallic_specular = 0.94
+roughness = 0.3
+anisotropy_enabled = true
+anisotropy = 0.48
+
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_nrjn5"]
 albedo_color = Color(0.38, 0.2, 0.09, 1)
 roughness = 0.7
 
 [sub_resource type="BoxMesh" id="BoxTestCounter"]
 material = SubResource("StandardMaterial3D_nrjn5")
-size = Vector3(7.552222, 1.2, 1.1975342)
+size = Vector3(7.7291136, 1.2, 1.1975342)
 
 [sub_resource type="BoxShape3D" id="ShapeTestCounter"]
 size = Vector3(6.8, 1.2, 1.2)
+
+[sub_resource type="BoxMesh" id="MeshCounterDoor"]
+size = Vector3(1.42, 0.92, 0.035)
+
+[sub_resource type="BoxMesh" id="MeshCounterHandle"]
+size = Vector3(0.68, 0.035, 0.045)
+
+[sub_resource type="StandardMaterial3D" id="MatPanDepthShadow"]
+resource_name = "GN Recess Ambient Depth"
+albedo_color = Color(0.018, 0.024, 0.027, 1)
+metallic = 0.35
+roughness = 0.58
+
+[sub_resource type="BoxMesh" id="MeshCounterPlinth"]
+size = Vector3(7.28, 0.12, 0.12)
+
+[sub_resource type="StandardMaterial3D" id="MatCounterDeck"]
+resource_name = "Recessed Brushed Stainless Deck"
+albedo_color = Color(0.67, 0.7, 0.72, 1)
+metallic = 0.85
+metallic_specular = 0.95
+roughness = 0.25
+anisotropy_enabled = true
+anisotropy = 0.65
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_wuo8e"]
 albedo_color = Color(0.12, 0.1, 0.09, 1)
@@ -487,21 +528,52 @@ roughness = 0.5
 
 [sub_resource type="BoxMesh" id="BoxTestCounterTop"]
 material = SubResource("StandardMaterial3D_wuo8e")
-size = Vector3(7.773633, 0.14, 1.5)
+size = Vector3(7.9843507, 0.14, 1.5)
 
 [sub_resource type="BoxShape3D" id="ShapeCounterWorkSurface"]
 size = Vector3(7.773633, 0.14, 1.5)
 
-[sub_resource type="StandardMaterial3D" id="MatCounterGlass"]
-resource_name = "Clear Blue-White Sneeze Guard"
-transparency = 1
-albedo_color = Color(0.78, 0.92, 0.96, 0.18)
-metallic_specular = 0.8
-roughness = 0.08
+[sub_resource type="BoxMesh" id="MeshDeckRecess"]
+size = Vector3(7.2384176, 0.024, 0.92)
 
-[sub_resource type="BoxMesh" id="BoxMesh_ffds4"]
-material = SubResource("MatMetal")
-size = Vector3(2.1360168, 1.9600769, 1)
+[sub_resource type="BoxMesh" id="MeshDeckRailLong"]
+size = Vector3(7.3504105, 0.065, 0.075)
+
+[sub_resource type="BoxMesh" id="BoxMesh_nrjn5"]
+size = Vector3(7.341011, 0.065, 0.075)
+
+[sub_resource type="BoxMesh" id="MeshDeckRailShort"]
+size = Vector3(0.075, 0.065, 0.92)
+
+[sub_resource type="StandardMaterial3D" id="MatCounterGlass"]
+resource_name = "Low-Iron Angled Sneeze Guard Glass"
+transparency = 1
+albedo_color = Color(0.82, 0.94, 0.98, 0.16)
+metallic_specular = 0.96
+roughness = 0.05
+clearcoat_enabled = true
+clearcoat_roughness = 0.03
+refraction_enabled = true
+refraction_scale = 0.018
+
+[sub_resource type="BoxMesh" id="MeshSneezeGlass"]
+size = Vector3(6.72, 1.18, 0.035)
+
+[sub_resource type="StandardMaterial3D" id="MatGlassEdge"]
+resource_name = "Polished Glass Edge Highlight"
+transparency = 1
+albedo_color = Color(0.68, 0.93, 1, 0.68)
+metallic_specular = 1.0
+roughness = 0.03
+emission_enabled = true
+emission = Color(0.08, 0.32, 0.38, 1)
+emission_energy_multiplier = 0.45
+
+[sub_resource type="BoxMesh" id="MeshSneezeEdgeHorizontal"]
+size = Vector3(6.78, 0.025, 0.055)
+
+[sub_resource type="BoxMesh" id="MeshSneezeEdgeVertical"]
+size = Vector3(0.025, 1.2, 0.055)
 
 [sub_resource type="BoxMesh" id="BoxMesh_j7xc5"]
 material = SubResource("MatMetal")
@@ -528,72 +600,236 @@ emission_energy_multiplier = 2.2
 material = SubResource("MatMetal")
 size = Vector3(1, 2.7927125, 2.3793945)
 
-[sub_resource type="BoxMesh" id="BoxMesh_6pmx1"]
-material = SubResource("MatMetal")
-size = Vector3(1, 0.8, 1.6835938)
+[sub_resource type="StandardMaterial3D" id="MatPanSteel"]
+resource_name = "GN Pan Brushed Stainless Steel"
+albedo_color = Color(0.7, 0.73, 0.75, 1)
+metallic = 0.85
+metallic_specular = 0.96
+roughness = 0.25
+anisotropy_enabled = true
+anisotropy = 0.52
+
+[sub_resource type="BoxMesh" id="MeshGNBody"]
+size = Vector3(0.92, 0.13, 0.7)
+
+[sub_resource type="StandardMaterial3D" id="MatPanInterior"]
+resource_name = "GN Pan Dark Brushed Interior"
+albedo_color = Color(0.25, 0.275, 0.29, 1)
+metallic = 0.9
+metallic_specular = 0.9
+roughness = 0.29
+
+[sub_resource type="BoxMesh" id="MeshGNFloor"]
+size = Vector3(0.78, 0.025, 0.56)
+
+[sub_resource type="BoxMesh" id="MeshGNBevelLong"]
+size = Vector3(0.79, 0.09, 0.065)
+
+[sub_resource type="BoxMesh" id="MeshGNBevelShort"]
+size = Vector3(0.065, 0.09, 0.57)
+
+[sub_resource type="BoxMesh" id="MeshGNRimLong"]
+size = Vector3(0.92, 0.035, 0.055)
+
+[sub_resource type="BoxMesh" id="MeshGNRimShort"]
+size = Vector3(0.055, 0.035, 0.7)
 
 [sub_resource type="StandardMaterial3D" id="MatLettuce"]
-resource_name = "Single Textured Lettuce Leaf"
+resource_name = "Moist Translucent Iceberg Leaf"
+transparency = 1
+albedo_color = Color(0.96, 1, 0.88, 0.94)
 albedo_texture = ExtResource("15_lettuce")
-metallic_specular = 0.38
-roughness = 0.52
+metallic_specular = 0.55
+roughness = 0.24
+clearcoat_enabled = true
+clearcoat = 0.4
+clearcoat_roughness = 0.16
+subsurf_scatter_enabled = true
+subsurf_scatter_strength = 0.18
 
 [sub_resource type="SphereMesh" id="MeshSaladLeaf"]
-radial_segments = 20
-rings = 10
+height = 0.18
+radial_segments = 32
+rings = 16
 
-[sub_resource type="BoxMesh" id="BoxMesh_f6pxk"]
-material = SubResource("MatMetal")
-size = Vector3(1, 0.8, 1.6494141)
+[sub_resource type="SphereMesh" id="MeshSaladRuffle"]
+radius = 0.34
+height = 0.12
+radial_segments = 24
+rings = 12
 
-[sub_resource type="StandardMaterial3D" id="MatTomato"]
-resource_name = "Single Textured Tomato Slice"
-albedo_texture = ExtResource("12_tomato")
-metallic_specular = 0.65
-roughness = 0.28
+[sub_resource type="StandardMaterial3D" id="MatLettuceVein"]
+resource_name = "Iceberg Crisp Pale Veins"
+transparency = 1
+albedo_color = Color(0.77, 0.94, 0.42, 0.86)
+metallic_specular = 0.46
+roughness = 0.31
+subsurf_scatter_enabled = true
+subsurf_scatter_strength = 0.22
+
+[sub_resource type="CapsuleMesh" id="MeshLeafVein"]
+radius = 0.018
+height = 0.36
+radial_segments = 16
+rings = 6
+
+[sub_resource type="StandardMaterial3D" id="MatTomatoSide"]
+resource_name = "Tomato Red Flesh Sidewall"
+albedo_color = Color(0.63, 0.018, 0.025, 1)
+metallic_specular = 0.66
+roughness = 0.2
+clearcoat_enabled = true
+clearcoat = 0.45
+clearcoat_roughness = 0.12
+subsurf_scatter_enabled = true
+subsurf_scatter_strength = 0.2
 
 [sub_resource type="CylinderMesh" id="MeshTomatoSlice"]
 top_radius = 0.15
 bottom_radius = 0.15
 height = 0.025
-radial_segments = 32
+radial_segments = 48
+rings = 3
+
+[sub_resource type="StandardMaterial3D" id="MatTomato"]
+resource_name = "Tomato Juicy Pulpy Cut Face"
+transparency = 1
+albedo_color = Color(1, 0.92, 0.88, 0.97)
+albedo_texture = ExtResource("12_tomato")
+metallic_specular = 0.82
+roughness = 0.15
+clearcoat_enabled = true
+clearcoat = 0.72
+clearcoat_roughness = 0.08
+subsurf_scatter_enabled = true
+subsurf_scatter_strength = 0.16
+
+[sub_resource type="CylinderMesh" id="MeshTomatoCutFace"]
+top_radius = 0.144
+bottom_radius = 0.144
+height = 0.006
+radial_segments = 48
 rings = 2
 
-[sub_resource type="BoxMesh" id="BoxMesh_ipmwm"]
-material = SubResource("MatMetal")
-size = Vector3(1, 0.8, 1.7866211)
+[sub_resource type="StandardMaterial3D" id="MatTomatoGel"]
+resource_name = "Tomato Translucent Seed Gel"
+transparency = 1
+albedo_color = Color(1, 0.44, 0.12, 0.72)
+metallic_specular = 0.88
+roughness = 0.1
+clearcoat_enabled = true
+clearcoat_roughness = 0.04
+subsurf_scatter_enabled = true
+subsurf_scatter_strength = 0.28
 
-[sub_resource type="StandardMaterial3D" id="MatOnionPurple"]
-resource_name = "Single Textured Onion Ring"
-albedo_texture = ExtResource("14_onion")
-metallic_specular = 0.45
-roughness = 0.44
+[sub_resource type="SphereMesh" id="MeshTomatoGelPocket"]
+radius = 0.043
+height = 0.012
+radial_segments = 20
+rings = 8
+
+[sub_resource type="StandardMaterial3D" id="MatTomatoSeed"]
+resource_name = "Tomato Pale Seed Pockets"
+albedo_color = Color(0.92, 0.86, 0.45, 1)
+metallic_specular = 0.54
+roughness = 0.24
+subsurf_scatter_enabled = true
+subsurf_scatter_strength = 0.18
+
+[sub_resource type="SphereMesh" id="MeshTomatoSeed"]
+radius = 0.009
+height = 0.005
+radial_segments = 12
+rings = 6
+
+[sub_resource type="StandardMaterial3D" id="MatOnionFlesh"]
+resource_name = "White Onion Translucent Inner Flesh"
+transparency = 1
+albedo_color = Color(1, 0.96, 0.85, 0.76)
+metallic_specular = 0.58
+roughness = 0.23
+subsurf_scatter_enabled = true
+subsurf_scatter_strength = 0.27
 
 [sub_resource type="CylinderMesh" id="MeshOnionRingLarge"]
 top_radius = 0.12
 bottom_radius = 0.12
-height = 0.018
-radial_segments = 32
+height = 0.008
+radial_segments = 48
 rings = 2
 
-[sub_resource type="BoxMesh" id="BoxMesh_nrjn5"]
-material = SubResource("MatMetal")
-size = Vector3(1, 0.8, 1.8110352)
+[sub_resource type="StandardMaterial3D" id="MatOnionPurple"]
+resource_name = "Purple Onion Crisp Edge Rings"
+transparency = 1
+albedo_color = Color(0.78, 0.52, 0.78, 0.86)
+albedo_texture = ExtResource("14_onion")
+metallic_specular = 0.68
+roughness = 0.2
+clearcoat_enabled = true
+clearcoat = 0.35
+clearcoat_roughness = 0.12
+subsurf_scatter_enabled = true
+subsurf_scatter_strength = 0.21
+
+[sub_resource type="TorusMesh" id="MeshOnionOuterRing"]
+inner_radius = 0.105
+outer_radius = 0.145
+rings = 48
+ring_segments = 16
+
+[sub_resource type="TorusMesh" id="MeshOnionMiddleRing"]
+inner_radius = 0.065
+outer_radius = 0.093
+rings = 48
+ring_segments = 14
+
+[sub_resource type="TorusMesh" id="MeshOnionInnerRing"]
+inner_radius = 0.025
+outer_radius = 0.05
+rings = 40
+ring_segments = 12
 
 [sub_resource type="StandardMaterial3D" id="MatCabbage"]
-resource_name = "Single Textured Red Cabbage Strip"
+resource_name = "Deep Magenta Red Cabbage Shred"
+albedo_color = Color(0.72, 0.42, 0.78, 1)
 albedo_texture = ExtResource("16_cabbage")
-metallic_specular = 0.45
-roughness = 0.48
+metallic_specular = 0.62
+roughness = 0.24
+clearcoat_enabled = true
+clearcoat = 0.32
+clearcoat_roughness = 0.16
+subsurf_scatter_enabled = true
+subsurf_scatter_strength = 0.16
 
 [sub_resource type="BoxMesh" id="MeshCabbageStrip"]
 size = Vector3(0.25, 0.018, 0.035)
 
+[sub_resource type="StandardMaterial3D" id="MatCabbageVein"]
+resource_name = "Cabbage Crisp White Vein Stripe"
+transparency = 1
+albedo_color = Color(0.96, 0.76, 0.9, 0.88)
+metallic_specular = 0.48
+roughness = 0.3
+subsurf_scatter_enabled = true
+subsurf_scatter_strength = 0.2
+
+[sub_resource type="CapsuleMesh" id="MeshCabbageVein"]
+radius = 0.006
+height = 0.31
+radial_segments = 10
+rings = 4
+
 [sub_resource type="BoxMesh" id="MeshSauceGNOuter"]
-size = Vector3(0.56, 0.14, 0.5)
+size = Vector3(0.59, 0.14, 0.62)
 
 [sub_resource type="BoxMesh" id="MeshSauceGNCavity"]
-size = Vector3(0.5, 0.1, 0.44)
+size = Vector3(0.47, 0.08, 0.5)
+
+[sub_resource type="BoxMesh" id="MeshGNRimLongNarrow"]
+size = Vector3(0.59, 0.035, 0.055)
+
+[sub_resource type="BoxMesh" id="MeshGNRimShortNarrow"]
+size = Vector3(0.055, 0.035, 0.62)
 
 [sub_resource type="Gradient" id="GradientGarlicSauceSpecks"]
 offsets = PackedFloat32Array(0, 0.82, 0.9, 1)
@@ -611,14 +847,55 @@ color_ramp = SubResource("GradientGarlicSauceSpecks")
 seamless = true
 
 [sub_resource type="StandardMaterial3D" id="MatGarlicSauce"]
-resource_name = "Knoblauchsosse mit Kraeutersprenkeln"
-albedo_color = Color(1, 0.97, 0.86, 1)
+resource_name = "Dense Creamy Garlic Sauce with Herbs"
+albedo_color = Color(1, 0.97, 0.88, 1)
 albedo_texture = SubResource("TextureGarlicSauceSpecks")
-metallic_specular = 0.72
-roughness = 0.2
+metallic_specular = 0.86
+roughness = 0.18
+clearcoat_enabled = true
+clearcoat = 0.62
+clearcoat_roughness = 0.08
+subsurf_scatter_enabled = true
+subsurf_scatter_strength = 0.2
 
 [sub_resource type="BoxMesh" id="MeshSauceSurface"]
-size = Vector3(0.47, 0.025, 0.41)
+size = Vector3(0.46, 0.04, 0.48)
+
+[sub_resource type="CapsuleMesh" id="MeshSauceMeniscusLong"]
+radius = 0.024
+height = 0.45
+radial_segments = 20
+rings = 6
+
+[sub_resource type="CapsuleMesh" id="MeshSauceMeniscusShort"]
+radius = 0.024
+height = 0.39
+radial_segments = 20
+rings = 6
+
+[sub_resource type="TorusMesh" id="MeshSauceSwirlOuter"]
+inner_radius = 0.105
+outer_radius = 0.126
+rings = 48
+ring_segments = 16
+
+[sub_resource type="TorusMesh" id="MeshSauceSwirlInner"]
+inner_radius = 0.055
+outer_radius = 0.073
+rings = 40
+ring_segments = 14
+
+[sub_resource type="StandardMaterial3D" id="MatHerbFlake"]
+resource_name = "Suspended Parsley and Dill Flakes"
+albedo_color = Color(0.08, 0.24, 0.035, 1)
+metallic_specular = 0.38
+roughness = 0.42
+
+[sub_resource type="SphereMesh" id="MeshHerbFlake"]
+radius = 0.008
+height = 0.004
+radial_segments = 10
+rings = 5
 
 [sub_resource type="StandardMaterial3D" id="MatLadleSteel"]
 resource_name = "Sauce Ladle Stainless Steel"
@@ -650,29 +927,57 @@ rings = 2
 size = Vector3(0.58, 0.3, 0.52)
 
 [sub_resource type="StandardMaterial3D" id="MatCocktailSauce"]
-resource_name = "Cremige Cocktailsoße"
-albedo_color = Color(0.96, 0.43, 0.34, 1)
-metallic_specular = 0.72
-roughness = 0.2
+resource_name = "Creamy Salmon Pink Cocktail Sauce"
+albedo_color = Color(0.97, 0.42, 0.29, 1)
+metallic_specular = 0.86
+roughness = 0.18
+clearcoat_enabled = true
+clearcoat = 0.7
+clearcoat_roughness = 0.07
+subsurf_scatter_enabled = true
+subsurf_scatter_strength = 0.18
 
-[sub_resource type="StandardMaterial3D" id="MatCucumber"]
-resource_name = "Single Textured Cucumber Slice"
-albedo_texture = ExtResource("13_cucumber")
-metallic_specular = 0.7
-roughness = 0.22
+[sub_resource type="StandardMaterial3D" id="MatCucumberPeel"]
+resource_name = "Dark Green Patterned Cucumber Peel"
+albedo_color = Color(0.025, 0.24, 0.095, 1)
+metallic_specular = 0.72
+roughness = 0.19
+clearcoat_enabled = true
+clearcoat = 0.55
+clearcoat_roughness = 0.1
 
 [sub_resource type="CylinderMesh" id="MeshCucumberSkin"]
 top_radius = 0.14
 bottom_radius = 0.14
 height = 0.03
-radial_segments = 32
+radial_segments = 48
+rings = 3
+
+[sub_resource type="StandardMaterial3D" id="MatCucumber"]
+resource_name = "Cucumber Moist Seeded Core"
+transparency = 1
+albedo_color = Color(0.93, 1, 0.86, 0.96)
+albedo_texture = ExtResource("13_cucumber")
+metallic_specular = 0.82
+roughness = 0.16
+clearcoat_enabled = true
+clearcoat = 0.64
+clearcoat_roughness = 0.08
+subsurf_scatter_enabled = true
+subsurf_scatter_strength = 0.2
+
+[sub_resource type="CylinderMesh" id="MeshCucumberCore"]
+top_radius = 0.124
+bottom_radius = 0.124
+height = 0.006
+radial_segments = 48
 rings = 2
 
 [sub_resource type="SphereMesh" id="MeshSauceDollop"]
 radius = 0.18
-height = 0.035
-radial_segments = 24
-rings = 10
+height = 0.06
+radial_segments = 32
+rings = 14
 
 [sub_resource type="StandardMaterial3D" id="MatLavash"]
 resource_name = "Raw Lavash Dough"
@@ -1004,7 +1309,7 @@ shape = SubResource("ShapeSideWall")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.575, -2.8)
 
 [node name="Collision" type="CollisionShape3D" parent="Counter" unique_id=1274107635]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.1439443, 0.15831, 0.72233534)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.0324483, 0.15831, 0.72233534)
 shape = SubResource("ShapeCounter")
 
 [node name="KitchenBackShelf" type="MeshInstance3D" parent="." unique_id=1005955309]
@@ -1154,7 +1459,7 @@ outline_size = 8
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.535, 0.595)
 
 [node name="KitchenBackShelf2" type="MeshInstance3D" parent="." unique_id=1157267575]
-transform = Transform3D(6, 0, 0, 0, 1, 0, 0, 0, 1, -0.91877294, 0.6891401, -5.170214)
+transform = Transform3D(6, 0, 0, 0, 1, 0, 0, 0, 1, -0.17133641, 0.6891401, -5.170214)
 material_override = SubResource("MatCounterCladding")
 mesh = SubResource("BoxMesh_t8aj2")
 
@@ -1571,16 +1876,78 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.4902179, 0, -19.116041)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.6, 17)
 
 [node name="Mesh" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Thekenkoerper" unique_id=617863252]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.3761108, 0, -0.0012321472)
-material_override = SubResource("MatCounterCladding")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.4645567, 0, -0.0012321472)
+material_override = SubResource("MatCounterBodySteel")
 mesh = SubResource("BoxTestCounter")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Test Ablage/Kebab Theke/Thekenkoerper" unique_id=1974974666]
 shape = SubResource("ShapeTestCounter")
 
-[node name="Arbeitsplatte" type="MeshInstance3D" parent="Test Ablage/Kebab Theke" unique_id=181629757]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.33681643, 1.27, 17)
+[node name="RefrigeratedFront" type="Node3D" parent="Test Ablage/Kebab Theke/Thekenkoerper" unique_id=55357823]
+
+[node name="Door01" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Thekenkoerper/RefrigeratedFront" unique_id=1802454401]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.58, 0.03, 0.616)
+material_override = SubResource("MatCounterBodySteel")
+mesh = SubResource("MeshCounterDoor")
+metadata/keep_detail_shadows = true
+
+[node name="Door02" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Thekenkoerper/RefrigeratedFront" unique_id=1540681648]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.13, 0.03, 0.616)
+material_override = SubResource("MatCounterBodySteel")
+mesh = SubResource("MeshCounterDoor")
+metadata/keep_detail_shadows = true
+
+[node name="Door03" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Thekenkoerper/RefrigeratedFront" unique_id=1713347593]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.32, 0.03, 0.616)
+material_override = SubResource("MatCounterBodySteel")
+mesh = SubResource("MeshCounterDoor")
+metadata/keep_detail_shadows = true
+
+[node name="Door04" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Thekenkoerper/RefrigeratedFront" unique_id=912945403]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.77, 0.03, 0.616)
+material_override = SubResource("MatCounterBodySteel")
+mesh = SubResource("MeshCounterDoor")
+metadata/keep_detail_shadows = true
+
+[node name="Door05" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Thekenkoerper/RefrigeratedFront" unique_id=763017072]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.22, 0.03, 0.616)
+material_override = SubResource("MatCounterBodySteel")
+mesh = SubResource("MeshCounterDoor")
+metadata/keep_detail_shadows = true
+
+[node name="Handle01" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Thekenkoerper/RefrigeratedFront" unique_id=357683721]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.58, 0.37, 0.657)
 material_override = SubResource("MatInteriorStainless")
+mesh = SubResource("MeshCounterHandle")
+
+[node name="Handle02" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Thekenkoerper/RefrigeratedFront" unique_id=686199890]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.13, 0.37, 0.657)
+material_override = SubResource("MatInteriorStainless")
+mesh = SubResource("MeshCounterHandle")
+
+[node name="Handle03" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Thekenkoerper/RefrigeratedFront" unique_id=1815720102]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.32, 0.37, 0.657)
+material_override = SubResource("MatInteriorStainless")
+mesh = SubResource("MeshCounterHandle")
+
+[node name="Handle04" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Thekenkoerper/RefrigeratedFront" unique_id=751155856]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.77, 0.37, 0.657)
+material_override = SubResource("MatInteriorStainless")
+mesh = SubResource("MeshCounterHandle")
+
+[node name="Handle05" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Thekenkoerper/RefrigeratedFront" unique_id=1948946063]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.22, 0.37, 0.657)
+material_override = SubResource("MatInteriorStainless")
+mesh = SubResource("MeshCounterHandle")
+
+[node name="ToeKick" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Thekenkoerper/RefrigeratedFront" unique_id=53067850]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.36, -0.525, 0.58)
+material_override = SubResource("MatPanDepthShadow")
+mesh = SubResource("MeshCounterPlinth")
+
+[node name="Arbeitsplatte" type="MeshInstance3D" parent="Test Ablage/Kebab Theke" unique_id=181629757]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.44217527, 1.27, 17)
+material_override = SubResource("MatCounterDeck")
 mesh = SubResource("BoxTestCounterTop")
 
 [node name="ArbeitsplatteWorkSurface" type="StaticBody3D" parent="Test Ablage/Kebab Theke" unique_id=1865684067 groups=["work_surface"]]
@@ -1592,10 +1959,63 @@ metadata/work_surface = true
 [node name="SurfaceCollision" type="CollisionShape3D" parent="Test Ablage/Kebab Theke/ArbeitsplatteWorkSurface" unique_id=890048404]
 shape = SubResource("ShapeCounterWorkSurface")
 
+[node name="RefrigeratedDeck" type="Node3D" parent="Test Ablage/Kebab Theke" unique_id=682278612]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.34, 1.35, 16.95)
+
+[node name="RecessDepth" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/RefrigeratedDeck" unique_id=895556769]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.25920892, 0, 0)
+material_override = SubResource("MatPanDepthShadow")
+mesh = SubResource("MeshDeckRecess")
+metadata/keep_detail_shadows = true
+
+[node name="FrontRaisedLip" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/RefrigeratedDeck" unique_id=1936836418]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.24520516, 0.044999957, 0.47500002)
+material_override = SubResource("MatCounterDeck")
+mesh = SubResource("MeshDeckRailLong")
+metadata/keep_detail_shadows = true
+
+[node name="RearRaisedLip" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/RefrigeratedDeck" unique_id=1508553092]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.24050546, 0.044999957, -0.4749999)
+material_override = SubResource("MatCounterDeck")
+mesh = SubResource("BoxMesh_nrjn5")
+metadata/keep_detail_shadows = true
+
+[node name="LeftRaisedLip" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/RefrigeratedDeck" unique_id=389666848]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.43, 0.045, 0)
+material_override = SubResource("MatCounterDeck")
+mesh = SubResource("MeshDeckRailShort")
+metadata/keep_detail_shadows = true
+
+[node name="RightRaisedLip" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/RefrigeratedDeck" unique_id=316692015]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.956211, 0.044999957, 0)
+material_override = SubResource("MatCounterDeck")
+mesh = SubResource("MeshDeckRailShort")
+metadata/keep_detail_shadows = true
+
 [node name="Glasfront" type="MeshInstance3D" parent="Test Ablage/Kebab Theke" unique_id=630860907]
-transform = Transform3D(3.15, 0, 0, 0, 0.65, 0, 0, 0, 0.045, -0.051108647, 1.9526007, 17.6622)
+transform = Transform3D(1, 0, 0, 0, 0.978148, 0.207912, 0, -0.207912, 0.978148, -0.05, 1.95, 17.54)
 material_override = SubResource("MatCounterGlass")
-mesh = SubResource("BoxMesh_ffds4")
+mesh = SubResource("MeshSneezeGlass")
+
+[node name="EdgeTop" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Glasfront" unique_id=600086309]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.59, 0)
+material_override = SubResource("MatGlassEdge")
+mesh = SubResource("MeshSneezeEdgeHorizontal")
+
+[node name="EdgeBottom" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Glasfront" unique_id=1752383210]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.59, 0)
+material_override = SubResource("MatGlassEdge")
+mesh = SubResource("MeshSneezeEdgeHorizontal")
+
+[node name="EdgeLeft" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Glasfront" unique_id=1904770174]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.36, 0, 0)
+material_override = SubResource("MatGlassEdge")
+mesh = SubResource("MeshSneezeEdgeVertical")
+
+[node name="EdgeRight" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Glasfront" unique_id=989713414]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.36, 0, 0)
+material_override = SubResource("MatGlassEdge")
+mesh = SubResource("MeshSneezeEdgeVertical")
 
 [node name="Glasdach" type="MeshInstance3D" parent="Test Ablage/Kebab Theke" unique_id=2082664257]
 transform = Transform3D(3.25, 0, 0, 0, 0.045, 0, 0, 0, 0.7, -0.054351807, 2.594596, 17.326601)
@@ -1625,175 +2045,735 @@ mesh = SubResource("BoxMesh_0yh3i")
 [node name="Zutaten" type="Node3D" parent="Test Ablage/Kebab Theke" unique_id=1058483079]
 
 [node name="Salatwanne" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten" unique_id=1038067378]
-transform = Transform3D(0.78, 0, 0, 0, 0.08, 0, 0, 0, 0.42, -0.45040023, 1.3598785, 16.906445)
-material_override = SubResource("MatInteriorStainless")
-mesh = SubResource("BoxMesh_6pmx1")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.45040023, 1.36, 16.906445)
+material_override = SubResource("MatPanSteel")
+mesh = SubResource("MeshGNBody")
+metadata/keep_detail_shadows = true
+
+[node name="InnerDepth" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten/Salatwanne" unique_id=262842281]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.073, 0)
+material_override = SubResource("MatPanInterior")
+mesh = SubResource("MeshGNFloor")
+
+[node name="BevelFront" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten/Salatwanne" unique_id=421123734]
+transform = Transform3D(1, 0, 0, 0, 0.939693, -0.34202, 0, 0.34202, 0.939693, 0, 0.07, 0.292)
+material_override = SubResource("MatPanSteel")
+mesh = SubResource("MeshGNBevelLong")
+
+[node name="BevelBack" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten/Salatwanne" unique_id=613663277]
+transform = Transform3D(1, 0, 0, 0, 0.939693, 0.34202, 0, -0.34202, 0.939693, 0, 0.07, -0.292)
+material_override = SubResource("MatPanSteel")
+mesh = SubResource("MeshGNBevelLong")
+
+[node name="BevelLeft" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten/Salatwanne" unique_id=609899453]
+transform = Transform3D(0.939693, 0.34202, 0, -0.34202, 0.939693, 0, 0, 0, 1, -0.405, 0.07, 0)
+material_override = SubResource("MatPanSteel")
+mesh = SubResource("MeshGNBevelShort")
+
+[node name="BevelRight" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten/Salatwanne" unique_id=549039583]
+transform = Transform3D(0.939693, -0.34202, 0, 0.34202, 0.939693, 0, 0, 0, 1, 0.405, 0.07, 0)
+material_override = SubResource("MatPanSteel")
+mesh = SubResource("MeshGNBevelShort")
+
+[node name="RimFront" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten/Salatwanne" unique_id=1502443379]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.09, 0.345)
+material_override = SubResource("MatPanSteel")
+mesh = SubResource("MeshGNRimLong")
+metadata/keep_detail_shadows = true
+
+[node name="RimBack" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten/Salatwanne" unique_id=879586473]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.09, -0.345)
+material_override = SubResource("MatPanSteel")
+mesh = SubResource("MeshGNRimLong")
+metadata/keep_detail_shadows = true
+
+[node name="RimLeft" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten/Salatwanne" unique_id=197075151]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.455, 0.09, 0)
+material_override = SubResource("MatPanSteel")
+mesh = SubResource("MeshGNRimShort")
+metadata/keep_detail_shadows = true
+
+[node name="RimRight" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten/Salatwanne" unique_id=1599210408]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.455, 0.09, 0)
+material_override = SubResource("MatPanSteel")
+mesh = SubResource("MeshGNRimShort")
+metadata/keep_detail_shadows = true
+
+[node name="RoundedCorners" type="Node3D" parent="Test Ablage/Kebab Theke/Zutaten/Salatwanne" unique_id=7207927]
 
 [node name="Salat" type="Node3D" parent="Test Ablage/Kebab Theke/Zutaten" unique_id=794740063]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.45040023, 1.4011725, 16.895521)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.45040023, 1.466, 16.895521)
 
 [node name="Leaf01" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten/Salat" unique_id=436542378]
 transform = Transform3D(0.45918828, 0.008798061, 0.06815391, -0.056533482, 0.053722266, -0.050128285, -0.12786746, 0.00784296, 0.26691234, -0.17847908, 0, -0.13000011)
 material_override = SubResource("MatLettuce")
 mesh = SubResource("MeshSaladLeaf")
 
+[node name="CrinkleLeft" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten/Salat/Leaf01" unique_id=1282219271]
+transform = Transform3D(0.78, 0.08, 0, -0.06, 0.72, 0.05, 0, -0.04, 0.82, -0.34, 0.08, 0.05)
+material_override = SubResource("MatLettuce")
+mesh = SubResource("MeshSaladRuffle")
+
+[node name="CrinkleRight" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten/Salat/Leaf01" unique_id=1958838645]
+transform = Transform3D(0.7, -0.07, 0.08, 0.06, 0.76, -0.04, -0.07, 0.05, 0.76, 0.34, 0.05, -0.08)
+material_override = SubResource("MatLettuce")
+mesh = SubResource("MeshSaladRuffle")
+
+[node name="CentralVein" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten/Salat/Leaf01" unique_id=614957785]
+transform = Transform3D(0.7, 0, 0, 0, 0, 0.08, 0, -1, 0, 0, 0.18, 0)
+material_override = SubResource("MatLettuceVein")
+mesh = SubResource("MeshLeafVein")
+
 [node name="Leaf02" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten/Salat" unique_id=1409101864]
 transform = Transform3D(0.28695765, -0.010149397, 0.17048098, 0.04151979, 0.059116144, 0.03349035, -0.3038608, -0.0015071287, 0.16557363, -0.2, 0.045, 0.12)
 material_override = SubResource("MatLettuce")
 mesh = SubResource("MeshSaladLeaf")
+
+[node name="CrinkleLeft" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten/Salat/Leaf02" unique_id=235911565]
+transform = Transform3D(0.72, -0.05, 0.06, 0.04, 0.78, 0.04, -0.05, -0.03, 0.8, -0.34, 0.04, 0.06)
+material_override = SubResource("MatLettuce")
+mesh = SubResource("MeshSaladRuffle")
+
+[node name="CrinkleRight" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten/Salat/Leaf02" unique_id=1721027449]
+transform = Transform3D(0.8, 0.07, -0.05, -0.06, 0.7, 0.05, 0.06, -0.04, 0.75, 0.34, 0.07, -0.08)
+material_override = SubResource("MatLettuce")
+mesh = SubResource("MeshSaladRuffle")
+
+[node name="CentralVein" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten/Salat/Leaf02" unique_id=1393025310]
+transform = Transform3D(0.7, 0, 0, 0, 0, 0.08, 0, -1, 0, 0, 0.18, 0)
+material_override = SubResource("MatLettuceVein")
+mesh = SubResource("MeshLeafVein")
 
 [node name="Leaf03" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten/Salat" unique_id=1033222043]
 transform = Transform3D(0.39320722, 0.00029938048, -0.13492139, -0.036496397, 0.051460937, -0.031125171, 0.23591547, 0.0074620824, 0.22006236, 0.02, 0.02, -0.14)
 material_override = SubResource("MatLettuce")
 mesh = SubResource("MeshSaladLeaf")
 
+[node name="CrinkleLeft" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten/Salat/Leaf03" unique_id=1429733414]
+transform = Transform3D(0.76, 0.06, -0.04, -0.05, 0.74, 0.07, 0.05, -0.05, 0.79, -0.35, 0.05, 0.08)
+material_override = SubResource("MatLettuce")
+mesh = SubResource("MeshSaladRuffle")
+
+[node name="CrinkleRight" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten/Salat/Leaf03" unique_id=1527821137]
+transform = Transform3D(0.73, -0.07, 0.06, 0.06, 0.79, -0.03, -0.05, 0.04, 0.74, 0.34, 0.08, -0.06)
+material_override = SubResource("MatLettuce")
+mesh = SubResource("MeshSaladRuffle")
+
+[node name="CentralVein" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten/Salat/Leaf03" unique_id=545674237]
+transform = Transform3D(0.7, 0, 0, 0, 0, 0.08, 0, -1, 0, 0, 0.18, 0)
+material_override = SubResource("MatLettuceVein")
+mesh = SubResource("MeshLeafVein")
+
 [node name="Leaf04" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten/Salat" unique_id=1389003335]
 transform = Transform3D(0.40509737, -0.0129050845, 0.08401567, 0.06017508, 0.06308104, 0.049667332, -0.16085742, -0.008901723, 0.23016195, 0.17858613, 0.054999948, 0.099999905)
 material_override = SubResource("MatLettuce")
 mesh = SubResource("MeshSaladLeaf")
+
+[node name="CrinkleLeft" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten/Salat/Leaf04" unique_id=1100175115]
+transform = Transform3D(0.7, 0.08, 0.05, -0.07, 0.8, 0.03, -0.04, -0.04, 0.76, -0.34, 0.06, -0.06)
+material_override = SubResource("MatLettuce")
+mesh = SubResource("MeshSaladRuffle")
+
+[node name="CrinkleRight" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten/Salat/Leaf04" unique_id=242058489]
+transform = Transform3D(0.8, -0.06, -0.04, 0.05, 0.72, -0.06, 0.05, 0.05, 0.77, 0.35, 0.04, 0.08)
+material_override = SubResource("MatLettuce")
+mesh = SubResource("MeshSaladRuffle")
+
+[node name="CentralVein" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten/Salat/Leaf04" unique_id=1132720175]
+transform = Transform3D(0.7, 0, 0, 0, 0, 0.08, 0, -1, 0, 0, 0.18, 0)
+material_override = SubResource("MatLettuceVein")
+mesh = SubResource("MeshLeafVein")
 
 [node name="Leaf05" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten/Salat" unique_id=852917137]
 transform = Transform3D(0.19251548, 0.009359007, 0.19695908, -0.039423313, 0.049114764, -0.03664319, -0.3484015, -0.00038608574, 0.11297962, 0.24014151, 0.018000007, -0.119999886)
 material_override = SubResource("MatLettuce")
 mesh = SubResource("MeshSaladLeaf")
 
+[node name="CrinkleLeft" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten/Salat/Leaf05" unique_id=1487725410]
+transform = Transform3D(0.76, -0.06, 0.04, 0.05, 0.72, 0.06, -0.05, -0.04, 0.8, -0.34, 0.04, 0.07)
+material_override = SubResource("MatLettuce")
+mesh = SubResource("MeshSaladRuffle")
+
+[node name="CrinkleRight" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten/Salat/Leaf05" unique_id=289471934]
+transform = Transform3D(0.71, 0.07, -0.06, -0.06, 0.79, 0.04, 0.05, -0.03, 0.75, 0.35, 0.07, -0.07)
+material_override = SubResource("MatLettuce")
+mesh = SubResource("MeshSaladRuffle")
+
+[node name="CentralVein" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten/Salat/Leaf05" unique_id=329663617]
+transform = Transform3D(0.7, 0, 0, 0, 0, 0.08, 0, -1, 0, 0, 0.18, 0)
+material_override = SubResource("MatLettuceVein")
+mesh = SubResource("MeshLeafVein")
+
 [node name="Leaf06" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten/Salat" unique_id=1250544803]
 transform = Transform3D(0.46968892, -0.008568052, -0.041633643, 0.07609069, 0.058937714, 0.027953358, 0.06326531, -0.0072755874, 0.2754728, -0.05, 0.095, 0.08)
 material_override = SubResource("MatLettuce")
 mesh = SubResource("MeshSaladLeaf")
+
+[node name="CrinkleLeft" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten/Salat/Leaf06" unique_id=1953379763]
+transform = Transform3D(0.8, 0.05, -0.06, -0.04, 0.73, 0.05, 0.06, -0.04, 0.75, -0.35, 0.06, -0.07)
+material_override = SubResource("MatLettuce")
+mesh = SubResource("MeshSaladRuffle")
+
+[node name="CrinkleRight" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten/Salat/Leaf06" unique_id=1233613225]
+transform = Transform3D(0.72, -0.08, 0.05, 0.07, 0.8, -0.04, -0.04, 0.05, 0.78, 0.34, 0.04, 0.08)
+material_override = SubResource("MatLettuce")
+mesh = SubResource("MeshSaladRuffle")
+
+[node name="CentralVein" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten/Salat/Leaf06" unique_id=1527945418]
+transform = Transform3D(0.7, 0, 0, 0, 0, 0.08, 0, -1, 0, 0, 0.18, 0)
+material_override = SubResource("MatLettuceVein")
+mesh = SubResource("MeshLeafVein")
 
 [node name="Leaf07" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten/Salat" unique_id=1221088569]
 transform = Transform3D(0.30880833, 0.009145871, 0.1339157, -0.055415846, 0.04915475, -0.026336685, -0.24812599, 0.00040450916, 0.17254844, 0.16, 0.12, -0.04)
 material_override = SubResource("MatLettuce")
 mesh = SubResource("MeshSaladLeaf")
 
+[node name="CrinkleLeft" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten/Salat/Leaf07" unique_id=928927145]
+transform = Transform3D(0.74, 0.07, 0.05, -0.06, 0.76, 0.04, -0.04, -0.05, 0.8, -0.34, 0.05, 0.08)
+material_override = SubResource("MatLettuce")
+mesh = SubResource("MeshSaladRuffle")
+
+[node name="CrinkleRight" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten/Salat/Leaf07" unique_id=893437801]
+transform = Transform3D(0.79, -0.05, -0.04, 0.04, 0.72, -0.06, 0.05, 0.05, 0.76, 0.35, 0.07, -0.06)
+material_override = SubResource("MatLettuce")
+mesh = SubResource("MeshSaladRuffle")
+
+[node name="CentralVein" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten/Salat/Leaf07" unique_id=1989829707]
+transform = Transform3D(0.7, 0, 0, 0, 0, 0.08, 0, -1, 0, 0, 0.18, 0)
+material_override = SubResource("MatLettuceVein")
+mesh = SubResource("MeshLeafVein")
+
 [node name="Tomatenwanne" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten" unique_id=174979748]
-transform = Transform3D(0.78, 0, 0, 0, 0.08, 0, 0, 0, 0.42, 0.6067531, 1.3612529, 16.913622)
-material_override = SubResource("MatInteriorStainless")
-mesh = SubResource("BoxMesh_f6pxk")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.6067531, 1.36, 16.913622)
+material_override = SubResource("MatPanSteel")
+mesh = SubResource("MeshGNBody")
+metadata/keep_detail_shadows = true
+
+[node name="InnerDepth" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten/Tomatenwanne" unique_id=151703039]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.073, 0)
+material_override = SubResource("MatPanInterior")
+mesh = SubResource("MeshGNFloor")
+
+[node name="BevelFront" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten/Tomatenwanne" unique_id=1095398806]
+transform = Transform3D(1, 0, 0, 0, 0.939693, -0.34202, 0, 0.34202, 0.939693, 0, 0.07, 0.292)
+material_override = SubResource("MatPanSteel")
+mesh = SubResource("MeshGNBevelLong")
+
+[node name="BevelBack" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten/Tomatenwanne" unique_id=1835964878]
+transform = Transform3D(1, 0, 0, 0, 0.939693, 0.34202, 0, -0.34202, 0.939693, 0, 0.07, -0.292)
+material_override = SubResource("MatPanSteel")
+mesh = SubResource("MeshGNBevelLong")
+
+[node name="BevelLeft" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten/Tomatenwanne" unique_id=1461768733]
+transform = Transform3D(0.939693, 0.34202, 0, -0.34202, 0.939693, 0, 0, 0, 1, -0.405, 0.07, 0)
+material_override = SubResource("MatPanSteel")
+mesh = SubResource("MeshGNBevelShort")
+
+[node name="BevelRight" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten/Tomatenwanne" unique_id=415228138]
+transform = Transform3D(0.939693, -0.34202, 0, 0.34202, 0.939693, 0, 0, 0, 1, 0.405, 0.07, 0)
+material_override = SubResource("MatPanSteel")
+mesh = SubResource("MeshGNBevelShort")
+
+[node name="RimFront" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten/Tomatenwanne" unique_id=121904456]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.09, 0.345)
+material_override = SubResource("MatPanSteel")
+mesh = SubResource("MeshGNRimLong")
+metadata/keep_detail_shadows = true
+
+[node name="RimBack" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten/Tomatenwanne" unique_id=2143272155]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.09, -0.345)
+material_override = SubResource("MatPanSteel")
+mesh = SubResource("MeshGNRimLong")
+metadata/keep_detail_shadows = true
+
+[node name="RimLeft" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten/Tomatenwanne" unique_id=675736362]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.455, 0.09, 0)
+material_override = SubResource("MatPanSteel")
+mesh = SubResource("MeshGNRimShort")
+metadata/keep_detail_shadows = true
+
+[node name="RimRight" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten/Tomatenwanne" unique_id=2089592773]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.455, 0.09, 0)
+material_override = SubResource("MatPanSteel")
+mesh = SubResource("MeshGNRimShort")
+metadata/keep_detail_shadows = true
+
+[node name="RoundedCorners" type="Node3D" parent="Test Ablage/Kebab Theke/Zutaten/Tomatenwanne" unique_id=800887018]
 
 [node name="Tomaten" type="Node3D" parent="Test Ablage/Kebab Theke/Zutaten" unique_id=1468185354]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.6067531, 1.4028355, 16.90067)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.6067531, 1.47, 16.90067)
 
 [node name="Slice01" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten/Tomaten" unique_id=1642227822]
 transform = Transform3D(0.977351, 0.074616745, 0.19803393, -0.059772223, 0.99500805, -0.07991469, -0.20300832, 0.06626777, 0.9769321, -0.38, 0, -0.12)
-material_override = SubResource("MatTomato")
+material_override = SubResource("MatTomatoSide")
 mesh = SubResource("MeshTomatoSlice")
+
+[node name="JuicyCutFace" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten/Tomaten/Slice01" unique_id=1869277783]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.0155, 0)
+material_override = SubResource("MatTomato")
+mesh = SubResource("MeshTomatoCutFace")
+
+[node name="SeedGelA" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten/Tomaten/Slice01" unique_id=516574922]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.052, 0.021, -0.018)
+material_override = SubResource("MatTomatoGel")
+mesh = SubResource("MeshTomatoGelPocket")
+
+[node name="SeedGelB" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten/Tomaten/Slice01" unique_id=233844103]
+transform = Transform3D(0.72, 0, 0, 0, 1, 0, 0, 0, 1.18, 0.052, 0.021, 0.025)
+material_override = SubResource("MatTomatoGel")
+mesh = SubResource("MeshTomatoGelPocket")
+
+[node name="PaleSeed" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten/Tomaten/Slice01" unique_id=728646539]
+transform = Transform3D(0.55, 0, 0, 0, 1, 0, 0, 0, 1.5, -0.055, 0.027, -0.014)
+material_override = SubResource("MatTomatoSeed")
+mesh = SubResource("MeshTomatoSeed")
 
 [node name="Slice02" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten/Tomaten" unique_id=1031640600]
 transform = Transform3D(0.75982296, -0.09321661, 0.6434126, 0.079814814, 0.995556, 0.04997917, -0.6452122, 0.013378531, 0.7638864, -0.12, 0.035, 0.1)
-material_override = SubResource("MatTomato")
+material_override = SubResource("MatTomatoSide")
 mesh = SubResource("MeshTomatoSlice")
+
+[node name="JuicyCutFace" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten/Tomaten/Slice02" unique_id=787496460]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.0155, 0)
+material_override = SubResource("MatTomato")
+mesh = SubResource("MeshTomatoCutFace")
+
+[node name="SeedGelA" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten/Tomaten/Slice02" unique_id=1987281420]
+transform = Transform3D(0.8, 0, 0, 0, 1, 0, 0, 0, 1.15, -0.05, 0.021, 0.02)
+material_override = SubResource("MatTomatoGel")
+mesh = SubResource("MeshTomatoGelPocket")
+
+[node name="SeedGelB" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten/Tomaten/Slice02" unique_id=1931560126]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 0.8, 0.054, 0.021, -0.026)
+material_override = SubResource("MatTomatoGel")
+mesh = SubResource("MeshTomatoGelPocket")
+
+[node name="PaleSeed" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten/Tomaten/Slice02" unique_id=1783344173]
+transform = Transform3D(0.55, 0, 0, 0, 1, 0, 0, 0, 1.5, 0.055, 0.027, -0.022)
+material_override = SubResource("MatTomatoSeed")
+mesh = SubResource("MeshTomatoSeed")
 
 [node name="Slice03" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten/Tomaten" unique_id=730584329]
 transform = Transform3D(0.9007699, 0.009946868, -0.43418282, -0.039917376, 0.9974021, -0.059964005, 0.4324584, 0.07134521, 0.89882684, 0.15, 0.015, -0.1)
-material_override = SubResource("MatTomato")
+material_override = SubResource("MatTomatoSide")
 mesh = SubResource("MeshTomatoSlice")
+
+[node name="JuicyCutFace" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten/Tomaten/Slice03" unique_id=45915250]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.0155, 0)
+material_override = SubResource("MatTomato")
+mesh = SubResource("MeshTomatoCutFace")
+
+[node name="SeedGelA" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten/Tomaten/Slice03" unique_id=2110812944]
+transform = Transform3D(0.86, 0, 0, 0, 1, 0, 0, 0, 1.1, -0.052, 0.021, -0.02)
+material_override = SubResource("MatTomatoGel")
+mesh = SubResource("MeshTomatoGelPocket")
+
+[node name="SeedGelB" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten/Tomaten/Slice03" unique_id=1072653480]
+transform = Transform3D(1.1, 0, 0, 0, 1, 0, 0, 0, 0.76, 0.049, 0.021, 0.025)
+material_override = SubResource("MatTomatoGel")
+mesh = SubResource("MeshTomatoGelPocket")
+
+[node name="PaleSeed" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten/Tomaten/Slice03" unique_id=1670823695]
+transform = Transform3D(0.55, 0, 0, 0, 1, 0, 0, 0, 1.5, -0.053, 0.027, -0.015)
+material_override = SubResource("MatTomatoSeed")
+mesh = SubResource("MeshTomatoSeed")
 
 [node name="Slice04" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten/Tomaten" unique_id=1229153812]
 transform = Transform3D(0.57770735, -0.093994655, 0.810814, 0.04981932, 0.995556, 0.07991469, -0.81472224, -0.005773101, 0.5798227, 0.4, 0.05, 0.1)
-material_override = SubResource("MatTomato")
+material_override = SubResource("MatTomatoSide")
 mesh = SubResource("MeshTomatoSlice")
 
+[node name="JuicyCutFace" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten/Tomaten/Slice04" unique_id=706413104]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.0155, 0)
+material_override = SubResource("MatTomato")
+mesh = SubResource("MeshTomatoCutFace")
+
+[node name="SeedGelA" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten/Tomaten/Slice04" unique_id=555799847]
+transform = Transform3D(1.12, 0, 0, 0, 1, 0, 0, 0, 0.74, -0.052, 0.021, 0.018)
+material_override = SubResource("MatTomatoGel")
+mesh = SubResource("MeshTomatoGelPocket")
+
+[node name="SeedGelB" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten/Tomaten/Slice04" unique_id=22320354]
+transform = Transform3D(0.78, 0, 0, 0, 1, 0, 0, 0, 1.15, 0.052, 0.021, -0.024)
+material_override = SubResource("MatTomatoGel")
+mesh = SubResource("MeshTomatoGelPocket")
+
+[node name="PaleSeed" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten/Tomaten/Slice04" unique_id=2121459590]
+transform = Transform3D(0.55, 0, 0, 0, 1, 0, 0, 0, 1.5, 0.051, 0.027, -0.02)
+material_override = SubResource("MatTomatoSeed")
+mesh = SubResource("MeshTomatoSeed")
+
 [node name="Zwiebelwanne" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten" unique_id=963335762]
-transform = Transform3D(0.78, 0, 0, 0, 0.08, 0, 0, 0, 0.42, 1.55, 1.3601236, 16.88481)
-material_override = SubResource("MatInteriorStainless")
-mesh = SubResource("BoxMesh_ipmwm")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.55, 1.36, 16.88481)
+material_override = SubResource("MatPanSteel")
+mesh = SubResource("MeshGNBody")
+metadata/keep_detail_shadows = true
+
+[node name="InnerDepth" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten/Zwiebelwanne" unique_id=1130202081]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.073, 0)
+material_override = SubResource("MatPanInterior")
+mesh = SubResource("MeshGNFloor")
+
+[node name="BevelFront" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten/Zwiebelwanne" unique_id=445878504]
+transform = Transform3D(1, 0, 0, 0, 0.939693, -0.34202, 0, 0.34202, 0.939693, 0, 0.07, 0.292)
+material_override = SubResource("MatPanSteel")
+mesh = SubResource("MeshGNBevelLong")
+
+[node name="BevelBack" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten/Zwiebelwanne" unique_id=319613254]
+transform = Transform3D(1, 0, 0, 0, 0.939693, 0.34202, 0, -0.34202, 0.939693, 0, 0.07, -0.292)
+material_override = SubResource("MatPanSteel")
+mesh = SubResource("MeshGNBevelLong")
+
+[node name="BevelLeft" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten/Zwiebelwanne" unique_id=1581999187]
+transform = Transform3D(0.939693, 0.34202, 0, -0.34202, 0.939693, 0, 0, 0, 1, -0.405, 0.07, 0)
+material_override = SubResource("MatPanSteel")
+mesh = SubResource("MeshGNBevelShort")
+
+[node name="BevelRight" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten/Zwiebelwanne" unique_id=951832228]
+transform = Transform3D(0.939693, -0.34202, 0, 0.34202, 0.939693, 0, 0, 0, 1, 0.405, 0.07, 0)
+material_override = SubResource("MatPanSteel")
+mesh = SubResource("MeshGNBevelShort")
+
+[node name="RimFront" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten/Zwiebelwanne" unique_id=1543172013]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.09, 0.345)
+material_override = SubResource("MatPanSteel")
+mesh = SubResource("MeshGNRimLong")
+metadata/keep_detail_shadows = true
+
+[node name="RimBack" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten/Zwiebelwanne" unique_id=986644462]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.09, -0.345)
+material_override = SubResource("MatPanSteel")
+mesh = SubResource("MeshGNRimLong")
+metadata/keep_detail_shadows = true
+
+[node name="RimLeft" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten/Zwiebelwanne" unique_id=559649278]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.455, 0.09, 0)
+material_override = SubResource("MatPanSteel")
+mesh = SubResource("MeshGNRimShort")
+metadata/keep_detail_shadows = true
+
+[node name="RimRight" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten/Zwiebelwanne" unique_id=2100522558]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.455, 0.09, 0)
+material_override = SubResource("MatPanSteel")
+mesh = SubResource("MeshGNRimShort")
+metadata/keep_detail_shadows = true
+
+[node name="RoundedCorners" type="Node3D" parent="Test Ablage/Kebab Theke/Zutaten/Zwiebelwanne" unique_id=1940743822]
 
 [node name="Zwiebeln" type="Node3D" parent="Test Ablage/Kebab Theke/Zutaten" unique_id=1024667507]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.55, 1.4029845, 16.878174)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.55, 1.466, 16.878174)
 
 [node name="Slice01" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten/Zwiebeln" unique_id=2116314604]
 transform = Transform3D(0.96754414, 0.05356963, 0.24695876, -0.039917376, 0.9974021, -0.059964005, -0.24952944, 0.048159875, 0.9671689, -0.34, 0, -0.11)
-material_override = SubResource("MatOnionPurple")
+material_override = SubResource("MatOnionFlesh")
 mesh = SubResource("MeshOnionRingLarge")
+
+[node name="PurpleOuterRing" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten/Zwiebeln/Slice01" unique_id=679269749]
+transform = Transform3D(1, 0, 0, 0, 0.24, 0, 0, 0, 1, 0, 0.009, 0)
+material_override = SubResource("MatOnionPurple")
+mesh = SubResource("MeshOnionOuterRing")
+
+[node name="WhiteMiddleRing" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten/Zwiebeln/Slice01" unique_id=218033140]
+transform = Transform3D(1, 0, 0, 0, 0.2, 0, 0, 0, 1, 0, 0.011, 0)
+material_override = SubResource("MatOnionFlesh")
+mesh = SubResource("MeshOnionMiddleRing")
+
+[node name="VioletInnerRing" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten/Zwiebeln/Slice01" unique_id=1759458814]
+transform = Transform3D(1, 0, 0, 0, 0.18, 0, 0, 0, 1, 0, 0.012, 0)
+material_override = SubResource("MatOnionPurple")
+mesh = SubResource("MeshOnionInnerRing")
 
 [node name="Slice02" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten/Zwiebeln" unique_id=272036230]
 transform = Transform3D(0.9545355, -0.033568494, -0.46983063, 0.07823809, 0.99630433, 0.044981252, 0.58063823, -0.07906236, 0.76631314, -0.12, 0.035, 0.1)
-material_override = SubResource("MatOnionPurple")
+material_override = SubResource("MatOnionFlesh")
 mesh = SubResource("MeshOnionRingLarge")
+
+[node name="PurpleOuterRing" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten/Zwiebeln/Slice02" unique_id=1242695508]
+transform = Transform3D(1, 0, 0, 0, 0.24, 0, 0, 0, 1, 0, 0.009, 0)
+material_override = SubResource("MatOnionPurple")
+mesh = SubResource("MeshOnionOuterRing")
+
+[node name="WhiteMiddleRing" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten/Zwiebeln/Slice02" unique_id=1643393776]
+transform = Transform3D(1, 0, 0, 0, 0.2, 0, 0, 0, 1, 0, 0.011, 0)
+material_override = SubResource("MatOnionFlesh")
+mesh = SubResource("MeshOnionMiddleRing")
+
+[node name="VioletInnerRing" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten/Zwiebeln/Slice02" unique_id=1306382865]
+transform = Transform3D(1, 0, 0, 0, 0.18, 0, 0, 0, 1, 0, 0.012, 0)
+material_override = SubResource("MatOnionPurple")
+mesh = SubResource("MeshOnionInnerRing")
 
 [node name="Slice03" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten/Zwiebeln" unique_id=504459972]
 transform = Transform3D(0.7084439, 0.067128226, 0.70256746, -0.049928572, 0.9977392, -0.044984818, -0.7039988, -0.0032089688, 0.7101939, 0.12, 0.012, -0.09)
-material_override = SubResource("MatOnionPurple")
+material_override = SubResource("MatOnionFlesh")
 mesh = SubResource("MeshOnionRingLarge")
+
+[node name="PurpleOuterRing" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten/Zwiebeln/Slice03" unique_id=967426481]
+transform = Transform3D(1, 0, 0, 0, 0.24, 0, 0, 0, 1, 0, 0.009, 0)
+material_override = SubResource("MatOnionPurple")
+mesh = SubResource("MeshOnionOuterRing")
+
+[node name="WhiteMiddleRing" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten/Zwiebeln/Slice03" unique_id=967803434]
+transform = Transform3D(1, 0, 0, 0, 0.2, 0, 0, 0, 1, 0, 0.011, 0)
+material_override = SubResource("MatOnionFlesh")
+mesh = SubResource("MeshOnionMiddleRing")
+
+[node name="VioletInnerRing" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten/Zwiebeln/Slice03" unique_id=92978461]
+transform = Transform3D(1, 0, 0, 0, 0.18, 0, 0, 0, 1, 0, 0.012, 0)
+material_override = SubResource("MatOnionPurple")
+mesh = SubResource("MeshOnionInnerRing")
 
 [node name="Slice04" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten/Zwiebeln" unique_id=683939363]
 transform = Transform3D(0.86153346, -0.076853074, 0.36966324, 0.055067614, 0.9964043, 0.064761125, -0.31800577, -0.03566566, 1.012697, 0.36, 0.05, 0.08)
-material_override = SubResource("MatOnionPurple")
+material_override = SubResource("MatOnionFlesh")
 mesh = SubResource("MeshOnionRingLarge")
+
+[node name="PurpleOuterRing" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten/Zwiebeln/Slice04" unique_id=159470253]
+transform = Transform3D(1, 0, 0, 0, 0.24, 0, 0, 0, 1, 0, 0.009, 0)
+material_override = SubResource("MatOnionPurple")
+mesh = SubResource("MeshOnionOuterRing")
+
+[node name="WhiteMiddleRing" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten/Zwiebeln/Slice04" unique_id=783067834]
+transform = Transform3D(1, 0, 0, 0, 0.2, 0, 0, 0, 1, 0, 0.011, 0)
+material_override = SubResource("MatOnionFlesh")
+mesh = SubResource("MeshOnionMiddleRing")
+
+[node name="VioletInnerRing" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten/Zwiebeln/Slice04" unique_id=1932509739]
+transform = Transform3D(1, 0, 0, 0, 0.18, 0, 0, 0, 1, 0, 0.012, 0)
+material_override = SubResource("MatOnionPurple")
+mesh = SubResource("MeshOnionInnerRing")
 
 [node name="Slice05" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten/Zwiebeln" unique_id=1269678106]
 transform = Transform3D(0.9545522, -0.040468134, -0.29528382, 0.029971506, 0.9987505, -0.039989334, 0.29653317, 0.029321805, 0.9545723, 0, 0.085, 0.06)
-material_override = SubResource("MatOnionPurple")
+material_override = SubResource("MatOnionFlesh")
 mesh = SubResource("MeshOnionRingLarge")
 
+[node name="PurpleOuterRing" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten/Zwiebeln/Slice05" unique_id=2071142891]
+transform = Transform3D(1, 0, 0, 0, 0.24, 0, 0, 0, 1, 0, 0.009, 0)
+material_override = SubResource("MatOnionPurple")
+mesh = SubResource("MeshOnionOuterRing")
+
+[node name="WhiteMiddleRing" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten/Zwiebeln/Slice05" unique_id=827024933]
+transform = Transform3D(1, 0, 0, 0, 0.2, 0, 0, 0, 1, 0, 0.011, 0)
+material_override = SubResource("MatOnionFlesh")
+mesh = SubResource("MeshOnionMiddleRing")
+
+[node name="VioletInnerRing" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten/Zwiebeln/Slice05" unique_id=1526061769]
+transform = Transform3D(1, 0, 0, 0, 0.18, 0, 0, 0, 1, 0, 0.012, 0)
+material_override = SubResource("MatOnionPurple")
+mesh = SubResource("MeshOnionInnerRing")
+
 [node name="Krautwanne" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten" unique_id=240952091]
-transform = Transform3D(0.62, 0, 0, 0, 0.08, 0, 0, 0, 0.42, 2.4025977, 1.3576487, 16.879683)
-material_override = SubResource("MatInteriorStainless")
-mesh = SubResource("BoxMesh_nrjn5")
+transform = Transform3D(0.78, 0, 0, 0, 1, 0, 0, 0, 1, 2.4025977, 1.36, 16.879683)
+material_override = SubResource("MatPanSteel")
+mesh = SubResource("MeshGNBody")
+metadata/keep_detail_shadows = true
+
+[node name="InnerDepth" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten/Krautwanne" unique_id=1805320682]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.073, 0)
+material_override = SubResource("MatPanInterior")
+mesh = SubResource("MeshGNFloor")
+
+[node name="BevelFront" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten/Krautwanne" unique_id=1243582569]
+transform = Transform3D(1, 0, 0, 0, 0.939693, -0.34202, 0, 0.34202, 0.939693, 0, 0.07, 0.292)
+material_override = SubResource("MatPanSteel")
+mesh = SubResource("MeshGNBevelLong")
+
+[node name="BevelBack" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten/Krautwanne" unique_id=985099918]
+transform = Transform3D(1, 0, 0, 0, 0.939693, 0.34202, 0, -0.34202, 0.939693, 0, 0.07, -0.292)
+material_override = SubResource("MatPanSteel")
+mesh = SubResource("MeshGNBevelLong")
+
+[node name="BevelLeft" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten/Krautwanne" unique_id=103279988]
+transform = Transform3D(0.939693, 0.34202, 0, -0.34202, 0.939693, 0, 0, 0, 1, -0.405, 0.07, 0)
+material_override = SubResource("MatPanSteel")
+mesh = SubResource("MeshGNBevelShort")
+
+[node name="BevelRight" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten/Krautwanne" unique_id=866345379]
+transform = Transform3D(0.939693, -0.34202, 0, 0.34202, 0.939693, 0, 0, 0, 1, 0.405, 0.07, 0)
+material_override = SubResource("MatPanSteel")
+mesh = SubResource("MeshGNBevelShort")
+
+[node name="RimFront" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten/Krautwanne" unique_id=747045017]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.09, 0.345)
+material_override = SubResource("MatPanSteel")
+mesh = SubResource("MeshGNRimLong")
+metadata/keep_detail_shadows = true
+
+[node name="RimBack" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten/Krautwanne" unique_id=2001893155]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.09, -0.345)
+material_override = SubResource("MatPanSteel")
+mesh = SubResource("MeshGNRimLong")
+metadata/keep_detail_shadows = true
+
+[node name="RimLeft" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten/Krautwanne" unique_id=1144163953]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.455, 0.09, 0)
+material_override = SubResource("MatPanSteel")
+mesh = SubResource("MeshGNRimShort")
+metadata/keep_detail_shadows = true
+
+[node name="RimRight" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten/Krautwanne" unique_id=112209706]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.455, 0.09, 0)
+material_override = SubResource("MatPanSteel")
+mesh = SubResource("MeshGNRimShort")
+metadata/keep_detail_shadows = true
+
+[node name="RoundedCorners" type="Node3D" parent="Test Ablage/Kebab Theke/Zutaten/Krautwanne" unique_id=1873819408]
 
 [node name="Kraut" type="Node3D" parent="Test Ablage/Kebab Theke/Zutaten" unique_id=644870592]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.4025977, 1.3738884, 16.878506)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.4025977, 1.49, 16.878506)
 
 [node name="Strip01" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten/Kraut" unique_id=1759405895]
-transform = Transform3D(0.9554721, -0.16129872, 0.24709478, 0.17880584, 0.98261416, -0.04997917, -0.23473725, 0.09193569, 0.96770155, -0.38, 0, -0.12)
+transform = Transform3D(0, 1, 0, -0.965926, 0, 0.258819, 0.258819, 0, 0.965926, -0.31, 0, -0.12)
 material_override = SubResource("MatCabbage")
 mesh = SubResource("MeshCabbageStrip")
 
 [node name="Strip02" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten/Kraut" unique_id=46878030]
-transform = Transform3D(0.88981044, 0.14230467, -0.43357438, -0.11932933, 0.9896334, 0.07991469, 0.4404519, -0.01937079, 0.8975673, -0.25, 0.045, 0.08)
+transform = Transform3D(0, 1, 0, -0.819152, 0, -0.573576, -0.573576, 0, 0.819152, -0.23, 0.045, 0.1)
 material_override = SubResource("MatCabbage")
 mesh = SubResource("MeshCabbageStrip")
 
 [node name="Strip03" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten/Kraut" unique_id=1131100037]
-transform = Transform3D(0.6258714, 0.028276332, 0.7794136, 0.07951545, 0.9918219, -0.09983342, -0.77586234, 0.124458306, 0.6185045, -0.1, 0.015, -0.08)
+transform = Transform3D(0, 1, 0, -0.573576, 0, 0.819152, 0.819152, 0, 0.573576, -0.08, 0.018, -0.1)
 material_override = SubResource("MatCabbage")
 mesh = SubResource("MeshCabbageStrip")
 
 [node name="Strip04" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten/Kraut" unique_id=1847753391]
-transform = Transform3D(0.92473274, 0.16647288, 0.34228078, -0.19831184, 0.978303, 0.059964005, -0.32487193, -0.123329, 0.93768233, 0.05, 0.065, 0.1)
+transform = Transform3D(0, 1, 0, -0.939693, 0, -0.34202, -0.34202, 0, 0.939693, 0.05, 0.065, 0.11)
 material_override = SubResource("MatCabbage")
 mesh = SubResource("MeshCabbageStrip")
 
 [node name="Strip05" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten/Kraut" unique_id=1583316162]
-transform = Transform3D(0.72316384, -0.11465435, -0.6810935, 0.11961645, 0.9920145, -0.039989334, 0.6802396, -0.052551147, 0.7311036, 0.2, 0.025, -0.1)
+transform = Transform3D(0, 1, 0, -0.707107, 0, -0.707107, -0.707107, 0, 0.707107, 0.19, 0.03, -0.11)
 material_override = SubResource("MatCabbage")
 mesh = SubResource("MeshCabbageStrip")
 
 [node name="Strip06" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten/Kraut" unique_id=1227742046]
-transform = Transform3D(0.8541194, -0.0009669736, 0.520076, -0.059664436, 0.9932137, 0.09983342, -0.5166431, -0.1162997, 0.84826547, 0.36, 0.055, 0.07)
+transform = Transform3D(0, 1, 0, -0.906308, 0, 0.422618, 0.422618, 0, 0.906308, 0.31, 0.055, 0.08)
 material_override = SubResource("MatCabbage")
 mesh = SubResource("MeshCabbageStrip")
 
+[node name="VeinStripe" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten/Kraut/Strip06" unique_id=668652455]
+transform = Transform3D(1, 0, 0, 0, 0.92, 0, 0, 0, 1, -0.017, 0, 0)
+material_override = SubResource("MatCabbageVein")
+mesh = SubResource("MeshCabbageVein")
+
 [node name="Strip07" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten/Kraut" unique_id=427350090]
-transform = Transform3D(0.4148011, 0.011080567, 0.9098447, 0.1489602, 0.98560876, -0.07991469, -0.8976363, 0.16867933, 0.40718102, -0.16, 0.095, 0.02)
+transform = Transform3D(0, 1, 0, -0.422618, 0, 0.906308, 0.906308, 0, 0.422618, -0.15, 0.095, 0.02)
 material_override = SubResource("MatCabbage")
 mesh = SubResource("MeshCabbageStrip")
 
 [node name="Strip08" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten/Kraut" unique_id=1958349911]
-transform = Transform3D(0.9659666, 0.16594496, -0.19842105, -0.1591191, 0.9859935, 0.04997917, 0.20393565, -0.016705625, 0.9788418, 0.16, 0.11, -0.015)
+transform = Transform3D(0, 1, 0, -0.984808, 0, -0.173648, -0.173648, 0, 0.984808, 0.16, 0.115, -0.02)
 material_override = SubResource("MatCabbage")
 mesh = SubResource("MeshCabbageStrip")
 
 [node name="Sossen" type="Node3D" parent="Test Ablage/Kebab Theke/Zutaten" unique_id=2073087439]
 
 [node name="GarlicSauceBin" type="Node3D" parent="Test Ablage/Kebab Theke/Zutaten/Sossen" unique_id=2028713831]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.1402109, 1.42, 16.691706)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.1402109, 1.36, 16.91)
 
 [node name="GNContainer" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten/Sossen/GarlicSauceBin" unique_id=827061220]
-material_override = SubResource("MatInteriorStainless")
+material_override = SubResource("MatPanSteel")
 mesh = SubResource("MeshSauceGNOuter")
+metadata/keep_detail_shadows = true
 
 [node name="Recess" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten/Sossen/GarlicSauceBin" unique_id=1236340860]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.035, 0)
-material_override = SubResource("MatDark")
+material_override = SubResource("MatPanDepthShadow")
 mesh = SubResource("MeshSauceGNCavity")
+
+[node name="RimFront" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten/Sossen/GarlicSauceBin" unique_id=1242391981]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.085, 0.31)
+material_override = SubResource("MatPanSteel")
+mesh = SubResource("MeshGNRimLongNarrow")
+metadata/keep_detail_shadows = true
+
+[node name="RimBack" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten/Sossen/GarlicSauceBin" unique_id=1593794644]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.085, -0.31)
+material_override = SubResource("MatPanSteel")
+mesh = SubResource("MeshGNRimLongNarrow")
+metadata/keep_detail_shadows = true
+
+[node name="RimLeft" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten/Sossen/GarlicSauceBin" unique_id=1162043942]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.295, 0.085, 0)
+material_override = SubResource("MatPanSteel")
+mesh = SubResource("MeshGNRimShortNarrow")
+metadata/keep_detail_shadows = true
+
+[node name="RimRight" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten/Sossen/GarlicSauceBin" unique_id=345599580]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.295, 0.085, 0)
+material_override = SubResource("MatPanSteel")
+mesh = SubResource("MeshGNRimShortNarrow")
+metadata/keep_detail_shadows = true
 
 [node name="GarlicSauceSurface" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten/Sossen/GarlicSauceBin" unique_id=509679204]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.095, 0)
 material_override = SubResource("MatGarlicSauce")
 mesh = SubResource("MeshSauceSurface")
+
+[node name="MeniscusFront" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten/Sossen/GarlicSauceBin/GarlicSauceSurface" unique_id=2146748809]
+transform = Transform3D(0, 1, 0, -1, 0, 0, 0, 0, 1, 0, 0.035, 0.218)
+material_override = SubResource("MatGarlicSauce")
+mesh = SubResource("MeshSauceMeniscusLong")
+
+[node name="MeniscusBack" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten/Sossen/GarlicSauceBin/GarlicSauceSurface" unique_id=1426642776]
+transform = Transform3D(0, 1, 0, -1, 0, 0, 0, 0, 1, 0, 0.035, -0.218)
+material_override = SubResource("MatGarlicSauce")
+mesh = SubResource("MeshSauceMeniscusLong")
+
+[node name="MeniscusLeft" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten/Sossen/GarlicSauceBin/GarlicSauceSurface" unique_id=798282917]
+transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, -0.208, 0.035, 0)
+material_override = SubResource("MatGarlicSauce")
+mesh = SubResource("MeshSauceMeniscusShort")
+
+[node name="MeniscusRight" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten/Sossen/GarlicSauceBin/GarlicSauceSurface" unique_id=1460285147]
+transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, 0.208, 0.035, 0)
+material_override = SubResource("MatGarlicSauce")
+mesh = SubResource("MeshSauceMeniscusShort")
+
+[node name="LadleSwirlOuter" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten/Sossen/GarlicSauceBin/GarlicSauceSurface" unique_id=759490784]
+transform = Transform3D(1, 0, 0, 0, 0.38, 0, 0, 0, 0.72, -0.025, 0.035, 0.015)
+material_override = SubResource("MatGarlicSauce")
+mesh = SubResource("MeshSauceSwirlOuter")
+
+[node name="LadleSwirlInner" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten/Sossen/GarlicSauceBin/GarlicSauceSurface" unique_id=1158871939]
+transform = Transform3D(1, 0, 0, 0, 0.42, 0, 0, 0, 0.72, 0.045, 0.041, -0.018)
+material_override = SubResource("MatGarlicSauce")
+mesh = SubResource("MeshSauceSwirlInner")
+
+[node name="HerbFlakes" type="Node3D" parent="Test Ablage/Kebab Theke/Zutaten/Sossen/GarlicSauceBin/GarlicSauceSurface" unique_id=1575506066]
+
+[node name="Parsley01" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten/Sossen/GarlicSauceBin/GarlicSauceSurface/HerbFlakes" unique_id=1131049489]
+transform = Transform3D(1.8, 0, 0, 0, 0.5, 0, 0, 0, 0.7, -0.14, 0.045, -0.12)
+material_override = SubResource("MatHerbFlake")
+mesh = SubResource("MeshHerbFlake")
+
+[node name="Parsley02" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten/Sossen/GarlicSauceBin/GarlicSauceSurface/HerbFlakes" unique_id=1770614719]
+transform = Transform3D(0.7, 0, 0, 0, 0.5, 0, 0, 0, 1.7, -0.04, 0.044, 0.13)
+material_override = SubResource("MatHerbFlake")
+mesh = SubResource("MeshHerbFlake")
+
+[node name="Parsley03" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten/Sossen/GarlicSauceBin/GarlicSauceSurface/HerbFlakes" unique_id=2035861652]
+transform = Transform3D(1.3, 0, 0, 0, 0.5, 0, 0, 0, 0.7, 0.12, 0.047, -0.07)
+material_override = SubResource("MatHerbFlake")
+mesh = SubResource("MeshHerbFlake")
+
+[node name="Parsley04" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten/Sossen/GarlicSauceBin/GarlicSauceSurface/HerbFlakes" unique_id=1119673832]
+transform = Transform3D(0.8, 0, 0, 0, 0.5, 0, 0, 0, 1.5, 0.16, 0.045, 0.14)
+material_override = SubResource("MatHerbFlake")
+mesh = SubResource("MeshHerbFlake")
+
+[node name="Dill01" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten/Sossen/GarlicSauceBin/GarlicSauceSurface/HerbFlakes" unique_id=1404495778]
+transform = Transform3D(1.6, 0, 0, 0, 0.45, 0, 0, 0, 0.55, 0.03, 0.048, -0.17)
+material_override = SubResource("MatHerbFlake")
+mesh = SubResource("MeshHerbFlake")
+
+[node name="Dill02" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten/Sossen/GarlicSauceBin/GarlicSauceSurface/HerbFlakes" unique_id=459731086]
+transform = Transform3D(0.55, 0, 0, 0, 0.45, 0, 0, 0, 1.6, -0.16, 0.046, 0.06)
+material_override = SubResource("MatHerbFlake")
+mesh = SubResource("MeshHerbFlake")
 
 [node name="SauceLadle" type="Node3D" parent="Test Ablage/Kebab Theke/Zutaten/Sossen/GarlicSauceBin" unique_id=590723042]
 
@@ -1824,21 +2804,76 @@ metadata/sauce_label = "Knoblauchsoße"
 shape = SubResource("ShapeSauceBinInteraction")
 
 [node name="CocktailSauceBin" type="Node3D" parent="Test Ablage/Kebab Theke/Zutaten/Sossen" unique_id=802506595]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.7819314, 1.42, 16.69077)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.8492708, 1.36, 16.91)
 
 [node name="GNContainer" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten/Sossen/CocktailSauceBin" unique_id=527632641]
-material_override = SubResource("MatInteriorStainless")
+material_override = SubResource("MatPanSteel")
 mesh = SubResource("MeshSauceGNOuter")
+metadata/keep_detail_shadows = true
 
 [node name="Recess" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten/Sossen/CocktailSauceBin" unique_id=280842572]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.035, 0)
-material_override = SubResource("MatDark")
+material_override = SubResource("MatPanDepthShadow")
 mesh = SubResource("MeshSauceGNCavity")
+
+[node name="RimFront" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten/Sossen/CocktailSauceBin" unique_id=992588653]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.085, 0.31)
+material_override = SubResource("MatPanSteel")
+mesh = SubResource("MeshGNRimLongNarrow")
+metadata/keep_detail_shadows = true
+
+[node name="RimBack" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten/Sossen/CocktailSauceBin" unique_id=557179784]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.085, -0.31)
+material_override = SubResource("MatPanSteel")
+mesh = SubResource("MeshGNRimLongNarrow")
+metadata/keep_detail_shadows = true
+
+[node name="RimLeft" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten/Sossen/CocktailSauceBin" unique_id=44679909]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.295, 0.085, 0)
+material_override = SubResource("MatPanSteel")
+mesh = SubResource("MeshGNRimShortNarrow")
+metadata/keep_detail_shadows = true
+
+[node name="RimRight" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten/Sossen/CocktailSauceBin" unique_id=1093274609]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.295, 0.085, 0)
+material_override = SubResource("MatPanSteel")
+mesh = SubResource("MeshGNRimShortNarrow")
+metadata/keep_detail_shadows = true
 
 [node name="CocktailSauceSurface" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten/Sossen/CocktailSauceBin" unique_id=1258475528]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.095, 0)
 material_override = SubResource("MatCocktailSauce")
 mesh = SubResource("MeshSauceSurface")
+
+[node name="MeniscusFront" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten/Sossen/CocktailSauceBin/CocktailSauceSurface" unique_id=2129142500]
+transform = Transform3D(0, 1, 0, -1, 0, 0, 0, 0, 1, 0, 0.035, 0.218)
+material_override = SubResource("MatCocktailSauce")
+mesh = SubResource("MeshSauceMeniscusLong")
+
+[node name="MeniscusBack" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten/Sossen/CocktailSauceBin/CocktailSauceSurface" unique_id=2131147266]
+transform = Transform3D(0, 1, 0, -1, 0, 0, 0, 0, 1, 0, 0.035, -0.218)
+material_override = SubResource("MatCocktailSauce")
+mesh = SubResource("MeshSauceMeniscusLong")
+
+[node name="MeniscusLeft" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten/Sossen/CocktailSauceBin/CocktailSauceSurface" unique_id=2058547321]
+transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, -0.208, 0.035, 0)
+material_override = SubResource("MatCocktailSauce")
+mesh = SubResource("MeshSauceMeniscusShort")
+
+[node name="MeniscusRight" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten/Sossen/CocktailSauceBin/CocktailSauceSurface" unique_id=1529092302]
+transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, 0.208, 0.035, 0)
+material_override = SubResource("MatCocktailSauce")
+mesh = SubResource("MeshSauceMeniscusShort")
+
+[node name="LadleSwirlOuter" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten/Sossen/CocktailSauceBin/CocktailSauceSurface" unique_id=318655071]
+transform = Transform3D(1, 0, 0, 0, 0.38, 0, 0, 0, 0.72, 0.02, 0.035, -0.012)
+material_override = SubResource("MatCocktailSauce")
+mesh = SubResource("MeshSauceSwirlOuter")
+
+[node name="LadleSwirlInner" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten/Sossen/CocktailSauceBin/CocktailSauceSurface" unique_id=577272146]
+transform = Transform3D(1, 0, 0, 0, 0.42, 0, 0, 0, 0.72, -0.052, 0.041, 0.024)
+material_override = SubResource("MatCocktailSauce")
+mesh = SubResource("MeshSauceSwirlInner")
 
 [node name="SauceLadle" type="Node3D" parent="Test Ablage/Kebab Theke/Zutaten/Sossen/CocktailSauceBin" unique_id=1541741858]
 
@@ -1869,32 +2904,104 @@ metadata/sauce_label = "Cocktailsoße"
 shape = SubResource("ShapeSauceBinInteraction")
 
 [node name="Gurkenwanne" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten" unique_id=1695184653]
-transform = Transform3D(0.72, 0, 0, 0, 0.08, 0, 0, 0, 0.42, -1.45, 1.36, 16.91)
-material_override = SubResource("MatInteriorStainless")
-mesh = SubResource("BoxMesh_f6pxk")
+transform = Transform3D(0.88, 0, 0, 0, 1, 0, 0, 0, 1, -1.48, 1.36, 16.91)
+material_override = SubResource("MatPanSteel")
+mesh = SubResource("MeshGNBody")
+metadata/keep_detail_shadows = true
+
+[node name="InnerDepth" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten/Gurkenwanne" unique_id=1382089615]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.073, 0)
+material_override = SubResource("MatPanInterior")
+mesh = SubResource("MeshGNFloor")
+
+[node name="BevelFront" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten/Gurkenwanne" unique_id=2095606652]
+transform = Transform3D(1, 0, 0, 0, 0.939693, -0.34202, 0, 0.34202, 0.939693, 0, 0.07, 0.292)
+material_override = SubResource("MatPanSteel")
+mesh = SubResource("MeshGNBevelLong")
+
+[node name="BevelBack" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten/Gurkenwanne" unique_id=193172302]
+transform = Transform3D(1, 0, 0, 0, 0.939693, 0.34202, 0, -0.34202, 0.939693, 0, 0.07, -0.292)
+material_override = SubResource("MatPanSteel")
+mesh = SubResource("MeshGNBevelLong")
+
+[node name="BevelLeft" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten/Gurkenwanne" unique_id=481786957]
+transform = Transform3D(0.939693, 0.34202, 0, -0.34202, 0.939693, 0, 0, 0, 1, -0.405, 0.07, 0)
+material_override = SubResource("MatPanSteel")
+mesh = SubResource("MeshGNBevelShort")
+
+[node name="BevelRight" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten/Gurkenwanne" unique_id=1262508066]
+transform = Transform3D(0.939693, -0.34202, 0, 0.34202, 0.939693, 0, 0, 0, 1, 0.405, 0.07, 0)
+material_override = SubResource("MatPanSteel")
+mesh = SubResource("MeshGNBevelShort")
+
+[node name="RimFront" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten/Gurkenwanne" unique_id=1115217500]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.09, 0.345)
+material_override = SubResource("MatPanSteel")
+mesh = SubResource("MeshGNRimLong")
+metadata/keep_detail_shadows = true
+
+[node name="RimBack" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten/Gurkenwanne" unique_id=2432334]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.09, -0.345)
+material_override = SubResource("MatPanSteel")
+mesh = SubResource("MeshGNRimLong")
+metadata/keep_detail_shadows = true
+
+[node name="RimLeft" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten/Gurkenwanne" unique_id=519928020]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.455, 0.09, 0)
+material_override = SubResource("MatPanSteel")
+mesh = SubResource("MeshGNRimShort")
+metadata/keep_detail_shadows = true
+
+[node name="RimRight" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten/Gurkenwanne" unique_id=1029886610]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.455, 0.09, 0)
+material_override = SubResource("MatPanSteel")
+mesh = SubResource("MeshGNRimShort")
+metadata/keep_detail_shadows = true
+
+[node name="RoundedCorners" type="Node3D" parent="Test Ablage/Kebab Theke/Zutaten/Gurkenwanne" unique_id=1998160053]
 
 [node name="Gurkenstreifen" type="Node3D" parent="Test Ablage/Kebab Theke/Zutaten" unique_id=1695214652]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.5696251, 1.4267751, 16.9)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.48, 1.47, 16.9)
 
 [node name="Slice01" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten/Gurkenstreifen" unique_id=473422520]
 transform = Transform3D(0.9782464, 0.060881034, 0.19831184, -0.049889233, 0.99695307, -0.059964005, -0.20135826, 0.048765946, 0.978303, -0.13145185, 0, -0.099999905)
-material_override = SubResource("MatCucumber")
+material_override = SubResource("MatCucumberPeel")
 mesh = SubResource("MeshCucumberSkin")
+
+[node name="PaleGreenSeedCore" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten/Gurkenstreifen/Slice01" unique_id=1751667698]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.018, 0)
+material_override = SubResource("MatCucumber")
+mesh = SubResource("MeshCucumberCore")
 
 [node name="Slice02" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten/Gurkenstreifen" unique_id=852340278]
 transform = Transform3D(0.7917512, -0.09601263, 0.60325086, 0.059772223, 0.99500805, 0.07991469, -0.6079122, -0.027214907, 0.79353774, -0.12, 0.035, 0.1)
-material_override = SubResource("MatCucumber")
+material_override = SubResource("MatCucumberPeel")
 mesh = SubResource("MeshCucumberSkin")
+
+[node name="PaleGreenSeedCore" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten/Gurkenstreifen/Slice02" unique_id=1013381168]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.018, 0)
+material_override = SubResource("MatCucumber")
+mesh = SubResource("MeshCucumberCore")
 
 [node name="Slice03" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten/Gurkenstreifen" unique_id=826916430]
 transform = Transform3D(0.9211025, 0.017385378, -0.38893166, -0.03993936, 0.9979514, -0.04997917, 0.38726598, 0.061569624, 0.9199099, 0.13, 0.012, -0.1)
-material_override = SubResource("MatCucumber")
+material_override = SubResource("MatCucumberPeel")
 mesh = SubResource("MeshCucumberSkin")
+
+[node name="PaleGreenSeedCore" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten/Gurkenstreifen/Slice03" unique_id=1675525455]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.018, 0)
+material_override = SubResource("MatCucumber")
+mesh = SubResource("MeshCucumberCore")
 
 [node name="Slice04" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten/Gurkenstreifen" unique_id=1378144130]
 transform = Transform3D(0.6168024, -0.09033356, 0.78191733, 0.069816984, 0.995756, 0.059964005, -0.7840156, 0.017605178, 0.62049145, 0.24710655, 0.049999952, 0.07999992)
-material_override = SubResource("MatCucumber")
+material_override = SubResource("MatCucumberPeel")
 mesh = SubResource("MeshCucumberSkin")
+
+[node name="PaleGreenSeedCore" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten/Gurkenstreifen/Slice04" unique_id=147383582]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.018, 0)
+material_override = SubResource("MatCucumber")
+mesh = SubResource("MeshCucumberCore")
 
 [node name="PickupTemplates" type="Node3D" parent="Test Ablage/Kebab Theke" unique_id=13693100]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
@@ -1903,8 +3010,18 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.5, 0, 0)
 
 [node name="SingleTomatoSlice" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/PickupTemplates/TomatoPortion" unique_id=878238781]
-material_override = SubResource("MatTomato")
+material_override = SubResource("MatTomatoSide")
 mesh = SubResource("MeshTomatoSlice")
+
+[node name="JuicyCutFace" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/PickupTemplates/TomatoPortion/SingleTomatoSlice" unique_id=853733243]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.0155, 0)
+material_override = SubResource("MatTomato")
+mesh = SubResource("MeshTomatoCutFace")
+
+[node name="SeedGel" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/PickupTemplates/TomatoPortion/SingleTomatoSlice" unique_id=77157961]
+transform = Transform3D(1.1, 0, 0, 0, 1, 0, 0, 0, 0.75, -0.05, 0.021, 0.02)
+material_override = SubResource("MatTomatoGel")
+mesh = SubResource("MeshTomatoGelPocket")
 
 [node name="SaladPortion" type="Node3D" parent="Test Ablage/Kebab Theke/PickupTemplates" unique_id=2001642487]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.9, 0, 0)
@@ -1914,27 +3031,67 @@ transform = Transform3D(0.31015342, 0.0074374974, 0.039226357, -0.037818607, 0.0
 material_override = SubResource("MatLettuce")
 mesh = SubResource("MeshSaladLeaf")
 
+[node name="CrinkleLeft" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/PickupTemplates/SaladPortion/SingleSaladLeaf" unique_id=2116096699]
+transform = Transform3D(0.76, 0.06, -0.04, -0.05, 0.74, 0.07, 0.05, -0.05, 0.79, -0.35, 0.05, 0.08)
+material_override = SubResource("MatLettuce")
+mesh = SubResource("MeshSaladRuffle")
+
+[node name="CrinkleRight" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/PickupTemplates/SaladPortion/SingleSaladLeaf" unique_id=301233733]
+transform = Transform3D(0.73, -0.07, 0.06, 0.06, 0.79, -0.03, -0.05, 0.04, 0.74, 0.34, 0.08, -0.06)
+material_override = SubResource("MatLettuce")
+mesh = SubResource("MeshSaladRuffle")
+
+[node name="CentralVein" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/PickupTemplates/SaladPortion/SingleSaladLeaf" unique_id=250235126]
+transform = Transform3D(0.7, 0, 0, 0, 0, 0.08, 0, -1, 0, 0, 0.18, 0)
+material_override = SubResource("MatLettuceVein")
+mesh = SubResource("MeshLeafVein")
+
 [node name="RedCabbagePortion" type="Node3D" parent="Test Ablage/Kebab Theke/PickupTemplates" unique_id=146975164]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.3, 0, 0)
 
 [node name="SingleCabbageStrip" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/PickupTemplates/RedCabbagePortion" unique_id=1501430732]
-transform = Transform3D(0.956798, -0.1540122, 0.2466127, 0.178457, 0.9806971, -0.07991469, -0.2295445, 0.12047198, 0.9658136, 0, 0, 0)
+transform = Transform3D(0, 1, 0, -0.906308, 0, 0.422618, 0.422618, 0, 0.906308, 0, 0, 0)
 material_override = SubResource("MatCabbage")
 mesh = SubResource("MeshCabbageStrip")
+
+[node name="VeinStripe" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/PickupTemplates/RedCabbagePortion/SingleCabbageStrip" unique_id=907903114]
+transform = Transform3D(1, 0, 0, 0, 0.92, 0, 0, 0, 1, 0.017, 0, 0)
+material_override = SubResource("MatCabbageVein")
+mesh = SubResource("MeshCabbageVein")
 
 [node name="OnionPortion" type="Node3D" parent="Test Ablage/Kebab Theke/PickupTemplates" unique_id=2090211702]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.9, 0, 0)
 
 [node name="SingleOnionRing" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/PickupTemplates/OnionPortion" unique_id=946294583]
-material_override = SubResource("MatOnionPurple")
+material_override = SubResource("MatOnionFlesh")
 mesh = SubResource("MeshOnionRingLarge")
+
+[node name="PurpleOuterRing" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/PickupTemplates/OnionPortion/SingleOnionRing" unique_id=1002535909]
+transform = Transform3D(1, 0, 0, 0, 0.24, 0, 0, 0, 1, 0, 0.009, 0)
+material_override = SubResource("MatOnionPurple")
+mesh = SubResource("MeshOnionOuterRing")
+
+[node name="WhiteMiddleRing" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/PickupTemplates/OnionPortion/SingleOnionRing" unique_id=600177443]
+transform = Transform3D(1, 0, 0, 0, 0.2, 0, 0, 0, 1, 0, 0.011, 0)
+material_override = SubResource("MatOnionFlesh")
+mesh = SubResource("MeshOnionMiddleRing")
+
+[node name="VioletInnerRing" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/PickupTemplates/OnionPortion/SingleOnionRing" unique_id=2003213892]
+transform = Transform3D(1, 0, 0, 0, 0.18, 0, 0, 0, 1, 0, 0.012, 0)
+material_override = SubResource("MatOnionPurple")
+mesh = SubResource("MeshOnionInnerRing")
 
 [node name="CucumberPortion" type="Node3D" parent="Test Ablage/Kebab Theke/PickupTemplates" unique_id=518448186]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.3, 0, 0)
 
 [node name="SingleCucumberSlice" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/PickupTemplates/CucumberPortion" unique_id=948147706]
-material_override = SubResource("MatCucumber")
+material_override = SubResource("MatCucumberPeel")
 mesh = SubResource("MeshCucumberSkin")
+
+[node name="PaleGreenSeedCore" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/PickupTemplates/CucumberPortion/SingleCucumberSlice" unique_id=184882845]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.018, 0)
+material_override = SubResource("MatCucumber")
+mesh = SubResource("MeshCucumberCore")
 
 [node name="GarlicSauceLadle" type="Node3D" parent="Test Ablage/Kebab Theke/PickupTemplates" unique_id=1073897130]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.5, 0, 0)

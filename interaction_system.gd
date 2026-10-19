@@ -140,12 +140,13 @@ func _optimize_small_meshes(root: Node) -> void:
 	if not is_instance_valid(root):
 		return
 	var root_mesh := root as MeshInstance3D
-	if root_mesh:
+	if root_mesh and not bool(root_mesh.get_meta("keep_detail_shadows", false)):
 		root_mesh.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 		root_mesh.gi_mode = GeometryInstance3D.GI_MODE_DISABLED
 	for mesh in root.find_children("*", "MeshInstance3D", true, false):
-		mesh.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
-		mesh.gi_mode = GeometryInstance3D.GI_MODE_DISABLED
+		if not bool(mesh.get_meta("keep_detail_shadows", false)):
+			mesh.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+			mesh.gi_mode = GeometryInstance3D.GI_MODE_DISABLED
 
 func _register_existing_item(visual: Node3D, id: String, label: String) -> void:
 	if not visual:
