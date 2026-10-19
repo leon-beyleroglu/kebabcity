@@ -9,6 +9,7 @@ const INTERACTION_LAYER := 1 << 7
 const PREP_ITEM_LAYER := 1 << 8
 const CUT_DURATION := 1.0
 const OVEN_BAKE_DURATION := 10.0
+const DURUM_INGREDIENT_IDS := ["tomato", "salad", "red_cabbage", "onion", "cucumber", "cut_meat", "garlic_sauce", "cocktail_sauce"]
 
 enum OvenState { IDLE, BAKING, FINISHED }
 
@@ -23,6 +24,8 @@ var focused_prep: Node3D
 var focused_knife_mount: Node3D
 var focused_oven: StaticBody3D
 var focused_sauce_bin: Area3D
+var focused_trash_can: StaticBody3D
+var focused_durum_assembly: Area3D
 var focus_hit_position := Vector3.ZERO
 var focus_hit_normal := Vector3.UP
 var held_origin_station: Node3D
@@ -67,6 +70,11 @@ func _setup_input() -> void:
 		var drop_key := InputEventKey.new()
 		drop_key.physical_keycode = KEY_Q
 		InputMap.action_add_event("drop_item", drop_key)
+	if not InputMap.has_action("mouse_right"):
+		InputMap.add_action("mouse_right")
+		var roll_button := InputEventMouseButton.new()
+		roll_button.button_index = MOUSE_BUTTON_RIGHT
+		InputMap.action_add_event("mouse_right", roll_button)
 
 func _setup_ui() -> void:
 	ui_layer = CanvasLayer.new()
@@ -107,6 +115,8 @@ func _register_scene_targets() -> void:
 			"cocktail_sauce": templates_root.get_node_or_null("CocktailSaucePortion"),
 			"lavash": templates_root.get_node_or_null("LavashPiece"),
 			"baked_lavash": templates_root.get_node_or_null("ToastedLavashTemplate"),
+			"durum_assembly": templates_root.get_node_or_null("DurumAssembly"),
+			"finished_durum": templates_root.get_node_or_null("FinishedDurum"),
 			"cut_meat": templates_root.get_node_or_null("MeatPortion"),
 		}
 		templates_root.visible = false
@@ -204,6 +214,8 @@ func _process(delta: float) -> void:
 		focused_knife_mount = null
 		focused_oven = null
 		focused_sauce_bin = null
+		focused_trash_can = null
+		focused_durum_assembly = null
 		_reset_cutting()
 		return
 	_update_focus()
@@ -216,6 +228,8 @@ func _update_focus() -> void:
 	focused_knife_mount = null
 	focused_oven = null
 	focused_sauce_bin = null
+	focused_trash_can = null
+	focused_durum_assembly = null
 	focus_hit_normal = Vector3.UP
 	var query := PhysicsRayQueryParameters3D.create(camera.global_position, camera.global_position - camera.global_basis.z * INTERACTION_RANGE, INTERACTION_LAYER)
 	query.collide_with_areas = true
@@ -226,7 +240,11 @@ func _update_focus() -> void:
 	focus_hit_position = hit["position"]
 	focus_hit_normal = (hit.get("normal", Vector3.UP) as Vector3).normalized()
 	var collider: Object = hit.get("collider")
-	if collider is Area3D and collider.has_meta("sauce_ladle_id"):
+	if collider is Area3D and (collider.is_in_group("durum_assembly") or collider.has_meta("durum_assembly")):
+		focused_durum_assembly = collider
+	elif collider is StaticBody3D and (collider.is_in_group("trash_can") or collider.has_meta("trash_can")):
+		focused_trash_can = collider
+	elif collider is Area3D and collider.has_meta("sauce_ladle_id"):
 		focused_sauce_bin = collider
 	elif collider is Area3D and collider.has_meta("interactable") and collider.available and not held_item:
 		focused_item = collider
@@ -243,14 +261,23 @@ func _unhandled_input(event: InputEvent) -> void:
 	if not player or player.third_person or not camera.current:
 		return
 	if event.is_action_pressed("interact"):
-		if focused_knife_mount and held_item and held_item.item_id == "knife":
+		if focused_trash_can:
+			_discard_held_item()
+		elif focused_durum_assembly and held_item:
+			if _is_sauce_ladle(held_item.item_id):
+				_add_sauce_to_durum(focused_durum_assembly)
+			elif _is_durum_ingredient(held_item.item_id):
+				_add_held_ingredient_to_durum(focused_durum_assembly)
+		elif focused_knife_mount and held_item and held_item.item_id == "knife":
 			_place_knife_on_mount(focused_knife_mount)
 		elif focused_oven:
 			_interact_with_oven()
 		elif focused_sauce_bin:
 			_interact_with_sauce_bin(focused_sauce_bin)
 		elif focused_prep and held_item:
-			if _is_sauce_ladle(held_item.item_id):
+			if held_item.item_id == "baked_lavash":
+				_create_durum_assembly(focused_prep, focus_hit_position, focus_hit_normal)
+			elif _is_sauce_ladle(held_item.item_id):
 				_apply_sauce_to_prep(focused_prep, focus_hit_position, focus_hit_normal)
 			elif held_item.item_id != "knife":
 				_place_held_on_prep(focused_prep, focus_hit_position, focus_hit_normal)
@@ -259,6 +286,9 @@ func _unhandled_input(event: InputEvent) -> void:
 		elif held_item:
 			_return_held()
 		get_viewport().set_input_as_handled()
+	elif event.is_action_pressed("mouse_right"):
+		if focused_durum_assembly and not held_item and _roll_durum(focused_durum_assembly):
+			get_viewport().set_input_as_handled()
 	elif event.is_action_pressed("drop_item") and held_item:
 		_return_held()
 		get_viewport().set_input_as_handled()
@@ -316,6 +346,131 @@ func _pickup_single_portion(source: Area3D) -> void:
 
 func _is_sauce_ladle(item_id: String) -> bool:
 	return item_id == "garlic_sauce_ladle" or item_id == "cocktail_sauce_ladle"
+
+
+func _is_durum_ingredient(item_id: String) -> bool:
+	return item_id in DURUM_INGREDIENT_IDS
+
+
+func _create_durum_assembly(station: Node3D, hit_position: Vector3, hit_normal: Vector3) -> void:
+	if not is_instance_valid(station) or not is_instance_valid(held_item) or held_item.item_id != "baked_lavash":
+		return
+	var assembly := _duplicate_pickup_template("durum_assembly") as Area3D
+	if not is_instance_valid(assembly):
+		return
+	var baked_item := held_item
+	var baked_visual := held_visual
+	var source_visual := baked_item.source_visual as Node3D
+	station.add_child(assembly)
+	assembly.name = "DurumAssembly"
+	var surface_normal := hit_normal.normalized() if not hit_normal.is_zero_approx() else Vector3.UP
+	var assembly_basis := Basis(Vector3.UP, randf_range(-PI, PI))
+	assembly.global_transform = Transform3D(assembly_basis, hit_position + surface_normal * 0.025)
+	assembly.collision_layer = INTERACTION_LAYER
+	assembly.collision_mask = 0
+	assembly.monitoring = false
+	assembly.monitorable = true
+	assembly.set_meta("durum_assembly", true)
+	assembly.set_meta("ingredients", [])
+	if is_instance_valid(baked_visual):
+		baked_visual.queue_free()
+	if is_instance_valid(source_visual) and source_visual != baked_visual:
+		source_visual.queue_free()
+	baked_item.queue_free()
+	held_item = null
+	held_visual = null
+	held_sauce_home = null
+	held_origin_station = null
+	held_origin_transform = Transform3D.IDENTITY
+	_reset_cutting()
+
+
+func _stack_durum_visual(assembly: Area3D, item_id: String, visual: Node3D) -> bool:
+	if not is_instance_valid(assembly) or not is_instance_valid(visual):
+		return false
+	var socket := assembly.get_node_or_null("IngredientSocket") as Node3D
+	if not is_instance_valid(socket):
+		return false
+	var ingredients: Array = assembly.get_meta("ingredients", [])
+	var stack_index := ingredients.size()
+	if visual.get_parent() == null:
+		socket.add_child(visual)
+	elif visual.get_parent() != socket:
+		visual.reparent(socket, false)
+	visual.name = "Ingredient_%02d_%s" % [stack_index + 1, item_id.to_pascal_case()]
+	visual.position = Vector3(randf_range(-0.04, 0.04), 0.025 + stack_index * 0.045, randf_range(-0.04, 0.04))
+	visual.rotation = Vector3(randf_range(-0.08, 0.08), randf_range(-PI, PI), randf_range(-0.08, 0.08))
+	visual.scale = Vector3.ONE * 0.9
+	visual.visible = true
+	ingredients.append(item_id)
+	assembly.set_meta("ingredients", ingredients)
+	return true
+
+
+func _add_held_ingredient_to_durum(assembly: Area3D) -> void:
+	if not is_instance_valid(held_item) or not is_instance_valid(held_visual) or not _is_durum_ingredient(held_item.item_id):
+		return
+	var item := held_item
+	var visual := held_visual
+	var source_visual := item.source_visual as Node3D
+	if not _stack_durum_visual(assembly, item.item_id, visual):
+		return
+	if is_instance_valid(source_visual) and source_visual != visual:
+		source_visual.queue_free()
+	item.queue_free()
+	held_item = null
+	held_visual = null
+	held_sauce_home = null
+	held_origin_station = null
+	held_origin_transform = Transform3D.IDENTITY
+	_reset_cutting()
+
+
+func _add_sauce_to_durum(assembly: Area3D) -> void:
+	if not is_instance_valid(held_item) or not _is_sauce_ladle(held_item.item_id):
+		return
+	var portion_id := "garlic_sauce" if held_item.item_id == "garlic_sauce_ladle" else "cocktail_sauce"
+	var portion_visual := _duplicate_pickup_template(portion_id)
+	if not is_instance_valid(portion_visual):
+		return
+	if not _stack_durum_visual(assembly, portion_id, portion_visual):
+		portion_visual.queue_free()
+		return
+	_return_sauce_ladle()
+
+
+func _roll_durum(assembly: Area3D) -> bool:
+	if not is_instance_valid(assembly) or is_instance_valid(held_item):
+		return false
+	var ingredients: Array = assembly.get_meta("ingredients", [])
+	if ingredients.is_empty():
+		return false
+	var finished_visual := _duplicate_pickup_template("finished_durum")
+	if not is_instance_valid(finished_visual):
+		return false
+	var finished_item: Area3D = InteractableItemScript.new()
+	finished_item.name = "FinishedDurumItem"
+	get_tree().current_scene.add_child(finished_item)
+	finished_item.global_transform = assembly.global_transform
+	_add_box_collider(finished_item, _item_collision_size("finished_durum"))
+	finished_item.configure("finished_durum", "Fertiges Dürüm", null, true)
+	finished_item.set_meta("durum_ingredients", ingredients.duplicate())
+	finished_item.pickup()
+	held_item = finished_item
+	held_visual = finished_visual
+	held_visual.name = "Held_FinishedDurum"
+	held_origin_station = null
+	held_origin_transform = Transform3D.IDENTITY
+	if not _attach_held_visual(held_visual):
+		finished_visual.queue_free()
+		finished_item.queue_free()
+		held_item = null
+		held_visual = null
+		return false
+	assembly.queue_free()
+	focused_durum_assembly = null
+	_reset_cutting()
+	return true
 
 
 func _interact_with_sauce_bin(bin: Area3D) -> void:
@@ -471,6 +626,26 @@ func _return_held() -> void:
 	_reset_cutting()
 
 
+func _discard_held_item() -> void:
+	if not is_instance_valid(held_item) and not is_instance_valid(held_visual):
+		return
+	var source_visual: Node3D
+	if is_instance_valid(held_item):
+		source_visual = held_item.source_visual as Node3D
+	if is_instance_valid(held_visual):
+		held_visual.queue_free()
+	if is_instance_valid(source_visual) and source_visual != held_visual:
+		source_visual.queue_free()
+	if is_instance_valid(held_item):
+		held_item.queue_free()
+	held_item = null
+	held_visual = null
+	held_sauce_home = null
+	held_origin_station = null
+	held_origin_transform = Transform3D.IDENTITY
+	_reset_cutting()
+
+
 func _place_held_on_prep(station: Node3D, hit_position: Vector3, hit_normal := Vector3.UP, offset_from_surface := true) -> void:
 	if not held_item or not is_instance_valid(held_visual) or not is_instance_valid(station):
 		return
@@ -597,6 +772,8 @@ func _item_collision_size(item_id: String) -> Vector3:
 			return Vector3(0.55, 0.2, 0.4)
 		"baked_lavash":
 			return Vector3(0.57, 0.2, 0.42)
+		"finished_durum":
+			return Vector3(0.34, 0.72, 0.34)
 		"cut_meat":
 			return Vector3(0.42, 0.22, 0.42)
 		_:
