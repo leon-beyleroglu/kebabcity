@@ -12,6 +12,8 @@
 [ext_resource type="Script" uid="uid://sgxar2tk5mjb" path="res://CustomerQueueManager.gd" id="18_customer_queue"]
 [ext_resource type="PackedScene" path="res://CustomerFener.tscn" id="19_customer_fener"]
 [ext_resource type="PackedScene" path="res://CustomerGala.tscn" id="20_customer_gala"]
+[ext_resource type="ArrayMesh" path="res://left_hand_viewmodel_mesh.tres" id="21_left_hand"]
+[ext_resource type="ArrayMesh" path="res://right_hand_viewmodel_mesh.tres" id="22_right_hand"]
 
 [sub_resource type="StandardMaterial3D" id="MatInteriorFloorTile"]
 resource_name = "Non-Slip Terracotta Floor Tile"
@@ -510,6 +512,19 @@ tonemap_mode = 3
 [sub_resource type="CapsuleShape3D" id="PlayerShape"]
 radius = 0.6
 height = 2.356006
+
+[sub_resource type="StandardMaterial3D" id="MatViewmodelSkin"]
+resource_name = "Lightweight Natural Skin PBR"
+cull_mode = 2
+albedo_color = Color(0.72, 0.46, 0.33, 1)
+metallic_specular = 0.32
+roughness = 0.58
+subsurf_scatter_enabled = true
+subsurf_scatter_strength = 0.16
+subsurf_scatter_skin_mode = true
+subsurf_scatter_transmittance_enabled = true
+subsurf_scatter_transmittance_depth = 0.32
+subsurf_scatter_transmittance_boost = 0.1
 
 [sub_resource type="StandardMaterial3D" id="MatSleeve"]
 albedo_color = Color(0.045, 0.12, 0.22, 1)
@@ -2052,7 +2067,7 @@ omni_attenuation = 1.35
 [node name="Player" type="CharacterBody3D" parent="." unique_id=317042492]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.4866173, 4.2)
 script = ExtResource("1_player")
-hand_slot = NodePath("Camera3D/HoldSocket")
+hand_slot = NodePath("Camera3D/ArmsHolder/RightHandViewmodel/RightHandSocket/PalmSocket")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Player" unique_id=966143708]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0021178722, -0.05583024, 0.0005812645)
@@ -2064,9 +2079,36 @@ current = true
 
 [node name="ArmsHolder" type="Node3D" parent="Player/Camera3D" unique_id=1693876997]
 
-[node name="HoldSocket" type="Marker3D" parent="Player/Camera3D" unique_id=1780370269]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.2, -0.2, -0.45)
-gizmo_extents = 0.025
+[node name="LeftHandViewmodel" type="MeshInstance3D" parent="Player/Camera3D/ArmsHolder" unique_id=1339334792]
+transform = Transform3D(0.9848077, 0.17364825, 0, -0.044942956, 0.25488406, -0.96592665, -0.16773148, 0.95125204, 0.25881606, -0.27, -0.25, -0.48)
+material_override = SubResource("MatViewmodelSkin")
+cast_shadow = 0
+mesh = ExtResource("21_left_hand")
+
+[node name="LeftHandSocket" type="Marker3D" parent="Player/Camera3D/ArmsHolder/LeftHandViewmodel" unique_id=1200575597]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.035, -0.015)
+gizmo_extents = 0.022
+
+[node name="BreadSocket" type="Marker3D" parent="Player/Camera3D/ArmsHolder/LeftHandViewmodel/LeftHandSocket" unique_id=1954945026]
+transform = Transform3D(0.9986295, -0.052336078, 0, 0.052336078, 0.9986295, 0, 0, 0, 1, 0, 0.002, -0.035)
+gizmo_extents = 0.018
+
+[node name="RightHandViewmodel" type="MeshInstance3D" parent="Player/Camera3D/ArmsHolder" unique_id=181873085]
+transform = Transform3D(0.9848077, -0.17364825, 0, 0.044942956, 0.25488406, -0.96592665, 0.16773148, 0.95125204, 0.25881606, 0.27, -0.25, -0.48)
+material_override = SubResource("MatViewmodelSkin")
+cast_shadow = 0
+mesh = ExtResource("22_right_hand")
+
+[node name="RightHandSocket" type="Marker3D" parent="Player/Camera3D/ArmsHolder/RightHandViewmodel" unique_id=1975340323]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.034, -0.018)
+gizmo_extents = 0.022
+
+[node name="PalmSocket" type="Marker3D" parent="Player/Camera3D/ArmsHolder/RightHandViewmodel/RightHandSocket" unique_id=1479551141]
+gizmo_extents = 0.018
+
+[node name="LadleSocket" type="Marker3D" parent="Player/Camera3D/ArmsHolder/RightHandViewmodel/RightHandSocket" unique_id=855465020]
+transform = Transform3D(0.9941671, 0.098654956, 0.043577705, -0.08682376, 0.4924018, 0.86602664, 0.06398008, -0.8647588, 0.49809527, -0.012, -0.004, -0.018)
+gizmo_extents = 0.018
 
 [node name="EigenesAvatarModell" type="Node3D" parent="Player" unique_id=10809920]
 

@@ -17,6 +17,15 @@ enum OvenSlotState { EMPTY, BAKING, FINISHED }
 var player: CharacterBody3D
 var camera: Camera3D
 var hold_socket: Marker3D
+var right_hand_socket: Marker3D
+var left_hand_socket: Marker3D
+var palm_socket: Marker3D
+var ladle_socket: Marker3D
+var bread_socket: Marker3D
+var right_hand_viewmodel: MeshInstance3D
+var right_hand_rest_transform := Transform3D.IDENTITY
+var hand_sockets_ready := false
+var ladle_scoop_tween: Tween
 var held_item: Area3D
 var held_visual: Node3D
 var focused_item: Area3D
@@ -57,7 +66,7 @@ func setup(owner_player: CharacterBody3D, view_camera: Camera3D, hand_slot: Mark
 	player = owner_player
 	camera = view_camera
 	hold_socket = hand_slot
-	_resolve_hold_socket()
+	_resolve_hand_sockets()
 	_setup_input()
 	_setup_ui()
 	call_deferred("_register_scene_targets")
@@ -558,8 +567,57 @@ func _pickup_sauce_ladle(bin: Area3D, ladle_id: String) -> void:
 	held_origin_station = null
 	held_origin_transform = Transform3D.IDENTITY
 	held_sauce_home.visible = false
+	var sauce_fill := _prepare_ladle_fill(held_visual, ladle_id)
 	if not _attach_held_visual(held_visual):
 		_return_sauce_ladle()
+		return
+	_animate_ladle_scoop(sauce_fill)
+
+
+func _prepare_ladle_fill(ladle_visual: Node3D, ladle_id: String) -> MeshInstance3D:
+	if not is_instance_valid(ladle_visual):
+		return null
+	var fill := ladle_visual.find_child("SauceFill", true, false) as MeshInstance3D
+	if not is_instance_valid(fill):
+		return null
+	fill.visible = false
+	var source_material := fill.get_active_material(0) as StandardMaterial3D
+	if is_instance_valid(source_material):
+		var sauce_material := source_material.duplicate() as StandardMaterial3D
+		sauce_material.albedo_color = Color(0.91, 0.82, 0.65, 1) if ladle_id == "garlic_sauce_ladle" else Color(0.82, 0.28, 0.12, 1)
+		sauce_material.roughness = 0.22
+		fill.material_override = sauce_material
+	return fill
+
+
+func _animate_ladle_scoop(sauce_fill: MeshInstance3D) -> void:
+	_cancel_ladle_scoop()
+	if not is_instance_valid(right_hand_viewmodel):
+		if is_instance_valid(sauce_fill):
+			sauce_fill.visible = true
+		return
+	right_hand_viewmodel.transform = right_hand_rest_transform
+	var rest_position := right_hand_rest_transform.origin
+	var dip_position := rest_position + Vector3(-0.018, -0.095, -0.045)
+	ladle_scoop_tween = create_tween()
+	ladle_scoop_tween.set_trans(Tween.TRANS_SINE)
+	ladle_scoop_tween.set_ease(Tween.EASE_IN_OUT)
+	ladle_scoop_tween.tween_property(right_hand_viewmodel, "position", dip_position, 0.2)
+	ladle_scoop_tween.tween_callback(_set_ladle_fill_visible.bind(sauce_fill, true))
+	ladle_scoop_tween.tween_property(right_hand_viewmodel, "position", rest_position, 0.24)
+
+
+func _set_ladle_fill_visible(sauce_fill: MeshInstance3D, is_visible: bool) -> void:
+	if is_instance_valid(sauce_fill):
+		sauce_fill.visible = is_visible
+
+
+func _cancel_ladle_scoop() -> void:
+	if is_instance_valid(ladle_scoop_tween):
+		ladle_scoop_tween.kill()
+	ladle_scoop_tween = null
+	if is_instance_valid(right_hand_viewmodel) and hand_sockets_ready:
+		right_hand_viewmodel.transform = right_hand_rest_transform
 
 
 func _apply_sauce_to_prep(station: Node3D, hit_position: Vector3, hit_normal: Vector3) -> void:
@@ -601,6 +659,7 @@ func _apply_sauce_to_prep(station: Node3D, hit_position: Vector3, hit_normal: Ve
 
 
 func _return_sauce_ladle() -> void:
+	_cancel_ladle_scoop()
 	if is_instance_valid(held_visual):
 		held_visual.queue_free()
 	if is_instance_valid(held_item):
@@ -614,37 +673,63 @@ func _return_sauce_ladle() -> void:
 	held_origin_transform = Transform3D.IDENTITY
 	_reset_cutting()
 
-func _resolve_hold_socket() -> Marker3D:
-	if is_instance_valid(hold_socket):
-		hold_socket.transform = Transform3D(Basis.IDENTITY, Vector3(0.2, -0.2, -0.45))
-		return hold_socket
-	if is_instance_valid(camera):
-		hold_socket = camera.get_node_or_null("HoldSocket") as Marker3D
-		if not is_instance_valid(hold_socket):
-			hold_socket = Marker3D.new()
-			hold_socket.name = "HoldSocket"
-			camera.add_child(hold_socket)
-		hold_socket.transform = Transform3D(Basis.IDENTITY, Vector3(0.2, -0.2, -0.45))
-	return hold_socket
+func _resolve_hand_sockets() -> void:
+	if not is_instance_valid(camera):
+		return
+	right_hand_viewmodel = camera.get_node_or_null("ArmsHolder/RightHandViewmodel") as MeshInstance3D
+	right_hand_socket = camera.get_node_or_null("ArmsHolder/RightHandViewmodel/RightHandSocket") as Marker3D
+	left_hand_socket = camera.get_node_or_null("ArmsHolder/LeftHandViewmodel/LeftHandSocket") as Marker3D
+	palm_socket = camera.get_node_or_null("ArmsHolder/RightHandViewmodel/RightHandSocket/PalmSocket") as Marker3D
+	ladle_socket = camera.get_node_or_null("ArmsHolder/RightHandViewmodel/RightHandSocket/LadleSocket") as Marker3D
+	bread_socket = camera.get_node_or_null("ArmsHolder/LeftHandViewmodel/LeftHandSocket/BreadSocket") as Marker3D
+	if not is_instance_valid(palm_socket):
+		palm_socket = hold_socket
+	if not is_instance_valid(right_hand_socket):
+		right_hand_socket = palm_socket
+	if not is_instance_valid(left_hand_socket):
+		left_hand_socket = palm_socket
+	if not is_instance_valid(ladle_socket):
+		ladle_socket = right_hand_socket
+	if not is_instance_valid(bread_socket):
+		bread_socket = left_hand_socket
+	hold_socket = palm_socket
+	if is_instance_valid(right_hand_viewmodel) and not hand_sockets_ready:
+		right_hand_rest_transform = right_hand_viewmodel.transform
+	hand_sockets_ready = true
+
+
+func _socket_for_item(item_id: String) -> Marker3D:
+	_resolve_hand_sockets()
+	if _is_sauce_ladle(item_id):
+		return ladle_socket
+	if item_id == "lavash" or item_id == "baked_lavash" or item_id == "durum_assembly":
+		return bread_socket
+	return palm_socket
+
+
+func equip_to_hand(item_node: Node3D, target_socket: Marker3D) -> bool:
+	if not is_instance_valid(item_node) or not is_instance_valid(target_socket):
+		return false
+	_set_collisions_enabled(item_node, false)
+	if item_node.get_parent() != null:
+		item_node.get_parent().remove_child(item_node)
+	target_socket.add_child(item_node)
+	item_node.top_level = false
+	item_node.position = Vector3.ZERO
+	item_node.rotation = Vector3.ZERO
+	item_node.scale = Vector3.ONE
+	item_node.visible = true
+	return true
 
 
 func _attach_held_visual(visual: Node3D) -> bool:
-	var socket := _resolve_hold_socket()
+	var item_id: String = held_item.item_id if is_instance_valid(held_item) else ""
+	var socket := _socket_for_item(item_id)
 	if not is_instance_valid(socket) or not is_instance_valid(visual):
 		return false
 	if is_instance_valid(held_item):
 		_set_collisions_enabled(held_item, false)
-	_set_collisions_enabled(visual, false)
-	if visual.get_parent() != null:
-		visual.get_parent().remove_child(visual)
-	socket.add_child(visual)
-	visual.top_level = false
-	visual.transform = Transform3D.IDENTITY
-	visual.position = Vector3.ZERO
-	visual.rotation = Vector3.ZERO
-	visual.scale = Vector3.ONE
-	visual.visible = true
-	return true
+	return equip_to_hand(visual, socket)
 
 
 func _set_collisions_enabled(root: Node, enabled: bool) -> void:
