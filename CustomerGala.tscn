@@ -1,0 +1,227 @@
+[gd_scene load_steps=21 format=3]
+
+[ext_resource type="Script" path="res://customer_npc.gd" id="1_customer"]
+[ext_resource type="Texture2D" path="res://gahinten.jpg" id="2_jersey_front"]
+[ext_resource type="Texture2D" path="res://ga1.jpg" id="3_jersey_back"]
+[ext_resource type="Texture2D" path="res://abdukopf.jpg" id="4_gala_head"]
+
+[sub_resource type="CapsuleShape3D" id="ShapeCustomer"]
+radius = 0.42
+height = 2.3
+
+[sub_resource type="StandardMaterial3D" id="MatBody"]
+resource_name = "Gala Red Jersey Body"
+albedo_color = Color(0.58, 0.035, 0.035, 1)
+roughness = 0.38
+
+[sub_resource type="BoxMesh" id="MeshBody"]
+material = SubResource("MatBody")
+size = Vector3(0.92, 1.02, 0.42)
+
+[sub_resource type="StandardMaterial3D" id="MatGalaHead"]
+resource_name = "Gala Custom Image 3D Head"
+albedo_texture = ExtResource("4_gala_head")
+roughness = 0.46
+texture_filter = 1
+
+[sub_resource type="BoxMesh" id="MeshHead"]
+material = SubResource("MatGalaHead")
+size = Vector3(0.5, 0.69, 0.5)
+
+[sub_resource type="StandardMaterial3D" id="MatHair"]
+albedo_color = Color(0.012, 0.009, 0.008, 1)
+roughness = 0.7
+
+[sub_resource type="BoxMesh" id="MeshHair"]
+material = SubResource("MatHair")
+size = Vector3(0.54, 0.16, 0.54)
+
+[sub_resource type="StandardMaterial3D" id="MatEye"]
+albedo_color = Color(0.006, 0.006, 0.008, 1)
+roughness = 0.25
+
+[sub_resource type="SphereMesh" id="MeshEye"]
+material = SubResource("MatEye")
+radius = 0.045
+height = 0.09
+radial_segments = 12
+rings = 6
+
+[sub_resource type="CapsuleMesh" id="MeshArm"]
+material = SubResource("MatBody")
+radius = 0.115
+height = 0.88
+radial_segments = 16
+rings = 4
+
+[sub_resource type="StandardMaterial3D" id="MatSkin"]
+albedo_color = Color(0.63, 0.38, 0.23, 1)
+roughness = 0.48
+
+[sub_resource type="SphereMesh" id="MeshHand"]
+material = SubResource("MatSkin")
+radius = 0.135
+height = 0.27
+radial_segments = 16
+rings = 8
+
+[sub_resource type="StandardMaterial3D" id="MatTrousers"]
+albedo_color = Color(0.16, 0.035, 0.045, 1)
+roughness = 0.62
+
+[sub_resource type="CapsuleMesh" id="MeshLeg"]
+material = SubResource("MatTrousers")
+radius = 0.15
+height = 0.82
+radial_segments = 16
+rings = 4
+
+[sub_resource type="BoxMesh" id="MeshShoe"]
+material = SubResource("MatHair")
+size = Vector3(0.32, 0.18, 0.48)
+
+[sub_resource type="StandardMaterial3D" id="MatOrderCard"]
+transparency = 1
+shading_mode = 0
+albedo_color = Color(0.025, 0.032, 0.045, 0.9)
+no_depth_test = true
+billboard_mode = 1
+
+[sub_resource type="QuadMesh" id="MeshOrderCard"]
+material = SubResource("MatOrderCard")
+size = Vector2(1.35, 0.72)
+
+[node name="CustomerGala" type="CharacterBody3D" groups=["customer_npc"]]
+collision_layer = 128
+collision_mask = 1
+script = ExtResource("1_customer")
+customer_variant = 2
+metadata/customer_npc = true
+metadata/accepts_finished_durum = false
+
+[node name="NavigationAgent3D" type="NavigationAgent3D" parent="."]
+path_desired_distance = 0.15
+target_desired_distance = 0.12
+radius = 0.42
+height = 2.3
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+position = Vector3(0, 1.15, 0)
+shape = SubResource("ShapeCustomer")
+
+[node name="Visual" type="Node3D" parent="."]
+
+[node name="BodyMesh" type="MeshInstance3D" parent="Visual"]
+position = Vector3(0, 1.42, 0)
+mesh = SubResource("MeshBody")
+
+[node name="JerseyFront" type="Sprite3D" parent="Visual/BodyMesh"]
+transform = Transform3D(-0.245, 0, 0, 0, 0.142, 0, 0, 0, -1, 0, 0, -0.216)
+texture = ExtResource("2_jersey_front")
+
+[node name="JerseyBack" type="Sprite3D" parent="Visual/BodyMesh"]
+transform = Transform3D(0.245, 0, 0, 0, 0.142, 0, 0, 0, 1, 0, 0, 0.216)
+texture = ExtResource("3_jersey_back")
+
+[node name="HeadMesh" type="MeshInstance3D" parent="Visual"]
+position = Vector3(0, 2.18, 0)
+mesh = SubResource("MeshHead")
+
+[node name="HairMesh" type="MeshInstance3D" parent="Visual"]
+position = Vector3(0, 2.49, 0.01)
+mesh = SubResource("MeshHair")
+
+[node name="EyeLeft" type="MeshInstance3D" parent="Visual"]
+position = Vector3(-0.115, 2.23, -0.272)
+visible = false
+mesh = SubResource("MeshEye")
+
+[node name="EyeRight" type="MeshInstance3D" parent="Visual"]
+position = Vector3(0.115, 2.23, -0.272)
+visible = false
+mesh = SubResource("MeshEye")
+
+[node name="LeftArm" type="Node3D" parent="Visual"]
+position = Vector3(-0.58, 1.79, 0)
+
+[node name="ArmMesh" type="MeshInstance3D" parent="Visual/LeftArm"]
+position = Vector3(0, -0.39, 0)
+mesh = SubResource("MeshArm")
+
+[node name="HandMesh" type="MeshInstance3D" parent="Visual/LeftArm"]
+position = Vector3(0, -0.86, 0)
+mesh = SubResource("MeshHand")
+
+[node name="RightArm" type="Node3D" parent="Visual"]
+position = Vector3(0.58, 1.79, 0)
+
+[node name="ArmMesh" type="MeshInstance3D" parent="Visual/RightArm"]
+position = Vector3(0, -0.39, 0)
+mesh = SubResource("MeshArm")
+
+[node name="HandMesh" type="MeshInstance3D" parent="Visual/RightArm"]
+position = Vector3(0, -0.86, 0)
+mesh = SubResource("MeshHand")
+
+[node name="LeftLeg" type="Node3D" parent="Visual"]
+position = Vector3(-0.23, 0.91, 0)
+
+[node name="LegMesh" type="MeshInstance3D" parent="Visual/LeftLeg"]
+position = Vector3(0, -0.37, 0)
+mesh = SubResource("MeshLeg")
+
+[node name="ShoeMesh" type="MeshInstance3D" parent="Visual/LeftLeg"]
+position = Vector3(0, -0.77, -0.09)
+mesh = SubResource("MeshShoe")
+
+[node name="RightLeg" type="Node3D" parent="Visual"]
+position = Vector3(0.23, 0.91, 0)
+
+[node name="LegMesh" type="MeshInstance3D" parent="Visual/RightLeg"]
+position = Vector3(0, -0.37, 0)
+mesh = SubResource("MeshLeg")
+
+[node name="ShoeMesh" type="MeshInstance3D" parent="Visual/RightLeg"]
+position = Vector3(0, -0.77, -0.09)
+mesh = SubResource("MeshShoe")
+
+[node name="OrderDisplay" type="Node3D" parent="."]
+position = Vector3(0, 2.96, 0)
+scale = Vector3(0.78, 0.78, 0.78)
+
+[node name="OrderCard" type="MeshInstance3D" parent="OrderDisplay"]
+position = Vector3(0, 0, 0.025)
+mesh = SubResource("MeshOrderCard")
+cast_shadow = 0
+
+[node name="OrderLabel" type="Label3D" parent="OrderDisplay"]
+pixel_size = 0.0025
+modulate = Color(1, 0.94, 0.77, 1)
+outline_modulate = Color(0.01, 0.015, 0.024, 1)
+text = "BESTELLUNG\n• Dönerfleisch\n• Salat\n• Zwiebeln"
+font_size = 22
+outline_size = 4
+width = 520.0
+line_spacing = -3
+autowrap_mode = 3
+billboard = 1
+no_depth_test = true
+fixed_size = true
+
+[node name="RejectionLabel" type="Label3D" parent="OrderDisplay"]
+position = Vector3(0, -0.52, 0)
+pixel_size = 0.0025
+modulate = Color(1, 0.13, 0.1, 1)
+outline_modulate = Color(0.08, 0, 0, 1)
+text = "Falsche Bestellung!"
+font_size = 22
+outline_size = 5
+width = 520.0
+autowrap_mode = 3
+billboard = 1
+no_depth_test = true
+fixed_size = true
+
+[node name="HappyDisplay" type="Node3D" parent="."]
+visible = false
+

@@ -1,47 +1,38 @@
-[gd_scene load_steps=23 format=3]
+[gd_scene load_steps=20 format=3]
 
 [ext_resource type="Script" path="res://customer_npc.gd" id="1_customer"]
-[ext_resource type="Texture2D" path="res://bjk1.jpg" id="2_bjk_front"]
-[ext_resource type="Texture2D" path="res://bjkhinten.jpg" id="3_bjk_back"]
-[ext_resource type="Texture2D" path="res://fb1.jpg" id="4_fener_front"]
-[ext_resource type="Texture2D" path="res://fbhinten.jpg" id="5_fener_back"]
-[ext_resource type="Texture2D" path="res://gahinten.jpg" id="6_gala_front"]
-[ext_resource type="Texture2D" path="res://ga1.jpg" id="7_gala_back"]
-[ext_resource type="Texture2D" path="res://abdukopf.jpg" id="8_gala_head"]
+[ext_resource type="Texture2D" path="res://fb1.jpg" id="2_jersey_front"]
+[ext_resource type="Texture2D" path="res://fbhinten.jpg" id="3_jersey_back"]
 
 [sub_resource type="CapsuleShape3D" id="ShapeCustomer"]
 radius = 0.42
 height = 2.3
 
-[sub_resource type="StandardMaterial3D" id="MatJersey"]
-albedo_color = Color(0.018, 0.02, 0.026, 1)
+[sub_resource type="StandardMaterial3D" id="MatBody"]
+resource_name = "Fener Navy Jersey Body"
+albedo_color = Color(0.025, 0.075, 0.28, 1)
 roughness = 0.38
 
-[sub_resource type="BoxMesh" id="MeshTorso"]
-material = SubResource("MatJersey")
+[sub_resource type="BoxMesh" id="MeshBody"]
+material = SubResource("MatBody")
 size = Vector3(0.92, 1.02, 0.42)
 
-[sub_resource type="StandardMaterial3D" id="MatSkin"]
+[sub_resource type="StandardMaterial3D" id="MatHead"]
+resource_name = "Fener Head Skin"
 albedo_color = Color(0.63, 0.38, 0.23, 1)
 roughness = 0.48
 
-[sub_resource type="SphereMesh" id="MeshHead"]
-material = SubResource("MatSkin")
-radius = 0.32
-height = 0.61
-radial_segments = 24
-rings = 12
+[sub_resource type="BoxMesh" id="MeshHead"]
+material = SubResource("MatHead")
+size = Vector3(0.5, 0.69, 0.5)
 
 [sub_resource type="StandardMaterial3D" id="MatHair"]
 albedo_color = Color(0.012, 0.009, 0.008, 1)
 roughness = 0.7
 
-[sub_resource type="SphereMesh" id="MeshHair"]
+[sub_resource type="BoxMesh" id="MeshHair"]
 material = SubResource("MatHair")
-radius = 0.325
-height = 0.35
-radial_segments = 20
-rings = 8
+size = Vector3(0.54, 0.16, 0.54)
 
 [sub_resource type="StandardMaterial3D" id="MatEye"]
 albedo_color = Color(0.006, 0.006, 0.008, 1)
@@ -55,21 +46,21 @@ radial_segments = 12
 rings = 6
 
 [sub_resource type="CapsuleMesh" id="MeshArm"]
-material = SubResource("MatJersey")
+material = SubResource("MatBody")
 radius = 0.115
 height = 0.88
 radial_segments = 16
 rings = 4
 
 [sub_resource type="SphereMesh" id="MeshHand"]
-material = SubResource("MatSkin")
+material = SubResource("MatHead")
 radius = 0.135
 height = 0.27
 radial_segments = 16
 rings = 8
 
 [sub_resource type="StandardMaterial3D" id="MatTrousers"]
-albedo_color = Color(0.055, 0.065, 0.08, 1)
+albedo_color = Color(0.035, 0.055, 0.13, 1)
 roughness = 0.62
 
 [sub_resource type="CapsuleMesh" id="MeshLeg"]
@@ -94,12 +85,19 @@ billboard_mode = 1
 material = SubResource("MatOrderCard")
 size = Vector2(1.35, 0.72)
 
-[node name="CustomerNPC" type="CharacterBody3D" groups=["customer_npc"]]
+[node name="CustomerFener" type="CharacterBody3D" groups=["customer_npc"]]
 collision_layer = 128
 collision_mask = 1
 script = ExtResource("1_customer")
+customer_variant = 1
 metadata/customer_npc = true
-metadata/accepts_finished_durum = true
+metadata/accepts_finished_durum = false
+
+[node name="NavigationAgent3D" type="NavigationAgent3D" parent="."]
+path_desired_distance = 0.15
+target_desired_distance = 0.12
+radius = 0.42
+height = 2.3
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 position = Vector3(0, 1.15, 0)
@@ -107,104 +105,75 @@ shape = SubResource("ShapeCustomer")
 
 [node name="Visual" type="Node3D" parent="."]
 
-[node name="Torso" type="MeshInstance3D" parent="Visual"]
+[node name="BodyMesh" type="MeshInstance3D" parent="Visual"]
 position = Vector3(0, 1.42, 0)
-mesh = SubResource("MeshTorso")
+mesh = SubResource("MeshBody")
 
-[node name="BJKJersey" type="Node3D" parent="Visual/Torso"]
-
-[node name="Front" type="Sprite3D" parent="Visual/Torso/BJKJersey"]
-transform = Transform3D(-0.26, 0, 0, 0, 0.151, 0, 0, 0, -1, 0, 0, -0.216)
-texture = ExtResource("2_bjk_front")
-
-[node name="Back" type="Sprite3D" parent="Visual/Torso/BJKJersey"]
-transform = Transform3D(0.26, 0, 0, 0, 0.151, 0, 0, 0, 1, 0, 0, 0.216)
-texture = ExtResource("3_bjk_back")
-
-[node name="FenerJersey" type="Node3D" parent="Visual/Torso"]
-visible = false
-
-[node name="Front" type="Sprite3D" parent="Visual/Torso/FenerJersey"]
+[node name="JerseyFront" type="Sprite3D" parent="Visual/BodyMesh"]
 transform = Transform3D(-0.245, 0, 0, 0, 0.142, 0, 0, 0, -1, 0, 0, -0.216)
-texture = ExtResource("4_fener_front")
+texture = ExtResource("2_jersey_front")
 
-[node name="Back" type="Sprite3D" parent="Visual/Torso/FenerJersey"]
+[node name="JerseyBack" type="Sprite3D" parent="Visual/BodyMesh"]
 transform = Transform3D(0.245, 0, 0, 0, 0.142, 0, 0, 0, 1, 0, 0, 0.216)
-texture = ExtResource("5_fener_back")
+texture = ExtResource("3_jersey_back")
 
-[node name="GalaJersey" type="Node3D" parent="Visual/Torso"]
-visible = false
-
-[node name="Front" type="Sprite3D" parent="Visual/Torso/GalaJersey"]
-transform = Transform3D(-0.245, 0, 0, 0, 0.142, 0, 0, 0, -1, 0, 0, -0.216)
-texture = ExtResource("6_gala_front")
-
-[node name="Back" type="Sprite3D" parent="Visual/Torso/GalaJersey"]
-transform = Transform3D(0.245, 0, 0, 0, 0.142, 0, 0, 0, 1, 0, 0, 0.216)
-texture = ExtResource("7_gala_back")
-
-[node name="Head" type="MeshInstance3D" parent="Visual"]
+[node name="HeadMesh" type="MeshInstance3D" parent="Visual"]
 position = Vector3(0, 2.18, 0)
 mesh = SubResource("MeshHead")
 
-[node name="Hair" type="MeshInstance3D" parent="Visual"]
-position = Vector3(0, 2.39, 0.025)
+[node name="HairMesh" type="MeshInstance3D" parent="Visual"]
+position = Vector3(0, 2.49, 0.01)
 mesh = SubResource("MeshHair")
 
 [node name="EyeLeft" type="MeshInstance3D" parent="Visual"]
-position = Vector3(-0.115, 2.23, -0.283)
+position = Vector3(-0.115, 2.23, -0.272)
 mesh = SubResource("MeshEye")
 
 [node name="EyeRight" type="MeshInstance3D" parent="Visual"]
-position = Vector3(0.115, 2.23, -0.283)
+position = Vector3(0.115, 2.23, -0.272)
 mesh = SubResource("MeshEye")
-
-[node name="GalaHeadImage" type="Sprite3D" parent="Visual"]
-transform = Transform3D(-0.191, 0, 0, 0, 0.116, 0, 0, 0, -1, 0, 2.18, -0.315)
-visible = false
-texture = ExtResource("8_gala_head")
 
 [node name="LeftArm" type="Node3D" parent="Visual"]
 position = Vector3(-0.58, 1.79, 0)
 
-[node name="Arm" type="MeshInstance3D" parent="Visual/LeftArm"]
+[node name="ArmMesh" type="MeshInstance3D" parent="Visual/LeftArm"]
 position = Vector3(0, -0.39, 0)
 mesh = SubResource("MeshArm")
 
-[node name="Hand" type="MeshInstance3D" parent="Visual/LeftArm"]
+[node name="HandMesh" type="MeshInstance3D" parent="Visual/LeftArm"]
 position = Vector3(0, -0.86, 0)
 mesh = SubResource("MeshHand")
 
 [node name="RightArm" type="Node3D" parent="Visual"]
 position = Vector3(0.58, 1.79, 0)
 
-[node name="Arm" type="MeshInstance3D" parent="Visual/RightArm"]
+[node name="ArmMesh" type="MeshInstance3D" parent="Visual/RightArm"]
 position = Vector3(0, -0.39, 0)
 mesh = SubResource("MeshArm")
 
-[node name="Hand" type="MeshInstance3D" parent="Visual/RightArm"]
+[node name="HandMesh" type="MeshInstance3D" parent="Visual/RightArm"]
 position = Vector3(0, -0.86, 0)
 mesh = SubResource("MeshHand")
 
 [node name="LeftLeg" type="Node3D" parent="Visual"]
 position = Vector3(-0.23, 0.91, 0)
 
-[node name="Leg" type="MeshInstance3D" parent="Visual/LeftLeg"]
+[node name="LegMesh" type="MeshInstance3D" parent="Visual/LeftLeg"]
 position = Vector3(0, -0.37, 0)
 mesh = SubResource("MeshLeg")
 
-[node name="Shoe" type="MeshInstance3D" parent="Visual/LeftLeg"]
+[node name="ShoeMesh" type="MeshInstance3D" parent="Visual/LeftLeg"]
 position = Vector3(0, -0.77, -0.09)
 mesh = SubResource("MeshShoe")
 
 [node name="RightLeg" type="Node3D" parent="Visual"]
 position = Vector3(0.23, 0.91, 0)
 
-[node name="Leg" type="MeshInstance3D" parent="Visual/RightLeg"]
+[node name="LegMesh" type="MeshInstance3D" parent="Visual/RightLeg"]
 position = Vector3(0, -0.37, 0)
 mesh = SubResource("MeshLeg")
 
-[node name="Shoe" type="MeshInstance3D" parent="Visual/RightLeg"]
+[node name="ShoeMesh" type="MeshInstance3D" parent="Visual/RightLeg"]
 position = Vector3(0, -0.77, -0.09)
 mesh = SubResource("MeshShoe")
 
@@ -221,7 +190,7 @@ cast_shadow = 0
 pixel_size = 0.0025
 modulate = Color(1, 0.94, 0.77, 1)
 outline_modulate = Color(0.01, 0.015, 0.024, 1)
-text = "BESTELLUNG\n• Fleisch\n• Salat\n• Zwiebeln"
+text = "BESTELLUNG\n• Dönerfleisch\n• Salat\n• Zwiebeln"
 font_size = 22
 outline_size = 4
 width = 520.0
@@ -246,16 +215,5 @@ no_depth_test = true
 fixed_size = true
 
 [node name="HappyDisplay" type="Node3D" parent="."]
-position = Vector3(0, 3.05, 0)
 visible = false
 
-[node name="HappyLabel" type="Label3D" parent="HappyDisplay"]
-pixel_size = 0.004
-modulate = Color(0.45, 1, 0.45, 1)
-outline_modulate = Color(0.01, 0.08, 0.015, 1)
-text = "Danke! ✓"
-font_size = 58
-outline_size = 10
-billboard = 1
-no_depth_test = true
-fixed_size = true

@@ -1,7 +1,7 @@
 class_name CustomerQueueManager
 extends Node3D
 
-@export var customer_scene: PackedScene = preload("res://CustomerNPC.tscn")
+@export var npc_scenes: Array[PackedScene] = []
 @export_range(1, 3, 1) var queue_capacity := 3
 
 var customers: Array[CustomerNPC] = []
@@ -26,14 +26,12 @@ func _initialize_queue() -> void:
 	if _started:
 		return
 	_started = true
-	var initial_variants: Array[int] = [
-		CustomerNPC.CustomerVariant.BJK,
-		CustomerNPC.CustomerVariant.FENER,
-		CustomerNPC.CustomerVariant.GALA,
-	]
-	initial_variants.shuffle()
-	for index in mini(queue_capacity, _queue_slots.size()):
-		_spawn_customer(initial_variants[index])
+	var scene_indices: Array[int] = []
+	for scene_index in npc_scenes.size():
+		scene_indices.append(scene_index)
+	scene_indices.shuffle()
+	for index in mini(queue_capacity, mini(_queue_slots.size(), scene_indices.size())):
+		_spawn_customer(scene_indices[index])
 
 
 func customer_order_completed(customer: CustomerNPC) -> void:
@@ -44,18 +42,19 @@ func customer_order_completed(customer: CustomerNPC) -> void:
 	for index in customers.size():
 		customers[index].assign_queue_slot(index, _queue_slots[index])
 	if customers.size() < mini(queue_capacity, _queue_slots.size()):
-		_spawn_customer(randi_range(CustomerNPC.CustomerVariant.BJK, CustomerNPC.CustomerVariant.GALA))
+		_spawn_customer(randi_range(0, npc_scenes.size() - 1))
 
 
-func _spawn_customer(variant: int) -> CustomerNPC:
-	if not is_instance_valid(customer_scene) or customers.size() >= _queue_slots.size():
+func _spawn_customer(scene_index: int) -> CustomerNPC:
+	if npc_scenes.is_empty() or scene_index < 0 or scene_index >= npc_scenes.size():
 		return null
-	var customer := customer_scene.instantiate() as CustomerNPC
+	if not is_instance_valid(npc_scenes[scene_index]) or customers.size() >= _queue_slots.size():
+		return null
+	var customer := npc_scenes[scene_index].instantiate() as CustomerNPC
 	if not is_instance_valid(customer):
 		return null
 	_spawn_serial += 1
-	customer.name = "Customer_%s_%02d" % [CustomerNPC.VARIANT_NAMES[variant], _spawn_serial]
-	customer.customer_variant = variant
+	customer.name = "Customer_%s_%02d" % [CustomerNPC.VARIANT_NAMES[customer.customer_variant], _spawn_serial]
 	customer.queue_managed = true
 	add_child(customer)
 	customers.append(customer)

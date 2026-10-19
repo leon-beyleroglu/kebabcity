@@ -49,16 +49,7 @@ var _target_marker: Marker3D
 var _rejection_time_left := 0.0
 var _walk_time := 0.0
 
-@onready var visual: Node3D = $Visual
-@onready var torso: MeshInstance3D = $Visual/Torso
-@onready var bjk_jersey: Node3D = $Visual/Torso/BJKJersey
-@onready var fener_jersey: Node3D = $Visual/Torso/FenerJersey
-@onready var gala_jersey: Node3D = $Visual/Torso/GalaJersey
-@onready var head: MeshInstance3D = $Visual/Head
-@onready var hair: MeshInstance3D = $Visual/Hair
-@onready var eye_left: MeshInstance3D = $Visual/EyeLeft
-@onready var eye_right: MeshInstance3D = $Visual/EyeRight
-@onready var gala_head_image: Sprite3D = $Visual/GalaHeadImage
+@onready var navigation_agent: NavigationAgent3D = $NavigationAgent3D
 @onready var order_display: Node3D = $OrderDisplay
 @onready var order_label: Label3D = $OrderDisplay/OrderLabel
 @onready var rejection_label: Label3D = $OrderDisplay/RejectionLabel
@@ -74,10 +65,10 @@ func _ready() -> void:
 	collision_layer = INTERACTION_LAYER
 	set_meta("customer_npc", true)
 	set_meta("accepts_finished_durum", false)
+	set_meta("customer_variant", VARIANT_NAMES[customer_variant])
 	order_display.visible = false
 	happy_display.visible = false
 	rejection_label.visible = false
-	_apply_customer_variant()
 	if queue_managed:
 		return
 	var scene_root := get_tree().current_scene
@@ -120,6 +111,8 @@ func assign_queue_slot(assigned_index: int, assigned_slot: Marker3D) -> void:
 	rejection_label.visible = false
 	set_meta("queue_index", queue_index)
 	set_meta("accepts_finished_durum", false)
+	if is_instance_valid(navigation_agent) and is_instance_valid(_target_marker):
+		navigation_agent.target_position = _target_marker.global_position
 	state = CustomerState.MOVING_TO_QUEUE
 
 
@@ -133,6 +126,8 @@ func begin_exit(exit_point: Marker3D = null) -> void:
 	_target_marker = exit_point if is_instance_valid(exit_point) else _exit_point
 	if not is_instance_valid(_target_marker):
 		_target_marker = _spawn_point
+	if is_instance_valid(navigation_agent) and is_instance_valid(_target_marker):
+		navigation_agent.target_position = _target_marker.global_position
 	state = CustomerState.LEAVING
 	_face_target(_target_marker)
 
@@ -286,30 +281,3 @@ func _update_rejection(delta: float) -> void:
 	_rejection_time_left -= delta
 	if _rejection_time_left <= 0.0:
 		rejection_label.visible = false
-
-
-func _apply_customer_variant() -> void:
-	var is_bjk := customer_variant == CustomerVariant.BJK
-	var is_fener := customer_variant == CustomerVariant.FENER
-	var is_gala := customer_variant == CustomerVariant.GALA
-	bjk_jersey.visible = is_bjk
-	fener_jersey.visible = is_fener
-	gala_jersey.visible = is_gala
-	gala_head_image.visible = is_gala
-	head.visible = not is_gala
-	hair.visible = not is_gala
-	eye_left.visible = not is_gala
-	eye_right.visible = not is_gala
-	var club_material := StandardMaterial3D.new()
-	club_material.roughness = 0.38
-	match customer_variant:
-		CustomerVariant.FENER:
-			club_material.albedo_color = Color(0.025, 0.075, 0.28, 1)
-		CustomerVariant.GALA:
-			club_material.albedo_color = Color(0.58, 0.035, 0.035, 1)
-		_:
-			club_material.albedo_color = Color(0.018, 0.02, 0.026, 1)
-	torso.material_override = club_material
-	($Visual/LeftArm/Arm as MeshInstance3D).material_override = club_material
-	($Visual/RightArm/Arm as MeshInstance3D).material_override = club_material
-	set_meta("customer_variant", VARIANT_NAMES[customer_variant])
