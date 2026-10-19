@@ -9,9 +9,10 @@ const INTERACTION_LAYER := 1 << 7
 const PREP_ITEM_LAYER := 1 << 8
 const CUT_DURATION := 1.0
 const OVEN_BAKE_DURATION := 10.0
+const OVEN_CAPACITY := 3
 const DURUM_INGREDIENT_IDS := ["tomato", "salad", "red_cabbage", "onion", "cucumber", "cut_meat", "garlic_sauce", "cocktail_sauce"]
 
-enum OvenState { IDLE, BAKING, FINISHED }
+enum OvenSlotState { EMPTY, BAKING, FINISHED }
 
 var player: CharacterBody3D
 var camera: Camera3D
@@ -38,13 +39,14 @@ var cut_anim_time := 0.0
 var cut_requires_release := false
 var portions_created := 0
 var oven: StaticBody3D
-var baking_slot: Marker3D
+var baking_slots: Array[Marker3D] = []
 var oven_timer_label: Label3D
 var oven_heat_light: OmniLight3D
 var oven_heating_elements: Node3D
-var oven_slot_visual: Node3D
-var oven_state := OvenState.IDLE
-var oven_time_left := 0.0
+var oven_slot_visuals: Array[Node3D] = []
+var oven_slot_states: Array[int] = []
+var oven_slot_times: Array[float] = []
+var current_lavash_count := 0
 var held_sauce_home: Node3D
 
 var ui_layer: CanvasLayer
@@ -141,11 +143,23 @@ func _register_scene_targets() -> void:
 		_register_mounted_knife(knife_mount, knife_snap, knife_visual)
 	oven = root.get_node_or_null("KitchenBackShelfCollision/Oven") as StaticBody3D
 	if oven:
-		baking_slot = oven.get_node_or_null("BakingSlot") as Marker3D
+		baking_slots.clear()
+		oven_slot_visuals.clear()
+		oven_slot_states.clear()
+		oven_slot_times.clear()
+		current_lavash_count = 0
+		for slot_index in OVEN_CAPACITY:
+			var slot := oven.get_node_or_null("BakingSlot_%d" % slot_index) as Marker3D
+			if slot:
+				baking_slots.append(slot)
+				oven_slot_visuals.append(null)
+				oven_slot_states.append(OvenSlotState.EMPTY)
+				oven_slot_times.append(0.0)
 		oven_timer_label = oven.get_node_or_null("TimerLabel3D") as Label3D
 		oven_heat_light = oven.get_node_or_null("HeatLight") as OmniLight3D
 		oven_heating_elements = oven.get_node_or_null("HeatingElements") as Node3D
 		_set_oven_heat(false)
+		_update_oven_label()
 
 func _optimize_small_meshes(root: Node) -> void:
 	if not is_instance_valid(root):
@@ -819,88 +833,115 @@ func _item_collision_size(item_id: String) -> Vector3:
 			return Vector3(0.5, 0.3, 0.5)
 
 func _interact_with_oven() -> void:
-	match oven_state:
-		OvenState.IDLE:
-			if held_item and held_item.item_id == "lavash":
-				_insert_lavash_into_oven()
-		OvenState.BAKING:
-			return
-		OvenState.FINISHED:
-			if held_item == null:
-				_take_baked_lavash()
+	if held_item and held_item.item_id == "lavash":
+		var empty_slot := oven_slot_states.find(OvenSlotState.EMPTY)
+		if empty_slot >= 0 and current_lavash_count < OVEN_CAPACITY:
+			_insert_lavash_into_oven(empty_slot)
+		return
+	if held_item == null:
+		var finished_slot := oven_slot_states.find(OvenSlotState.FINISHED)
+		if finished_slot >= 0:
+			_take_baked_lavash(finished_slot)
 
-func _insert_lavash_into_oven() -> void:
-	if not is_instance_valid(baking_slot) or not is_instance_valid(held_item) or not is_instance_valid(held_visual):
+func _insert_lavash_into_oven(slot_index: int) -> void:
+	if slot_index < 0 or slot_index >= baking_slots.size():
+		return
+	if not is_instance_valid(held_item) or not is_instance_valid(held_visual):
 		return
 	var raw_item := held_item
-	oven_slot_visual = held_visual
-	oven_slot_visual.reparent(baking_slot, false)
-	oven_slot_visual.transform = Transform3D.IDENTITY
-	oven_slot_visual.scale = Vector3.ONE
-	oven_slot_visual.visible = true
+	var slot_visual := held_visual
+	slot_visual.reparent(baking_slots[slot_index], false)
+	slot_visual.transform = Transform3D.IDENTITY
+	slot_visual.scale = Vector3.ONE
+	slot_visual.visible = true
 	held_item = null
 	held_visual = null
 	held_origin_station = null
 	held_origin_transform = Transform3D.IDENTITY
 	raw_item.queue_free()
-	oven_state = OvenState.BAKING
-	oven_time_left = OVEN_BAKE_DURATION
+	oven_slot_visuals[slot_index] = slot_visual
+	oven_slot_states[slot_index] = OvenSlotState.BAKING
+	oven_slot_times[slot_index] = OVEN_BAKE_DURATION
+	current_lavash_count += 1
 	_set_oven_heat(true)
 	_update_oven_label()
 
 func _update_oven(delta: float) -> void:
-	if oven_state != OvenState.BAKING:
-		return
-	oven_time_left = maxf(0.0, oven_time_left - delta)
-	if oven_time_left <= 0.0:
-		_finish_oven_bake()
-	else:
-		_update_oven_label()
+	var has_active_baking := false
+	for slot_index in oven_slot_states.size():
+		if oven_slot_states[slot_index] != OvenSlotState.BAKING:
+			continue
+		oven_slot_times[slot_index] = maxf(0.0, oven_slot_times[slot_index] - delta)
+		if oven_slot_times[slot_index] <= 0.0:
+			_finish_oven_bake(slot_index)
+		else:
+			has_active_baking = true
+	_set_oven_heat(has_active_baking)
+	_update_oven_label()
 
 func _update_oven_label() -> void:
-	if is_instance_valid(oven_timer_label):
-		oven_timer_label.text = "00:%02d" % int(ceili(oven_time_left))
+	if not is_instance_valid(oven_timer_label):
+		return
+	var baking_count := oven_slot_states.count(OvenSlotState.BAKING)
+	var finished_count := oven_slot_states.count(OvenSlotState.FINISHED)
+	if baking_count > 0:
+		var next_finish := OVEN_BAKE_DURATION
+		for slot_index in oven_slot_states.size():
+			if oven_slot_states[slot_index] == OvenSlotState.BAKING:
+				next_finish = minf(next_finish, oven_slot_times[slot_index])
+		if finished_count > 0:
+			oven_timer_label.text = "%d fertig | %02ds" % [finished_count, int(ceili(next_finish))]
+		else:
+			oven_timer_label.text = "%d/3 | %02ds" % [current_lavash_count, int(ceili(next_finish))]
+	elif finished_count > 0:
+		oven_timer_label.text = "Fertig: %d/3" % finished_count
+	else:
+		oven_timer_label.text = "Bereit 0/3"
 
-func _finish_oven_bake() -> void:
-	if is_instance_valid(oven_slot_visual):
-		oven_slot_visual.queue_free()
-	oven_slot_visual = _duplicate_pickup_template("baked_lavash")
-	if is_instance_valid(oven_slot_visual) and is_instance_valid(baking_slot):
-		oven_slot_visual.name = "BakedLavash"
-		baking_slot.add_child(oven_slot_visual)
-		oven_slot_visual.transform = Transform3D.IDENTITY
-		oven_slot_visual.scale = Vector3.ONE
-	oven_state = OvenState.FINISHED
-	oven_time_left = 0.0
-	_set_oven_heat(false)
-	if is_instance_valid(oven_timer_label):
-		oven_timer_label.text = "Fertig!"
+func _finish_oven_bake(slot_index: int) -> void:
+	if slot_index < 0 or slot_index >= baking_slots.size():
+		return
+	if is_instance_valid(oven_slot_visuals[slot_index]):
+		oven_slot_visuals[slot_index].queue_free()
+	var baked_visual := _duplicate_pickup_template("baked_lavash")
+	oven_slot_visuals[slot_index] = baked_visual
+	if is_instance_valid(baked_visual):
+		baked_visual.name = "BakedLavash_%d" % slot_index
+		baking_slots[slot_index].add_child(baked_visual)
+		baked_visual.transform = Transform3D.IDENTITY
+		baked_visual.scale = Vector3.ONE
+	oven_slot_states[slot_index] = OvenSlotState.FINISHED
+	oven_slot_times[slot_index] = 0.0
 
-func _take_baked_lavash() -> void:
-	if held_item != null or not is_instance_valid(oven_slot_visual):
+func _take_baked_lavash(slot_index: int) -> void:
+	if slot_index < 0 or slot_index >= baking_slots.size():
+		return
+	var baked_visual := oven_slot_visuals[slot_index]
+	if held_item != null or not is_instance_valid(baked_visual):
 		return
 	var baked_item: Area3D = InteractableItemScript.new()
 	baked_item.name = "BakedLavashItem"
 	get_tree().current_scene.add_child(baked_item)
-	baked_item.global_transform = baking_slot.global_transform
+	baked_item.global_transform = baking_slots[slot_index].global_transform
 	_add_box_collider(baked_item, _item_collision_size("baked_lavash"))
 	baked_item.configure("baked_lavash", "Gebackenes Lavash", null, true)
 	baked_item.pickup()
 	held_item = baked_item
-	held_visual = oven_slot_visual
+	held_visual = baked_visual
 	held_origin_station = null
 	held_origin_transform = Transform3D.IDENTITY
 	if not _attach_held_visual(held_visual):
-		held_visual.reparent(baking_slot, false)
+		held_visual.reparent(baking_slots[slot_index], false)
 		held_visual.transform = Transform3D.IDENTITY
 		held_item.queue_free()
 		held_item = null
 		held_visual = null
 		return
-	oven_slot_visual = null
-	oven_state = OvenState.IDLE
-	if is_instance_valid(oven_timer_label):
-		oven_timer_label.text = "Bereit"
+	oven_slot_visuals[slot_index] = null
+	oven_slot_states[slot_index] = OvenSlotState.EMPTY
+	oven_slot_times[slot_index] = 0.0
+	current_lavash_count = maxi(0, current_lavash_count - 1)
+	_update_oven_label()
 
 func _set_oven_heat(active: bool) -> void:
 	if is_instance_valid(oven_heating_elements):

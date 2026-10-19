@@ -609,6 +609,7 @@ size = Vector3(0.075, 0.065, 0.92)
 [sub_resource type="StandardMaterial3D" id="MatCounterGlass"]
 resource_name = "Low-Iron Angled Sneeze Guard Glass"
 transparency = 1
+depth_draw_mode = 1
 albedo_color = Color(0.82, 0.94, 0.98, 0.16)
 metallic_specular = 0.96
 roughness = 0.05
@@ -616,25 +617,6 @@ clearcoat_enabled = true
 clearcoat_roughness = 0.03
 refraction_enabled = true
 refraction_scale = 0.018
-
-[sub_resource type="BoxMesh" id="MeshSneezeGlass"]
-size = Vector3(6.72, 1.18, 0.035)
-
-[sub_resource type="StandardMaterial3D" id="MatGlassEdge"]
-resource_name = "Polished Glass Edge Highlight"
-transparency = 1
-albedo_color = Color(0.68, 0.93, 1, 0.68)
-metallic_specular = 1.0
-roughness = 0.03
-emission_enabled = true
-emission = Color(0.08, 0.32, 0.38, 1)
-emission_energy_multiplier = 0.45
-
-[sub_resource type="BoxMesh" id="MeshSneezeEdgeHorizontal"]
-size = Vector3(6.78, 0.025, 0.055)
-
-[sub_resource type="BoxMesh" id="MeshSneezeEdgeVertical"]
-size = Vector3(0.025, 1.2, 0.055)
 
 [sub_resource type="BoxMesh" id="BoxMesh_j7xc5"]
 material = SubResource("MatMetal")
@@ -1579,12 +1561,18 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.035, 0.605)
 pixel_size = 0.0017
 modulate = Color(0.35, 1, 0.62, 1)
 outline_modulate = Color(0, 0.02, 0.01, 1)
-text = "Bereit"
+text = "Bereit 0/3"
 font_size = 48
 outline_size = 8
 
-[node name="BakingSlot" type="Marker3D" parent="KitchenBackShelfCollision/Oven" unique_id=269539900]
+[node name="BakingSlot_0" type="Marker3D" parent="KitchenBackShelfCollision/Oven" unique_id=269539900]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.34, 0.595)
+
+[node name="BakingSlot_1" type="Marker3D" parent="KitchenBackShelfCollision/Oven" unique_id=1107072979]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.535, 0.595)
+
+[node name="BakingSlot_2" type="Marker3D" parent="KitchenBackShelfCollision/Oven" unique_id=692954972]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.73, 0.595)
 
 [node name="TrashCan" type="StaticBody3D" parent="." unique_id=2019941018 groups=["trash_can"]]
 transform = Transform3D(0.70710677, 0, -0.70710677, 0, 1, 0, 0.70710677, 0, 0.70710677, 3.339793, 0.1, -4.5353136)
@@ -2164,31 +2152,6 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.956211, 0.044999957, 0)
 material_override = SubResource("MatCounterDeck")
 mesh = SubResource("MeshDeckRailShort")
 metadata/keep_detail_shadows = true
-
-[node name="Glasfront" type="MeshInstance3D" parent="Test Ablage/Kebab Theke" unique_id=630860907]
-transform = Transform3D(1, 0, 0, 0, 0.978148, 0.207912, 0, -0.207912, 0.978148, -0.05, 1.95, 17.54)
-material_override = SubResource("MatCounterGlass")
-mesh = SubResource("MeshSneezeGlass")
-
-[node name="EdgeTop" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Glasfront" unique_id=600086309]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.59, 0)
-material_override = SubResource("MatGlassEdge")
-mesh = SubResource("MeshSneezeEdgeHorizontal")
-
-[node name="EdgeBottom" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Glasfront" unique_id=1752383210]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.59, 0)
-material_override = SubResource("MatGlassEdge")
-mesh = SubResource("MeshSneezeEdgeHorizontal")
-
-[node name="EdgeLeft" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Glasfront" unique_id=1904770174]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.36, 0, 0)
-material_override = SubResource("MatGlassEdge")
-mesh = SubResource("MeshSneezeEdgeVertical")
-
-[node name="EdgeRight" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Glasfront" unique_id=989713414]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.36, 0, 0)
-material_override = SubResource("MatGlassEdge")
-mesh = SubResource("MeshSneezeEdgeVertical")
 
 [node name="Glasdach" type="MeshInstance3D" parent="Test Ablage/Kebab Theke" unique_id=2082664257]
 transform = Transform3D(3.25, 0, 0, 0, 0.045, 0, 0, 0, 0.7, -0.054351807, 2.594596, 17.326601)
@@ -2793,6 +2756,9 @@ mesh = SubResource("MeshGNRimShort")
 metadata/keep_detail_shadows = true
 
 [node name="RoundedCorners" type="Node3D" parent="Test Ablage/Kebab Theke/Zutaten/Krautwanne" unique_id=1873819408]
+
+[node name="CustomerGala" parent="Test Ablage/Kebab Theke/Zutaten/Krautwanne" unique_id=360175910 instance=ExtResource("20_customer_gala")]
+transform = Transform3D(1.2820513, 0, 0, 0, 1, 0, 0, 0, 1, -2.3821507, -1.36, 21.097626)
 
 [node name="Kraut" type="Node3D" parent="Test Ablage/Kebab Theke/Zutaten" unique_id=644870592]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.4025977, 1.49, 16.878506)
@@ -4258,6 +4224,7 @@ mesh = SubResource("MeshTofasRimMesh")
 
 [node name="Avatar gala" type="StaticBody3D" parent="." unique_id=662953966]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.39239025, 0.08, 17.722675)
+visible = false
 collision_layer = 0
 collision_mask = 0
 
@@ -4373,6 +4340,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.2, 0.11, 1.68)
 
 [node name="Avatar Fener" type="StaticBody3D" parent="." unique_id=136574385]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.7120857, 0.08, 17.751186)
+visible = false
 collision_layer = 0
 collision_mask = 0
 
@@ -4494,3 +4462,9 @@ texture = ExtResource("5_h3k53")
 
 [node name="CityExpansion" type="Node3D" parent="." unique_id=698820750]
 script = ExtResource("10_city_expansion")
+
+[node name="CustomerFener" parent="." unique_id=1611780220 instance=ExtResource("19_customer_fener")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.0516357, 0, 18.691343)
+
+[node name="CustomerBJK" parent="." unique_id=913676810 instance=ExtResource("17_customer_bjk")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.2041687, 0, 18.678432)

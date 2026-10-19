@@ -1,4 +1,4 @@
-[gd_scene load_steps=21 format=3]
+[gd_scene load_steps=22 format=3]
 
 [ext_resource type="Script" path="res://customer_npc.gd" id="1_customer"]
 [ext_resource type="Texture2D" path="res://gahinten.jpg" id="2_jersey_front"]
@@ -18,14 +18,25 @@ roughness = 0.38
 material = SubResource("MatBody")
 size = Vector3(0.92, 1.02, 0.42)
 
-[sub_resource type="StandardMaterial3D" id="MatGalaHead"]
-resource_name = "Gala Custom Image 3D Head"
+[sub_resource type="StandardMaterial3D" id="SkinMaterial"]
+resource_name = "Gala Head Skin - Sides Top Back"
+albedo_color = Color(0.63, 0.38, 0.23, 1)
+roughness = 0.48
+
+[sub_resource type="StandardMaterial3D" id="FaceMaterial"]
+resource_name = "Gala Face Image - Aspect Preserved"
+transparency = 1
+cull_mode = 2
 albedo_texture = ExtResource("4_gala_head")
-roughness = 0.46
+roughness = 0.42
 texture_filter = 1
 
+[sub_resource type="QuadMesh" id="MeshFaceSurface"]
+material = SubResource("FaceMaterial")
+size = Vector2(0.470989, 0.65)
+
 [sub_resource type="BoxMesh" id="MeshHead"]
-material = SubResource("MatGalaHead")
+material = SubResource("SkinMaterial")
 size = Vector3(0.5, 0.69, 0.5)
 
 [sub_resource type="StandardMaterial3D" id="MatHair"]
@@ -54,12 +65,8 @@ height = 0.88
 radial_segments = 16
 rings = 4
 
-[sub_resource type="StandardMaterial3D" id="MatSkin"]
-albedo_color = Color(0.63, 0.38, 0.23, 1)
-roughness = 0.48
-
 [sub_resource type="SphereMesh" id="MeshHand"]
-material = SubResource("MatSkin")
+material = SubResource("SkinMaterial")
 radius = 0.135
 height = 0.27
 radial_segments = 16
@@ -126,6 +133,12 @@ texture = ExtResource("3_jersey_back")
 [node name="HeadMesh" type="MeshInstance3D" parent="Visual"]
 position = Vector3(0, 2.18, 0)
 mesh = SubResource("MeshHead")
+
+[node name="FaceSurface" type="MeshInstance3D" parent="Visual/HeadMesh"]
+position = Vector3(0, 0, -0.251)
+rotation = Vector3(0, 3.1415927, 0)
+mesh = SubResource("MeshFaceSurface")
+cast_shadow = 0
 
 [node name="HairMesh" type="MeshInstance3D" parent="Visual"]
 position = Vector3(0, 2.49, 0.01)
