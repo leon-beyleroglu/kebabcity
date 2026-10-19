@@ -420,7 +420,7 @@ func _stack_durum_visual(assembly: Area3D, item_id: String, visual: Node3D) -> b
 	elif visual.get_parent() != socket:
 		visual.reparent(socket, false)
 	visual.name = "Ingredient_%02d_%s" % [stack_index + 1, item_id.to_pascal_case()]
-	visual.position = Vector3(randf_range(-0.04, 0.04), 0.025 + stack_index * 0.045, randf_range(-0.04, 0.04))
+	visual.position = Vector3(randf_range(-0.04, 0.04), stack_index * 0.018, randf_range(-0.04, 0.04))
 	visual.rotation = Vector3(randf_range(-0.08, 0.08), randf_range(-PI, PI), randf_range(-0.08, 0.08))
 	visual.scale = Vector3.ONE * 0.9
 	visual.visible = true
@@ -578,7 +578,7 @@ func _apply_sauce_to_prep(station: Node3D, hit_position: Vector3, hit_normal: Ve
 	_add_box_collider(portion, _item_collision_size(portion_id))
 	portion.configure(portion_id, portion_label, portion_visual)
 	var surface_normal := hit_normal.normalized() if not hit_normal.is_zero_approx() else Vector3.UP
-	var drop_position := hit_position + surface_normal * (_visual_height(portion_visual, portion_id) * 0.5)
+	var drop_position := hit_position + surface_normal * _placement_surface_offset(portion_visual, portion_id)
 	var drop_rotation := Vector3(0.0, randf_range(-PI, PI), 0.0)
 	portion.reparent(station, true)
 	portion.global_position = drop_position
@@ -620,13 +620,20 @@ func _resolve_hold_socket() -> Marker3D:
 	if is_instance_valid(hold_socket):
 		return hold_socket
 	if is_instance_valid(camera):
-		hold_socket = camera.get_node_or_null("ArmsHolder/HandAttachmentPoint") as Marker3D
+		var supporting_hand := camera.get_node_or_null("ArmsHolder/RightArm/Hand") as Node3D
+		if is_instance_valid(supporting_hand):
+			hold_socket = supporting_hand.get_node_or_null("HoldSocket") as Marker3D
 		if not is_instance_valid(hold_socket):
 			hold_socket = Marker3D.new()
-			hold_socket.name = "RuntimeHandAttachmentPoint"
-			camera.add_child(hold_socket)
-			hold_socket.position = Vector3(0.37, -0.28, -0.72)
-			hold_socket.rotation = Vector3(-0.08, 0.16, 0.1)
+			hold_socket.name = "RuntimeHoldSocket"
+			if is_instance_valid(supporting_hand):
+				supporting_hand.add_child(hold_socket)
+				hold_socket.position = Vector3(0.0, -0.105, 0.031)
+				hold_socket.rotation = Vector3(PI * 0.5, 0.0, 0.0)
+			else:
+				camera.add_child(hold_socket)
+				hold_socket.position = Vector3(0.315, -0.335, -0.49)
+				hold_socket.rotation = Vector3(-0.08, 0.16, 0.1)
 	return hold_socket
 
 func _attach_held_visual(visual: Node3D) -> bool:
@@ -637,11 +644,29 @@ func _attach_held_visual(visual: Node3D) -> bool:
 		socket.add_child(visual)
 	elif visual.get_parent() != socket:
 		visual.reparent(socket, false)
+	visual.transform = Transform3D.IDENTITY
 	visual.visible = true
-	visual.position = Vector3.ZERO
-	visual.rotation = Vector3.ZERO
-	visual.scale = Vector3.ONE * 0.85
+	_apply_held_item_pose(visual, held_item.item_id if is_instance_valid(held_item) else "")
 	return true
+
+func _apply_held_item_pose(visual: Node3D, item_id: String) -> void:
+	if not is_instance_valid(visual):
+		return
+	visual.transform = Transform3D.IDENTITY
+	match item_id:
+		"tomato", "salad", "red_cabbage", "onion", "cucumber":
+			visual.position = Vector3(0.0, -0.002, 0.0)
+		"cut_meat":
+			visual.position = Vector3(0.0, -0.003, 0.018)
+		"garlic_sauce", "cocktail_sauce":
+			visual.position = Vector3(0.0, -0.002, 0.01)
+		"lavash", "baked_lavash", "durum_assembly":
+			visual.position = Vector3(0.0, -0.002, 0.055)
+			visual.rotation = Vector3(0.0, -0.035, 0.0)
+		"garlic_sauce_ladle", "cocktail_sauce_ladle":
+			visual.position = Vector3(0.0, -0.006, 0.0)
+		"finished_durum":
+			visual.position = Vector3(0.0, -0.004, -0.012)
 
 func _duplicate_pickup_template(item_id: String) -> Node3D:
 	var template := pickup_templates.get(item_id) as Node3D
@@ -709,7 +734,7 @@ func _place_held_on_prep(station: Node3D, hit_position: Vector3, hit_normal := V
 	var surface_normal := hit_normal.normalized() if not hit_normal.is_zero_approx() else Vector3.UP
 	var drop_position := hit_position
 	if offset_from_surface:
-		drop_position += surface_normal * (_visual_height(held_visual, held_item.item_id) * 0.5)
+		drop_position += surface_normal * _placement_surface_offset(held_visual, held_item.item_id)
 	var drop_rotation := Vector3(0.0, randf_range(-PI, PI), 0.0)
 
 	if held_item.get_parent() != station:
@@ -777,6 +802,12 @@ func _visual_height(visual: Node3D, fallback_item_id: String) -> float:
 	if not has_bounds:
 		return _item_collision_size(fallback_item_id).y
 	return maxf(0.01, bounds.size.y * absf(visual.global_basis.get_scale().y))
+
+
+func _placement_surface_offset(visual: Node3D, item_id: String) -> float:
+	if pickup_templates.has(item_id):
+		return 0.002
+	return _visual_height(visual, item_id) * 0.5
 
 
 func _freeze_item_physics(item: Node) -> void:
@@ -950,7 +981,10 @@ func _set_oven_heat(active: bool) -> void:
 		oven_heat_light.visible = active
 
 func _update_cutting(delta: float) -> void:
-	var can_cut: bool = focused_meat != null and held_item != null and held_item.item_id == "knife"
+	var holding_knife: bool = held_item != null and held_item.item_id == "knife"
+	if not holding_knife:
+		return
+	var can_cut: bool = focused_meat != null
 	var cutting_pressed := Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT)
 	if not cutting_pressed:
 		cut_requires_release = false
@@ -978,8 +1012,7 @@ func _reset_cutting() -> void:
 	cut_anim_time = 0.0
 	cut_requires_release = false
 	if held_visual:
-		held_visual.rotation = Vector3.ZERO
-		held_visual.position = Vector3.ZERO
+		_apply_held_item_pose(held_visual, held_item.item_id if is_instance_valid(held_item) else "")
 
 func _spawn_meat_portion() -> void:
 	var visual := _duplicate_pickup_template("cut_meat")
