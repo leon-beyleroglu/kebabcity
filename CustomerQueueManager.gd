@@ -11,9 +11,13 @@ var _started := false
 
 @onready var customer_spawn_point: Marker3D = $CustomerSpawnPoint
 @onready var customer_exit_point: Marker3D = $CustomerExitPoint
+@onready var order_note_ui: CanvasLayer = %OrderNoteUI
+@onready var order_note_header: Label = %OrderNoteHeader
+@onready var order_note_ingredients: Label = %OrderNoteIngredients
 
 
 func _ready() -> void:
+	_hide_order_note()
 	_queue_slots = [
 		$QueueSlot_0 as Marker3D,
 		$QueueSlot_1 as Marker3D,
@@ -37,6 +41,7 @@ func _initialize_queue() -> void:
 func customer_order_completed(customer: CustomerNPC) -> void:
 	if customers.is_empty() or customers[0] != customer:
 		return
+	_hide_order_note()
 	customers.pop_front()
 	customer.begin_exit(customer_exit_point)
 	for index in customers.size():
@@ -58,6 +63,7 @@ func _spawn_customer(scene_index: int) -> CustomerNPC:
 	customer.queue_managed = true
 	add_child(customer)
 	customers.append(customer)
+	customer.order_generated.connect(_show_order_note.bind(customer))
 	var assigned_index := customers.size() - 1
 	customer.configure_for_queue(
 		self,
@@ -67,3 +73,19 @@ func _spawn_customer(scene_index: int) -> CustomerNPC:
 		customer_exit_point
 	)
 	return customer
+
+
+func _show_order_note(ingredients: Array[String], customer: CustomerNPC) -> void:
+	if customers.is_empty() or customers[0] != customer or customer.queue_index != 0:
+		return
+	var lines: Array[String] = []
+	for ingredient: String in ingredients:
+		lines.append("• %s" % CustomerNPC.INGREDIENT_LABELS.get(ingredient, ingredient.capitalize()))
+	order_note_header.text = "Bestellung · %s" % CustomerNPC.VARIANT_NAMES[customer.customer_variant]
+	order_note_ingredients.text = "\n".join(lines)
+	order_note_ui.visible = true
+
+
+func _hide_order_note() -> void:
+	order_note_ingredients.text = ""
+	order_note_ui.visible = false

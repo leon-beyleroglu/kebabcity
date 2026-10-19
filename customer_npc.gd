@@ -207,9 +207,10 @@ func _arrive_at_queue_slot() -> void:
 func _activate_front_order() -> void:
 	state = CustomerState.ORDERING
 	order_active = true
-	order_display.visible = true
+	order_display.visible = false
 	rejection_label.visible = false
 	set_meta("accepts_finished_durum", true)
+	order_generated.emit(requested_ingredients.duplicate())
 
 
 func _generate_random_order() -> void:
@@ -228,7 +229,6 @@ func _generate_random_order() -> void:
 	order_display.visible = false
 	happy_display.visible = false
 	rejection_label.visible = false
-	order_generated.emit(requested_ingredients.duplicate())
 
 
 func _format_order_text() -> String:

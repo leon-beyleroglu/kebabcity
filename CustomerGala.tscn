@@ -199,6 +199,7 @@ position = Vector3(0, -0.77, -0.09)
 mesh = SubResource("MeshShoe")
 
 [node name="OrderDisplay" type="Node3D" parent="."]
+visible = false
 position = Vector3(0, 2.96, 0)
 scale = Vector3(0.78, 0.78, 0.78)
 
