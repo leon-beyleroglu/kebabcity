@@ -511,110 +511,6 @@ tonemap_mode = 3
 radius = 0.6
 height = 2.356006
 
-[sub_resource type="StandardMaterial3D" id="MatChefSleeve"]
-resource_name = "Chef Sleeve White Fabric"
-albedo_color = Color(0.92, 0.9, 0.84, 1)
-roughness = 0.88
-
-[sub_resource type="CylinderMesh" id="MeshFirstPersonSleeve"]
-top_radius = 0.13
-bottom_radius = 0.105
-height = 0.292
-radial_segments = 24
-
-[sub_resource type="CylinderMesh" id="MeshFirstPersonRolledCuff"]
-top_radius = 0.122
-bottom_radius = 0.112
-height = 0.09
-radial_segments = 24
-rings = 3
-
-[sub_resource type="FastNoiseLite" id="NoiseFirstPersonSkin"]
-seed = 731
-frequency = 0.18
-fractal_octaves = 3
-fractal_gain = 0.42
-
-[sub_resource type="NoiseTexture2D" id="TextureFirstPersonSkinNormal"]
-width = 256
-height = 256
-noise = SubResource("NoiseFirstPersonSkin")
-seamless = true
-as_normal_map = true
-bump_strength = 0.7
-
-[sub_resource type="StandardMaterial3D" id="MatFirstPersonSkin"]
-resource_name = "Warm Human Skin - First Person PBR"
-albedo_color = Color(0.76, 0.49, 0.34, 1)
-metallic_specular = 0.34
-roughness = 0.6
-normal_enabled = true
-normal_scale = 0.28
-normal_texture = SubResource("TextureFirstPersonSkinNormal")
-subsurf_scatter_enabled = true
-subsurf_scatter_strength = 0.22
-subsurf_scatter_skin_mode = true
-subsurf_scatter_transmittance_enabled = true
-subsurf_scatter_transmittance_depth = 0.42
-subsurf_scatter_transmittance_boost = 0.16
-
-[sub_resource type="CylinderMesh" id="MeshFirstPersonForearm"]
-top_radius = 0.09
-bottom_radius = 0.06
-height = 0.377
-radial_segments = 24
-rings = 5
-
-[sub_resource type="SphereMesh" id="MeshFirstPersonPalm"]
-radial_segments = 32
-rings = 18
-
-[sub_resource type="SphereMesh" id="MeshFirstPersonPalmPad"]
-radial_segments = 28
-rings = 16
-
-[sub_resource type="SphereMesh" id="MeshFirstPersonKnuckle"]
-radial_segments = 20
-rings = 12
-
-[sub_resource type="CapsuleMesh" id="MeshFirstPersonThumbProximal"]
-radius = 0.027
-height = 0.082
-radial_segments = 20
-
-[sub_resource type="CapsuleMesh" id="MeshFirstPersonThumbDistal"]
-radius = 0.023
-height = 0.066
-radial_segments = 20
-
-[sub_resource type="StandardMaterial3D" id="MatFirstPersonNail"]
-resource_name = "Natural Fingernail"
-albedo_color = Color(0.86, 0.62, 0.52, 1)
-metallic_specular = 0.48
-roughness = 0.42
-clearcoat_enabled = true
-clearcoat = 0.12
-clearcoat_roughness = 0.2
-
-[sub_resource type="SphereMesh" id="MeshFirstPersonNail"]
-radial_segments = 20
-rings = 10
-
-[sub_resource type="CapsuleMesh" id="MeshFirstPersonFingerProximal"]
-radius = 0.023
-height = 0.086
-radial_segments = 20
-
-[sub_resource type="CapsuleMesh" id="MeshFirstPersonFingerMiddle"]
-radius = 0.0205
-height = 0.068
-radial_segments = 20
-
-[sub_resource type="CapsuleMesh" id="MeshFirstPersonFingerDistal"]
-radius = 0.0185
-height = 0.058
-radial_segments = 20
-
 [sub_resource type="StandardMaterial3D" id="MatSleeve"]
 albedo_color = Color(0.045, 0.12, 0.22, 1)
 roughness = 0.76
@@ -2156,7 +2052,7 @@ omni_attenuation = 1.35
 [node name="Player" type="CharacterBody3D" parent="." unique_id=317042492]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.4866173, 4.2)
 script = ExtResource("1_player")
-hand_slot = NodePath("Camera3D/ArmsHolder/RightArm/Hand/HoldSocket")
+hand_slot = NodePath("Camera3D/HoldSocket")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Player" unique_id=966143708]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0021178722, -0.05583024, 0.0005812645)
@@ -2168,471 +2064,9 @@ current = true
 
 [node name="ArmsHolder" type="Node3D" parent="Player/Camera3D" unique_id=1693876997]
 
-[node name="LeftArm" type="Node3D" parent="Player/Camera3D/ArmsHolder" unique_id=1887508880]
-transform = Transform3D(1, 0, 0, 0, 0.9961947, -0.08715574, 0, 0.08715574, 0.9961947, 0, -0.1757524, -0.14793253)
-
-[node name="RolledSleeve" type="MeshInstance3D" parent="Player/Camera3D/ArmsHolder/LeftArm" unique_id=1994411408]
-transform = Transform3D(0.7732389, 0.30797377, 0.5543047, -0.30797368, -0.5817279, 0.75282454, 0.5543047, -0.75282437, -0.35496688, -0.475, -0.47686434, -0.21683574)
-material_override = SubResource("MatChefSleeve")
-cast_shadow = 0
-mesh = SubResource("MeshFirstPersonSleeve")
-
-[node name="RolledCuff" type="MeshInstance3D" parent="Player/Camera3D/ArmsHolder/LeftArm" unique_id=441092632]
-transform = Transform3D(0.7732389, 0.30797377, 0.5543047, -0.30797368, -0.5817279, 0.75282454, 0.5543047, -0.75282437, -0.35496688, -0.425, -0.3768642, -0.34183574)
-material_override = SubResource("MatChefSleeve")
-cast_shadow = 0
-mesh = SubResource("MeshFirstPersonRolledCuff")
-
-[node name="Forearm" type="MeshInstance3D" parent="Player/Camera3D/ArmsHolder/LeftArm" unique_id=1518333768]
-transform = Transform3D(0.7357451, 0.3715215, 0.56626046, -0.6617936, 0.21673289, 0.7176741, 0.14390403, -0.9027727, 0.40533072, -0.36, -0.4082234, -0.47683597)
-material_override = SubResource("MatFirstPersonSkin")
-cast_shadow = 0
-mesh = SubResource("MeshFirstPersonForearm")
-
-[node name="Hand" type="Node3D" parent="Player/Camera3D/ArmsHolder/LeftArm" unique_id=1276810577]
-transform = Transform3D(0.99239427, 0.07818916, 0.09507881, 0.052156504, 0.4325493, -0.90010047, -0.11150436, 0.8982135, 0.4251814, -0.29, -0.29, -0.62)
-
-[node name="Palm" type="MeshInstance3D" parent="Player/Camera3D/ArmsHolder/LeftArm/Hand" unique_id=232484296]
-transform = Transform3D(0.17, 0, 0, 0, 0.2, 0, 0, 0, 0.065, 0, -0.09, 0)
-material_override = SubResource("MatFirstPersonSkin")
-cast_shadow = 0
-mesh = SubResource("MeshFirstPersonPalm")
-
-[node name="WristBridge" type="MeshInstance3D" parent="Player/Camera3D/ArmsHolder/LeftArm/Hand" unique_id=1255218359]
-transform = Transform3D(0.115, 0, 0, 0, 0.075, 0, 0, 0, 0.055, 0, 0.008, 0.002)
-material_override = SubResource("MatFirstPersonSkin")
-cast_shadow = 0
-mesh = SubResource("MeshFirstPersonPalmPad")
-
-[node name="ThenarPad" type="MeshInstance3D" parent="Player/Camera3D/ArmsHolder/LeftArm/Hand" unique_id=1762327197]
-transform = Transform3D(0.07346784, 0.013766903, 0, -0.00883037, 0.11380784, -0.0035162463, -0.0007079405, 0.009124099, 0.043859277, 0.053, -0.075, 0.028)
-material_override = SubResource("MatFirstPersonSkin")
-cast_shadow = 0
-mesh = SubResource("MeshFirstPersonPalmPad")
-
-[node name="HypothenarPad" type="MeshInstance3D" parent="Player/Camera3D/ArmsHolder/LeftArm/Hand" unique_id=668795481]
-transform = Transform3D(0.051833693, -0.008790616, 0, 0.004148086, 0.109450884, -0.002278632, 0.00024918426, 0.0065749446, 0.037931617, -0.056, -0.105, 0.025)
-material_override = SubResource("MatFirstPersonSkin")
-cast_shadow = 0
-mesh = SubResource("MeshFirstPersonPalmPad")
-
-[node name="Knuckles" type="Node3D" parent="Player/Camera3D/ArmsHolder/LeftArm/Hand" unique_id=761388462]
-
-[node name="IndexKnuckle" type="MeshInstance3D" parent="Player/Camera3D/ArmsHolder/LeftArm/Hand/Knuckles" unique_id=1109244613]
-transform = Transform3D(0.046, 0, 0, 0, 0.037, 0, 0, 0, 0.041, 0.058, -0.172, -0.013)
-material_override = SubResource("MatFirstPersonSkin")
-cast_shadow = 0
-mesh = SubResource("MeshFirstPersonKnuckle")
-
-[node name="MiddleKnuckle" type="MeshInstance3D" parent="Player/Camera3D/ArmsHolder/LeftArm/Hand/Knuckles" unique_id=1260927333]
-transform = Transform3D(0.048, 0, 0, 0, 0.04, 0, 0, 0, 0.043, 0.019, -0.181, -0.015)
-material_override = SubResource("MatFirstPersonSkin")
-cast_shadow = 0
-mesh = SubResource("MeshFirstPersonKnuckle")
-
-[node name="RingKnuckle" type="MeshInstance3D" parent="Player/Camera3D/ArmsHolder/LeftArm/Hand/Knuckles" unique_id=631777961]
-transform = Transform3D(0.045, 0, 0, 0, 0.037, 0, 0, 0, 0.041, -0.021, -0.177, -0.014)
-material_override = SubResource("MatFirstPersonSkin")
-cast_shadow = 0
-mesh = SubResource("MeshFirstPersonKnuckle")
-
-[node name="LittleKnuckle" type="MeshInstance3D" parent="Player/Camera3D/ArmsHolder/LeftArm/Hand/Knuckles" unique_id=1119127244]
-transform = Transform3D(0.038, 0, 0, 0, 0.032, 0, 0, 0, 0.035, -0.059, -0.16, -0.01)
-material_override = SubResource("MatFirstPersonSkin")
-cast_shadow = 0
-mesh = SubResource("MeshFirstPersonKnuckle")
-
-[node name="ThumbPivot" type="Node3D" parent="Player/Camera3D/ArmsHolder/LeftArm/Hand" unique_id=1630500079]
-transform = Transform3D(0.6907284, -0.7134582, -0.11777809, 0.69191694, 0.6994278, -0.17902958, 0.21010739, 0.042168163, 0.9767685, 0.069, -0.052, 0.004)
-
-[node name="Proximal" type="MeshInstance3D" parent="Player/Camera3D/ArmsHolder/LeftArm/Hand/ThumbPivot" unique_id=168337579]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.041, 0)
-material_override = SubResource("MatFirstPersonSkin")
-cast_shadow = 0
-mesh = SubResource("MeshFirstPersonThumbProximal")
-
-[node name="DistalPivot" type="Node3D" parent="Player/Camera3D/ArmsHolder/LeftArm/Hand/ThumbPivot" unique_id=2015236707]
-transform = Transform3D(0.98722726, 0.15931821, 0, -0.14547169, 0.90142626, -0.40776044, -0.06496366, 0.40255222, 0.9130889, 0, -0.073, 0)
-
-[node name="Distal" type="MeshInstance3D" parent="Player/Camera3D/ArmsHolder/LeftArm/Hand/ThumbPivot/DistalPivot" unique_id=253431557]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.032, 0)
-material_override = SubResource("MatFirstPersonSkin")
-cast_shadow = 0
-mesh = SubResource("MeshFirstPersonThumbDistal")
-
-[node name="Nail" type="MeshInstance3D" parent="Player/Camera3D/ArmsHolder/LeftArm/Hand/ThumbPivot/DistalPivot" unique_id=716739861]
-transform = Transform3D(0.034, 0, 0, 0, 0.041697964, 0.0010774098, 0, -0.0050279126, 0.008935277, 0, -0.039, -0.019)
-material_override = SubResource("MatFirstPersonNail")
-cast_shadow = 0
-mesh = SubResource("MeshFirstPersonNail")
-
-[node name="IndexFinger" type="Node3D" parent="Player/Camera3D/ArmsHolder/LeftArm/Hand" unique_id=43289555]
-transform = Transform3D(0.9989877, -0.044984818, 0, 0.044760082, 0.9939969, -0.09983342, 0.0044909883, 0.099732354, 0.9950042, 0.058, -0.17, 0)
-
-[node name="Proximal" type="MeshInstance3D" parent="Player/Camera3D/ArmsHolder/LeftArm/Hand/IndexFinger" unique_id=1588613513]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.042, 0)
-material_override = SubResource("MatFirstPersonSkin")
-cast_shadow = 0
-mesh = SubResource("MeshFirstPersonFingerProximal")
-
-[node name="MiddleJoint" type="Node3D" parent="Player/Camera3D/ArmsHolder/LeftArm/Hand/IndexFinger" unique_id=243501547]
-transform = Transform3D(1, 0, 0, 0, 0.9130889, -0.40776044, 0, 0.40776044, 0.9130889, 0, -0.077, 0)
-
-[node name="Middle" type="MeshInstance3D" parent="Player/Camera3D/ArmsHolder/LeftArm/Hand/IndexFinger/MiddleJoint" unique_id=1073283636]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.033, 0)
-material_override = SubResource("MatFirstPersonSkin")
-cast_shadow = 0
-mesh = SubResource("MeshFirstPersonFingerMiddle")
-
-[node name="DistalJoint" type="Node3D" parent="Player/Camera3D/ArmsHolder/LeftArm/Hand/IndexFinger/MiddleJoint" unique_id=521319468]
-transform = Transform3D(1, 0, 0, 0, 0.8869949, -0.46177918, 0, 0.46177918, 0.8869949, 0, -0.06, 0)
-
-[node name="Distal" type="MeshInstance3D" parent="Player/Camera3D/ArmsHolder/LeftArm/Hand/IndexFinger/MiddleJoint/DistalJoint" unique_id=625841298]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.028, 0)
-material_override = SubResource("MatFirstPersonSkin")
-cast_shadow = 0
-mesh = SubResource("MeshFirstPersonFingerDistal")
-
-[node name="Nail" type="MeshInstance3D" parent="Player/Camera3D/ArmsHolder/LeftArm/Hand/IndexFinger/MiddleJoint/DistalJoint" unique_id=566030672]
-transform = Transform3D(0.027, 0, 0, 0, 0.03465756, 0.0009768018, 0, -0.0048840092, 0.006931512, 0, -0.034, -0.016)
-material_override = SubResource("MatFirstPersonNail")
-cast_shadow = 0
-mesh = SubResource("MeshFirstPersonNail")
-
-[node name="MiddleFinger" type="Node3D" parent="Player/Camera3D/ArmsHolder/LeftArm/Hand" unique_id=804047679]
-transform = Transform3D(0.99995, -0.009999833, 0, 0.009901995, 0.9901665, -0.13954312, 0.0013954078, 0.13953614, 0.990216, 0.019, -0.178, 0)
-
-[node name="Proximal" type="MeshInstance3D" parent="Player/Camera3D/ArmsHolder/LeftArm/Hand/MiddleFinger" unique_id=832898841]
-transform = Transform3D(1.04, 0, 0, 0, 1.1, 0, 0, 0, 1.04, 0, -0.046, 0)
-material_override = SubResource("MatFirstPersonSkin")
-cast_shadow = 0
-mesh = SubResource("MeshFirstPersonFingerProximal")
-
-[node name="MiddleJoint" type="Node3D" parent="Player/Camera3D/ArmsHolder/LeftArm/Hand/MiddleFinger" unique_id=1359464044]
-transform = Transform3D(1, 0, 0, 0, 0.8869949, -0.46177918, 0, 0.46177918, 0.8869949, 0, -0.084, 0)
-
-[node name="Middle" type="MeshInstance3D" parent="Player/Camera3D/ArmsHolder/LeftArm/Hand/MiddleFinger/MiddleJoint" unique_id=2065617171]
-transform = Transform3D(1.03, 0, 0, 0, 1.08, 0, 0, 0, 1.03, 0, -0.036, 0)
-material_override = SubResource("MatFirstPersonSkin")
-cast_shadow = 0
-mesh = SubResource("MeshFirstPersonFingerMiddle")
-
-[node name="DistalJoint" type="Node3D" parent="Player/Camera3D/ArmsHolder/LeftArm/Hand/MiddleFinger/MiddleJoint" unique_id=1666208422]
-transform = Transform3D(1, 0, 0, 0, 0.8678192, -0.4968801, 0, 0.4968801, 0.8678192, 0, -0.064, 0)
-
-[node name="Distal" type="MeshInstance3D" parent="Player/Camera3D/ArmsHolder/LeftArm/Hand/MiddleFinger/MiddleJoint/DistalJoint" unique_id=1242374303]
-transform = Transform3D(1.02, 0, 0, 0, 1.08, 0, 0, 0, 1.02, 0, -0.03, 0)
-material_override = SubResource("MatFirstPersonSkin")
-cast_shadow = 0
-mesh = SubResource("MeshFirstPersonFingerDistal")
-
-[node name="Nail" type="MeshInstance3D" parent="Player/Camera3D/ArmsHolder/LeftArm/Hand/MiddleFinger/MiddleJoint/DistalJoint" unique_id=606035621]
-transform = Transform3D(0.028, 0, 0, 0, 0.03663799, 0.0009768018, 0, -0.0051630954, 0.006931512, 0, -0.037, -0.016)
-material_override = SubResource("MatFirstPersonNail")
-cast_shadow = 0
-mesh = SubResource("MeshFirstPersonNail")
-
-[node name="RingFinger" type="Node3D" parent="Player/Camera3D/ArmsHolder/LeftArm/Hand" unique_id=555757969]
-transform = Transform3D(0.99938756, 0.034992855, 0, -0.0344275, 0.98324114, -0.17902958, -0.0062647564, 0.17891994, 0.9838437, -0.021, -0.175, 0)
-
-[node name="Proximal" type="MeshInstance3D" parent="Player/Camera3D/ArmsHolder/LeftArm/Hand/RingFinger" unique_id=1269105224]
-transform = Transform3D(0.97, 0, 0, 0, 1, 0, 0, 0, 0.97, 0, -0.042, 0)
-material_override = SubResource("MatFirstPersonSkin")
-cast_shadow = 0
-mesh = SubResource("MeshFirstPersonFingerProximal")
-
-[node name="MiddleJoint" type="Node3D" parent="Player/Camera3D/ArmsHolder/LeftArm/Hand/RingFinger" unique_id=2050426646]
-transform = Transform3D(1, 0, 0, 0, 0.8577087, -0.514136, 0, 0.514136, 0.8577087, 0, -0.077, 0)
-
-[node name="Middle" type="MeshInstance3D" parent="Player/Camera3D/ArmsHolder/LeftArm/Hand/RingFinger/MiddleJoint" unique_id=1394059908]
-transform = Transform3D(0.96, 0, 0, 0, 1, 0, 0, 0, 0.96, 0, -0.033, 0)
-material_override = SubResource("MatFirstPersonSkin")
-cast_shadow = 0
-mesh = SubResource("MeshFirstPersonFingerMiddle")
-
-[node name="DistalJoint" type="Node3D" parent="Player/Camera3D/ArmsHolder/LeftArm/Hand/RingFinger/MiddleJoint" unique_id=1046795608]
-transform = Transform3D(1, 0, 0, 0, 0.8472551, -0.5311862, 0, 0.5311862, 0.8472551, 0, -0.06, 0)
-
-[node name="Distal" type="MeshInstance3D" parent="Player/Camera3D/ArmsHolder/LeftArm/Hand/RingFinger/MiddleJoint/DistalJoint" unique_id=781175697]
-transform = Transform3D(0.95, 0, 0, 0, 0.96, 0, 0, 0, 0.95, 0, -0.027, 0)
-material_override = SubResource("MatFirstPersonSkin")
-cast_shadow = 0
-mesh = SubResource("MeshFirstPersonFingerDistal")
-
-[node name="Nail" type="MeshInstance3D" parent="Player/Camera3D/ArmsHolder/LeftArm/Hand/RingFinger/MiddleJoint/DistalJoint" unique_id=1864233329]
-transform = Transform3D(0.026, 0, 0, 0, 0.033667345, 0.0009768018, 0, -0.0047444664, 0.006931512, 0, -0.033, -0.0155)
-material_override = SubResource("MatFirstPersonNail")
-cast_shadow = 0
-mesh = SubResource("MeshFirstPersonNail")
-
-[node name="LittleFinger" type="Node3D" parent="Player/Camera3D/ArmsHolder/LeftArm/Hand" unique_id=1248954317]
-transform = Transform3D(0.9959527, 0.08987855, 0, -0.08771225, 0.9719477, -0.21822962, -0.019614162, 0.21734639, 0.97589743, -0.059, -0.158, 0.002)
-
-[node name="Proximal" type="MeshInstance3D" parent="Player/Camera3D/ArmsHolder/LeftArm/Hand/LittleFinger" unique_id=1086547920]
-transform = Transform3D(0.79, 0, 0, 0, 0.8, 0, 0, 0, 0.79, 0, -0.034, 0)
-material_override = SubResource("MatFirstPersonSkin")
-cast_shadow = 0
-mesh = SubResource("MeshFirstPersonFingerProximal")
-
-[node name="MiddleJoint" type="Node3D" parent="Player/Camera3D/ArmsHolder/LeftArm/Hand/LittleFinger" unique_id=1844926178]
-transform = Transform3D(1, 0, 0, 0, 0.8138785, -0.58103514, 0, 0.58103514, 0.8138785, 0, -0.061, 0)
-
-[node name="Middle" type="MeshInstance3D" parent="Player/Camera3D/ArmsHolder/LeftArm/Hand/LittleFinger/MiddleJoint" unique_id=1143366884]
-transform = Transform3D(0.78, 0, 0, 0, 0.78, 0, 0, 0, 0.78, 0, -0.027, 0)
-material_override = SubResource("MatFirstPersonSkin")
-cast_shadow = 0
-mesh = SubResource("MeshFirstPersonFingerMiddle")
-
-[node name="DistalJoint" type="Node3D" parent="Player/Camera3D/ArmsHolder/LeftArm/Hand/LittleFinger/MiddleJoint" unique_id=1567844472]
-transform = Transform3D(1, 0, 0, 0, 0.8253356, -0.5646425, 0, 0.5646425, 0.8253356, 0, -0.048, 0)
-
-[node name="Distal" type="MeshInstance3D" parent="Player/Camera3D/ArmsHolder/LeftArm/Hand/LittleFinger/MiddleJoint/DistalJoint" unique_id=1788881039]
-transform = Transform3D(0.76, 0, 0, 0, 0.76, 0, 0, 0, 0.76, 0, -0.022, 0)
-material_override = SubResource("MatFirstPersonSkin")
-cast_shadow = 0
-mesh = SubResource("MeshFirstPersonFingerDistal")
-
-[node name="Nail" type="MeshInstance3D" parent="Player/Camera3D/ArmsHolder/LeftArm/Hand/LittleFinger/MiddleJoint/DistalJoint" unique_id=1334557046]
-transform = Transform3D(0.021, 0, 0, 0, 0.027726049, 0.0008372587, 0, -0.0039072074, 0.005941296, 0, -0.027, -0.0125)
-material_override = SubResource("MatFirstPersonNail")
-cast_shadow = 0
-mesh = SubResource("MeshFirstPersonNail")
-
-[node name="RightArm" type="Node3D" parent="Player/Camera3D/ArmsHolder" unique_id=1054031207]
-transform = Transform3D(1, 0, 0, 0, 0.9961947, -0.08715574, 0, 0.08715574, 0.9961947, 0, -0.1757524, -0.14793253)
-
-[node name="RolledSleeve" type="MeshInstance3D" parent="Player/Camera3D/ArmsHolder/RightArm" unique_id=995933237]
-transform = Transform3D(0.773239, -0.3079737, -0.5543047, 0.30797374, -0.58172804, 0.75282454, -0.5543047, -0.75282454, -0.354967, 0.475, -0.47686434, -0.21683574)
-material_override = SubResource("MatChefSleeve")
-cast_shadow = 0
-mesh = SubResource("MeshFirstPersonSleeve")
-
-[node name="RolledCuff" type="MeshInstance3D" parent="Player/Camera3D/ArmsHolder/RightArm" unique_id=984100297]
-transform = Transform3D(0.773239, -0.3079737, -0.5543047, 0.30797374, -0.58172804, 0.75282454, -0.5543047, -0.75282454, -0.354967, 0.425, -0.3768642, -0.34183574)
-material_override = SubResource("MatChefSleeve")
-cast_shadow = 0
-mesh = SubResource("MeshFirstPersonRolledCuff")
-
-[node name="Forearm" type="MeshInstance3D" parent="Player/Camera3D/ArmsHolder/RightArm" unique_id=1374414655]
-transform = Transform3D(0.7357451, -0.37152138, -0.5662606, 0.66179365, 0.21673295, 0.717674, -0.14390402, -0.9027727, 0.40533072, 0.36, -0.4082234, -0.47683597)
-material_override = SubResource("MatFirstPersonSkin")
-cast_shadow = 0
-mesh = SubResource("MeshFirstPersonForearm")
-
-[node name="Hand" type="Node3D" parent="Player/Camera3D/ArmsHolder/RightArm" unique_id=1062072309]
-transform = Transform3D(0.984583, -0.0951412, -0.146732, -0.087984, 0.475421, -0.87531, 0.151126, 0.874562, 0.460626, 0.305, -0.315, -0.595)
-metadata/default_pose = "natural_supporting_cup"
-
-[node name="Palm" type="MeshInstance3D" parent="Player/Camera3D/ArmsHolder/RightArm/Hand" unique_id=2136368393]
-transform = Transform3D(0.17, 0, 0, 0, 0.2, 0, 0, 0, 0.065, 0, -0.09, 0)
-material_override = SubResource("MatFirstPersonSkin")
-cast_shadow = 0
-mesh = SubResource("MeshFirstPersonPalm")
-
-[node name="WristBridge" type="MeshInstance3D" parent="Player/Camera3D/ArmsHolder/RightArm/Hand" unique_id=1953042378]
-transform = Transform3D(0.115, 0, 0, 0, 0.075, 0, 0, 0, 0.055, 0, 0.008, 0.002)
-material_override = SubResource("MatFirstPersonSkin")
-cast_shadow = 0
-mesh = SubResource("MeshFirstPersonPalmPad")
-
-[node name="ThenarPad" type="MeshInstance3D" parent="Player/Camera3D/ArmsHolder/RightArm/Hand" unique_id=1074303073]
-transform = Transform3D(0.07346784, -0.013766903, 0, 0.00883037, 0.11380784, -0.0035162463, 0.0007079405, 0.009124099, 0.043859277, -0.053, -0.075, 0.028)
-material_override = SubResource("MatFirstPersonSkin")
-cast_shadow = 0
-mesh = SubResource("MeshFirstPersonPalmPad")
-
-[node name="HypothenarPad" type="MeshInstance3D" parent="Player/Camera3D/ArmsHolder/RightArm/Hand" unique_id=361842199]
-transform = Transform3D(0.051833693, 0.008790616, 0, -0.004148086, 0.109450884, -0.002278632, -0.00024918426, 0.0065749446, 0.037931617, 0.056, -0.105, 0.025)
-material_override = SubResource("MatFirstPersonSkin")
-cast_shadow = 0
-mesh = SubResource("MeshFirstPersonPalmPad")
-
-[node name="Knuckles" type="Node3D" parent="Player/Camera3D/ArmsHolder/RightArm/Hand" unique_id=1706334363]
-
-[node name="IndexKnuckle" type="MeshInstance3D" parent="Player/Camera3D/ArmsHolder/RightArm/Hand/Knuckles" unique_id=1521314171]
-transform = Transform3D(0.046, 0, 0, 0, 0.037, 0, 0, 0, 0.041, -0.058, -0.172, -0.013)
-material_override = SubResource("MatFirstPersonSkin")
-cast_shadow = 0
-mesh = SubResource("MeshFirstPersonKnuckle")
-
-[node name="MiddleKnuckle" type="MeshInstance3D" parent="Player/Camera3D/ArmsHolder/RightArm/Hand/Knuckles" unique_id=2015293952]
-transform = Transform3D(0.048, 0, 0, 0, 0.04, 0, 0, 0, 0.043, -0.019, -0.181, -0.015)
-material_override = SubResource("MatFirstPersonSkin")
-cast_shadow = 0
-mesh = SubResource("MeshFirstPersonKnuckle")
-
-[node name="RingKnuckle" type="MeshInstance3D" parent="Player/Camera3D/ArmsHolder/RightArm/Hand/Knuckles" unique_id=1020915537]
-transform = Transform3D(0.045, 0, 0, 0, 0.037, 0, 0, 0, 0.041, 0.021, -0.177, -0.014)
-material_override = SubResource("MatFirstPersonSkin")
-cast_shadow = 0
-mesh = SubResource("MeshFirstPersonKnuckle")
-
-[node name="LittleKnuckle" type="MeshInstance3D" parent="Player/Camera3D/ArmsHolder/RightArm/Hand/Knuckles" unique_id=1128589166]
-transform = Transform3D(0.038, 0, 0, 0, 0.032, 0, 0, 0, 0.035, 0.059, -0.16, -0.01)
-material_override = SubResource("MatFirstPersonSkin")
-cast_shadow = 0
-mesh = SubResource("MeshFirstPersonKnuckle")
-
-[node name="ThumbPivot" type="Node3D" parent="Player/Camera3D/ArmsHolder/RightArm/Hand" unique_id=975370843]
-transform = Transform3D(0.6907284, 0.7134582, 0.11777809, -0.69191694, 0.6994278, -0.17902958, -0.21010739, 0.042168163, 0.9767685, -0.069, -0.052, 0.004)
-
-[node name="Proximal" type="MeshInstance3D" parent="Player/Camera3D/ArmsHolder/RightArm/Hand/ThumbPivot" unique_id=320404789]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.041, 0)
-material_override = SubResource("MatFirstPersonSkin")
-cast_shadow = 0
-mesh = SubResource("MeshFirstPersonThumbProximal")
-
-[node name="DistalPivot" type="Node3D" parent="Player/Camera3D/ArmsHolder/RightArm/Hand/ThumbPivot" unique_id=526902563]
-transform = Transform3D(0.98722726, -0.15931821, 0, 0.14547169, 0.90142626, -0.40776044, 0.06496366, 0.40255222, 0.9130889, 0, -0.073, 0)
-
-[node name="Distal" type="MeshInstance3D" parent="Player/Camera3D/ArmsHolder/RightArm/Hand/ThumbPivot/DistalPivot" unique_id=1059916615]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.032, 0)
-material_override = SubResource("MatFirstPersonSkin")
-cast_shadow = 0
-mesh = SubResource("MeshFirstPersonThumbDistal")
-
-[node name="Nail" type="MeshInstance3D" parent="Player/Camera3D/ArmsHolder/RightArm/Hand/ThumbPivot/DistalPivot" unique_id=1843288825]
-transform = Transform3D(0.034, 0, 0, 0, 0.041697964, 0.0010774098, 0, -0.0050279126, 0.008935277, 0, -0.039, -0.019)
-material_override = SubResource("MatFirstPersonNail")
-cast_shadow = 0
-mesh = SubResource("MeshFirstPersonNail")
-
-[node name="IndexFinger" type="Node3D" parent="Player/Camera3D/ArmsHolder/RightArm/Hand" unique_id=2084044092]
-transform = Transform3D(0.9989877, 0.044984818, 0, -0.044760082, 0.9939969, -0.09983342, -0.0044909883, 0.099732354, 0.9950042, -0.058, -0.17, 0)
-
-[node name="Proximal" type="MeshInstance3D" parent="Player/Camera3D/ArmsHolder/RightArm/Hand/IndexFinger" unique_id=397773016]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.042, 0)
-material_override = SubResource("MatFirstPersonSkin")
-cast_shadow = 0
-mesh = SubResource("MeshFirstPersonFingerProximal")
-
-[node name="MiddleJoint" type="Node3D" parent="Player/Camera3D/ArmsHolder/RightArm/Hand/IndexFinger" unique_id=423766620]
-transform = Transform3D(1, 0, 0, 0, 0.9130889, -0.40776044, 0, 0.40776044, 0.9130889, 0, -0.077, 0)
-
-[node name="Middle" type="MeshInstance3D" parent="Player/Camera3D/ArmsHolder/RightArm/Hand/IndexFinger/MiddleJoint" unique_id=1337208354]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.033, 0)
-material_override = SubResource("MatFirstPersonSkin")
-cast_shadow = 0
-mesh = SubResource("MeshFirstPersonFingerMiddle")
-
-[node name="DistalJoint" type="Node3D" parent="Player/Camera3D/ArmsHolder/RightArm/Hand/IndexFinger/MiddleJoint" unique_id=1833589187]
-transform = Transform3D(1, 0, 0, 0, 0.8869949, -0.46177918, 0, 0.46177918, 0.8869949, 0, -0.06, 0)
-
-[node name="Distal" type="MeshInstance3D" parent="Player/Camera3D/ArmsHolder/RightArm/Hand/IndexFinger/MiddleJoint/DistalJoint" unique_id=761941967]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.028, 0)
-material_override = SubResource("MatFirstPersonSkin")
-cast_shadow = 0
-mesh = SubResource("MeshFirstPersonFingerDistal")
-
-[node name="Nail" type="MeshInstance3D" parent="Player/Camera3D/ArmsHolder/RightArm/Hand/IndexFinger/MiddleJoint/DistalJoint" unique_id=266584921]
-transform = Transform3D(0.027, 0, 0, 0, 0.03465756, 0.0009768018, 0, -0.0048840092, 0.006931512, 0, -0.034, -0.016)
-material_override = SubResource("MatFirstPersonNail")
-cast_shadow = 0
-mesh = SubResource("MeshFirstPersonNail")
-
-[node name="MiddleFinger" type="Node3D" parent="Player/Camera3D/ArmsHolder/RightArm/Hand" unique_id=2104286075]
-transform = Transform3D(0.99995, 0.009999833, 0, -0.009901995, 0.9901665, -0.13954312, -0.0013954078, 0.13953614, 0.990216, -0.019, -0.178, 0)
-
-[node name="Proximal" type="MeshInstance3D" parent="Player/Camera3D/ArmsHolder/RightArm/Hand/MiddleFinger" unique_id=1137088587]
-transform = Transform3D(1.04, 0, 0, 0, 1.1, 0, 0, 0, 1.04, 0, -0.046, 0)
-material_override = SubResource("MatFirstPersonSkin")
-cast_shadow = 0
-mesh = SubResource("MeshFirstPersonFingerProximal")
-
-[node name="MiddleJoint" type="Node3D" parent="Player/Camera3D/ArmsHolder/RightArm/Hand/MiddleFinger" unique_id=1433499713]
-transform = Transform3D(1, 0, 0, 0, 0.8869949, -0.46177918, 0, 0.46177918, 0.8869949, 0, -0.084, 0)
-
-[node name="Middle" type="MeshInstance3D" parent="Player/Camera3D/ArmsHolder/RightArm/Hand/MiddleFinger/MiddleJoint" unique_id=2046317914]
-transform = Transform3D(1.03, 0, 0, 0, 1.08, 0, 0, 0, 1.03, 0, -0.036, 0)
-material_override = SubResource("MatFirstPersonSkin")
-cast_shadow = 0
-mesh = SubResource("MeshFirstPersonFingerMiddle")
-
-[node name="DistalJoint" type="Node3D" parent="Player/Camera3D/ArmsHolder/RightArm/Hand/MiddleFinger/MiddleJoint" unique_id=821480393]
-transform = Transform3D(1, 0, 0, 0, 0.8678192, -0.4968801, 0, 0.4968801, 0.8678192, 0, -0.064, 0)
-
-[node name="Distal" type="MeshInstance3D" parent="Player/Camera3D/ArmsHolder/RightArm/Hand/MiddleFinger/MiddleJoint/DistalJoint" unique_id=1222864637]
-transform = Transform3D(1.02, 0, 0, 0, 1.08, 0, 0, 0, 1.02, 0, -0.03, 0)
-material_override = SubResource("MatFirstPersonSkin")
-cast_shadow = 0
-mesh = SubResource("MeshFirstPersonFingerDistal")
-
-[node name="Nail" type="MeshInstance3D" parent="Player/Camera3D/ArmsHolder/RightArm/Hand/MiddleFinger/MiddleJoint/DistalJoint" unique_id=673734697]
-transform = Transform3D(0.028, 0, 0, 0, 0.03663799, 0.0009768018, 0, -0.0051630954, 0.006931512, 0, -0.037, -0.016)
-material_override = SubResource("MatFirstPersonNail")
-cast_shadow = 0
-mesh = SubResource("MeshFirstPersonNail")
-
-[node name="RingFinger" type="Node3D" parent="Player/Camera3D/ArmsHolder/RightArm/Hand" unique_id=322419145]
-transform = Transform3D(0.99938756, -0.034992855, 0, 0.0344275, 0.98324114, -0.17902958, 0.0062647564, 0.17891994, 0.9838437, 0.021, -0.175, 0)
-
-[node name="Proximal" type="MeshInstance3D" parent="Player/Camera3D/ArmsHolder/RightArm/Hand/RingFinger" unique_id=1441721196]
-transform = Transform3D(0.97, 0, 0, 0, 1, 0, 0, 0, 0.97, 0, -0.042, 0)
-material_override = SubResource("MatFirstPersonSkin")
-cast_shadow = 0
-mesh = SubResource("MeshFirstPersonFingerProximal")
-
-[node name="MiddleJoint" type="Node3D" parent="Player/Camera3D/ArmsHolder/RightArm/Hand/RingFinger" unique_id=808949859]
-transform = Transform3D(1, 0, 0, 0, 0.8577087, -0.514136, 0, 0.514136, 0.8577087, 0, -0.077, 0)
-
-[node name="Middle" type="MeshInstance3D" parent="Player/Camera3D/ArmsHolder/RightArm/Hand/RingFinger/MiddleJoint" unique_id=582698860]
-transform = Transform3D(0.96, 0, 0, 0, 1, 0, 0, 0, 0.96, 0, -0.033, 0)
-material_override = SubResource("MatFirstPersonSkin")
-cast_shadow = 0
-mesh = SubResource("MeshFirstPersonFingerMiddle")
-
-[node name="DistalJoint" type="Node3D" parent="Player/Camera3D/ArmsHolder/RightArm/Hand/RingFinger/MiddleJoint" unique_id=14213937]
-transform = Transform3D(1, 0, 0, 0, 0.8472551, -0.5311862, 0, 0.5311862, 0.8472551, 0, -0.06, 0)
-
-[node name="Distal" type="MeshInstance3D" parent="Player/Camera3D/ArmsHolder/RightArm/Hand/RingFinger/MiddleJoint/DistalJoint" unique_id=146668954]
-transform = Transform3D(0.95, 0, 0, 0, 0.96, 0, 0, 0, 0.95, 0, -0.027, 0)
-material_override = SubResource("MatFirstPersonSkin")
-cast_shadow = 0
-mesh = SubResource("MeshFirstPersonFingerDistal")
-
-[node name="Nail" type="MeshInstance3D" parent="Player/Camera3D/ArmsHolder/RightArm/Hand/RingFinger/MiddleJoint/DistalJoint" unique_id=433971358]
-transform = Transform3D(0.026, 0, 0, 0, 0.033667345, 0.0009768018, 0, -0.0047444664, 0.006931512, 0, -0.033, -0.0155)
-material_override = SubResource("MatFirstPersonNail")
-cast_shadow = 0
-mesh = SubResource("MeshFirstPersonNail")
-
-[node name="LittleFinger" type="Node3D" parent="Player/Camera3D/ArmsHolder/RightArm/Hand" unique_id=1223461706]
-transform = Transform3D(0.9959527, -0.08987855, 0, 0.08771225, 0.9719477, -0.21822962, 0.019614162, 0.21734639, 0.97589743, 0.059, -0.158, 0.002)
-
-[node name="Proximal" type="MeshInstance3D" parent="Player/Camera3D/ArmsHolder/RightArm/Hand/LittleFinger" unique_id=319224055]
-transform = Transform3D(0.79, 0, 0, 0, 0.8, 0, 0, 0, 0.79, 0, -0.034, 0)
-material_override = SubResource("MatFirstPersonSkin")
-cast_shadow = 0
-mesh = SubResource("MeshFirstPersonFingerProximal")
-
-[node name="MiddleJoint" type="Node3D" parent="Player/Camera3D/ArmsHolder/RightArm/Hand/LittleFinger" unique_id=1296710282]
-transform = Transform3D(1, 0, 0, 0, 0.8138785, -0.58103514, 0, 0.58103514, 0.8138785, 0, -0.061, 0)
-
-[node name="Middle" type="MeshInstance3D" parent="Player/Camera3D/ArmsHolder/RightArm/Hand/LittleFinger/MiddleJoint" unique_id=1223642837]
-transform = Transform3D(0.78, 0, 0, 0, 0.78, 0, 0, 0, 0.78, 0, -0.027, 0)
-material_override = SubResource("MatFirstPersonSkin")
-cast_shadow = 0
-mesh = SubResource("MeshFirstPersonFingerMiddle")
-
-[node name="DistalJoint" type="Node3D" parent="Player/Camera3D/ArmsHolder/RightArm/Hand/LittleFinger/MiddleJoint" unique_id=1023581012]
-transform = Transform3D(1, 0, 0, 0, 0.8253356, -0.5646425, 0, 0.5646425, 0.8253356, 0, -0.048, 0)
-
-[node name="Distal" type="MeshInstance3D" parent="Player/Camera3D/ArmsHolder/RightArm/Hand/LittleFinger/MiddleJoint/DistalJoint" unique_id=1790735399]
-transform = Transform3D(0.76, 0, 0, 0, 0.76, 0, 0, 0, 0.76, 0, -0.022, 0)
-material_override = SubResource("MatFirstPersonSkin")
-cast_shadow = 0
-mesh = SubResource("MeshFirstPersonFingerDistal")
-
-[node name="Nail" type="MeshInstance3D" parent="Player/Camera3D/ArmsHolder/RightArm/Hand/LittleFinger/MiddleJoint/DistalJoint" unique_id=1071142268]
-transform = Transform3D(0.021, 0, 0, 0, 0.027726049, 0.0008372587, 0, -0.0039072074, 0.005941296, 0, -0.027, -0.0125)
-material_override = SubResource("MatFirstPersonNail")
-cast_shadow = 0
-mesh = SubResource("MeshFirstPersonNail")
-
-[node name="HoldSocket" type="Marker3D" parent="Player/Camera3D/ArmsHolder/RightArm/Hand" unique_id=701926472]
-transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, 0, -0.105, 0.031)
-gizmo_extents = 0.035
-metadata/contact_surface = "right_palm_skin"
+[node name="HoldSocket" type="Marker3D" parent="Player/Camera3D" unique_id=1780370269]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.2, -0.2, -0.45)
+gizmo_extents = 0.025
 
 [node name="EigenesAvatarModell" type="Node3D" parent="Player" unique_id=10809920]
 
@@ -3974,7 +3408,7 @@ mesh = SubResource("MeshCucumberCore")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
 
 [node name="TomatoPortion" type="Node3D" parent="Test Ablage/Kebab Theke/PickupTemplates" unique_id=1684903204]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.5, 0, 0)
+metadata/pivot = "bottom_y_zero"
 
 [node name="DicedTomatoPinch" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/PickupTemplates/TomatoPortion" unique_id=878238781]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.0175, 0)
@@ -3983,7 +3417,7 @@ mesh = SubResource("MeshTomatoPickupCluster")
 metadata/prep_style = "6-10 mm diced tomato with parsley"
 
 [node name="SaladPortion" type="Node3D" parent="Test Ablage/Kebab Theke/PickupTemplates" unique_id=2001642487]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.9, 0, 0)
+metadata/pivot = "bottom_y_zero"
 
 [node name="IcebergChiffonadePinch" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/PickupTemplates/SaladPortion" unique_id=420901194]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.0175, 0)
@@ -3992,7 +3426,7 @@ mesh = SubResource("MeshLettucePickupCluster")
 metadata/prep_style = "fine crinkled chiffonade"
 
 [node name="RedCabbagePortion" type="Node3D" parent="Test Ablage/Kebab Theke/PickupTemplates" unique_id=146975164]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.3, 0, 0)
+metadata/pivot = "bottom_y_zero"
 
 [node name="LilakrautPinch" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/PickupTemplates/RedCabbagePortion" unique_id=1501430732]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.015, 0)
@@ -4001,7 +3435,7 @@ mesh = SubResource("MeshCabbagePickupCluster")
 metadata/prep_style = "extra-fine marinated red cabbage shreds"
 
 [node name="OnionPortion" type="Node3D" parent="Test Ablage/Kebab Theke/PickupTemplates" unique_id=2090211702]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.9, 0, 0)
+metadata/pivot = "bottom_y_zero"
 
 [node name="SumacOnionPinch" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/PickupTemplates/OnionPortion" unique_id=946294583]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.014, 0)
@@ -4010,7 +3444,7 @@ mesh = SubResource("MeshOnionPickupCluster")
 metadata/prep_style = "finely shaved onion half-rings with sumac"
 
 [node name="CucumberPortion" type="Node3D" parent="Test Ablage/Kebab Theke/PickupTemplates" unique_id=518448186]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.3, 0, 0)
+metadata/pivot = "bottom_y_zero"
 
 [node name="DicedCucumberPinch" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/PickupTemplates/CucumberPortion" unique_id=948147706]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.016, 0)
@@ -4019,7 +3453,7 @@ mesh = SubResource("MeshCucumberPickupCluster")
 metadata/prep_style = "fine cucumber quarters and dice"
 
 [node name="GarlicSauceLadle" type="Node3D" parent="Test Ablage/Kebab Theke/PickupTemplates" unique_id=1073897130]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.5, 0, 0)
+metadata/pivot = "bottom_y_zero"
 
 [node name="Handle" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/PickupTemplates/GarlicSauceLadle" unique_id=660513941]
 transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, 0, 0.022, 0.035)
@@ -4037,7 +3471,7 @@ material_override = SubResource("MatGarlicSauce")
 mesh = SubResource("MeshSauceLadleFill")
 
 [node name="CocktailSauceLadle" type="Node3D" parent="Test Ablage/Kebab Theke/PickupTemplates" unique_id=153478830]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.1, 0, 0)
+metadata/pivot = "bottom_y_zero"
 
 [node name="Handle" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/PickupTemplates/CocktailSauceLadle" unique_id=874333115]
 transform = Transform3D(1, 0, 0, 0, 0, 1, 0, -1, 0, 0, 0.022, 0.035)
@@ -4055,7 +3489,7 @@ material_override = SubResource("MatCocktailSauce")
 mesh = SubResource("MeshSauceLadleFill")
 
 [node name="GarlicSaucePortion" type="Node3D" parent="Test Ablage/Kebab Theke/PickupTemplates" unique_id=389506297]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.5, 0, 0)
+metadata/pivot = "bottom_y_zero"
 
 [node name="SingleGarlicSauceDollop" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/PickupTemplates/GarlicSaucePortion" unique_id=1612845176]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.03, 0)
@@ -4063,7 +3497,7 @@ material_override = SubResource("MatGarlicSauce")
 mesh = SubResource("MeshSauceDollop")
 
 [node name="CocktailSaucePortion" type="Node3D" parent="Test Ablage/Kebab Theke/PickupTemplates" unique_id=1853667103]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.1, 0, 0)
+metadata/pivot = "bottom_y_zero"
 
 [node name="SingleCocktailSauceDollop" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/PickupTemplates/CocktailSaucePortion" unique_id=2092588921]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.03, 0)
@@ -4071,7 +3505,7 @@ material_override = SubResource("MatCocktailSauce")
 mesh = SubResource("MeshSauceDollop")
 
 [node name="LavashPiece" type="Node3D" parent="Test Ablage/Kebab Theke/PickupTemplates" unique_id=687064145]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.7, 0, 0)
+metadata/pivot = "bottom_y_zero"
 
 [node name="Bread" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/PickupTemplates/LavashPiece" unique_id=614911192]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.012, 0)
@@ -4094,7 +3528,7 @@ material_override = SubResource("MatLavashToast")
 mesh = SubResource("MeshLavashToastSpot")
 
 [node name="ToastedLavashTemplate" type="Node3D" parent="Test Ablage/Kebab Theke/PickupTemplates" unique_id=365508017]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.9, 0, 0)
+metadata/pivot = "bottom_y_zero"
 
 [node name="Bread" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/PickupTemplates/ToastedLavashTemplate" unique_id=843726872]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.015, 0)
@@ -4132,12 +3566,12 @@ material_override = SubResource("MatBakedLavashChar")
 mesh = SubResource("MeshLavashGrillMark")
 
 [node name="DurumAssembly" type="Area3D" parent="Test Ablage/Kebab Theke/PickupTemplates" unique_id=1614686435 groups=["durum_assembly"]]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.85, 0, 0)
 collision_layer = 0
 collision_mask = 0
 monitoring = false
 metadata/durum_assembly = true
 metadata/ingredients = []
+metadata/pivot = "bottom_y_zero"
 
 [node name="FlatBakedLavash" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/PickupTemplates/DurumAssembly" unique_id=1921441887]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 0.72, 0, 0.012, 0)
@@ -4177,7 +3611,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.085, 0)
 shape = SubResource("ShapeDurumAssembly")
 
 [node name="FinishedDurum" type="Node3D" parent="Test Ablage/Kebab Theke/PickupTemplates" unique_id=1145354638]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.65, 0.31, 0)
+metadata/pivot = "bottom_y_zero"
 
 [node name="FoilBottomHalf" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/PickupTemplates/FinishedDurum" unique_id=1816433742]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.18, 0)
@@ -4225,7 +3659,7 @@ material_override = SubResource("MatDurumFilling")
 mesh = SubResource("MeshFinishedDurumTop")
 
 [node name="MeatPortion" type="Node3D" parent="Test Ablage/Kebab Theke/PickupTemplates" unique_id=2118136433]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.3, 0, 0)
+metadata/pivot = "bottom_y_zero"
 
 [node name="SingleMeatStrip" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/PickupTemplates/MeatPortion" unique_id=1189374392]
 transform = Transform3D(0.9482213, -0.052534435, -0.19576135, 0.11777809, 0.31256592, -0.1289013, 0.29496565, 0.044075802, 0.6807804, 0, 0.045, 0)

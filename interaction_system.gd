@@ -304,7 +304,7 @@ func _unhandled_input(event: InputEvent) -> void:
 			elif held_item.item_id != "knife":
 				_place_held_on_prep(focused_prep, focus_hit_position, focus_hit_normal)
 		elif focused_item and not held_item:
-			_pickup(focused_item)
+				pick_up(focused_item)
 		elif held_item:
 			_return_held()
 		get_viewport().set_input_as_handled()
@@ -315,7 +315,8 @@ func _unhandled_input(event: InputEvent) -> void:
 		_return_held()
 		get_viewport().set_input_as_handled()
 
-func _pickup(target: Area3D) -> void:
+func pick_up(item: Node3D) -> void:
+	var target := item as Area3D
 	if held_item or not is_instance_valid(target) or target != focused_item or not target.available:
 		return
 	if target.has_meta("single_portion_source"):
@@ -385,9 +386,7 @@ func _create_durum_assembly(station: Node3D, hit_position: Vector3, hit_normal: 
 	var source_visual := baked_item.source_visual as Node3D
 	station.add_child(assembly)
 	assembly.name = "DurumAssembly"
-	var surface_normal := hit_normal.normalized() if not hit_normal.is_zero_approx() else Vector3.UP
-	var assembly_basis := Basis(Vector3.UP, randf_range(-PI, PI))
-	assembly.global_transform = Transform3D(assembly_basis, hit_position + surface_normal * 0.025)
+	assembly.global_transform = Transform3D(Basis.IDENTITY, hit_position)
 	assembly.collision_layer = INTERACTION_LAYER
 	assembly.collision_mask = 0
 	assembly.monitoring = false
@@ -422,7 +421,7 @@ func _stack_durum_visual(assembly: Area3D, item_id: String, visual: Node3D) -> b
 	visual.name = "Ingredient_%02d_%s" % [stack_index + 1, item_id.to_pascal_case()]
 	visual.position = Vector3(randf_range(-0.04, 0.04), stack_index * 0.018, randf_range(-0.04, 0.04))
 	visual.rotation = Vector3(randf_range(-0.08, 0.08), randf_range(-PI, PI), randf_range(-0.08, 0.08))
-	visual.scale = Vector3.ONE * 0.9
+	visual.scale = Vector3.ONE
 	visual.visible = true
 	ingredients.append(item_id)
 	assembly.set_meta("ingredients", ingredients)
@@ -577,9 +576,8 @@ func _apply_sauce_to_prep(station: Node3D, hit_position: Vector3, hit_normal: Ve
 	portion.global_transform = station.global_transform
 	_add_box_collider(portion, _item_collision_size(portion_id))
 	portion.configure(portion_id, portion_label, portion_visual)
-	var surface_normal := hit_normal.normalized() if not hit_normal.is_zero_approx() else Vector3.UP
-	var drop_position := hit_position + surface_normal * _placement_surface_offset(portion_visual, portion_id)
-	var drop_rotation := Vector3(0.0, randf_range(-PI, PI), 0.0)
+	var drop_position := hit_position
+	var drop_rotation := Vector3.ZERO
 	portion.reparent(station, true)
 	portion.global_position = drop_position
 	portion.global_rotation = drop_rotation
@@ -618,55 +616,45 @@ func _return_sauce_ladle() -> void:
 
 func _resolve_hold_socket() -> Marker3D:
 	if is_instance_valid(hold_socket):
+		hold_socket.transform = Transform3D(Basis.IDENTITY, Vector3(0.2, -0.2, -0.45))
 		return hold_socket
 	if is_instance_valid(camera):
-		var supporting_hand := camera.get_node_or_null("ArmsHolder/RightArm/Hand") as Node3D
-		if is_instance_valid(supporting_hand):
-			hold_socket = supporting_hand.get_node_or_null("HoldSocket") as Marker3D
+		hold_socket = camera.get_node_or_null("HoldSocket") as Marker3D
 		if not is_instance_valid(hold_socket):
 			hold_socket = Marker3D.new()
-			hold_socket.name = "RuntimeHoldSocket"
-			if is_instance_valid(supporting_hand):
-				supporting_hand.add_child(hold_socket)
-				hold_socket.position = Vector3(0.0, -0.105, 0.031)
-				hold_socket.rotation = Vector3(PI * 0.5, 0.0, 0.0)
-			else:
-				camera.add_child(hold_socket)
-				hold_socket.position = Vector3(0.315, -0.335, -0.49)
-				hold_socket.rotation = Vector3(-0.08, 0.16, 0.1)
+			hold_socket.name = "HoldSocket"
+			camera.add_child(hold_socket)
+		hold_socket.transform = Transform3D(Basis.IDENTITY, Vector3(0.2, -0.2, -0.45))
 	return hold_socket
+
 
 func _attach_held_visual(visual: Node3D) -> bool:
 	var socket := _resolve_hold_socket()
 	if not is_instance_valid(socket) or not is_instance_valid(visual):
 		return false
-	if visual.get_parent() == null:
-		socket.add_child(visual)
-	elif visual.get_parent() != socket:
-		visual.reparent(socket, false)
+	if is_instance_valid(held_item):
+		_set_collisions_enabled(held_item, false)
+	_set_collisions_enabled(visual, false)
+	if visual.get_parent() != null:
+		visual.get_parent().remove_child(visual)
+	socket.add_child(visual)
+	visual.top_level = false
 	visual.transform = Transform3D.IDENTITY
+	visual.position = Vector3.ZERO
+	visual.rotation = Vector3.ZERO
+	visual.scale = Vector3.ONE
 	visual.visible = true
-	_apply_held_item_pose(visual, held_item.item_id if is_instance_valid(held_item) else "")
 	return true
 
-func _apply_held_item_pose(visual: Node3D, item_id: String) -> void:
-	if not is_instance_valid(visual):
+
+func _set_collisions_enabled(root: Node, enabled: bool) -> void:
+	if not is_instance_valid(root):
 		return
-	visual.transform = Transform3D.IDENTITY
-	match item_id:
-		"tomato", "salad", "red_cabbage", "onion", "cucumber":
-			visual.position = Vector3(0.0, -0.002, 0.0)
-		"cut_meat":
-			visual.position = Vector3(0.0, -0.003, 0.018)
-		"garlic_sauce", "cocktail_sauce":
-			visual.position = Vector3(0.0, -0.002, 0.01)
-		"lavash", "baked_lavash", "durum_assembly":
-			visual.position = Vector3(0.0, -0.002, 0.055)
-			visual.rotation = Vector3(0.0, -0.035, 0.0)
-		"garlic_sauce_ladle", "cocktail_sauce_ladle":
-			visual.position = Vector3(0.0, -0.006, 0.0)
-		"finished_durum":
-			visual.position = Vector3(0.0, -0.004, -0.012)
+	var shape := root as CollisionShape3D
+	if shape:
+		shape.disabled = not enabled
+	for child in root.get_children():
+		_set_collisions_enabled(child, enabled)
 
 func _duplicate_pickup_template(item_id: String) -> Node3D:
 	var template := pickup_templates.get(item_id) as Node3D
@@ -695,6 +683,7 @@ func _return_held() -> void:
 		return
 	if is_instance_valid(held_visual):
 		held_visual.queue_free()
+	_set_collisions_enabled(item, true)
 	item.restore()
 	held_item = null
 	held_visual = null
@@ -724,27 +713,23 @@ func _discard_held_item() -> void:
 	_reset_cutting()
 
 
-func _place_held_on_prep(station: Node3D, hit_position: Vector3, hit_normal := Vector3.UP, offset_from_surface := true) -> void:
+func _place_held_on_prep(station: Node3D, hit_position: Vector3, _hit_normal := Vector3.UP, _offset_from_surface := true) -> void:
 	if not held_item or not is_instance_valid(held_visual) or not is_instance_valid(station):
 		return
 	var previous_visual := held_item.source_visual as Node3D
 	if is_instance_valid(previous_visual) and previous_visual != held_visual and previous_visual.get_parent() == held_item:
 		previous_visual.queue_free()
 
-	var surface_normal := hit_normal.normalized() if not hit_normal.is_zero_approx() else Vector3.UP
-	var drop_position := hit_position
-	if offset_from_surface:
-		drop_position += surface_normal * _placement_surface_offset(held_visual, held_item.item_id)
-	var drop_rotation := Vector3(0.0, randf_range(-PI, PI), 0.0)
-
+	_set_collisions_enabled(held_visual, true)
+	_set_collisions_enabled(held_item, true)
+	var drop_transform := Transform3D(Basis.IDENTITY, hit_position)
 	if held_item.get_parent() != station:
-		held_item.reparent(station, true)
-	held_item.global_position = drop_position
-	held_item.global_rotation = drop_rotation
+		held_item.reparent(station, false)
+	held_item.global_transform = drop_transform
 	if held_visual.get_parent() != station:
-		held_visual.reparent(station, true)
-	held_visual.global_position = drop_position
-	held_visual.global_rotation = drop_rotation
+		held_visual.reparent(station, false)
+	held_visual.global_transform = drop_transform
+	held_visual.scale = Vector3.ONE
 	held_visual.visible = true
 	held_item.source_visual = held_visual
 
@@ -784,32 +769,6 @@ func _place_held_on_prep(station: Node3D, hit_position: Vector3, hit_normal := V
 	_reset_cutting()
 
 
-func _visual_height(visual: Node3D, fallback_item_id: String) -> float:
-	var bounds := AABB()
-	var has_bounds := false
-	var root_mesh := visual as MeshInstance3D
-	if root_mesh and root_mesh.mesh:
-		bounds = root_mesh.get_aabb()
-		has_bounds = true
-	var visual_inverse := visual.global_transform.affine_inverse()
-	for node in visual.find_children("*", "MeshInstance3D", true, false):
-		var mesh_instance := node as MeshInstance3D
-		if not mesh_instance or not mesh_instance.mesh:
-			continue
-		var mesh_bounds: AABB = (visual_inverse * mesh_instance.global_transform) * mesh_instance.get_aabb()
-		bounds = bounds.merge(mesh_bounds) if has_bounds else mesh_bounds
-		has_bounds = true
-	if not has_bounds:
-		return _item_collision_size(fallback_item_id).y
-	return maxf(0.01, bounds.size.y * absf(visual.global_basis.get_scale().y))
-
-
-func _placement_surface_offset(visual: Node3D, item_id: String) -> float:
-	if pickup_templates.has(item_id):
-		return 0.002
-	return _visual_height(visual, item_id) * 0.5
-
-
 func _freeze_item_physics(item: Node) -> void:
 	var rigid_item := item as RigidBody3D
 	if rigid_item:
@@ -824,6 +783,7 @@ func _place_knife_on_mount(mount: Node3D) -> void:
 	var snap := mount.get_node_or_null("KnifeSnap") as Marker3D
 	if not snap:
 		return
+	_set_collisions_enabled(held_item, true)
 	if held_item.get_parent() != mount:
 		held_item.reparent(mount, true)
 	if is_instance_valid(held_item.source_visual):
@@ -881,6 +841,7 @@ func _insert_lavash_into_oven(slot_index: int) -> void:
 		return
 	var raw_item := held_item
 	var slot_visual := held_visual
+	_set_collisions_enabled(slot_visual, true)
 	slot_visual.reparent(baking_slots[slot_index], false)
 	slot_visual.transform = Transform3D.IDENTITY
 	slot_visual.scale = Vector3.ONE
@@ -962,6 +923,8 @@ func _take_baked_lavash(slot_index: int) -> void:
 	held_origin_station = null
 	held_origin_transform = Transform3D.IDENTITY
 	if not _attach_held_visual(held_visual):
+		_set_collisions_enabled(held_item, true)
+		_set_collisions_enabled(held_visual, true)
 		held_visual.reparent(baking_slots[slot_index], false)
 		held_visual.transform = Transform3D.IDENTITY
 		held_item.queue_free()
@@ -1012,7 +975,10 @@ func _reset_cutting() -> void:
 	cut_anim_time = 0.0
 	cut_requires_release = false
 	if held_visual:
-		_apply_held_item_pose(held_visual, held_item.item_id if is_instance_valid(held_item) else "")
+		held_visual.transform = Transform3D.IDENTITY
+		held_visual.position = Vector3.ZERO
+		held_visual.rotation = Vector3.ZERO
+		held_visual.scale = Vector3.ONE
 
 func _spawn_meat_portion() -> void:
 	var visual := _duplicate_pickup_template("cut_meat")
