@@ -1,8 +1,13 @@
-[gd_scene load_steps=18 format=3]
+[gd_scene load_steps=23 format=3]
 
 [ext_resource type="Script" path="res://customer_npc.gd" id="1_customer"]
 [ext_resource type="Texture2D" path="res://bjk1.jpg" id="2_bjk_front"]
 [ext_resource type="Texture2D" path="res://bjkhinten.jpg" id="3_bjk_back"]
+[ext_resource type="Texture2D" path="res://fb1.jpg" id="4_fener_front"]
+[ext_resource type="Texture2D" path="res://fbhinten.jpg" id="5_fener_back"]
+[ext_resource type="Texture2D" path="res://gahinten.jpg" id="6_gala_front"]
+[ext_resource type="Texture2D" path="res://ga1.jpg" id="7_gala_back"]
+[ext_resource type="Texture2D" path="res://abdukopf.jpg" id="8_gala_head"]
 
 [sub_resource type="CapsuleShape3D" id="ShapeCustomer"]
 radius = 0.42
@@ -106,13 +111,37 @@ shape = SubResource("ShapeCustomer")
 position = Vector3(0, 1.42, 0)
 mesh = SubResource("MeshTorso")
 
-[node name="JerseyFront" type="Sprite3D" parent="Visual/Torso"]
+[node name="BJKJersey" type="Node3D" parent="Visual/Torso"]
+
+[node name="Front" type="Sprite3D" parent="Visual/Torso/BJKJersey"]
 transform = Transform3D(-0.26, 0, 0, 0, 0.151, 0, 0, 0, -1, 0, 0, -0.216)
 texture = ExtResource("2_bjk_front")
 
-[node name="JerseyBack" type="Sprite3D" parent="Visual/Torso"]
+[node name="Back" type="Sprite3D" parent="Visual/Torso/BJKJersey"]
 transform = Transform3D(0.26, 0, 0, 0, 0.151, 0, 0, 0, 1, 0, 0, 0.216)
 texture = ExtResource("3_bjk_back")
+
+[node name="FenerJersey" type="Node3D" parent="Visual/Torso"]
+visible = false
+
+[node name="Front" type="Sprite3D" parent="Visual/Torso/FenerJersey"]
+transform = Transform3D(-0.245, 0, 0, 0, 0.142, 0, 0, 0, -1, 0, 0, -0.216)
+texture = ExtResource("4_fener_front")
+
+[node name="Back" type="Sprite3D" parent="Visual/Torso/FenerJersey"]
+transform = Transform3D(0.245, 0, 0, 0, 0.142, 0, 0, 0, 1, 0, 0, 0.216)
+texture = ExtResource("5_fener_back")
+
+[node name="GalaJersey" type="Node3D" parent="Visual/Torso"]
+visible = false
+
+[node name="Front" type="Sprite3D" parent="Visual/Torso/GalaJersey"]
+transform = Transform3D(-0.245, 0, 0, 0, 0.142, 0, 0, 0, -1, 0, 0, -0.216)
+texture = ExtResource("6_gala_front")
+
+[node name="Back" type="Sprite3D" parent="Visual/Torso/GalaJersey"]
+transform = Transform3D(0.245, 0, 0, 0, 0.142, 0, 0, 0, 1, 0, 0, 0.216)
+texture = ExtResource("7_gala_back")
 
 [node name="Head" type="MeshInstance3D" parent="Visual"]
 position = Vector3(0, 2.18, 0)
@@ -129,6 +158,11 @@ mesh = SubResource("MeshEye")
 [node name="EyeRight" type="MeshInstance3D" parent="Visual"]
 position = Vector3(0.115, 2.23, -0.283)
 mesh = SubResource("MeshEye")
+
+[node name="GalaHeadImage" type="Sprite3D" parent="Visual"]
+transform = Transform3D(-0.191, 0, 0, 0, 0.116, 0, 0, 0, -1, 0, 2.18, -0.315)
+visible = false
+texture = ExtResource("8_gala_head")
 
 [node name="LeftArm" type="Node3D" parent="Visual"]
 position = Vector3(-0.58, 1.79, 0)

@@ -17,7 +17,7 @@ const INGREDIENT_POOL := [
 ]
 const INGREDIENT_LABELS := {
 	"meat": "Dönerfleisch",
-	"cut_meat": "Fleisch",
+	"cut_meat": "Dönerfleisch",
 	"tomato": "Tomate",
 	"cucumber": "Gurke",
 	"onion": "Zwiebeln",
@@ -26,21 +26,39 @@ const INGREDIENT_LABELS := {
 	"garlic_sauce": "Knoblauchsoße",
 	"cocktail_sauce": "Cocktailsoße",
 }
+const VARIANT_NAMES := ["BJK", "FENER", "GALA"]
 
-enum CustomerState { WALKING_IN, WAITING_FOR_ORDER, LEAVING }
+enum CustomerVariant { BJK, FENER, GALA }
+enum CustomerState { MOVING_TO_QUEUE, WAITING_IN_QUEUE, ORDERING, LEAVING }
 
+@export_enum("BJK", "Fener", "Gala") var customer_variant: int = CustomerVariant.BJK
+@export var queue_managed := false
 @export var spawn_point_path: NodePath
 @export var counter_stop_point_path: NodePath
 @export_range(0.2, 5.0, 0.05) var move_speed := 1.65
 @export_range(0.05, 1.0, 0.01) var arrival_distance := 0.12
 
 var requested_ingredients: Array[String] = []
-var state := CustomerState.WALKING_IN
+var queue_index := -1
+var order_active := false
+var state := CustomerState.WAITING_IN_QUEUE
+var _queue_manager: Node
 var _spawn_point: Marker3D
-var _counter_stop_point: Marker3D
+var _exit_point: Marker3D
+var _target_marker: Marker3D
 var _rejection_time_left := 0.0
 var _walk_time := 0.0
 
+@onready var visual: Node3D = $Visual
+@onready var torso: MeshInstance3D = $Visual/Torso
+@onready var bjk_jersey: Node3D = $Visual/Torso/BJKJersey
+@onready var fener_jersey: Node3D = $Visual/Torso/FenerJersey
+@onready var gala_jersey: Node3D = $Visual/Torso/GalaJersey
+@onready var head: MeshInstance3D = $Visual/Head
+@onready var hair: MeshInstance3D = $Visual/Hair
+@onready var eye_left: MeshInstance3D = $Visual/EyeLeft
+@onready var eye_right: MeshInstance3D = $Visual/EyeRight
+@onready var gala_head_image: Sprite3D = $Visual/GalaHeadImage
 @onready var order_display: Node3D = $OrderDisplay
 @onready var order_label: Label3D = $OrderDisplay/OrderLabel
 @onready var rejection_label: Label3D = $OrderDisplay/RejectionLabel
@@ -55,33 +73,80 @@ func _ready() -> void:
 	add_to_group("customer_npc")
 	collision_layer = INTERACTION_LAYER
 	set_meta("customer_npc", true)
-	set_meta("accepts_finished_durum", true)
+	set_meta("accepts_finished_durum", false)
 	order_display.visible = false
 	happy_display.visible = false
 	rejection_label.visible = false
+	_apply_customer_variant()
+	if queue_managed:
+		return
+	var scene_root := get_tree().current_scene
 	_spawn_point = get_node_or_null(spawn_point_path) as Marker3D
-	_counter_stop_point = get_node_or_null(counter_stop_point_path) as Marker3D
-	if not is_instance_valid(_spawn_point):
-		_spawn_point = get_tree().current_scene.get_node_or_null("CustomerSpawnPoint") as Marker3D
-	if not is_instance_valid(_counter_stop_point):
-		_counter_stop_point = get_tree().current_scene.get_node_or_null("CounterStopPoint") as Marker3D
+	_target_marker = get_node_or_null(counter_stop_point_path) as Marker3D
+	if not is_instance_valid(_spawn_point) and is_instance_valid(scene_root):
+		_spawn_point = scene_root.get_node_or_null("CustomerSpawnPoint") as Marker3D
+	if not is_instance_valid(_target_marker) and is_instance_valid(scene_root):
+		_target_marker = scene_root.get_node_or_null("CounterStopPoint") as Marker3D
 	if is_instance_valid(_spawn_point):
 		global_transform = _spawn_point.global_transform
-	if not is_instance_valid(_counter_stop_point):
-		push_warning("CustomerNPC: CounterStopPoint fehlt; Bestellung wird am Spawnpunkt erzeugt.")
-		_arrive_at_counter()
+	if is_instance_valid(_target_marker):
+		queue_index = 0
+		_generate_random_order()
+		state = CustomerState.MOVING_TO_QUEUE
+
+
+func configure_for_queue(
+		manager: Node,
+		assigned_index: int,
+		assigned_slot: Marker3D,
+		spawn_point: Marker3D,
+		exit_point: Marker3D
+) -> void:
+	queue_managed = true
+	_queue_manager = manager
+	_spawn_point = spawn_point
+	_exit_point = exit_point
+	if is_instance_valid(_spawn_point):
+		global_transform = _spawn_point.global_transform
+	_generate_random_order()
+	assign_queue_slot(assigned_index, assigned_slot)
+
+
+func assign_queue_slot(assigned_index: int, assigned_slot: Marker3D) -> void:
+	queue_index = assigned_index
+	_target_marker = assigned_slot
+	order_active = false
+	order_display.visible = false
+	rejection_label.visible = false
+	set_meta("queue_index", queue_index)
+	set_meta("accepts_finished_durum", false)
+	state = CustomerState.MOVING_TO_QUEUE
+
+
+func begin_exit(exit_point: Marker3D = null) -> void:
+	queue_index = -1
+	order_active = false
+	order_display.visible = false
+	rejection_label.visible = false
+	set_meta("queue_index", -1)
+	set_meta("accepts_finished_durum", false)
+	_target_marker = exit_point if is_instance_valid(exit_point) else _exit_point
+	if not is_instance_valid(_target_marker):
+		_target_marker = _spawn_point
+	state = CustomerState.LEAVING
+	_face_target(_target_marker)
 
 
 func _physics_process(delta: float) -> void:
 	_update_rejection(delta)
 	match state:
-		CustomerState.WALKING_IN:
-			if _walk_to(_counter_stop_point, delta):
-				_arrive_at_counter()
-		CustomerState.WAITING_FOR_ORDER:
+		CustomerState.MOVING_TO_QUEUE:
+			if _walk_to(_target_marker, delta):
+				_arrive_at_queue_slot()
+		CustomerState.WAITING_IN_QUEUE, CustomerState.ORDERING:
 			_stop_walking_animation()
 		CustomerState.LEAVING:
-			if _walk_to(_spawn_point, delta):
+			if _walk_to(_target_marker, delta):
 				queue_free()
 
 
@@ -107,6 +172,15 @@ func _walk_to(target: Marker3D, delta: float) -> bool:
 	return false
 
 
+func _face_target(target: Marker3D) -> void:
+	if not is_instance_valid(target):
+		return
+	var direction := target.global_position - global_position
+	direction.y = 0.0
+	if not direction.is_zero_approx():
+		look_at(global_position + direction.normalized(), Vector3.UP)
+
+
 func _animate_walk(delta: float) -> void:
 	_walk_time += delta * move_speed * 5.0
 	var swing := sin(_walk_time) * 0.42
@@ -123,12 +197,24 @@ func _stop_walking_animation() -> void:
 	right_leg.rotation.x = move_toward(right_leg.rotation.x, 0.0, 0.08)
 
 
-func _arrive_at_counter() -> void:
+func _arrive_at_queue_slot() -> void:
 	velocity = Vector3.ZERO
-	if is_instance_valid(_counter_stop_point):
-		global_rotation.y = _counter_stop_point.global_rotation.y
-	state = CustomerState.WAITING_FOR_ORDER
-	_generate_random_order()
+	if is_instance_valid(_target_marker):
+		global_rotation.y = _target_marker.global_rotation.y
+	if queue_index == 0:
+		_activate_front_order()
+	else:
+		state = CustomerState.WAITING_IN_QUEUE
+		order_active = false
+		order_display.visible = false
+
+
+func _activate_front_order() -> void:
+	state = CustomerState.ORDERING
+	order_active = true
+	order_display.visible = true
+	rejection_label.visible = false
+	set_meta("accepts_finished_durum", true)
 
 
 func _generate_random_order() -> void:
@@ -144,7 +230,7 @@ func _generate_random_order() -> void:
 		requested_ingredients.append(available[index])
 	set_meta("requested_ingredients", requested_ingredients.duplicate())
 	order_label.text = _format_order_text()
-	order_display.visible = true
+	order_display.visible = false
 	happy_display.visible = false
 	rejection_label.visible = false
 	order_generated.emit(requested_ingredients.duplicate())
@@ -158,7 +244,7 @@ func _format_order_text() -> String:
 
 
 func try_accept_durum(durum_data: Dictionary) -> bool:
-	if state != CustomerState.WAITING_FOR_ORDER:
+	if not order_active or queue_index != 0 or state != CustomerState.ORDERING:
 		return false
 	var delivered_ingredients: Array[String] = []
 	var raw_ingredients: Array = durum_data.get("ingredients", [])
@@ -177,17 +263,16 @@ func _normalize_ingredient(ingredient: String) -> String:
 
 
 func _accept_order(delivered_ingredients: Array[String]) -> void:
+	order_active = false
 	order_display.visible = false
 	rejection_label.visible = false
 	happy_display.visible = false
 	set_meta("accepts_finished_durum", false)
-	state = CustomerState.LEAVING
-	if is_instance_valid(_spawn_point):
-		var exit_direction := _spawn_point.global_position - global_position
-		exit_direction.y = 0.0
-		if not exit_direction.is_zero_approx():
-			look_at(global_position + exit_direction.normalized(), Vector3.UP)
 	order_completed.emit(delivered_ingredients.duplicate())
+	if is_instance_valid(_queue_manager) and _queue_manager.has_method("customer_order_completed"):
+		_queue_manager.call("customer_order_completed", self)
+	else:
+		begin_exit(_exit_point)
 
 
 func _show_rejection() -> void:
@@ -201,3 +286,30 @@ func _update_rejection(delta: float) -> void:
 	_rejection_time_left -= delta
 	if _rejection_time_left <= 0.0:
 		rejection_label.visible = false
+
+
+func _apply_customer_variant() -> void:
+	var is_bjk := customer_variant == CustomerVariant.BJK
+	var is_fener := customer_variant == CustomerVariant.FENER
+	var is_gala := customer_variant == CustomerVariant.GALA
+	bjk_jersey.visible = is_bjk
+	fener_jersey.visible = is_fener
+	gala_jersey.visible = is_gala
+	gala_head_image.visible = is_gala
+	head.visible = not is_gala
+	hair.visible = not is_gala
+	eye_left.visible = not is_gala
+	eye_right.visible = not is_gala
+	var club_material := StandardMaterial3D.new()
+	club_material.roughness = 0.38
+	match customer_variant:
+		CustomerVariant.FENER:
+			club_material.albedo_color = Color(0.025, 0.075, 0.28, 1)
+		CustomerVariant.GALA:
+			club_material.albedo_color = Color(0.58, 0.035, 0.035, 1)
+		_:
+			club_material.albedo_color = Color(0.018, 0.02, 0.026, 1)
+	torso.material_override = club_material
+	($Visual/LeftArm/Arm as MeshInstance3D).material_override = club_material
+	($Visual/RightArm/Arm as MeshInstance3D).material_override = club_material
+	set_meta("customer_variant", VARIANT_NAMES[customer_variant])

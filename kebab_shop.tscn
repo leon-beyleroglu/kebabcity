@@ -13,7 +13,7 @@
 [ext_resource type="Texture2D" uid="uid://d5r0e5l62c0i" path="res://textures/ingredients/onion_slice.svg" id="14_onion"]
 [ext_resource type="Texture2D" uid="uid://y00b5ito7pia" path="res://textures/ingredients/lettuce_leaf.svg" id="15_lettuce"]
 [ext_resource type="Texture2D" uid="uid://bwn4i5lpbgp37" path="res://textures/ingredients/red_cabbage_strip.svg" id="16_cabbage"]
-[ext_resource type="PackedScene" path="res://CustomerNPC.tscn" id="17_customer_npc"]
+[ext_resource type="Script" uid="uid://sgxar2tk5mjb" path="res://CustomerQueueManager.gd" id="18_customer_queue"]
 
 [sub_resource type="StandardMaterial3D" id="MatInteriorFloorTile"]
 resource_name = "Non-Slip Terracotta Floor Tile"
@@ -4256,6 +4256,9 @@ mesh = SubResource("MeshTofasRimMesh")
 
 [node name="Avatar gala" type="StaticBody3D" parent="." unique_id=662953966]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.39239025, 0.08, 17.722675)
+visible = false
+collision_layer = 0
+collision_mask = 0
 
 [node name="Kopf" type="MeshInstance3D" parent="Avatar gala" unique_id=631435322]
 transform = Transform3D(0.29999998, 0, 0, 0, 0.27999997, 0, 0, 0, 0.29999998, -0.0038452148, 1.9864846, 0)
@@ -4352,19 +4355,29 @@ texture = ExtResource("3_6pmx1")
 transform = Transform3D(0.235, 0, 0, 0, 0.155, 0, 0, 0, 5.949, -0.018942356, 1.2720038, 0.19241142)
 texture = ExtResource("3_v6cui")
 
-[node name="CustomerSpawnPoint" type="Marker3D" parent="."]
+[node name="CustomerQueueManager" type="Node3D" parent="." unique_id=2021337347]
+script = ExtResource("18_customer_queue")
+
+[node name="CustomerSpawnPoint" type="Marker3D" parent="CustomerQueueManager" unique_id=954587765]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.2, 0.11, 5.25)
 
-[node name="CounterStopPoint" type="Marker3D" parent="."]
+[node name="CustomerExitPoint" type="Marker3D" parent="CustomerQueueManager" unique_id=937060262]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.2, 0.11, 6.15)
+
+[node name="QueueSlot_0" type="Marker3D" parent="CustomerQueueManager" unique_id=1690645030]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.2, 0.11, -0.72)
 
-[node name="BJKCustomer" parent="." instance=ExtResource("17_customer_npc")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.2, 0.11, 5.25)
-spawn_point_path = NodePath("../CustomerSpawnPoint")
-counter_stop_point_path = NodePath("../CounterStopPoint")
+[node name="QueueSlot_1" type="Marker3D" parent="CustomerQueueManager" unique_id=2042015070]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.2, 0.11, 0.48)
+
+[node name="QueueSlot_2" type="Marker3D" parent="CustomerQueueManager" unique_id=358303283]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.2, 0.11, 1.68)
 
 [node name="Avatar Fener" type="StaticBody3D" parent="." unique_id=136574385]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.7120857, 0.08, 17.751186)
+visible = false
+collision_layer = 0
+collision_mask = 0
 
 [node name="Kopf" type="MeshInstance3D" parent="Avatar Fener" unique_id=439911214]
 transform = Transform3D(0.29999998, 0, 0, 0, 0.27999997, 0, 0, 0, 0.29999998, -0.0038452148, 1.9864846, 0)
