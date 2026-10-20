@@ -6,6 +6,7 @@ const DonerMeatStationScript = preload("res://doner_meat_station.gd")
 
 const INTERACTION_RANGE := 3.2
 const INTERACTION_LAYER := 1 << 7
+const TABLE_ITEM_LAYER := 1 << 1
 const PREP_ITEM_LAYER := 1 << 8
 const CUT_DURATION := 1.0
 const OVEN_BAKE_DURATION := 10.0
@@ -28,6 +29,7 @@ var right_hand_rest_transform := Transform3D.IDENTITY
 var hand_sockets_ready := false
 var ladle_scoop_tween: Tween
 var held_item: Area3D
+var held_item_id := ""
 var held_visual: Node3D
 var focused_item: Area3D
 var focused_container: Area3D
@@ -68,6 +70,9 @@ func setup(owner_player: CharacterBody3D, view_camera: Camera3D, hand_slot: Mark
 	player = owner_player
 	camera = view_camera
 	interaction_ray = camera.get_node_or_null("InteractionRayCast") as RayCast3D
+	if is_instance_valid(interaction_ray):
+		interaction_ray.collision_mask |= TABLE_ITEM_LAYER
+		interaction_ray.collide_with_areas = true
 	hold_socket = hand_slot
 	_resolve_hand_sockets()
 	_setup_input()
@@ -247,6 +252,30 @@ func _process(delta: float) -> void:
 	_update_cutting(delta)
 
 func _update_focus() -> void:
+	_clear_focus()
+	var collider: Object
+	if is_instance_valid(interaction_ray):
+		interaction_ray.force_raycast_update()
+		if not interaction_ray.is_colliding():
+			return
+		focus_hit_position = interaction_ray.get_collision_point()
+		focus_hit_normal = interaction_ray.get_collision_normal().normalized()
+		collider = interaction_ray.get_collider()
+	else:
+		var query := PhysicsRayQueryParameters3D.create(camera.global_position, camera.global_position - camera.global_basis.z * INTERACTION_RANGE, INTERACTION_LAYER | TABLE_ITEM_LAYER)
+		query.collide_with_areas = true
+		query.collide_with_bodies = true
+		var hit := camera.get_world_3d().direct_space_state.intersect_ray(query)
+		if hit.is_empty():
+			return
+		focus_hit_position = hit["position"]
+		focus_hit_normal = (hit.get("normal", Vector3.UP) as Vector3).normalized()
+		collider = hit.get("collider")
+	if collider != null:
+		_set_focus_from_collider(collider)
+
+
+func _clear_focus() -> void:
 	focused_item = null
 	focused_container = null
 	focused_meat = null
@@ -258,24 +287,9 @@ func _update_focus() -> void:
 	focused_durum_assembly = null
 	focused_customer = null
 	focus_hit_normal = Vector3.UP
-	var collider: Object
-	if is_instance_valid(interaction_ray):
-		interaction_ray.force_raycast_update()
-		if not interaction_ray.is_colliding():
-			return
-		focus_hit_position = interaction_ray.get_collision_point()
-		focus_hit_normal = interaction_ray.get_collision_normal().normalized()
-		collider = interaction_ray.get_collider()
-	else:
-		var query := PhysicsRayQueryParameters3D.create(camera.global_position, camera.global_position - camera.global_basis.z * INTERACTION_RANGE, INTERACTION_LAYER)
-		query.collide_with_areas = true
-		query.collide_with_bodies = true
-		var hit := camera.get_world_3d().direct_space_state.intersect_ray(query)
-		if hit.is_empty():
-			return
-		focus_hit_position = hit["position"]
-		focus_hit_normal = (hit.get("normal", Vector3.UP) as Vector3).normalized()
-		collider = hit.get("collider")
+
+
+func _set_focus_from_collider(collider: Object) -> void:
 	if collider is CharacterBody3D and (collider.is_in_group("customer_npc") or collider.has_meta("customer_npc")):
 		focused_customer = collider
 	elif collider is Area3D and (collider.is_in_group("durum_assembly") or collider.has_meta("durum_assembly")):
@@ -284,6 +298,8 @@ func _update_focus() -> void:
 		focused_trash_can = collider
 	elif collider is Area3D and collider.has_meta("sauce_ladle_id"):
 		focused_sauce_bin = collider
+	elif collider is Area3D and collider.has_meta("placed_on_assembly_station") and collider.has_meta("interactable") and collider.available and not held_item:
+		focused_item = collider
 	elif collider is Area3D and collider.has_meta("ingredient_id"):
 		focused_container = collider
 	elif collider is Area3D and collider.has_meta("interactable") and collider.available and not held_item:
@@ -301,34 +317,15 @@ func _unhandled_input(event: InputEvent) -> void:
 	if not player or player.third_person or not camera.current:
 		return
 	if event.is_action_pressed("interact"):
-		if focused_customer:
-			_interact_with_customer(focused_customer)
-		elif focused_trash_can:
-			_discard_held_item()
-		elif focused_durum_assembly and held_item:
-			if _is_sauce_ladle(held_item.item_id):
-				_add_sauce_to_durum(focused_durum_assembly)
-			elif _is_durum_ingredient(held_item.item_id):
-				_add_held_ingredient_to_durum(focused_durum_assembly)
-		elif focused_knife_mount and held_item and held_item.item_id == "knife":
-			_place_knife_on_mount(focused_knife_mount)
-		elif focused_oven:
-			_interact_with_oven()
-		elif focused_sauce_bin:
-			_interact_with_sauce_bin(focused_sauce_bin)
-		elif focused_container and not held_item:
-			interact_with_container(focused_container)
-		elif focused_prep and held_item:
-			if held_item.item_id == "baked_lavash":
-				_create_durum_assembly(focused_prep, focus_hit_position, focus_hit_normal)
-			elif _is_sauce_ladle(held_item.item_id):
-				_apply_sauce_to_prep(focused_prep, focus_hit_position, focus_hit_normal)
-			elif held_item.item_id != "knife":
-				_place_held_on_prep(focused_prep, focus_hit_position, focus_hit_normal)
-		elif focused_item and not held_item:
-				pick_up(focused_item)
-		elif held_item:
-			_return_held()
+		if not is_instance_valid(interaction_ray):
+			return
+		interaction_ray.force_raycast_update()
+		if not interaction_ray.is_colliding():
+			return
+		var collider: Object = interaction_ray.get_collider()
+		if collider == null:
+			return
+		handle_interaction(collider, interaction_ray.get_collision_point(), interaction_ray.get_collision_normal())
 		get_viewport().set_input_as_handled()
 	elif event.is_action_pressed("mouse_right"):
 		if focused_durum_assembly and not held_item and _roll_durum(focused_durum_assembly):
@@ -337,9 +334,49 @@ func _unhandled_input(event: InputEvent) -> void:
 		_return_held()
 		get_viewport().set_input_as_handled()
 
+
+func handle_interaction(collider: Object, hit_position: Vector3, hit_normal: Vector3) -> void:
+	_clear_focus()
+	focus_hit_position = hit_position
+	focus_hit_normal = hit_normal.normalized()
+	_set_focus_from_collider(collider)
+	if focused_customer:
+		_interact_with_customer(focused_customer)
+	elif focused_trash_can:
+		_discard_held_item()
+	elif focused_durum_assembly and held_item:
+		if _is_sauce_ladle(held_item.item_id):
+			_add_sauce_to_durum(focused_durum_assembly)
+		elif _is_durum_ingredient(held_item.item_id):
+			_add_held_ingredient_to_durum(focused_durum_assembly)
+	elif focused_knife_mount and held_item and held_item.item_id == "knife":
+		_place_knife_on_mount(focused_knife_mount)
+	elif focused_oven:
+		_interact_with_oven()
+	elif focused_sauce_bin:
+		_interact_with_sauce_bin(focused_sauce_bin)
+	elif focused_container and not held_item:
+		interact_with_container(focused_container)
+	elif focused_prep and held_item:
+		if not _can_place_on_station(focused_prep, focus_hit_normal):
+			return
+		if held_item.item_id == "baked_lavash":
+			_create_durum_assembly(focused_prep, focus_hit_position, focus_hit_normal)
+		elif _is_sauce_ladle(held_item.item_id):
+			_apply_sauce_to_prep(focused_prep, focus_hit_position, focus_hit_normal)
+		elif held_item.item_id != "knife":
+			_place_held_on_prep(focused_prep, focus_hit_position, focus_hit_normal)
+	elif focused_item and not held_item:
+		pick_up(focused_item)
+	elif held_item:
+		_return_held()
+
 func pick_up(item: Node3D) -> void:
 	var target := item as Area3D
 	if held_item or not is_instance_valid(target) or target != focused_item or not target.available:
+		return
+	if target.has_meta("placed_on_assembly_station"):
+		pickup_placed_item(target)
 		return
 	if target.has_meta("single_portion_source"):
 		_pickup_single_portion(target)
@@ -357,6 +394,7 @@ func pick_up(item: Node3D) -> void:
 	else:
 		held_origin_transform = Transform3D.IDENTITY
 	held_item = target
+	held_item_id = target.item_id
 	held_item.pickup()
 	held_visual = placed_visual if is_instance_valid(held_origin_station) and is_instance_valid(placed_visual) else _duplicate_pickup_template(target.item_id)
 	if not is_instance_valid(held_visual):
@@ -368,6 +406,41 @@ func pick_up(item: Node3D) -> void:
 	held_visual.name = "Held_%s" % target.item_id
 	if not _attach_held_visual(held_visual):
 		_return_held()
+
+
+func pickup_placed_item(target_item: Node3D) -> void:
+	var hit_item := target_item as Area3D
+	if held_item != null or not is_instance_valid(hit_item):
+		return
+	if not is_instance_valid(hold_socket):
+		return
+	var origin_station := hit_item.get_meta("prep_station", null) as Node3D
+	held_origin_station = origin_station
+	held_origin_transform = hit_item.global_transform
+	if is_instance_valid(origin_station) and origin_station.has_method("remove_item"):
+		origin_station.call("remove_item", hit_item)
+
+	var target_visual := hit_item.source_visual as Node3D
+	if is_instance_valid(target_visual) and target_visual.get_parent() != hit_item:
+		target_visual.reparent(hit_item)
+		target_visual.transform = Transform3D.IDENTITY
+
+	hit_item.reparent(hold_socket)
+	hit_item.top_level = false
+	hit_item.transform = Transform3D.IDENTITY
+	hit_item.scale = Vector3.ONE
+	_set_collisions_enabled(hit_item, false)
+	hit_item.collision_layer = 0
+	hit_item.available = false
+	hit_item.visible = true
+	if is_instance_valid(target_visual):
+		target_visual.visible = true
+
+	held_item = hit_item
+	held_item_id = String(hit_item.get_meta("item_id", hit_item.item_id))
+	held_visual = target_visual if is_instance_valid(target_visual) else hit_item
+	held_sauce_home = null
+	_reset_cutting()
 
 func _pickup_single_portion(source: Area3D) -> void:
 	var portion_visual := _duplicate_pickup_template(source.item_id)
@@ -382,6 +455,7 @@ func _pickup_single_portion(source: Area3D) -> void:
 	held_origin_station = null
 	held_origin_transform = Transform3D.IDENTITY
 	held_item = portion
+	held_item_id = portion.item_id
 	held_item.pickup()
 	held_visual = portion_visual
 	held_visual.name = "Held_%s" % source.item_id
@@ -417,6 +491,7 @@ func interact_with_container(container: Node3D) -> void:
 	held_origin_station = null
 	held_origin_transform = Transform3D.IDENTITY
 	held_item = new_item
+	held_item_id = new_item.item_id
 	held_item.pickup()
 	held_visual = new_visual
 	held_visual.name = "Held_%s" % item_id
@@ -432,8 +507,24 @@ func _is_durum_ingredient(item_id: String) -> bool:
 	return item_id in DURUM_INGREDIENT_IDS
 
 
+func _can_place_on_station(station: Node3D, hit_normal: Vector3) -> bool:
+	if not is_instance_valid(station) or hit_normal.normalized().y <= 0.9:
+		return false
+	if station.has_method("can_place_item"):
+		return bool(station.call("can_place_item", hit_normal))
+	return true
+
+
+func _snapped_station_position(station: Node3D, hit_position: Vector3, hit_normal: Vector3) -> Vector3:
+	if station.has_method("snap_to_table_top"):
+		return station.call("snap_to_table_top", hit_position, hit_normal) as Vector3
+	return hit_position
+
+
 func _create_durum_assembly(station: Node3D, hit_position: Vector3, hit_normal: Vector3) -> void:
 	if not is_instance_valid(station) or not is_instance_valid(held_item) or held_item.item_id != "baked_lavash":
+		return
+	if not _can_place_on_station(station, hit_normal):
 		return
 	var assembly := _duplicate_pickup_template("durum_assembly") as Area3D
 	if not is_instance_valid(assembly):
@@ -443,19 +534,25 @@ func _create_durum_assembly(station: Node3D, hit_position: Vector3, hit_normal: 
 	var source_visual := baked_item.source_visual as Node3D
 	station.add_child(assembly)
 	assembly.name = "DurumAssembly"
-	assembly.global_transform = Transform3D(Basis.IDENTITY, hit_position)
+	assembly.global_transform = Transform3D(Basis.IDENTITY, _snapped_station_position(station, hit_position, hit_normal))
 	assembly.collision_layer = INTERACTION_LAYER
 	assembly.collision_mask = 0
 	assembly.monitoring = false
 	assembly.monitorable = true
 	assembly.set_meta("durum_assembly", true)
 	assembly.set_meta("ingredients", [])
+	assembly.set_meta("item_id", "durum_assembly")
+	if station.has_method("get_placed_items_container"):
+		if station.call("place_item", assembly, "durum_assembly", hit_position, hit_normal) == null:
+			assembly.queue_free()
+			return
 	if is_instance_valid(baked_visual):
 		baked_visual.queue_free()
 	if is_instance_valid(source_visual) and source_visual != baked_visual:
 		source_visual.queue_free()
 	baked_item.queue_free()
 	held_item = null
+	held_item_id = ""
 	held_visual = null
 	held_sauce_home = null
 	held_origin_station = null
@@ -497,6 +594,7 @@ func _add_held_ingredient_to_durum(assembly: Area3D) -> void:
 		source_visual.queue_free()
 	item.queue_free()
 	held_item = null
+	held_item_id = ""
 	held_visual = null
 	held_sauce_home = null
 	held_origin_station = null
@@ -536,6 +634,7 @@ func _roll_durum(assembly: Area3D) -> bool:
 	finished_item.set_meta("durum_ingredients", ingredients.duplicate())
 	finished_item.pickup()
 	held_item = finished_item
+	held_item_id = finished_item.item_id
 	held_visual = finished_visual
 	held_visual.name = "Held_FinishedDurum"
 	held_origin_station = null
@@ -544,6 +643,7 @@ func _roll_durum(assembly: Area3D) -> bool:
 		finished_visual.queue_free()
 		finished_item.queue_free()
 		held_item = null
+		held_item_id = ""
 		held_visual = null
 		return false
 	assembly.queue_free()
@@ -574,6 +674,7 @@ func _interact_with_customer(customer: CharacterBody3D) -> void:
 		source_visual.queue_free()
 	accepted_item.queue_free()
 	held_item = null
+	held_item_id = ""
 	held_visual = null
 	held_sauce_home = null
 	held_origin_station = null
@@ -610,6 +711,7 @@ func _pickup_sauce_ladle(bin: Area3D, ladle_id: String) -> void:
 	item.configure(ladle_id, String(bin.get_meta("sauce_label", "Soßenkelle")), null, true)
 	item.pickup()
 	held_item = item
+	held_item_id = item.item_id
 	held_visual = visual
 	held_sauce_home = home
 	held_origin_station = null
@@ -671,6 +773,8 @@ func _cancel_ladle_scoop() -> void:
 func _apply_sauce_to_prep(station: Node3D, hit_position: Vector3, hit_normal: Vector3) -> void:
 	if not is_instance_valid(held_item) or not _is_sauce_ladle(held_item.item_id):
 		return
+	if not _can_place_on_station(station, hit_normal):
+		return
 	var portion_id := "garlic_sauce" if held_item.item_id == "garlic_sauce_ladle" else "cocktail_sauce"
 	var portion_label := "Knoblauchsoße" if portion_id == "garlic_sauce" else "Cocktailsoße"
 	var portion_visual := _duplicate_pickup_template(portion_id)
@@ -682,24 +786,33 @@ func _apply_sauce_to_prep(station: Node3D, hit_position: Vector3, hit_normal: Ve
 	portion.global_transform = station.global_transform
 	_add_box_collider(portion, _item_collision_size(portion_id))
 	portion.configure(portion_id, portion_label, portion_visual)
-	var drop_position := hit_position
+	var drop_position := _snapped_station_position(station, hit_position, hit_normal)
 	var drop_rotation := Vector3.ZERO
-	portion.reparent(station, true)
-	portion.global_position = drop_position
-	portion.global_rotation = drop_rotation
-	station.add_child(portion_visual)
-	portion_visual.global_position = drop_position
-	portion_visual.global_rotation = drop_rotation
-	portion_visual.scale = Vector3.ONE
-	portion_visual.visible = true
+	if station.has_method("get_placed_items_container"):
+		portion.add_child(portion_visual)
+		portion_visual.transform = Transform3D.IDENTITY
+		portion_visual.scale = Vector3.ONE
+		portion_visual.visible = true
+		if station.call("place_item", portion, portion_id, hit_position, hit_normal) == null:
+			portion.queue_free()
+			return
+	else:
+		portion.reparent(station, true)
+		portion.global_position = drop_position
+		portion.global_rotation = drop_rotation
+		station.add_child(portion_visual)
+		portion_visual.global_position = drop_position
+		portion_visual.global_rotation = drop_rotation
+		portion_visual.scale = Vector3.ONE
+		portion_visual.visible = true
 	portion.source_visual = portion_visual
 	portion.consumed_on_pickup = false
 	portion.available = true
 	portion.collision_layer = INTERACTION_LAYER | PREP_ITEM_LAYER
 	portion.collision_mask = 0
-	if station.has_method("place_item"):
+	if station.has_method("place_item") and not station.has_method("get_placed_items_container"):
 		station.call("place_item", portion, portion_id, hit_position)
-	else:
+	elif not station.has_method("get_placed_items_container"):
 		portion.set_meta("prep_station", station)
 		portion.set_meta("ingredient_id", portion_id)
 	portion.original_transform = portion.global_transform
@@ -715,6 +828,7 @@ func _return_sauce_ladle() -> void:
 	if is_instance_valid(held_sauce_home):
 		held_sauce_home.visible = true
 	held_item = null
+	held_item_id = ""
 	held_visual = null
 	held_sauce_home = null
 	held_origin_station = null
@@ -856,6 +970,7 @@ func _return_held() -> void:
 	_set_collisions_enabled(item, true)
 	item.restore()
 	held_item = null
+	held_item_id = ""
 	held_visual = null
 	held_sauce_home = null
 	held_origin_station = null
@@ -876,6 +991,7 @@ func _discard_held_item() -> void:
 	if is_instance_valid(held_item):
 		held_item.queue_free()
 	held_item = null
+	held_item_id = ""
 	held_visual = null
 	held_sauce_home = null
 	held_origin_station = null
@@ -883,56 +999,53 @@ func _discard_held_item() -> void:
 	_reset_cutting()
 
 
-func _place_held_on_prep(station: Node3D, hit_position: Vector3, _hit_normal := Vector3.UP, _offset_from_surface := true) -> void:
+func _place_held_on_prep(station: Node3D, hit_position: Vector3, hit_normal := Vector3.UP, _offset_from_surface := true) -> void:
 	if not held_item or not is_instance_valid(held_visual) or not is_instance_valid(station):
+		return
+	if hit_normal.normalized().y <= 0.9:
 		return
 	var previous_visual := held_item.source_visual as Node3D
 	if is_instance_valid(previous_visual) and previous_visual != held_visual and previous_visual.get_parent() == held_item:
 		previous_visual.queue_free()
 
-	_set_collisions_enabled(held_visual, true)
+	if held_visual != held_item:
+		if held_visual.get_parent() == null:
+			held_item.add_child(held_visual)
+		elif held_visual.get_parent() != held_item:
+			held_visual.reparent(held_item)
+		held_visual.transform = Transform3D.IDENTITY
+		held_visual.scale = Vector3.ONE
+		held_visual.visible = true
+		held_item.source_visual = held_visual
+
+	var assembly_table := station
+	if station.has_method("get_placed_items_container"):
+		assembly_table = station.call("get_placed_items_container") as Node3D
+	if not is_instance_valid(assembly_table):
+		return
+
+	held_item.reparent(assembly_table)
+	held_item.global_position = hit_position
+	held_item.global_rotation = Vector3.ZERO
+	held_item.scale = Vector3.ONE
 	_set_collisions_enabled(held_item, true)
-	var drop_transform := Transform3D(Basis.IDENTITY, hit_position)
-	if held_item.get_parent() != station:
-		held_item.reparent(station, false)
-	held_item.global_transform = drop_transform
-	if held_visual.get_parent() != station:
-		held_visual.reparent(station, false)
-	held_visual.global_transform = drop_transform
-	held_visual.scale = Vector3.ONE
-	held_visual.visible = true
-	held_item.source_visual = held_visual
-
-	for child in held_item.find_children("*", "CollisionShape3D", true, false):
-		var shape := child as CollisionShape3D
-		if shape:
-			shape.disabled = false
-			var box_shape := shape.shape as BoxShape3D
-			if box_shape:
-				box_shape.size = _item_collision_size(held_item.item_id)
-
-	var reset_metadata: Array[StringName] = [&"origin_position", &"spawn_point", &"return_to_origin", &"return_timer"]
-	for metadata_key in reset_metadata:
-		if held_item.has_meta(metadata_key):
-			held_item.remove_meta(metadata_key)
-	for child in held_item.find_children("*", "Timer", true, false):
-		var return_timer := child as Timer
-		if return_timer:
-			return_timer.stop()
-
-	_freeze_item_physics(held_item)
 	held_item.consumed_on_pickup = false
 	held_item.available = true
-	held_item.collision_layer = INTERACTION_LAYER | PREP_ITEM_LAYER
+	held_item.collision_layer = TABLE_ITEM_LAYER
 	held_item.collision_mask = 0
-	if station.has_method("place_item"):
+	held_item.set_meta("item_id", held_item.item_id)
+	held_item.set_meta("ingredient_id", held_item.item_id)
+	held_item.set_meta("prep_station", station)
+	held_item.set_meta("placed_on_assembly_station", true)
+	if station.has_method("get_placed_items_container") and station.has_method("_register_item"):
+		station.call("_register_item", held_item, held_item.item_id)
+	elif station.has_method("place_item"):
 		station.call("place_item", held_item, held_item.item_id, hit_position)
-	else:
-		held_item.set_meta("prep_station", station)
-		held_item.set_meta("ingredient_id", held_item.item_id)
+		held_item.collision_layer = TABLE_ITEM_LAYER
 	held_item.original_transform = held_item.global_transform
 
 	held_item = null
+	held_item_id = ""
 	held_visual = null
 	held_origin_station = null
 	held_origin_transform = Transform3D.IDENTITY
@@ -968,6 +1081,7 @@ func _place_knife_on_mount(mount: Node3D) -> void:
 	if is_instance_valid(held_visual):
 		held_visual.queue_free()
 	held_item = null
+	held_item_id = ""
 	held_visual = null
 	held_origin_station = null
 	held_origin_transform = Transform3D.IDENTITY
@@ -1017,6 +1131,7 @@ func _insert_lavash_into_oven(slot_index: int) -> void:
 	slot_visual.scale = Vector3.ONE
 	slot_visual.visible = true
 	held_item = null
+	held_item_id = ""
 	held_visual = null
 	held_origin_station = null
 	held_origin_transform = Transform3D.IDENTITY
@@ -1089,6 +1204,7 @@ func _take_baked_lavash(slot_index: int) -> void:
 	baked_item.configure("baked_lavash", "Gebackenes Lavash", null, true)
 	baked_item.pickup()
 	held_item = baked_item
+	held_item_id = baked_item.item_id
 	held_visual = baked_visual
 	held_origin_station = null
 	held_origin_transform = Transform3D.IDENTITY
@@ -1099,6 +1215,7 @@ func _take_baked_lavash(slot_index: int) -> void:
 		held_visual.transform = Transform3D.IDENTITY
 		held_item.queue_free()
 		held_item = null
+		held_item_id = ""
 		held_visual = null
 		return
 	oven_slot_visuals[slot_index] = null

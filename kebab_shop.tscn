@@ -7,6 +7,7 @@
 [ext_resource type="Texture2D" uid="uid://fvcheoqkvxim" path="res://fbhinten.jpg" id="5_h3k53"]
 [ext_resource type="Script" uid="uid://b1lc58mnkun6w" path="res://city_expansion.gd" id="10_city_expansion"]
 [ext_resource type="Script" uid="uid://bufallvmof5b4" path="res://prep_station.gd" id="11_prep_station"]
+[ext_resource type="Script" uid="uid://gkwegvk4rorp" path="res://AssemblyStation.gd" id="12_assembly_station"]
 [ext_resource type="Texture2D" uid="uid://dvs03b1etto3r" path="res://textures/ingredients/cucumber_slice.svg" id="13_cucumber"]
 [ext_resource type="PackedScene" path="res://CustomerBJK.tscn" id="17_customer_bjk"]
 [ext_resource type="Script" uid="uid://sgxar2tk5mjb" path="res://CustomerQueueManager.gd" id="18_customer_queue"]
@@ -640,7 +641,7 @@ material = SubResource("StandardMaterial3D_wuo8e")
 size = Vector3(7.9843507, 0.14, 1.5)
 
 [sub_resource type="BoxShape3D" id="ShapeCounterWorkSurface"]
-size = Vector3(7.773633, 0.14, 1.5)
+size = Vector3(7.9843507, 0.14, 1.5)
 
 [sub_resource type="BoxMesh" id="MeshDeckRecess"]
 size = Vector3(7.2384176, 0.024, 0.92)
@@ -2274,13 +2275,17 @@ material_override = SubResource("MatCounterDeck")
 mesh = SubResource("BoxTestCounterTop")
 
 [node name="ArbeitsplatteWorkSurface" type="StaticBody3D" parent="Test Ablage/Kebab Theke" unique_id=1865684067 groups=["work_surface"]]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.33681643, 1.27, 17)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.44217527, 1.27, 17)
 collision_layer = 129
 collision_mask = 0
+script = ExtResource("12_assembly_station")
 metadata/work_surface = true
+metadata/assembly_station = true
 
 [node name="SurfaceCollision" type="CollisionShape3D" parent="Test Ablage/Kebab Theke/ArbeitsplatteWorkSurface" unique_id=890048404]
 shape = SubResource("ShapeCounterWorkSurface")
+
+[node name="PlacedItems" type="Node3D" parent="Test Ablage/Kebab Theke/ArbeitsplatteWorkSurface" unique_id=1151122830]
 
 [node name="RefrigeratedDeck" type="Node3D" parent="Test Ablage/Kebab Theke" unique_id=682278612]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.34, 1.35, 16.95)
