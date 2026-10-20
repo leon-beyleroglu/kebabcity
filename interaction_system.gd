@@ -688,8 +688,6 @@ func _resolve_hand_sockets() -> void:
 		right_hand_socket = palm_socket
 	if not is_instance_valid(left_hand_socket):
 		left_hand_socket = palm_socket
-	if not is_instance_valid(ladle_socket):
-		ladle_socket = right_hand_socket
 	if not is_instance_valid(bread_socket):
 		bread_socket = left_hand_socket
 	hold_socket = palm_socket
@@ -715,9 +713,7 @@ func equip_to_hand(item_node: Node3D, target_socket: Marker3D) -> bool:
 		item_node.get_parent().remove_child(item_node)
 	target_socket.add_child(item_node)
 	item_node.top_level = false
-	item_node.position = Vector3.ZERO
-	item_node.rotation = Vector3.ZERO
-	item_node.scale = Vector3.ONE
+	item_node.transform = Transform3D.IDENTITY
 	item_node.visible = true
 	return true
 
