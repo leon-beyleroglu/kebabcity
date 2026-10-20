@@ -348,7 +348,7 @@ func handle_interaction(collider: Object, hit_position: Vector3, hit_normal: Vec
 		if _is_sauce_portion(held_item.item_id):
 			_drop_held_sauce(focused_durum_assembly, focus_hit_position, true)
 		elif _is_sauce_ladle(held_item.item_id):
-			_add_sauce_to_durum(focused_durum_assembly)
+			_add_sauce_to_durum(focused_durum_assembly, focus_hit_position)
 		elif _is_durum_ingredient(held_item.item_id):
 			_add_held_ingredient_to_durum(focused_durum_assembly)
 	elif focused_knife_mount and held_item and held_item.item_id == "knife":
@@ -367,7 +367,7 @@ func handle_interaction(collider: Object, hit_position: Vector3, hit_normal: Vec
 		elif _is_sauce_portion(held_item.item_id):
 			_drop_held_sauce(focused_prep, focus_hit_position, false)
 		elif _is_sauce_ladle(held_item.item_id):
-			_apply_sauce_to_prep(focused_prep, focus_hit_position, focus_hit_normal)
+			return
 		elif held_item.item_id != "knife":
 			_place_held_on_prep(focused_prep, focus_hit_position, focus_hit_normal)
 	elif focused_item and not held_item:
@@ -725,17 +725,39 @@ func _add_held_ingredient_to_durum(lavash_node: Area3D) -> void:
 	_reset_cutting()
 
 
-func _add_sauce_to_durum(assembly: Area3D) -> void:
+func _add_sauce_to_durum(assembly: Area3D, hit_position: Vector3) -> void:
 	if not is_instance_valid(held_item) or not _is_sauce_ladle(held_item.item_id):
 		return
+	if not bool(held_item.get_meta("is_filled", false)):
+		return
+
 	var portion_id := "garlic_sauce" if held_item.item_id == "garlic_sauce_ladle" else "cocktail_sauce"
 	var portion_visual := _duplicate_pickup_template(portion_id)
 	if not is_instance_valid(portion_visual):
 		return
-	if not _stack_durum_visual(assembly, portion_id, portion_visual):
+	if not is_instance_valid(assembly):
 		portion_visual.queue_free()
 		return
-	_return_sauce_ladle()
+
+	assembly.add_child(portion_visual)
+	var local_position := assembly.to_local(hit_position)
+	local_position.y = 0.04
+	portion_visual.name = "Sauce_%s_%02d" % [portion_id.to_pascal_case(), int(assembly.get_meta("placed_count", 0)) + 1]
+	portion_visual.position = local_position
+	portion_visual.rotation = Vector3(0.0, randf_range(-PI, PI), 0.0)
+	portion_visual.scale = Vector3.ONE
+	portion_visual.visible = true
+
+	var ingredients: Array = assembly.get_meta("ingredients", [])
+	ingredients.append(portion_id)
+	assembly.set_meta("ingredients", ingredients)
+	assembly.set_meta("placed_count", int(assembly.get_meta("placed_count", 0)) + 1)
+
+	_cancel_ladle_scoop()
+	held_item.set_meta("is_filled", false)
+	var sauce_mesh := held_visual.find_child("SauceFill", true, false) as MeshInstance3D if is_instance_valid(held_visual) else null
+	if is_instance_valid(sauce_mesh):
+		sauce_mesh.visible = false
 
 
 func _roll_durum(assembly: Area3D) -> bool:
@@ -812,9 +834,22 @@ func _interact_with_sauce_bin(bin: Area3D) -> void:
 	var ladle_id := String(bin.get_meta("sauce_ladle_id", ""))
 	if held_item:
 		if held_item.item_id == ladle_id:
-			_return_sauce_ladle()
+			_fill_sauce_ladle(ladle_id)
 		return
 	_pickup_sauce_ladle(bin, ladle_id)
+
+
+func _fill_sauce_ladle(ladle_id: String) -> void:
+	if not is_instance_valid(held_item) or held_item.item_id != ladle_id:
+		return
+	if not _is_sauce_ladle(ladle_id) or not is_instance_valid(held_visual):
+		return
+	var sauce_mesh := held_visual.find_child("SauceFill", true, false) as MeshInstance3D
+	if not is_instance_valid(sauce_mesh):
+		return
+	held_item.set_meta("is_filled", true)
+	sauce_mesh.visible = true
+	_animate_ladle_scoop(sauce_mesh)
 
 
 func _pickup_sauce_ladle(bin: Area3D, ladle_id: String) -> void:
@@ -832,6 +867,7 @@ func _pickup_sauce_ladle(bin: Area3D, ladle_id: String) -> void:
 	item.global_transform = bin.global_transform
 	_add_box_collider(item, _item_collision_size(ladle_id))
 	item.configure(ladle_id, String(bin.get_meta("sauce_label", "Soßenkelle")), null, true)
+	item.set_meta("is_filled", false)
 	item.pickup()
 	held_item = item
 	held_item_id = item.item_id
@@ -840,11 +876,9 @@ func _pickup_sauce_ladle(bin: Area3D, ladle_id: String) -> void:
 	held_origin_station = null
 	held_origin_transform = Transform3D.IDENTITY
 	held_sauce_home.visible = false
-	var sauce_fill := _prepare_ladle_fill(held_visual, ladle_id)
+	_prepare_ladle_fill(held_visual, ladle_id)
 	if not _attach_held_visual(held_visual):
 		_return_sauce_ladle()
-		return
-	_animate_ladle_scoop(sauce_fill)
 
 
 func _prepare_ladle_fill(ladle_visual: Node3D, ladle_id: String) -> MeshInstance3D:
