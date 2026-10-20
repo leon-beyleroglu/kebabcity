@@ -258,7 +258,7 @@ roughness = 0.28
 
 [sub_resource type="BoxMesh" id="BoxMesh_t8aj2"]
 material = SubResource("StandardMaterial3D_qromb")
-size = Vector3(1.1254272, 1.1958008, 1)
+size = Vector3(1.2135925, 1.1958008, 1)
 
 [sub_resource type="StandardMaterial3D" id="MatCounterLaminate"]
 resource_name = "Warm Walnut Counter Laminate"
@@ -1786,7 +1786,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.535, 0.595)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.50958765, 0.5949998)
 
 [node name="TrashCan" type="StaticBody3D" parent="." unique_id=2019941018 groups=["trash_can"]]
-transform = Transform3D(0.70710677, 0, -0.70710677, 0, 1, 0, 0.70710677, 0, 0.70710677, 3.339793, 0.1, -4.5353136)
+transform = Transform3D(0.70710677, 0, -0.70710677, 0, 1, 0, 0.70710677, 0, 0.70710677, 4.1278877, 0.1, -4.5353136)
 collision_layer = 128
 collision_mask = 0
 metadata/trash_can = true
@@ -1831,7 +1831,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.525, 0)
 shape = SubResource("ShapeTrashCan")
 
 [node name="KitchenBackShelf2" type="MeshInstance3D" parent="." unique_id=1157267575]
-transform = Transform3D(6, 0, 0, 0, 1, 0, 0, 0, 1, -0.5424912, 0.6891401, -5.170214)
+transform = Transform3D(6, 0, 0, 0, 1, 0, 0, 0, 1, -0.27799535, 0.6891401, -5.170214)
 material_override = SubResource("MatCounterCladding")
 mesh = SubResource("BoxMesh_t8aj2")
 
@@ -1941,9 +1941,10 @@ material_override = SubResource("StandardMaterial3D_o7dl6")
 mesh = SubResource("MeshDripTrayRim")
 
 [node name="ShavedMeatPan" type="Node3D" parent="DonerSpit/Catchment" unique_id=394042216]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.95, 0.1, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.9499998, -0.19777966, 0)
 
 [node name="PanBasin" type="MeshInstance3D" parent="DonerSpit/Catchment/ShavedMeatPan" unique_id=1256926371]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.46139765, 0, 0)
 material_override = SubResource("StandardMaterial3D_o7dl6")
 mesh = SubResource("MeshGNContainerBase")
 
@@ -1971,7 +1972,7 @@ mesh = SubResource("MeshGNContainerRimShort")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.11, 0)
 
 [node name="PortionSpawnPoint" type="Marker3D" parent="DonerSpit/Catchment" unique_id=1497249812]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.3428564, 0.27999997, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.491293, -0.14911151, 0)
 
 [node name="Grill" type="StaticBody3D" parent="." unique_id=7977972]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.7, 0.55, -2.1499195)
