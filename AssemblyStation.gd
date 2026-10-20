@@ -61,6 +61,20 @@ func place_item(item: Node3D, item_id: String, hit_point: Vector3, hit_normal: V
 	item.set_meta("ingredient_id", item_id)
 	item.set_meta("prep_station", self)
 	item.set_meta("placed_on_assembly_station", true)
+	item.add_to_group("placed_items")
+	if item is CollisionObject3D:
+		(item as CollisionObject3D).collision_layer = 1 << 1
+		(item as CollisionObject3D).collision_mask = 0
+	for collision_node in item.find_children("*", "CollisionShape3D", true, false):
+		var collision_shape := collision_node as CollisionShape3D
+		if not is_instance_valid(collision_shape):
+			continue
+		collision_shape.disabled = false
+		var box_shape := collision_shape.shape as BoxShape3D
+		if is_instance_valid(box_shape):
+			var enlarged_size := box_shape.size
+			enlarged_size.y = maxf(enlarged_size.y, 0.24)
+			box_shape.size = enlarged_size
 	_register_item(item, item_id)
 	return item
 
@@ -79,7 +93,9 @@ func _register_item(item: Node3D, item_id: String) -> void:
 	if current_items.has(item):
 		return
 	current_items.append(item)
-	item.tree_exiting.connect(_on_placed_item_tree_exiting.bind(item), CONNECT_ONE_SHOT)
+	var exit_callback := _on_placed_item_tree_exiting.bind(item)
+	if not item.tree_exiting.is_connected(exit_callback):
+		item.tree_exiting.connect(exit_callback, CONNECT_ONE_SHOT)
 	item_placed.emit(item_id, item)
 
 

@@ -2072,14 +2072,14 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.7549808, 0)
 current = true
 
 [node name="InteractionRayCast" type="RayCast3D" parent="Player/Camera3D" unique_id=1249246311]
-target_position = Vector3(0, 0, -3.2)
-collision_mask = 128
+target_position = Vector3(0, 0, -3.6)
+collision_mask = 130
 collide_with_areas = true
 
 [node name="ArmsHolder" type="Node3D" parent="Player/Camera3D" unique_id=1693876997]
 
 [node name="LeftHandViewmodel" type="MeshInstance3D" parent="Player/Camera3D/ArmsHolder" unique_id=1339334792]
-transform = Transform3D(0.98480767, 0.17364822, -4.9902322e-09, -0.1736191, 0.9846423, -0.01832766, -0.0031825416, 0.018049233, 0.99983215, -0.27, -0.3892858, -0.5117719)
+transform = Transform3D(0.98480767, 0.17364824, -3.84866e-09, -0.17289048, 0.9805102, 0.09332329, 0.016205445, -0.091905415, 0.9956361, -0.27, -0.45242, -0.7129123)
 material_override = SubResource("MatViewmodelSkin")
 cast_shadow = 0
 mesh = ExtResource("21_left_hand")
@@ -2093,7 +2093,7 @@ transform = Transform3D(0.9986295, -0.052336078, 0, 0.052336078, 0.9986295, 0, 0
 gizmo_extents = 0.018
 
 [node name="RightHandViewmodel" type="MeshInstance3D" parent="Player/Camera3D/ArmsHolder" unique_id=181873085]
-transform = Transform3D(0.98480767, -0.17364822, 4.9902322e-09, 0.1736191, 0.9846423, -0.01832766, 0.0031825416, 0.018049233, 0.99983215, 0.27, -0.3892858, -0.5117719)
+transform = Transform3D(0.98480767, -0.17364824, 3.84866e-09, 0.17289048, 0.9805102, 0.09332329, -0.016205445, -0.091905415, 0.9956361, 0.27, -0.45242, -0.7129123)
 material_override = SubResource("MatViewmodelSkin")
 cast_shadow = 0
 mesh = ExtResource("22_right_hand")
