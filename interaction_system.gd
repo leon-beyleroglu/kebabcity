@@ -4,7 +4,7 @@ extends Node
 const InteractableItemScript = preload("res://interactable_item.gd")
 const DonerMeatStationScript = preload("res://doner_meat_station.gd")
 
-const INTERACTION_RANGE := 2.8
+const INTERACTION_RANGE := 3.2
 const INTERACTION_LAYER := 1 << 7
 const PREP_ITEM_LAYER := 1 << 8
 const CUT_DURATION := 1.0
@@ -16,6 +16,7 @@ enum OvenSlotState { EMPTY, BAKING, FINISHED }
 
 var player: CharacterBody3D
 var camera: Camera3D
+var interaction_ray: RayCast3D
 var hold_socket: Marker3D
 var right_hand_socket: Marker3D
 var left_hand_socket: Marker3D
@@ -29,6 +30,7 @@ var ladle_scoop_tween: Tween
 var held_item: Area3D
 var held_visual: Node3D
 var focused_item: Area3D
+var focused_container: Area3D
 var focused_meat: Area3D
 var focused_prep: Node3D
 var focused_knife_mount: Node3D
@@ -65,6 +67,7 @@ var pickup_templates: Dictionary = {}
 func setup(owner_player: CharacterBody3D, view_camera: Camera3D, hand_slot: Marker3D) -> void:
 	player = owner_player
 	camera = view_camera
+	interaction_ray = camera.get_node_or_null("InteractionRayCast") as RayCast3D
 	hold_socket = hand_slot
 	_resolve_hand_sockets()
 	_setup_input()
@@ -132,11 +135,6 @@ func _register_scene_targets() -> void:
 			"cut_meat": templates_root.get_node_or_null("MeatPortion"),
 		}
 		templates_root.visible = false
-	_register_existing_item(root.get_node_or_null("Test Ablage/Kebab Theke/Zutaten/Salat"), "salad", "Salat")
-	_register_existing_item(root.get_node_or_null("Test Ablage/Kebab Theke/Zutaten/Tomaten"), "tomato", "Tomaten")
-	_register_existing_item(root.get_node_or_null("Test Ablage/Kebab Theke/Zutaten/Kraut"), "red_cabbage", "Lila Kraut")
-	_register_existing_item(root.get_node_or_null("Test Ablage/Kebab Theke/Zutaten/Zwiebeln"), "onion", "Zwiebeln")
-	_register_existing_item(root.get_node_or_null("Test Ablage/Kebab Theke/Zutaten/Gurkenstreifen"), "cucumber", "Gurken")
 	_register_existing_item(root.get_node_or_null("Test Ablage/Kebab Theke/LavashAblage/Lavash1"), "lavash", "Lavash")
 	_register_existing_item(root.get_node_or_null("Test Ablage/Kebab Theke/LavashAblage/Lavash2"), "lavash", "Lavash")
 	_register_existing_item(root.get_node_or_null("Test Ablage/Kebab Theke/LavashAblage/Lavash3"), "lavash", "Lavash")
@@ -234,6 +232,7 @@ func _process(delta: float) -> void:
 	ui_layer.visible = first_person
 	if not first_person:
 		focused_item = null
+		focused_container = null
 		focused_meat = null
 		focused_prep = null
 		focused_knife_mount = null
@@ -249,6 +248,7 @@ func _process(delta: float) -> void:
 
 func _update_focus() -> void:
 	focused_item = null
+	focused_container = null
 	focused_meat = null
 	focused_prep = null
 	focused_knife_mount = null
@@ -258,15 +258,24 @@ func _update_focus() -> void:
 	focused_durum_assembly = null
 	focused_customer = null
 	focus_hit_normal = Vector3.UP
-	var query := PhysicsRayQueryParameters3D.create(camera.global_position, camera.global_position - camera.global_basis.z * INTERACTION_RANGE, INTERACTION_LAYER)
-	query.collide_with_areas = true
-	query.collide_with_bodies = true
-	var hit := camera.get_world_3d().direct_space_state.intersect_ray(query)
-	if hit.is_empty():
-		return
-	focus_hit_position = hit["position"]
-	focus_hit_normal = (hit.get("normal", Vector3.UP) as Vector3).normalized()
-	var collider: Object = hit.get("collider")
+	var collider: Object
+	if is_instance_valid(interaction_ray):
+		interaction_ray.force_raycast_update()
+		if not interaction_ray.is_colliding():
+			return
+		focus_hit_position = interaction_ray.get_collision_point()
+		focus_hit_normal = interaction_ray.get_collision_normal().normalized()
+		collider = interaction_ray.get_collider()
+	else:
+		var query := PhysicsRayQueryParameters3D.create(camera.global_position, camera.global_position - camera.global_basis.z * INTERACTION_RANGE, INTERACTION_LAYER)
+		query.collide_with_areas = true
+		query.collide_with_bodies = true
+		var hit := camera.get_world_3d().direct_space_state.intersect_ray(query)
+		if hit.is_empty():
+			return
+		focus_hit_position = hit["position"]
+		focus_hit_normal = (hit.get("normal", Vector3.UP) as Vector3).normalized()
+		collider = hit.get("collider")
 	if collider is CharacterBody3D and (collider.is_in_group("customer_npc") or collider.has_meta("customer_npc")):
 		focused_customer = collider
 	elif collider is Area3D and (collider.is_in_group("durum_assembly") or collider.has_meta("durum_assembly")):
@@ -275,6 +284,8 @@ func _update_focus() -> void:
 		focused_trash_can = collider
 	elif collider is Area3D and collider.has_meta("sauce_ladle_id"):
 		focused_sauce_bin = collider
+	elif collider is Area3D and collider.has_meta("ingredient_id"):
+		focused_container = collider
 	elif collider is Area3D and collider.has_meta("interactable") and collider.available and not held_item:
 		focused_item = collider
 	elif collider is Area3D and collider.has_meta("doner_meat_station"):
@@ -305,6 +316,8 @@ func _unhandled_input(event: InputEvent) -> void:
 			_interact_with_oven()
 		elif focused_sauce_bin:
 			_interact_with_sauce_bin(focused_sauce_bin)
+		elif focused_container and not held_item:
+			interact_with_container(focused_container)
 		elif focused_prep and held_item:
 			if held_item.item_id == "baked_lavash":
 				_create_durum_assembly(focused_prep, focus_hit_position, focus_hit_normal)
@@ -372,6 +385,41 @@ func _pickup_single_portion(source: Area3D) -> void:
 	held_item.pickup()
 	held_visual = portion_visual
 	held_visual.name = "Held_%s" % source.item_id
+	if not _attach_held_visual(held_visual):
+		_return_held()
+
+
+func interact_with_container(container: Node3D) -> void:
+	if is_instance_valid(held_item) or not is_instance_valid(container):
+		return
+	var item_id := String(container.get_meta("ingredient_id", ""))
+	if item_id.is_empty():
+		return
+	var template: Node3D
+	var template_path := container.get_meta("pickup_template", NodePath()) as NodePath
+	if not template_path.is_empty():
+		template = container.get_node_or_null(template_path) as Node3D
+	if not is_instance_valid(template):
+		template = pickup_templates.get(item_id) as Node3D
+	if not is_instance_valid(template):
+		return
+	var new_visual := template.duplicate() as Node3D
+	if not is_instance_valid(new_visual) or new_visual == template:
+		return
+	_normalize_pickup_copy(new_visual)
+	new_visual.visible = true
+	var new_item: Area3D = InteractableItemScript.new()
+	new_item.name = "HeldPortion_%s" % item_id
+	get_tree().current_scene.add_child(new_item)
+	new_item.global_transform = Transform3D(Basis.IDENTITY, container.global_position)
+	_add_box_collider(new_item, _item_collision_size(item_id))
+	new_item.configure(item_id, String(container.get_meta("ingredient_label", item_id)), null, true)
+	held_origin_station = null
+	held_origin_transform = Transform3D.IDENTITY
+	held_item = new_item
+	held_item.pickup()
+	held_visual = new_visual
+	held_visual.name = "Held_%s" % item_id
 	if not _attach_held_visual(held_visual):
 		_return_held()
 
@@ -549,7 +597,7 @@ func _pickup_sauce_ladle(bin: Area3D, ladle_id: String) -> void:
 	if held_item or not _is_sauce_ladle(ladle_id):
 		return
 	var visual := _duplicate_pickup_template(ladle_id)
-	var home := bin.get_parent().get_node_or_null("SauceLadle") as Node3D
+	var home := bin.get_node_or_null("SauceLadle") as Node3D
 	if not is_instance_valid(visual) or not is_instance_valid(home):
 		if is_instance_valid(visual):
 			visual.queue_free()
@@ -744,11 +792,52 @@ func _duplicate_pickup_template(item_id: String) -> Node3D:
 	var copy := template.duplicate() as Node3D
 	if not is_instance_valid(copy) or copy == template:
 		return null
+	_normalize_pickup_copy(copy)
 	copy.visible = true
 	for mesh in copy.find_children("*", "MeshInstance3D", true, false):
 		mesh.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 		mesh.gi_mode = GeometryInstance3D.GI_MODE_DISABLED
 	return copy
+
+
+func _normalize_pickup_copy(copy: Node3D) -> void:
+	var pivot_mode := String(copy.get_meta("pivot", ""))
+	if pivot_mode.is_empty():
+		return
+	var bounds_data := {"has_bounds": false, "bounds": AABB()}
+	if pivot_mode == "handle_grip_center":
+		var handle := copy.find_child("Handle", true, false) as Node3D
+		if is_instance_valid(handle):
+			_accumulate_pickup_bounds(handle, Transform3D.IDENTITY, bounds_data)
+	else:
+		for child in copy.get_children():
+			_accumulate_pickup_bounds(child, Transform3D.IDENTITY, bounds_data)
+	if not bool(bounds_data["has_bounds"]):
+		return
+	var bounds: AABB = bounds_data["bounds"]
+	var center := bounds.get_center()
+	var anchor := center if pivot_mode == "handle_grip_center" else Vector3(center.x, bounds.position.y, center.z)
+	for child in copy.get_children():
+		var child_3d := child as Node3D
+		if child_3d:
+			child_3d.position -= anchor
+
+
+func _accumulate_pickup_bounds(node: Node, parent_transform: Transform3D, bounds_data: Dictionary) -> void:
+	var node_transform := parent_transform
+	var node_3d := node as Node3D
+	if node_3d:
+		node_transform = parent_transform * node_3d.transform
+	var mesh_instance := node as MeshInstance3D
+	if mesh_instance and mesh_instance.mesh:
+		var mesh_bounds := node_transform * mesh_instance.mesh.get_aabb()
+		if bool(bounds_data["has_bounds"]):
+			bounds_data["bounds"] = (bounds_data["bounds"] as AABB).merge(mesh_bounds)
+		else:
+			bounds_data["bounds"] = mesh_bounds
+			bounds_data["has_bounds"] = true
+	for child in node.get_children():
+		_accumulate_pickup_bounds(child, node_transform, bounds_data)
 
 func _return_held() -> void:
 	if not held_item:
