@@ -4460,7 +4460,7 @@ mesh = SubResource("MeshCabbageStrip")
 
 [node name="Sossen" type="Node3D" parent="Test Ablage/Kebab Theke/Zutaten" unique_id=2073087439]
 
-[node name="GarlicSauceBin" type="Area3D" parent="Test Ablage/Kebab Theke/Zutaten/Sossen" unique_id=2028713831]
+[node name="GarlicSauceBin" type="Area3D" parent="Test Ablage/Kebab Theke/Zutaten/Sossen" unique_id=2028713831 groups=["sauce_containers"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.1402109, 1.36, 16.91)
 collision_layer = 128
 collision_mask = 0
@@ -4468,6 +4468,7 @@ monitoring = false
 metadata/sauce_ladle_id = "garlic_sauce_ladle"
 metadata/sauce_portion_id = "garlic_sauce"
 metadata/sauce_label = "Knoblauchsoße"
+metadata/sauce_type = "garlic"
 
 [node name="GNContainer" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten/Sossen/GarlicSauceBin" unique_id=827061220]
 material_override = SubResource("MatPanSteel")
@@ -4570,19 +4571,21 @@ transform = Transform3D(0.55, 0, 0, 0, 0.45, 0, 0, 0, 1.6, -0.16, 0.046, 0.06)
 material_override = SubResource("MatHerbFlake")
 mesh = SubResource("MeshHerbFlake")
 
-[node name="SauceLadle" type="Node3D" parent="Test Ablage/Kebab Theke/Zutaten/Sossen/GarlicSauceBin" unique_id=590723042]
+[node name="LadleRestSocket" type="Marker3D" parent="Test Ablage/Kebab Theke/Zutaten/Sossen/GarlicSauceBin"]
 
-[node name="Handle" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten/Sossen/GarlicSauceBin/SauceLadle" unique_id=2074054147]
+[node name="SauceLadle" type="Node3D" parent="Test Ablage/Kebab Theke/Zutaten/Sossen/GarlicSauceBin/LadleRestSocket" unique_id=590723042]
+
+[node name="Handle" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten/Sossen/GarlicSauceBin/LadleRestSocket/SauceLadle" unique_id=2074054147]
 transform = Transform3D(0.72552735, 0.6648442, 0.17774212, -0.6546428, 0.7463992, -0.119712204, -0.21225654, -0.029503115, 0.9767685, 0.1, 0.32, 0.04)
 material_override = SubResource("MatLadleSteel")
 mesh = SubResource("MeshSauceLadleHandle")
 
-[node name="Bowl" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten/Sossen/GarlicSauceBin/SauceLadle" unique_id=1668131382]
+[node name="Bowl" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten/Sossen/GarlicSauceBin/LadleRestSocket/SauceLadle" unique_id=1668131382]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.1, 0.17, -0.04)
 material_override = SubResource("MatLadleSteel")
 mesh = SubResource("MeshSauceLadleBowl")
 
-[node name="SauceFill" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten/Sossen/GarlicSauceBin/SauceLadle" unique_id=862225082]
+[node name="SauceFill" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten/Sossen/GarlicSauceBin/LadleRestSocket/SauceLadle" unique_id=862225082]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.1, 0.205, -0.04)
 material_override = SubResource("MatGarlicSauce")
 mesh = SubResource("MeshSauceLadleFill")
@@ -4590,7 +4593,7 @@ mesh = SubResource("MeshSauceLadleFill")
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Test Ablage/Kebab Theke/Zutaten/Sossen/GarlicSauceBin" unique_id=2125840293]
 shape = SubResource("ShapeSauceBinInteraction")
 
-[node name="CocktailSauceBin" type="Area3D" parent="Test Ablage/Kebab Theke/Zutaten/Sossen" unique_id=802506595]
+[node name="CocktailSauceBin" type="Area3D" parent="Test Ablage/Kebab Theke/Zutaten/Sossen" unique_id=802506595 groups=["sauce_containers"]]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.8492708, 1.36, 16.91)
 collision_layer = 128
 collision_mask = 0
@@ -4598,6 +4601,7 @@ monitoring = false
 metadata/sauce_ladle_id = "cocktail_sauce_ladle"
 metadata/sauce_portion_id = "cocktail_sauce"
 metadata/sauce_label = "Cocktailsoße"
+metadata/sauce_type = "cocktail"
 
 [node name="GNContainer" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten/Sossen/CocktailSauceBin" unique_id=527632641]
 material_override = SubResource("MatPanSteel")
@@ -4668,19 +4672,21 @@ transform = Transform3D(1, 0, 0, 0, 0.42, 0, 0, 0, 0.72, -0.052, 0.041, 0.024)
 material_override = SubResource("MatCocktailSauce")
 mesh = SubResource("MeshSauceSwirlInner")
 
-[node name="SauceLadle" type="Node3D" parent="Test Ablage/Kebab Theke/Zutaten/Sossen/CocktailSauceBin" unique_id=1541741858]
+[node name="LadleRestSocket" type="Marker3D" parent="Test Ablage/Kebab Theke/Zutaten/Sossen/CocktailSauceBin"]
 
-[node name="Handle" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten/Sossen/CocktailSauceBin/SauceLadle" unique_id=399729055]
+[node name="SauceLadle" type="Node3D" parent="Test Ablage/Kebab Theke/Zutaten/Sossen/CocktailSauceBin/LadleRestSocket" unique_id=1541741858]
+
+[node name="Handle" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten/Sossen/CocktailSauceBin/LadleRestSocket/SauceLadle" unique_id=399729055]
 transform = Transform3D(0.72552735, 0.6648442, 0.17774212, -0.6546428, 0.7463992, -0.119712204, -0.21225654, -0.029503115, 0.9767685, 0.1, 0.32, 0.04)
 material_override = SubResource("MatLadleSteel")
 mesh = SubResource("MeshSauceLadleHandle")
 
-[node name="Bowl" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten/Sossen/CocktailSauceBin/SauceLadle" unique_id=721850675]
+[node name="Bowl" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten/Sossen/CocktailSauceBin/LadleRestSocket/SauceLadle" unique_id=721850675]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.1, 0.17, -0.04)
 material_override = SubResource("MatLadleSteel")
 mesh = SubResource("MeshSauceLadleBowl")
 
-[node name="SauceFill" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten/Sossen/CocktailSauceBin/SauceLadle" unique_id=170353851]
+[node name="SauceFill" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/Zutaten/Sossen/CocktailSauceBin/LadleRestSocket/SauceLadle" unique_id=170353851]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.1, 0.205, -0.04)
 material_override = SubResource("MatCocktailSauce")
 mesh = SubResource("MeshSauceLadleFill")

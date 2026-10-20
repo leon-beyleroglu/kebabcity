@@ -328,7 +328,9 @@ func _unhandled_input(event: InputEvent) -> void:
 		handle_interaction(collider, interaction_ray.get_collision_point(), interaction_ray.get_collision_normal())
 		get_viewport().set_input_as_handled()
 	elif event.is_action_pressed("mouse_right"):
-		if focused_durum_assembly and not held_item and _roll_durum(focused_durum_assembly):
+		if _try_return_sauce_ladle_to_matching_bin():
+			get_viewport().set_input_as_handled()
+		elif focused_durum_assembly and not held_item and _roll_durum(focused_durum_assembly):
 			get_viewport().set_input_as_handled()
 	elif event.is_action_pressed("drop_item") and held_item:
 		_return_held()
@@ -860,7 +862,7 @@ func _pickup_sauce_ladle(bin: Area3D, ladle_id: String) -> void:
 	if held_item or not _is_sauce_ladle(ladle_id):
 		return
 	var visual := _duplicate_pickup_template(ladle_id)
-	var home := bin.get_node_or_null("SauceLadle") as Node3D
+	var home := bin.get_node_or_null("LadleRestSocket/SauceLadle") as Node3D
 	if not is_instance_valid(visual) or not is_instance_valid(home):
 		if is_instance_valid(visual):
 			visual.queue_free()
@@ -871,6 +873,8 @@ func _pickup_sauce_ladle(bin: Area3D, ladle_id: String) -> void:
 	item.global_transform = bin.global_transform
 	_add_box_collider(item, _item_collision_size(ladle_id))
 	item.configure(ladle_id, String(bin.get_meta("sauce_label", "Soßenkelle")), null, true)
+	item.add_to_group("sauce_ladles")
+	item.set_meta("sauce_type", String(bin.get_meta("sauce_type", "")))
 	item.set_meta("is_filled", false)
 	item.pickup()
 	held_item = item
@@ -990,13 +994,40 @@ func _apply_sauce_to_prep(station: Node3D, hit_position: Vector3, hit_normal: Ve
 	_return_sauce_ladle()
 
 
-func _return_sauce_ladle() -> void:
+func _try_return_sauce_ladle_to_matching_bin() -> bool:
+	if not is_instance_valid(held_item) or not held_item.is_in_group("sauce_ladles"):
+		return false
+	if not is_instance_valid(interaction_ray):
+		return false
+	interaction_ray.force_raycast_update()
+	if not interaction_ray.is_colliding():
+		return false
+	var hit := interaction_ray.get_collider() as Node
+	if not is_instance_valid(hit):
+		return false
+	var held_sauce_type := String(held_item.get_meta("sauce_type", ""))
+	if held_sauce_type.is_empty() or String(hit.get_meta("sauce_type", "")) != held_sauce_type:
+		return false
+	var rest_socket := hit.get_node_or_null("LadleRestSocket") as Node3D
+	if not is_instance_valid(rest_socket):
+		return false
+	_return_sauce_ladle(rest_socket)
+	return true
+
+
+func _return_sauce_ladle(rest_socket: Node3D = null) -> void:
 	_cancel_ladle_scoop()
 	if is_instance_valid(held_visual):
 		held_visual.queue_free()
 	if is_instance_valid(held_item):
+		_set_collisions_enabled(held_item, true)
 		held_item.queue_free()
 	if is_instance_valid(held_sauce_home):
+		if is_instance_valid(rest_socket) and held_sauce_home.get_parent() != rest_socket:
+			held_sauce_home.reparent(rest_socket)
+		if is_instance_valid(rest_socket):
+			held_sauce_home.transform = Transform3D.IDENTITY
+		_set_collisions_enabled(held_sauce_home, true)
 		held_sauce_home.visible = true
 	held_item = null
 	held_item_id = ""
