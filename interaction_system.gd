@@ -739,16 +739,20 @@ func _add_sauce_to_durum(assembly: Area3D, hit_position: Vector3) -> void:
 		portion_visual.queue_free()
 		return
 
+	var ingredients: Array = assembly.get_meta("ingredients", [])
+	var applied_sauce_count := 0
+	for ingredient_id in ingredients:
+		if _is_sauce_portion(String(ingredient_id)):
+			applied_sauce_count += 1
+	var local_pos := Vector3(0.0, 0.040, -0.015) if applied_sauce_count == 0 else Vector3(0.0, 0.042, 0.015)
+
 	assembly.add_child(portion_visual)
-	var local_position := assembly.to_local(hit_position)
-	local_position.y = 0.04
 	portion_visual.name = "Sauce_%s_%02d" % [portion_id.to_pascal_case(), int(assembly.get_meta("placed_count", 0)) + 1]
-	portion_visual.position = local_position
-	portion_visual.rotation = Vector3(0.0, randf_range(-PI, PI), 0.0)
+	portion_visual.position = local_pos
+	portion_visual.rotation = Vector3.ZERO
 	portion_visual.scale = Vector3.ONE
 	portion_visual.visible = true
 
-	var ingredients: Array = assembly.get_meta("ingredients", [])
 	ingredients.append(portion_id)
 	assembly.set_meta("ingredients", ingredients)
 	assembly.set_meta("placed_count", int(assembly.get_meta("placed_count", 0)) + 1)
