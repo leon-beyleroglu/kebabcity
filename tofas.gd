@@ -1,97 +1,133 @@
 extends VehicleBody3D
 
-@export var max_engine_force: float = 380.0
-@export var max_brake_force: float = 25.0
-@export var max_steer_angle: float = 0.55
-@export var steer_speed: float = 5.0
-@export var interact_distance: float = 3.2
+@export var max_engine_force := 900.0
+@export var reverse_engine_force := 500.0
+@export var max_brake_force := 35.0
+@export var rolling_brake_force := 2.5
+@export var parking_brake_force := 18.0
+@export var max_steer_angle := 0.4
+@export var steer_speed := 2.5
 
-# Drift-Parameter
-@export var rear_friction_normal: float = 1.8
-@export var rear_friction_drift: float = 0.65
+var can_enter := false
+var is_driving := false
+var nearby_player: CharacterBody3D
+var driver: CharacterBody3D
+var current_steer := 0.0
 
-var is_player_inside: bool = false
-var current_steer: float = 0.0
-
-@onready var wheel_rl: VehicleWheel3D = $WheelRearLeft
-@onready var wheel_rr: VehicleWheel3D = $WheelRearRight
-@onready var car_camera: Camera3D = $CarCameraMount/Camera3D
+@onready var wheel_fl: VehicleWheel3D = $Wheel_FL
+@onready var wheel_fr: VehicleWheel3D = $Wheel_FR
+@onready var wheel_rl: VehicleWheel3D = $Wheel_RL
+@onready var wheel_rr: VehicleWheel3D = $Wheel_RR
+@onready var interaction_area: Area3D = $InteractionArea
+@onready var vehicle_camera: Camera3D = $VehicleCamera
+@onready var driver_seat: Marker3D = $DriverSeat
 @onready var exit_point: Marker3D = $ExitPoint
-@onready var player: CharacterBody3D = get_tree().current_scene.get_node_or_null("Player")
 
-func _unhandled_input(event: InputEvent) -> void:
-	if event.is_action_pressed("interact") or (event is InputEventKey and event.pressed and event.keycode == KEY_E):
-		if is_player_inside:
-			exit_car()
-		elif player and global_position.distance_to(player.global_position) <= interact_distance:
-			enter_car()
 
-func enter_car() -> void:
-	is_player_inside = true
-	
-	# Spieler unsichtbar machen und dessen Kollision/Verarbeitung deaktivieren
-	player.visible = false
-	player.set_physics_process(false)
-	player.set_process_unhandled_input(false)
-	player.get_node("CollisionShape3D").disabled = true
-	
-	# Fahrkamera aktivieren
-	car_camera.current = true
+func _ready() -> void:
+	interaction_area.body_entered.connect(_on_interaction_area_body_entered)
+	interaction_area.body_exited.connect(_on_interaction_area_body_exited)
+	vehicle_camera.current = false
+	engine_force = 0.0
+	brake = parking_brake_force
+	steering = 0.0
+
+
+func enter_vehicle(player: CharacterBody3D) -> void:
+	if is_driving or not is_instance_valid(player):
+		return
+	driver = player
+	is_driving = true
+	can_enter = false
+	sleeping = false
+	if driver.has_method("enter_vehicle_mode"):
+		driver.call("enter_vehicle_mode", self, driver_seat)
+	else:
+		driver.visible = false
+		driver.set_physics_process(false)
+		driver.set_process_input(false)
+		driver.set_process_unhandled_input(false)
+	vehicle_camera.current = true
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 
-func exit_car() -> void:
-	is_player_inside = false
-	
-	# Vollbremsung beim Verlassen, damit das Auto nicht wegrollt
+
+func exit_vehicle() -> void:
+	if not is_driving:
+		return
+	is_driving = false
 	engine_force = 0.0
 	brake = max_brake_force
 	steering = 0.0
-	
-	# Spieler neben der Fahrertür absetzen und reaktivieren
-	player.global_position = exit_point.global_position
-	player.visible = true
-	player.set_physics_process(true)
-	player.set_process_unhandled_input(true)
-	player.get_node("CollisionShape3D").disabled = false
-	
-	# Ego-Perspektive des Spielers reaktivieren
-	var player_cam: Camera3D = player.get_node("Camera3D")
-	player_cam.current = true
+	current_steer = 0.0
+	vehicle_camera.current = false
+	var exiting_player := driver
+	driver = null
+	nearby_player = null
+	can_enter = false
+	if not is_instance_valid(exiting_player):
+		return
+	if exiting_player.has_method("exit_vehicle_mode"):
+		exiting_player.call("exit_vehicle_mode", exit_point.global_transform)
+	else:
+		exiting_player.global_transform = exit_point.global_transform
+		exiting_player.visible = true
+		exiting_player.set_physics_process(true)
+		exiting_player.set_process_input(true)
+		exiting_player.set_process_unhandled_input(true)
+
 
 func _physics_process(delta: float) -> void:
-	# Solange kein Spieler im Auto sitzt: Motor aus, Handbremse an
-	if not is_player_inside:
-		engine_force = 0.0
-		brake = max_brake_force
-		steering = 0.0
+	if not is_driving:
+		engine_force = move_toward(engine_force, 0.0, max_engine_force * delta * 4.0)
+		brake = parking_brake_force
+		current_steer = move_toward(current_steer, 0.0, steer_speed * delta)
+		steering = current_steer
 		return
 
-	# Lenkung über A/D (move_left / move_right)
-	var steer_input := 0.0
-	if Input.is_action_pressed("move_left"):
-		steer_input += 1.0
-	if Input.is_action_pressed("move_right"):
-		steer_input -= 1.0
-
-	var target_steer: float = steer_input * max_steer_angle
+	var steer_input := _get_steer_input()
+	var target_steer := steer_input * max_steer_angle
 	current_steer = move_toward(current_steer, target_steer, steer_speed * delta)
 	steering = current_steer
 
-	# Gas / Rückwärts über W/S (move_forward / move_backward)
-	var throttle := 0.0
-	if Input.is_action_pressed("move_forward"):
-		throttle += 1.0
-	if Input.is_action_pressed("move_backward"):
-		throttle -= 1.0
+	var forward_pressed := Input.is_action_pressed("move_forward") or Input.is_key_pressed(KEY_UP)
+	var reverse_pressed := Input.is_action_pressed("move_backward") or Input.is_key_pressed(KEY_DOWN)
+	var forward_speed := linear_velocity.dot(-global_basis.z)
 
-	engine_force = throttle * max_engine_force
-
-	# Handbremse & Drift (Leertaste / jump)
-	if Input.is_action_pressed("jump"):
-		brake = max_brake_force
-		wheel_rl.wheel_friction_slip = rear_friction_drift
-		wheel_rr.wheel_friction_slip = rear_friction_drift
-	else:
+	if forward_pressed and not reverse_pressed:
+		engine_force = move_toward(engine_force, max_engine_force, max_engine_force * delta * 3.0)
 		brake = 0.0
-		wheel_rl.wheel_friction_slip = rear_friction_normal
-		wheel_rr.wheel_friction_slip = rear_friction_normal
+	elif reverse_pressed and not forward_pressed:
+		if forward_speed > 0.5:
+			engine_force = move_toward(engine_force, 0.0, max_engine_force * delta * 5.0)
+			brake = max_brake_force
+		else:
+			engine_force = move_toward(engine_force, -reverse_engine_force, reverse_engine_force * delta * 3.0)
+			brake = 0.0
+	else:
+		engine_force = move_toward(engine_force, 0.0, max_engine_force * delta * 2.0)
+		brake = rolling_brake_force
+
+
+func _get_steer_input() -> float:
+	var steer_input := Input.get_action_strength("move_left") - Input.get_action_strength("move_right")
+	if Input.is_key_pressed(KEY_LEFT):
+		steer_input += 1.0
+	if Input.is_key_pressed(KEY_RIGHT):
+		steer_input -= 1.0
+	return clampf(steer_input, -1.0, 1.0)
+
+
+func _on_interaction_area_body_entered(body: Node3D) -> void:
+	if body is CharacterBody3D and body.is_in_group("player") and not is_driving:
+		nearby_player = body as CharacterBody3D
+		can_enter = true
+		if body.has_method("set_nearby_vehicle"):
+			body.call("set_nearby_vehicle", self)
+
+
+func _on_interaction_area_body_exited(body: Node3D) -> void:
+	if body == nearby_player and not is_driving:
+		if body.has_method("set_nearby_vehicle"):
+			body.call("set_nearby_vehicle", null)
+		nearby_player = null
+		can_enter = false

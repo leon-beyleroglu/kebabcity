@@ -11,6 +11,7 @@ signal hitscan_hit(collider: Object, position: Vector3, normal: Vector3)
 @export var hand_slot: Marker3D
 
 @onready var camera: Camera3D = $Camera3D
+@onready var player_collision: CollisionShape3D = $CollisionShape3D
 @onready var legacy_avatar: Node3D = $EigenesAvatarModell
 @onready var first_person_hands: Node3D = $Camera3D/ArmsHolder
 @onready var ak47: Node3D = %AK47
@@ -39,6 +40,9 @@ var camera_recoil_pitch := 0.0
 var weapon_recoil := 0.0
 var ak47_rest_position := Vector3.ZERO
 var ak47_rest_rotation := Vector3.ZERO
+var walking_parent: Node
+var nearby_vehicle: Node
+var active_vehicle: Node
 
 const HumanHand = preload("res://human_hand.gd")
 const InteractionSystem = preload("res://interaction_system.gd")
@@ -54,6 +58,7 @@ const AK47_DAMAGE := 25
 const AK47_CAMERA_KICK := deg_to_rad(1.4)
 
 func _ready() -> void:
+	add_to_group("player")
 	Engine.max_fps = 60
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 	camera.position = FIRST_PERSON_POSITION
@@ -84,11 +89,24 @@ func _ready() -> void:
 
 func _input(event: InputEvent) -> void:
 	if event is InputEventKey and event.pressed and not event.echo:
+		if event.keycode == KEY_E or event.physical_keycode == KEY_E:
+			if is_instance_valid(active_vehicle):
+				active_vehicle.call("exit_vehicle")
+			elif is_instance_valid(nearby_vehicle) and bool(nearby_vehicle.get("can_enter")):
+				nearby_vehicle.call("enter_vehicle", self)
+			else:
+				return
+			get_viewport().set_input_as_handled()
+			return
+		if is_instance_valid(active_vehicle):
+			return
 		if event.keycode == KEY_1 or event.physical_keycode == KEY_1:
 			_set_gun_equipped(not ak47.visible)
 			get_viewport().set_input_as_handled()
 			return
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
+		if is_instance_valid(active_vehicle):
+			return
 		Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 		if is_holding_gun:
 			_try_fire_ak47()
@@ -207,6 +225,55 @@ func _set_gun_equipped(equipped: bool) -> void:
 		weapon_recoil = 0.0
 		ak47.position = ak47_rest_position
 		ak47.rotation = ak47_rest_rotation
+
+
+func set_nearby_vehicle(vehicle: Node) -> void:
+	if is_instance_valid(active_vehicle):
+		return
+	nearby_vehicle = vehicle
+
+
+func enter_vehicle_mode(vehicle: Node, driver_seat: Marker3D) -> void:
+	if not is_instance_valid(vehicle) or not is_instance_valid(driver_seat):
+		return
+	active_vehicle = vehicle
+	nearby_vehicle = vehicle
+	if third_person:
+		_toggle_camera_mode()
+	if is_holding_gun:
+		_set_gun_equipped(false)
+	if is_instance_valid(interaction_system):
+		if is_instance_valid(interaction_system.held_item):
+			interaction_system._return_held()
+		interaction_system.set_process_unhandled_input(false)
+	walking_parent = get_parent()
+	velocity = Vector3.ZERO
+	visible = false
+	camera.current = false
+	player_collision.disabled = true
+	set_physics_process(false)
+	set_process_unhandled_input(false)
+	reparent(driver_seat, false)
+	transform = Transform3D.IDENTITY
+
+
+func exit_vehicle_mode(exit_transform: Transform3D) -> void:
+	active_vehicle = null
+	nearby_vehicle = null
+	var target_parent := walking_parent
+	if not is_instance_valid(target_parent):
+		target_parent = get_tree().current_scene
+	reparent(target_parent, false)
+	global_transform = exit_transform
+	velocity = Vector3.ZERO
+	player_collision.disabled = false
+	visible = true
+	first_person_hands.visible = not third_person and not is_holding_gun
+	camera.current = true
+	set_physics_process(true)
+	set_process_unhandled_input(true)
+	if is_instance_valid(interaction_system):
+		interaction_system.set_process_unhandled_input(true)
 
 
 func _try_fire_ak47() -> void:
