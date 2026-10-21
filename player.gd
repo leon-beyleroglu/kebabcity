@@ -1,5 +1,7 @@
 extends CharacterBody3D
 
+signal hitscan_hit(collider: Object, position: Vector3, normal: Vector3)
+
 @export var walk_speed := 5.0
 @export var sprint_speed := 9.0
 @export var jump_velocity := 5.0
@@ -11,11 +13,18 @@ extends CharacterBody3D
 @onready var camera: Camera3D = $Camera3D
 @onready var legacy_avatar: Node3D = $EigenesAvatarModell
 @onready var first_person_hands: Node3D = $Camera3D/ArmsHolder
+@onready var ak47: Node3D = %AK47
+@onready var muzzle_point: Marker3D = %MuzzlePoint
+@onready var muzzle_light: OmniLight3D = %MuzzleLight
+@onready var muzzle_ray: RayCast3D = %MuzzleRay
+
 var avatar_model: Node3D
 var arm_pivots: Array[Node3D] = []
 var leg_pivots: Array[Node3D] = []
+var interaction_system: KebabInteractionSystem
 var orbit_yaw := 0.0
 var orbit_pitch := -0.2
+var first_person_pitch := 0.0
 var zoom_distance := 4.2
 var camera_distance := 4.2
 var follow_target := Vector3.ZERO
@@ -23,6 +32,13 @@ var camera_query := PhysicsShapeQueryParameters3D.new()
 var walk_phase := 0.0
 var motion_blend := 0.0
 var idle_time := 0.0
+var is_holding_gun := false
+var gun_fire_cooldown := 0.0
+var muzzle_flash_time := 0.0
+var camera_recoil_pitch := 0.0
+var weapon_recoil := 0.0
+var ak47_rest_position := Vector3.ZERO
+var ak47_rest_rotation := Vector3.ZERO
 
 const HumanHand = preload("res://human_hand.gd")
 const InteractionSystem = preload("res://interaction_system.gd")
@@ -32,14 +48,26 @@ var third_person := false
 
 const FIRST_PERSON_POSITION := Vector3(0.0, 0.7549808, 0.0)
 const CAMERA_TARGET := Vector3(0.0, 0.38, 0.0)
+const AK47_FIRE_INTERVAL := 0.1
+const AK47_RANGE := 100.0
+const AK47_DAMAGE := 25
+const AK47_CAMERA_KICK := deg_to_rad(1.4)
 
 func _ready() -> void:
 	Engine.max_fps = 60
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 	camera.position = FIRST_PERSON_POSITION
 	camera.rotation = Vector3.ZERO
+	first_person_pitch = camera.rotation.x
 	camera.near = 0.06
 	camera.fov = 72.0
+	ak47.scale = Vector3.ONE
+	ak47.visible = false
+	ak47_rest_position = ak47.position
+	ak47_rest_rotation = ak47.rotation
+	muzzle_light.visible = false
+	muzzle_ray.enabled = false
+	muzzle_ray.add_exception(self)
 	var camera_volume := SphereShape3D.new()
 	camera_volume.radius = 0.24
 	camera_query.shape = camera_volume
@@ -48,10 +76,24 @@ func _ready() -> void:
 	camera_query.margin = 0.04
 	legacy_avatar.visible = false
 	_build_doner_worker()
-	var interaction_system := InteractionSystem.new()
+	interaction_system = InteractionSystem.new()
 	interaction_system.name = "InteractionSystem"
 	add_child(interaction_system)
 	interaction_system.setup(self, camera, hand_slot)
+
+
+func _input(event: InputEvent) -> void:
+	if event is InputEventKey and event.pressed and not event.echo:
+		if event.keycode == KEY_1 or event.physical_keycode == KEY_1:
+			_set_gun_equipped(not ak47.visible)
+			get_viewport().set_input_as_handled()
+			return
+	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
+		Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
+		if is_holding_gun:
+			_try_fire_ak47()
+			get_viewport().set_input_as_handled()
+
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventKey and event.pressed and not event.echo and event.keycode == KEY_F5:
@@ -64,7 +106,7 @@ func _unhandled_input(event: InputEvent) -> void:
 			orbit_pitch = clampf(orbit_pitch - event.relative.y * mouse_sensitivity, deg_to_rad(-62), deg_to_rad(28))
 		else:
 			rotate_y(-event.relative.x * mouse_sensitivity)
-			camera.rotation.x = clampf(camera.rotation.x - event.relative.y * mouse_sensitivity, deg_to_rad(-85), deg_to_rad(85))
+			first_person_pitch = clampf(first_person_pitch - event.relative.y * mouse_sensitivity, deg_to_rad(-85), deg_to_rad(85))
 	if event.is_action_pressed("ui_cancel"):
 		Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
 	elif event is InputEventMouseButton and event.pressed:
@@ -76,6 +118,8 @@ func _unhandled_input(event: InputEvent) -> void:
 			zoom_distance = minf(6.5, zoom_distance + 0.35)
 
 func _toggle_camera_mode() -> void:
+	if not third_person and is_holding_gun:
+		_set_gun_equipped(false)
 	third_person = not third_person
 	legacy_avatar.visible = false
 	avatar_model.visible = third_person
@@ -90,7 +134,8 @@ func _toggle_camera_mode() -> void:
 		global_rotation.y = orbit_yaw
 		camera.top_level = false
 		camera.position = FIRST_PERSON_POSITION
-		camera.rotation = Vector3(orbit_pitch, 0, 0)
+		first_person_pitch = orbit_pitch
+		camera.rotation = Vector3(first_person_pitch, 0, 0)
 
 func _physics_process(delta: float) -> void:
 	if not is_on_floor():
@@ -111,6 +156,7 @@ func _physics_process(delta: float) -> void:
 		velocity.z = move_toward(velocity.z, 0, deceleration * delta)
 	move_and_slide()
 	_animate_actor(delta)
+	_update_ak47(delta)
 	if camera.current:
 		_update_camera(delta)
 
@@ -118,6 +164,7 @@ func _update_camera(delta: float) -> void:
 	var sprinting := Input.is_action_pressed("sprint") and Vector2(velocity.x, velocity.z).length() > walk_speed
 	camera.fov = lerpf(camera.fov, 77.0 if sprinting else 72.0, 1.0 - exp(-delta * 5.0))
 	if not third_person:
+		camera.rotation.x = clampf(first_person_pitch + camera_recoil_pitch, deg_to_rad(-85), deg_to_rad(85))
 		return
 	var target := global_position + CAMERA_TARGET
 	follow_target = follow_target.lerp(target, 1.0 - exp(-delta * 14.0))
@@ -137,6 +184,68 @@ func _update_camera(delta: float) -> void:
 	else:
 		camera.global_basis = orbit_basis
 	avatar_model.visible = camera_distance > 0.95
+
+
+func _set_gun_equipped(equipped: bool) -> void:
+	if equipped and third_person:
+		return
+	if equipped and is_instance_valid(interaction_system) and is_instance_valid(interaction_system.held_item):
+		interaction_system._return_held()
+	ak47.visible = equipped
+	is_holding_gun = ak47.visible
+	first_person_hands.visible = not is_holding_gun and not third_person
+	muzzle_ray.enabled = is_holding_gun
+	if is_instance_valid(interaction_system):
+		interaction_system.set_process_unhandled_input(not is_holding_gun)
+		if is_holding_gun:
+			interaction_system._clear_focus()
+			interaction_system._reset_cutting()
+	if not is_holding_gun:
+		muzzle_light.visible = false
+		muzzle_flash_time = 0.0
+		camera_recoil_pitch = 0.0
+		weapon_recoil = 0.0
+		ak47.position = ak47_rest_position
+		ak47.rotation = ak47_rest_rotation
+
+
+func _try_fire_ak47() -> void:
+	if not is_holding_gun or third_person or gun_fire_cooldown > 0.0:
+		return
+	gun_fire_cooldown = AK47_FIRE_INTERVAL
+	muzzle_flash_time = 0.05
+	muzzle_light.visible = true
+	camera_recoil_pitch = minf(camera_recoil_pitch + AK47_CAMERA_KICK, deg_to_rad(8.0))
+	weapon_recoil = 1.0
+
+	var viewport_center := get_viewport().get_visible_rect().size * 0.5
+	var ray_origin := camera.project_ray_origin(viewport_center)
+	var ray_end := ray_origin + camera.project_ray_normal(viewport_center) * AK47_RANGE
+	var query := PhysicsRayQueryParameters3D.create(ray_origin, ray_end)
+	query.exclude = [get_rid()]
+	query.collide_with_areas = true
+	query.collide_with_bodies = true
+	var hit := get_world_3d().direct_space_state.intersect_ray(query)
+	if hit.is_empty():
+		return
+	var collider := hit.get("collider") as Object
+	var hit_position := hit.get("position", ray_end) as Vector3
+	var hit_normal := hit.get("normal", Vector3.UP) as Vector3
+	hitscan_hit.emit(collider, hit_position, hit_normal)
+	if is_instance_valid(collider) and collider.has_method("take_damage"):
+		collider.call("take_damage", AK47_DAMAGE)
+
+
+func _update_ak47(delta: float) -> void:
+	gun_fire_cooldown = maxf(0.0, gun_fire_cooldown - delta)
+	if muzzle_flash_time > 0.0:
+		muzzle_flash_time = maxf(0.0, muzzle_flash_time - delta)
+		if muzzle_flash_time <= 0.0:
+			muzzle_light.visible = false
+	camera_recoil_pitch = move_toward(camera_recoil_pitch, 0.0, deg_to_rad(7.5) * delta)
+	weapon_recoil = move_toward(weapon_recoil, 0.0, 8.0 * delta)
+	ak47.position = ak47_rest_position + Vector3(0, 0, weapon_recoil * 0.035)
+	ak47.rotation = ak47_rest_rotation + Vector3(weapon_recoil * deg_to_rad(3.5), 0, 0)
 
 func _animate_actor(delta: float) -> void:
 	idle_time += delta

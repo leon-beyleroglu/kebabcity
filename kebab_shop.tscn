@@ -500,6 +500,50 @@ tonemap_mode = 3
 radius = 0.6
 height = 2.356006
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_853is"]
+albedo_color = Color(0.055, 0.065, 0.07, 1)
+metallic = 0.9
+roughness = 0.3
+
+[sub_resource type="BoxMesh" id="MeshAK47Receiver"]
+material = SubResource("StandardMaterial3D_853is")
+size = Vector3(0.18, 0.14, 0.28)
+
+[sub_resource type="CylinderMesh" id="MeshAK47Barrel"]
+material = SubResource("StandardMaterial3D_853is")
+top_radius = 0.018
+bottom_radius = 0.018
+height = 0.48
+radial_segments = 16
+
+[sub_resource type="CylinderMesh" id="MeshAK47MuzzleBrake"]
+material = SubResource("StandardMaterial3D_853is")
+top_radius = 0.027
+bottom_radius = 0.027
+height = 0.08
+radial_segments = 12
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_63lsx"]
+albedo_color = Color(0.42, 0.12, 0.045, 1)
+roughness = 0.62
+
+[sub_resource type="BoxMesh" id="MeshAK47Stock"]
+material = SubResource("StandardMaterial3D_63lsx")
+size = Vector3(0.16, 0.16, 0.46466798)
+
+[sub_resource type="BoxMesh" id="MeshAK47Handguard"]
+material = SubResource("StandardMaterial3D_63lsx")
+size = Vector3(0.19, 0.13, 0.24)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_wel7i"]
+albedo_color = Color(0.025, 0.028, 0.03, 1)
+metallic = 0.7
+roughness = 0.38
+
+[sub_resource type="BoxMesh" id="MeshAK47Magazine"]
+material = SubResource("StandardMaterial3D_wel7i")
+size = Vector3(0.12, 0.3, 0.105)
+
 [sub_resource type="StandardMaterial3D" id="MatViewmodelSkin"]
 resource_name = "Lightweight Natural Skin PBR"
 cull_mode = 2
@@ -1324,79 +1368,6 @@ size = Vector3(1.8790283, 1.4751419, 1)
 material = SubResource("MatMetal")
 size = Vector3(1.8280029, 1.4751419, 1)
 
-[sub_resource type="BoxShape3D" id="ShapeTofasChassis"]
-size = Vector3(1.7, 0.9, 4.2)
-
-[sub_resource type="StandardMaterial3D" id="MatTofasWhite"]
-albedo_color = Color(0.95, 0.95, 0.94, 1)
-roughness = 0.35
-
-[sub_resource type="StandardMaterial3D" id="MatTofasGlass"]
-transparency = 1
-albedo_color = Color(0.1, 0.16, 0.22, 0.55)
-metallic = 0.1
-roughness = 0.1
-
-[sub_resource type="StandardMaterial3D" id="MatTofasBumperPlastic"]
-albedo_color = Color(0.12, 0.12, 0.12, 1)
-roughness = 0.85
-
-[sub_resource type="StandardMaterial3D" id="MatTofasGrille"]
-albedo_color = Color(0.08, 0.08, 0.08, 1)
-roughness = 0.7
-
-[sub_resource type="StandardMaterial3D" id="MatTofasLogo"]
-albedo_color = Color(0.85, 0.85, 0.85, 1)
-metallic = 0.9
-roughness = 0.2
-
-[sub_resource type="StandardMaterial3D" id="MatTofasHeadlight"]
-albedo_color = Color(0.98, 0.98, 0.95, 1)
-emission_enabled = true
-emission = Color(1, 0.95, 0.85, 1)
-emission_energy_multiplier = 1.8
-
-[sub_resource type="StandardMaterial3D" id="MatTofasBlinker"]
-albedo_color = Color(1, 0.55, 0, 1)
-roughness = 0.3
-
-[sub_resource type="StandardMaterial3D" id="MatTofasTailRed"]
-albedo_color = Color(0.85, 0.05, 0.05, 1)
-emission_enabled = true
-emission = Color(0.85, 0.05, 0.05, 1)
-emission_energy_multiplier = 1.2
-
-[sub_resource type="StandardMaterial3D" id="MatTofasTailOrange"]
-albedo_color = Color(0.95, 0.5, 0, 1)
-
-[sub_resource type="StandardMaterial3D" id="MatTofasExhaust"]
-albedo_color = Color(0.7, 0.7, 0.72, 1)
-metallic = 0.95
-roughness = 0.2
-
-[sub_resource type="CylinderMesh" id="MeshExhaustPipe"]
-material = SubResource("MatTofasExhaust")
-top_radius = 0.05
-bottom_radius = 0.05
-height = 0.45
-
-[sub_resource type="CylinderMesh" id="MeshTofasWheel"]
-material = SubResource("MatTofasBumperPlastic")
-top_radius = 0.33
-bottom_radius = 0.33
-height = 0.22
-
-[sub_resource type="StandardMaterial3D" id="MatTofasRim"]
-albedo_color = Color(0.82, 0.82, 0.85, 1)
-metallic = 0.85
-roughness = 0.25
-
-[sub_resource type="CylinderMesh" id="MeshTofasRimMesh"]
-material = SubResource("MatTofasRim")
-top_radius = 0.22
-bottom_radius = 0.22
-height = 0.24
-
 [sub_resource type="BoxMesh" id="BoxMesh_l3fpq"]
 material = SubResource("MatMetal")
 size = Vector3(1.6569824, 1.5652077, 1)
@@ -1437,6 +1408,83 @@ albedo_color = Color(0.105882354, 0.14509805, 0.3019608, 1)
 [sub_resource type="BoxMesh" id="BoxMesh_hf8o1"]
 material = SubResource("StandardMaterial3D_j7xc5")
 size = Vector3(0.44030762, 1.0515137, 1)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_qromb"]
+size = Vector3(1.7, 0.9, 4.2)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_00dk3"]
+albedo_color = Color(0.95, 0.95, 0.94, 1)
+roughness = 0.35
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_au230"]
+transparency = 1
+albedo_color = Color(0.1, 0.16, 0.22, 0.55)
+metallic = 0.1
+roughness = 0.1
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_brj7t"]
+albedo_color = Color(0.12, 0.12, 0.12, 1)
+roughness = 0.85
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_mqn3m"]
+albedo_color = Color(0.08, 0.08, 0.08, 1)
+roughness = 0.7
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_3jnfb"]
+albedo_color = Color(0.85, 0.85, 0.85, 1)
+metallic = 0.9
+roughness = 0.2
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_f1n1m"]
+albedo_color = Color(0.98, 0.98, 0.95, 1)
+emission_enabled = true
+emission = Color(1, 0.95, 0.85, 1)
+emission_energy_multiplier = 1.8
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_j20ty"]
+albedo_color = Color(1, 0.55, 0, 1)
+roughness = 0.3
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_sglm8"]
+albedo_color = Color(0.85, 0.05, 0.05, 1)
+emission_enabled = true
+emission = Color(0.85, 0.05, 0.05, 1)
+emission_energy_multiplier = 1.2
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_33jpk"]
+albedo_color = Color(0.95, 0.5, 0, 1)
+
+[sub_resource type="StandardMaterial3D" id="MatTofasExhaust"]
+albedo_color = Color(0.7, 0.7, 0.72, 1)
+metallic = 0.95
+roughness = 0.2
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_0yh3i"]
+material = SubResource("MatTofasExhaust")
+top_radius = 0.05
+bottom_radius = 0.05
+height = 0.45
+
+[sub_resource type="StandardMaterial3D" id="MatTofasBumperPlastic"]
+albedo_color = Color(0.12, 0.12, 0.12, 1)
+roughness = 0.85
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_ebyhw"]
+material = SubResource("MatTofasBumperPlastic")
+top_radius = 0.33
+bottom_radius = 0.33
+height = 0.22
+
+[sub_resource type="StandardMaterial3D" id="MatTofasRim"]
+albedo_color = Color(0.82, 0.82, 0.85, 1)
+metallic = 0.85
+roughness = 0.25
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_weg2u"]
+material = SubResource("MatTofasRim")
+top_radius = 0.22
+bottom_radius = 0.22
+height = 0.24
 
 [node name="KebabShop" type="Node3D" unique_id=559436482]
 
@@ -2006,7 +2054,6 @@ omni_attenuation = 1.35
 [node name="Player" type="CharacterBody3D" parent="." unique_id=317042492]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.4866173, 4.2)
 script = ExtResource("1_player")
-hand_slot = NodePath("Camera3D/ArmsHolder/RightHandViewmodel/RightHandSocket/PalmSocket")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Player" unique_id=966143708]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0021178722, -0.05583024, 0.0005812645)
@@ -2015,6 +2062,66 @@ shape = SubResource("PlayerShape")
 [node name="Camera3D" type="Camera3D" parent="Player" unique_id=1888410181]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.7549808, 0)
 current = true
+
+[node name="HoldSocket" type="Node3D" parent="Player/Camera3D" unique_id=540082783]
+
+[node name="AK47" type="Node3D" parent="Player/Camera3D/HoldSocket" unique_id=695848085]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.25, -0.2, -0.45)
+visible = false
+
+[node name="Receiver" type="MeshInstance3D" parent="Player/Camera3D/HoldSocket/AK47" unique_id=2146188647]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.013539314, -0.33247662)
+cast_shadow = 0
+mesh = SubResource("MeshAK47Receiver")
+
+[node name="Barrel" type="MeshInstance3D" parent="Player/Camera3D/HoldSocket/AK47" unique_id=470247268]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0.026349068, -0.7324767)
+cast_shadow = 0
+mesh = SubResource("MeshAK47Barrel")
+
+[node name="MuzzleBrake" type="MeshInstance3D" parent="Player/Camera3D/HoldSocket/AK47" unique_id=1669011354]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0.026349068, -0.9924767)
+cast_shadow = 0
+mesh = SubResource("MeshAK47MuzzleBrake")
+
+[node name="WoodStock" type="MeshInstance3D" parent="Player/Camera3D/HoldSocket/AK47" unique_id=193773224]
+transform = Transform3D(1, 0, 0, 0, 0.99280864, 0.119712204, 0, -0.119712204, 0.99280864, 0, 0.0077257156, 0.009481192)
+cast_shadow = 0
+mesh = SubResource("MeshAK47Stock")
+
+[node name="WoodHandguard" type="MeshInstance3D" parent="Player/Camera3D/HoldSocket/AK47" unique_id=1353843743]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.013539314, -0.56247663)
+cast_shadow = 0
+mesh = SubResource("MeshAK47Handguard")
+
+[node name="CurvedMagazine" type="MeshInstance3D" parent="Player/Camera3D/HoldSocket/AK47" unique_id=924036672]
+transform = Transform3D(1, 0, 0, 0, 0.971338, -0.23770262, 0, 0.23770262, 0.971338, 0, -0.21353936, -0.3574767)
+cast_shadow = 0
+mesh = SubResource("MeshAK47Magazine")
+
+[node name="CurvedMagazine2" type="MeshInstance3D" parent="Player/Camera3D/HoldSocket/AK47" unique_id=1856701203]
+transform = Transform3D(1, 0, 0, 0, 0.8660253, 0.5000002, 0, -0.5000002, 0.8660253, 0, -0.13621354, 0.06530261)
+cast_shadow = 0
+mesh = SubResource("MeshAK47Magazine")
+
+[node name="MuzzlePoint" type="Marker3D" parent="Player/Camera3D/HoldSocket/AK47" unique_id=367255799]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.025, -0.71)
+
+[node name="MuzzleLight" type="OmniLight3D" parent="Player/Camera3D/HoldSocket/AK47/MuzzlePoint" unique_id=835058349]
+unique_name_in_owner = true
+visible = false
+light_color = Color(1, 0.62, 0.2, 1)
+light_energy = 5.0
+omni_range = 3.0
+omni_attenuation = 1.6
+
+[node name="MuzzleRay" type="RayCast3D" parent="Player/Camera3D/HoldSocket/AK47/MuzzlePoint" unique_id=2110711184]
+unique_name_in_owner = true
+target_position = Vector3(0, 0, -100)
+collision_mask = 255
+collide_with_areas = true
 
 [node name="InteractionRayCast" type="RayCast3D" parent="Player/Camera3D" unique_id=1249246311]
 target_position = Vector3(0, 0, -3.6)
@@ -5543,191 +5650,6 @@ transform = Transform3D(0.09, 0, 0, 0, 0.75, 0, 0, 0, 0.09, 0.34000015, 0.290538
 material_override = SubResource("MatMetal")
 mesh = SubResource("BoxSmall")
 
-[node name="TOFAS" type="StaticBody3D" parent="." unique_id=1334721801]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.12887, 0.19248784, 15.670392)
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="TOFAS" unique_id=2056872301]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, 0)
-shape = SubResource("ShapeTofasChassis")
-
-[node name="VisualModel" type="Node3D" parent="TOFAS" unique_id=1643002351]
-
-[node name="MotorhaubeFront" type="CSGBox3D" parent="TOFAS/VisualModel" unique_id=1477997136]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5351269, -1.25)
-size = Vector3(1.64, 0.6902539, 1.45)
-material = SubResource("MatTofasWhite")
-
-[node name="KofferraumHeck" type="CSGBox3D" parent="TOFAS/VisualModel" unique_id=671844047]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.6045336, 1.3500013)
-size = Vector3(1.64, 0.7890674, 1.25)
-material = SubResource("MatTofasWhite")
-
-[node name="KabineUnten" type="CSGBox3D" parent="TOFAS/VisualModel" unique_id=523435854]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.6466894, 0.05000019)
-size = Vector3(1.64, 0.8933789, 1.4)
-material = SubResource("MatTofasWhite")
-
-[node name="DachAufbau" type="CSGBox3D" parent="TOFAS/VisualModel" unique_id=294708026]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.058701515, 1.3846773, 0.05000019)
-size = Vector3(1.7883399, 0.51421875, 1.55)
-material = SubResource("MatTofasGlass")
-
-[node name="DachBlech" type="CSGBox3D" parent="TOFAS/VisualModel" unique_id=1942528986]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0023965836, 1.6517867, 0.05000019)
-size = Vector3(1.6849048, 0.04, 1.48)
-material = SubResource("MatTofasWhite")
-
-[node name="StoßstangeVorne" type="CSGBox3D" parent="TOFAS/VisualModel" unique_id=1336148345]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.24, -1.98)
-size = Vector3(1.68, 0.22, 0.24)
-material = SubResource("MatTofasBumperPlastic")
-
-[node name="StoßstangeHinten" type="CSGBox3D" parent="TOFAS/VisualModel" unique_id=1351324936]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.26, 1.98)
-size = Vector3(1.68, 0.22, 0.24)
-material = SubResource("MatTofasBumperPlastic")
-
-[node name="Kuehlergrill" type="CSGBox3D" parent="TOFAS/VisualModel" unique_id=168003076]
-transform = Transform3D(0.9999969, 0.0021774545, 0.0012216109, -0.0021789642, 0.99999684, 0.001239739, -0.0012189164, -0.0012423884, 0.99999845, -2.861023e-06, 0.4920964, -1.9694557)
-size = Vector3(0.72, 0.16, 0.05)
-material = SubResource("MatTofasGrille")
-
-[node name="TofasLogo" type="CSGBox3D" parent="TOFAS/VisualModel" unique_id=1431543219]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.49112728, -2)
-size = Vector3(0.08, 0.08, 0.02)
-material = SubResource("MatTofasLogo")
-
-[node name="ScheinwerferLinks" type="CSGBox3D" parent="TOFAS/VisualModel" unique_id=1559049161]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.55999994, 0.49112728, -1.9700003)
-size = Vector3(0.36, 0.16, 0.04)
-material = SubResource("MatTofasHeadlight")
-
-[node name="BlinkerLinks" type="CSGBox3D" parent="TOFAS/VisualModel" unique_id=1890513116]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.78, 0.49112728, -1.96)
-size = Vector3(0.12, 0.16, 0.05)
-material = SubResource("MatTofasBlinker")
-
-[node name="ScheinwerferRechts" type="CSGBox3D" parent="TOFAS/VisualModel" unique_id=174639160]
-transform = Transform3D(0.9999969, 0.0021774545, 0.0012216109, -0.0021789642, 0.99999684, 0.001239739, -0.0012189164, -0.0012423884, 0.99999845, 0.55999565, 0.49087623, -1.9701385)
-size = Vector3(0.36, 0.16, 0.04)
-material = SubResource("MatTofasHeadlight")
-
-[node name="BlinkerRechts" type="CSGBox3D" parent="TOFAS/VisualModel" unique_id=500430618]
-transform = Transform3D(0.9999969, 0.0021774545, 0.0012216109, -0.0021789642, 0.99999684, 0.001239739, -0.0012189164, -0.0012423884, 0.99999845, 0.7800069, 0.49040923, -1.9604063)
-size = Vector3(0.12, 0.16, 0.05)
-material = SubResource("MatTofasBlinker")
-
-[node name="RuecklichtLinksRot" type="CSGBox3D" parent="TOFAS/VisualModel" unique_id=371531084]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.54, 0.5, 1.98)
-size = Vector3(0.34, 0.18, 0.04)
-material = SubResource("MatTofasTailRed")
-
-[node name="RuecklichtLinksOrange" type="CSGBox3D" parent="TOFAS/VisualModel" unique_id=1028343750]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.74, 0.5, 1.98)
-size = Vector3(0.14, 0.18, 0.04)
-material = SubResource("MatTofasTailOrange")
-
-[node name="RuecklichtRechtsRot" type="CSGBox3D" parent="TOFAS/VisualModel" unique_id=1624428188]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.54, 0.5, 1.98)
-size = Vector3(0.34, 0.18, 0.04)
-material = SubResource("MatTofasTailRed")
-
-[node name="RuecklichtRechtsOrange" type="CSGBox3D" parent="TOFAS/VisualModel" unique_id=1073902044]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.74, 0.5, 1.98)
-size = Vector3(0.14, 0.18, 0.04)
-material = SubResource("MatTofasTailOrange")
-
-[node name="KennzeichenHinten" type="CSGBox3D" parent="TOFAS/VisualModel" unique_id=1930871449]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.48, 1.99)
-size = Vector3(0.48, 0.14, 0.03)
-material = SubResource("MatTofasWhite")
-
-[node name="ZierleisteLinks" type="CSGBox3D" parent="TOFAS/VisualModel" unique_id=1023881697]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.83, 0.35, 0.05)
-size = Vector3(0.03, 0.06, 3.2)
-material = SubResource("MatTofasBumperPlastic")
-
-[node name="ZierleisteRechts" type="CSGBox3D" parent="TOFAS/VisualModel" unique_id=1874630794]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.83, 0.35, 0.05)
-size = Vector3(0.03, 0.06, 3.2)
-material = SubResource("MatTofasBumperPlastic")
-
-[node name="SportAuspuff" type="MeshInstance3D" parent="TOFAS/VisualModel" unique_id=613663013]
-transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, -0.58, 0.18, 2.05)
-mesh = SubResource("MeshExhaustPipe")
-
-[node name="WheelFrontLeft" type="VehicleWheel3D" parent="TOFAS" unique_id=1021075328]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.84, 0.28, -1.2)
-use_as_steering = true
-wheel_roll_influence = 0.2
-wheel_radius = 0.3
-suspension_travel = 0.14
-suspension_stiffness = 45.0
-damping_compression = 2.2
-damping_relaxation = 2.8
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="TOFAS/WheelFrontLeft" unique_id=408282713]
-transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0)
-mesh = SubResource("MeshTofasWheel")
-
-[node name="Rim" type="MeshInstance3D" parent="TOFAS/WheelFrontLeft" unique_id=752614901]
-transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0)
-mesh = SubResource("MeshTofasRimMesh")
-
-[node name="WheelFrontRight" type="VehicleWheel3D" parent="TOFAS" unique_id=854443763]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.84, 0.28, -1.2)
-use_as_steering = true
-wheel_roll_influence = 0.2
-wheel_radius = 0.3
-suspension_travel = 0.14
-suspension_stiffness = 45.0
-damping_compression = 2.2
-damping_relaxation = 2.8
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="TOFAS/WheelFrontRight" unique_id=174740495]
-transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0)
-mesh = SubResource("MeshTofasWheel")
-
-[node name="Rim" type="MeshInstance3D" parent="TOFAS/WheelFrontRight" unique_id=997796145]
-transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0)
-mesh = SubResource("MeshTofasRimMesh")
-
-[node name="WheelRearLeft" type="VehicleWheel3D" parent="TOFAS" unique_id=2001478430]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.84, 0.28, 1.25)
-use_as_traction = true
-wheel_roll_influence = 0.2
-wheel_radius = 0.3
-suspension_travel = 0.14
-suspension_stiffness = 40.0
-damping_compression = 2.2
-damping_relaxation = 2.8
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="TOFAS/WheelRearLeft" unique_id=540658488]
-transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0)
-mesh = SubResource("MeshTofasWheel")
-
-[node name="Rim" type="MeshInstance3D" parent="TOFAS/WheelRearLeft" unique_id=1290126696]
-transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0)
-mesh = SubResource("MeshTofasRimMesh")
-
-[node name="WheelRearRight" type="VehicleWheel3D" parent="TOFAS" unique_id=915373164]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.84, 0.28, 1.25)
-use_as_traction = true
-wheel_roll_influence = 0.2
-wheel_radius = 0.3
-suspension_travel = 0.14
-suspension_stiffness = 40.0
-damping_compression = 2.2
-damping_relaxation = 2.8
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="TOFAS/WheelRearRight" unique_id=1732958364]
-transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0)
-mesh = SubResource("MeshTofasWheel")
-
-[node name="Rim" type="MeshInstance3D" parent="TOFAS/WheelRearRight" unique_id=452481858]
-transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0)
-mesh = SubResource("MeshTofasRimMesh")
-
 [node name="Avatar gala" type="StaticBody3D" parent="." unique_id=662953966]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.39239025, 0.08, 17.722675)
 visible = false
@@ -6026,3 +5948,188 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.0516357, 0, 18.691343)
 
 [node name="CustomerBJK" parent="." unique_id=913676810 instance=ExtResource("17_customer_bjk")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.2041687, 0, 18.678432)
+
+[node name="TOFAS" type="StaticBody3D" parent="." unique_id=1204429228]
+transform = Transform3D(1.5, 0, 0, 0, 1.5, 0, 0, 0, 1.5, 4.9016557, 0.19248784, 17.230373)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="TOFAS" unique_id=1980771738]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, 0)
+shape = SubResource("BoxShape3D_qromb")
+
+[node name="VisualModel" type="Node3D" parent="TOFAS" unique_id=1642598591]
+
+[node name="MotorhaubeFront" type="CSGBox3D" parent="TOFAS/VisualModel" unique_id=2114704585]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.46852052, -1.25)
+size = Vector3(1.64, 0.55704105, 1.45)
+material = SubResource("StandardMaterial3D_00dk3")
+
+[node name="MotorhaubeFront2" type="CSGBox3D" parent="TOFAS/VisualModel" unique_id=690989280]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.4091591, 0.037719727)
+size = Vector3(1.64, 0.04951662, 1.3883728)
+material = SubResource("StandardMaterial3D_00dk3")
+
+[node name="KofferraumHeck" type="CSGBox3D" parent="TOFAS/VisualModel" unique_id=1862853690]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45542288, 1.3500013)
+size = Vector3(1.64, 0.49084595, 1.25)
+material = SubResource("StandardMaterial3D_00dk3")
+
+[node name="KabineUnten" type="CSGBox3D" parent="TOFAS/VisualModel" unique_id=2145511210]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.54297364, 0.05000019)
+size = Vector3(1.64, 0.6859473, 1.4)
+material = SubResource("StandardMaterial3D_00dk3")
+
+[node name="DachAufbau" type="CSGBox3D" parent="TOFAS/VisualModel" unique_id=231812210]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.012895107, 1.1375874, 0.041879654)
+size = Vector3(1.6451465, 0.51421875, 1.3887695)
+material = SubResource("StandardMaterial3D_au230")
+
+[node name="StoßstangeVorne" type="CSGBox3D" parent="TOFAS/VisualModel" unique_id=829012826]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.24, -1.98)
+size = Vector3(1.68, 0.22, 0.24)
+material = SubResource("StandardMaterial3D_brj7t")
+
+[node name="StoßstangeHinten" type="CSGBox3D" parent="TOFAS/VisualModel" unique_id=816469440]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.26, 1.98)
+size = Vector3(1.68, 0.22, 0.24)
+material = SubResource("StandardMaterial3D_brj7t")
+
+[node name="Kuehlergrill" type="CSGBox3D" parent="TOFAS/VisualModel" unique_id=1557217441]
+transform = Transform3D(0.9999969, 0.0021774545, 0.0012216109, -0.0021789642, 0.99999684, 0.001239739, -0.0012189164, -0.0012423884, 0.99999845, -2.861023e-06, 0.4920964, -1.9694557)
+size = Vector3(0.72, 0.16, 0.05)
+material = SubResource("StandardMaterial3D_mqn3m")
+
+[node name="TofasLogo" type="CSGBox3D" parent="TOFAS/VisualModel" unique_id=544264420]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.49112728, -2)
+size = Vector3(0.08, 0.08, 0.02)
+material = SubResource("StandardMaterial3D_3jnfb")
+
+[node name="ScheinwerferLinks" type="CSGBox3D" parent="TOFAS/VisualModel" unique_id=798687652]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.55999994, 0.49112728, -1.9700003)
+size = Vector3(0.36, 0.16, 0.04)
+material = SubResource("StandardMaterial3D_f1n1m")
+
+[node name="BlinkerLinks" type="CSGBox3D" parent="TOFAS/VisualModel" unique_id=1256804144]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.78, 0.49112728, -1.96)
+size = Vector3(0.12, 0.16, 0.05)
+material = SubResource("StandardMaterial3D_j20ty")
+
+[node name="ScheinwerferRechts" type="CSGBox3D" parent="TOFAS/VisualModel" unique_id=1130649382]
+transform = Transform3D(0.9999969, 0.0021774545, 0.0012216109, -0.0021789642, 0.99999684, 0.001239739, -0.0012189164, -0.0012423884, 0.99999845, 0.55999565, 0.49087623, -1.9701385)
+size = Vector3(0.36, 0.16, 0.04)
+material = SubResource("StandardMaterial3D_f1n1m")
+
+[node name="BlinkerRechts" type="CSGBox3D" parent="TOFAS/VisualModel" unique_id=782155580]
+transform = Transform3D(0.9999969, 0.0021774545, 0.0012216109, -0.0021789642, 0.99999684, 0.001239739, -0.0012189164, -0.0012423884, 0.99999845, 0.7800069, 0.49040923, -1.9604063)
+size = Vector3(0.12, 0.16, 0.05)
+material = SubResource("StandardMaterial3D_j20ty")
+
+[node name="RuecklichtLinksRot" type="CSGBox3D" parent="TOFAS/VisualModel" unique_id=1365809557]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.54, 0.5, 1.98)
+size = Vector3(0.34, 0.18, 0.04)
+material = SubResource("StandardMaterial3D_sglm8")
+
+[node name="RuecklichtLinksOrange" type="CSGBox3D" parent="TOFAS/VisualModel" unique_id=2115878717]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.74, 0.5, 1.98)
+size = Vector3(0.14, 0.18, 0.04)
+material = SubResource("StandardMaterial3D_33jpk")
+
+[node name="RuecklichtRechtsRot" type="CSGBox3D" parent="TOFAS/VisualModel" unique_id=1073716826]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.54, 0.5, 1.98)
+size = Vector3(0.34, 0.18, 0.04)
+material = SubResource("StandardMaterial3D_sglm8")
+
+[node name="RuecklichtRechtsOrange" type="CSGBox3D" parent="TOFAS/VisualModel" unique_id=1751849804]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.74, 0.5, 1.98)
+size = Vector3(0.14, 0.18, 0.04)
+material = SubResource("StandardMaterial3D_33jpk")
+
+[node name="KennzeichenHinten" type="CSGBox3D" parent="TOFAS/VisualModel" unique_id=1721097232]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.48, 1.99)
+size = Vector3(0.48, 0.14, 0.03)
+material = SubResource("StandardMaterial3D_00dk3")
+
+[node name="ZierleisteLinks" type="CSGBox3D" parent="TOFAS/VisualModel" unique_id=744471598]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.83, 0.35, 0.05)
+size = Vector3(0.03, 0.06, 3.2)
+material = SubResource("StandardMaterial3D_brj7t")
+
+[node name="ZierleisteRechts" type="CSGBox3D" parent="TOFAS/VisualModel" unique_id=212623108]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.83, 0.35, 0.05)
+size = Vector3(0.03, 0.06, 3.2)
+material = SubResource("StandardMaterial3D_brj7t")
+
+[node name="SportAuspuff" type="MeshInstance3D" parent="TOFAS/VisualModel" unique_id=1791787545]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, -0.58, 0.18, 2.05)
+mesh = SubResource("CylinderMesh_0yh3i")
+
+[node name="WheelFrontLeft" type="VehicleWheel3D" parent="TOFAS" unique_id=908723312]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.84, 0.28, -1.2)
+use_as_steering = true
+wheel_roll_influence = 0.2
+wheel_radius = 0.3
+suspension_travel = 0.14
+suspension_stiffness = 45.0
+damping_compression = 2.2
+damping_relaxation = 2.8
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="TOFAS/WheelFrontLeft" unique_id=1426858754]
+transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0)
+mesh = SubResource("CylinderMesh_ebyhw")
+
+[node name="Rim" type="MeshInstance3D" parent="TOFAS/WheelFrontLeft" unique_id=1164761008]
+transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0)
+mesh = SubResource("CylinderMesh_weg2u")
+
+[node name="WheelFrontRight" type="VehicleWheel3D" parent="TOFAS" unique_id=807334220]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.84, 0.28, -1.2)
+use_as_steering = true
+wheel_roll_influence = 0.2
+wheel_radius = 0.3
+suspension_travel = 0.14
+suspension_stiffness = 45.0
+damping_compression = 2.2
+damping_relaxation = 2.8
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="TOFAS/WheelFrontRight" unique_id=875326731]
+transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0)
+mesh = SubResource("CylinderMesh_ebyhw")
+
+[node name="Rim" type="MeshInstance3D" parent="TOFAS/WheelFrontRight" unique_id=1265889538]
+transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0)
+mesh = SubResource("CylinderMesh_weg2u")
+
+[node name="WheelRearLeft" type="VehicleWheel3D" parent="TOFAS" unique_id=1753096895]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.84, 0.28, 1.25)
+use_as_traction = true
+wheel_roll_influence = 0.2
+wheel_radius = 0.3
+suspension_travel = 0.14
+suspension_stiffness = 40.0
+damping_compression = 2.2
+damping_relaxation = 2.8
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="TOFAS/WheelRearLeft" unique_id=2109208914]
+transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0)
+mesh = SubResource("CylinderMesh_ebyhw")
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="TOFAS/WheelRearLeft" unique_id=235341313]
+transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0)
+mesh = SubResource("CylinderMesh_weg2u")
+
+[node name="WheelRearRight" type="VehicleWheel3D" parent="TOFAS" unique_id=506514522]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.84, 0.28, 1.25)
+use_as_traction = true
+wheel_roll_influence = 0.2
+wheel_radius = 0.3
+suspension_travel = 0.14
+suspension_stiffness = 40.0
+damping_compression = 2.2
+damping_relaxation = 2.8
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="TOFAS/WheelRearRight" unique_id=1916086763]
+transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0)
+mesh = SubResource("CylinderMesh_ebyhw")
+
+[node name="Rim" type="MeshInstance3D" parent="TOFAS/WheelRearRight" unique_id=1129276923]
+transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0)
+mesh = SubResource("CylinderMesh_weg2u")
