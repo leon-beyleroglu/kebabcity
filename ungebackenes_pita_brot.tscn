@@ -1,0 +1,70 @@
+[gd_scene format=3 uid="uid://baj526puc2pgx"]
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_dough"]
+noise_type = 3
+frequency = 0.04
+fractal_octaves = 3
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_bump"]
+seamless = true
+as_normal_map = true
+bump_strength = 3.5
+noise = SubResource("FastNoiseLite_dough")
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_color"]
+noise_type = 2
+frequency = 0.02
+fractal_octaves = 2
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_albedo"]
+seamless = true
+noise = SubResource("FastNoiseLite_color")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_dough"]
+resource_name = "PitaTeigMaterial"
+albedo_color = Color(0.88, 0.82, 0.71, 1)
+albedo_texture = SubResource("NoiseTexture2D_albedo")
+roughness = 0.88
+normal_enabled = true
+normal_scale = 0.8
+normal_texture = SubResource("NoiseTexture2D_bump")
+subsurf_scatter_enabled = true
+subsurf_scatter_strength = 0.25
+subsurf_scatter_transmittance_color = Color(0.92, 0.85, 0.72, 1)
+subsurf_scatter_transmittance_depth = 0.03
+uv1_scale = Vector3(2.5, 2.5, 2.5)
+
+[sub_resource type="SphereMesh" id="SphereMesh_pita_body"]
+material = SubResource("StandardMaterial3D_dough")
+radius = 0.11
+height = 0.045
+radial_segments = 32
+rings = 16
+
+[sub_resource type="TorusMesh" id="TorusMesh_pita_crust"]
+material = SubResource("StandardMaterial3D_dough")
+inner_radius = 0.088
+outer_radius = 0.112
+rings = 32
+ring_segments = 12
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_pita"]
+height = 0.045
+radius = 0.11
+
+[node name="UngebackenesPitaBrot" type="RigidBody3D" groups=["bread", "ingredient", "pita", "raw_bread"]]
+collision_layer = 4
+collision_mask = 7
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("CylinderShape3D_pita")
+
+[node name="BrotModell" type="Node3D" parent="."]
+
+[node name="TeigKoerper" type="MeshInstance3D" parent="BrotModell"]
+transform = Transform3D(1.02, 0, 0.05, 0, 1, 0, -0.05, 0, 0.98, 0, 0, 0)
+mesh = SubResource("SphereMesh_pita_body")
+
+[node name="TeigRandWulst" type="MeshInstance3D" parent="BrotModell"]
+transform = Transform3D(1.02, 0, 0.05, 0, 0.45, 0, -0.05, 0, 0.98, 0, -0.002, 0)
+mesh = SubResource("TorusMesh_pita_crust")

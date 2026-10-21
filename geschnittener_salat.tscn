@@ -1,0 +1,97 @@
+[gd_scene format=3 uid="uid://b7v4k2q8x1nas"]
+
+[sub_resource type="StandardMaterial3D" id="Mat_Salat_Gruen"]
+resource_name = "SalatGruen"
+cull_mode = 0
+albedo_color = Color(0.64, 0.86, 0.42, 1)
+roughness = 0.38
+subsurf_scatter_enabled = true
+subsurf_scatter_strength = 0.4
+subsurf_scatter_skin_mode = false
+subsurf_scatter_transmittance_color = Color(0.72, 0.92, 0.48, 1)
+subsurf_scatter_transmittance_depth = 0.05
+subsurf_scatter_transmittance_boost = 0.2
+clearcoat_enabled = true
+clearcoat = 0.45
+clearcoat_roughness = 0.25
+
+[sub_resource type="StandardMaterial3D" id="Mat_Salat_Hell"]
+resource_name = "SalatHellWeiss"
+cull_mode = 0
+albedo_color = Color(0.85, 0.94, 0.72, 1)
+roughness = 0.32
+subsurf_scatter_enabled = true
+subsurf_scatter_strength = 0.3
+clearcoat_enabled = true
+clearcoat = 0.5
+clearcoat_roughness = 0.2
+
+[sub_resource type="BoxMesh" id="Mesh_Salat_Streifen1"]
+material = SubResource("Mat_Salat_Gruen")
+size = Vector3(0.018, 0.0025, 0.075)
+
+[sub_resource type="BoxMesh" id="Mesh_Salat_Streifen2"]
+material = SubResource("Mat_Salat_Hell")
+size = Vector3(0.022, 0.003, 0.065)
+
+[sub_resource type="BoxMesh" id="Mesh_Salat_Streifen3"]
+material = SubResource("Mat_Salat_Gruen")
+size = Vector3(0.015, 0.002, 0.085)
+
+[sub_resource type="BoxMesh" id="Mesh_Salat_Streifen4"]
+material = SubResource("Mat_Salat_Hell")
+size = Vector3(0.02, 0.0035, 0.055)
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_salat"]
+height = 0.06
+radius = 0.075
+
+[node name="GeschnittenerSalat" type="RigidBody3D" groups=["ingredient", "salat"]]
+collision_layer = 4
+collision_mask = 7
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.025, 0)
+shape = SubResource("CylinderShape3D_salat")
+
+[node name="SalatHaufen" type="Node3D" parent="."]
+
+[node name="Blatt_01" type="MeshInstance3D" parent="SalatHaufen"]
+transform = Transform3D(0.92, 0.05, 0.38, 0.1, 0.94, -0.33, -0.37, 0.34, 0.86, -0.015, 0.01, 0.01)
+mesh = SubResource("Mesh_Salat_Streifen1")
+
+[node name="Blatt_02" type="MeshInstance3D" parent="SalatHaufen"]
+transform = Transform3D(0.5, -0.2, -0.84, -0.15, 0.95, -0.31, 0.85, 0.27, 0.44, 0.02, 0.012, -0.015)
+mesh = SubResource("Mesh_Salat_Streifen2")
+
+[node name="Blatt_03" type="MeshInstance3D" parent="SalatHaufen"]
+transform = Transform3D(0.12, 0.35, 0.93, 0.25, 0.9, -0.37, -0.96, 0.28, 0.02, 0.01, 0.015, 0.025)
+mesh = SubResource("Mesh_Salat_Streifen3")
+
+[node name="Blatt_04" type="MeshInstance3D" parent="SalatHaufen"]
+transform = Transform3D(-0.73, 0.18, 0.65, 0.32, 0.93, 0.1, -0.6, 0.28, -0.74, -0.025, 0.02, -0.01)
+mesh = SubResource("Mesh_Salat_Streifen1")
+
+[node name="Blatt_05" type="MeshInstance3D" parent="SalatHaufen"]
+transform = Transform3D(0.82, -0.35, 0.45, 0.4, 0.91, -0.02, -0.4, 0.2, 0.89, 0.005, 0.025, -0.02)
+mesh = SubResource("Mesh_Salat_Streifen4")
+
+[node name="Blatt_06" type="MeshInstance3D" parent="SalatHaufen"]
+transform = Transform3D(-0.35, -0.12, -0.93, 0.18, 0.97, -0.19, 0.92, -0.23, -0.32, -0.02, 0.028, 0.02)
+mesh = SubResource("Mesh_Salat_Streifen2")
+
+[node name="Blatt_07" type="MeshInstance3D" parent="SalatHaufen"]
+transform = Transform3D(0.68, 0.42, -0.6, -0.25, 0.89, 0.34, 0.68, -0.08, 0.72, 0.025, 0.032, 0.005)
+mesh = SubResource("Mesh_Salat_Streifen3")
+
+[node name="Blatt_08" type="MeshInstance3D" parent="SalatHaufen"]
+transform = Transform3D(-0.15, 0.55, -0.82, 0.35, 0.78, 0.48, 0.92, -0.28, -0.31, 0.0, 0.038, -0.005)
+mesh = SubResource("Mesh_Salat_Streifen1")
+
+[node name="Blatt_09" type="MeshInstance3D" parent="SalatHaufen"]
+transform = Transform3D(0.95, -0.1, -0.3, 0.2, 0.91, 0.36, 0.24, -0.4, 0.88, -0.018, 0.042, 0.015)
+mesh = SubResource("Mesh_Salat_Streifen4")
+
+[node name="Blatt_10" type="MeshInstance3D" parent="SalatHaufen"]
+transform = Transform3D(-0.55, -0.35, 0.75, 0.45, 0.65, 0.62, -0.7, 0.67, -0.2, 0.012, 0.045, -0.012)
+mesh = SubResource("Mesh_Salat_Streifen2")

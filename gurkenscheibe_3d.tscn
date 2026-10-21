@@ -1,0 +1,205 @@
+[gd_scene format=3 uid="uid://c6u7lam2v1q5e"]
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_peel"]
+noise_type = 3
+frequency = 0.08
+fractal_octaves = 2
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_peel_bump"]
+seamless = true
+as_normal_map = true
+bump_strength = 3.0
+noise = SubResource("FastNoiseLite_peel")
+
+[sub_resource type="StandardMaterial3D" id="Mat_OuterSkin"]
+resource_name = "GurkeSchale"
+albedo_color = Color(0.27, 0.68, 0.08, 1)
+roughness = 0.45
+normal_enabled = true
+normal_scale = 1.2
+normal_texture = SubResource("NoiseTexture2D_peel_bump")
+clearcoat_enabled = true
+clearcoat = 0.35
+clearcoat_roughness = 0.3
+
+[sub_resource type="StandardMaterial3D" id="Mat_SkinInnerBand"]
+resource_name = "GurkeSchaleInnen"
+albedo_color = Color(0.43, 0.82, 0.20, 1)
+roughness = 0.35
+subsurf_scatter_enabled = true
+subsurf_scatter_strength = 0.25
+
+[sub_resource type="StandardMaterial3D" id="Mat_Flesh"]
+resource_name = "GurkeFruchtfleisch"
+albedo_color = Color(0.88, 0.96, 0.72, 1)
+roughness = 0.28
+subsurf_scatter_enabled = true
+subsurf_scatter_strength = 0.55
+subsurf_scatter_transmittance_color = Color(0.92, 0.98, 0.80, 1)
+subsurf_scatter_transmittance_depth = 0.03
+clearcoat_enabled = true
+clearcoat = 0.7
+clearcoat_roughness = 0.18
+
+[sub_resource type="StandardMaterial3D" id="Mat_WateryFlesh"]
+resource_name = "GurkeWasserzone"
+albedo_color = Color(0.93, 0.98, 0.84, 0.92)
+transparency = 1
+roughness = 0.15
+clearcoat_enabled = true
+clearcoat = 0.9
+clearcoat_roughness = 0.1
+
+[sub_resource type="StandardMaterial3D" id="Mat_Core"]
+resource_name = "GurkeKernbereich"
+albedo_color = Color(0.82, 0.93, 0.58, 0.75)
+transparency = 1
+roughness = 0.2
+clearcoat_enabled = true
+clearcoat = 0.8
+
+[sub_resource type="StandardMaterial3D" id="Mat_Pocket"]
+resource_name = "GurkeSamentasche"
+albedo_color = Color(0.78, 0.90, 0.48, 0.65)
+transparency = 1
+roughness = 0.18
+clearcoat_enabled = true
+clearcoat = 0.85
+
+[sub_resource type="StandardMaterial3D" id="Mat_Seed"]
+resource_name = "Gurkensamen"
+albedo_color = Color(0.97, 0.99, 0.87, 0.98)
+roughness = 0.2
+subsurf_scatter_enabled = true
+subsurf_scatter_strength = 0.4
+clearcoat_enabled = true
+clearcoat = 0.85
+clearcoat_roughness = 0.12
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_outerskin"]
+material = SubResource("Mat_OuterSkin")
+top_radius = 0.0375
+bottom_radius = 0.0375
+height = 0.006
+radial_segments = 48
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_innerband"]
+material = SubResource("Mat_SkinInnerBand")
+top_radius = 0.0355
+bottom_radius = 0.0355
+height = 0.0062
+radial_segments = 48
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_flesh"]
+material = SubResource("Mat_Flesh")
+top_radius = 0.033
+bottom_radius = 0.033
+height = 0.0063
+radial_segments = 48
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_watery"]
+material = SubResource("Mat_WateryFlesh")
+top_radius = 0.026
+bottom_radius = 0.026
+height = 0.0064
+radial_segments = 36
+
+[sub_resource type="PrismMesh" id="PrismMesh_core"]
+material = SubResource("Mat_Core")
+size = Vector3(0.012, 0.0065, 0.012)
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_seed"]
+material = SubResource("Mat_Seed")
+radius = 0.00085
+height = 0.0042
+radial_segments = 10
+rings = 4
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_gurke"]
+height = 0.0065
+radius = 0.0375
+
+[node name="CucumberSlice3D" type="RigidBody3D" groups=["cucumber", "gurke", "ingredient"]]
+collision_layer = 4
+collision_mask = 7
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("CylinderShape3D_gurke")
+
+[node name="MeshOuterSkin" type="MeshInstance3D" parent="."]
+mesh = SubResource("CylinderMesh_outerskin")
+
+[node name="MeshInnerBand" type="MeshInstance3D" parent="."]
+mesh = SubResource("CylinderMesh_innerband")
+
+[node name="MeshFlesh" type="MeshInstance3D" parent="."]
+mesh = SubResource("CylinderMesh_flesh")
+
+[node name="MeshWateryFlesh" type="MeshInstance3D" parent="."]
+mesh = SubResource("CylinderMesh_watery")
+
+[node name="CenterCore" type="MeshInstance3D" parent="."]
+mesh = SubResource("PrismMesh_core")
+
+[node name="SamenGruppe" type="Node3D" parent="."]
+
+[node name="Seed1" type="MeshInstance3D" parent="SamenGruppe"]
+transform = Transform3D(-0.5692, 0, 0.8222, 0, 1, 0, -0.8222, 0, -0.5692, -0.00356, 0.0032, -0.00788)
+mesh = SubResource("CapsuleMesh_seed")
+
+[node name="Seed2" type="MeshInstance3D" parent="SamenGruppe"]
+transform = Transform3D(-0.8944, 0, 0.4472, 0, 1, 0, -0.4472, 0, -0.8944, -0.00066, 0.0032, -0.00614)
+mesh = SubResource("CapsuleMesh_seed")
+
+[node name="Seed3" type="MeshInstance3D" parent="SamenGruppe"]
+transform = Transform3D(-0.6973, 0, 0.7168, 0, 1, 0, -0.7168, 0, -0.6973, -0.00129, 0.0032, -0.00293)
+mesh = SubResource("CapsuleMesh_seed")
+
+[node name="Seed4" type="MeshInstance3D" parent="SamenGruppe"]
+transform = Transform3D(-0.9471, 0, 0.3209, 0, 1, 0, -0.3209, 0, -0.9471, -0.00163, 0.0032, -0.01018)
+mesh = SubResource("CapsuleMesh_seed")
+
+[node name="Seed5" type="MeshInstance3D" parent="SamenGruppe"]
+transform = Transform3D(-0.4701, 0, 0.8826, 0, 1, 0, -0.8826, 0, -0.4701, -0.00349, 0.0032, -0.00455)
+mesh = SubResource("CapsuleMesh_seed")
+
+[node name="Seed6" type="MeshInstance3D" parent="SamenGruppe"]
+transform = Transform3D(-0.4278, 0, -0.9039, 0, 1, 0, 0.9039, 0, -0.4278, 0.00860, 0.0032, 0.00085)
+mesh = SubResource("CapsuleMesh_seed")
+
+[node name="Seed7" type="MeshInstance3D" parent="SamenGruppe"]
+transform = Transform3D(0.0598, 0, -0.9982, 0, 1, 0, 0.9982, 0, 0.0598, 0.00565, 0.0032, 0.00250)
+mesh = SubResource("CapsuleMesh_seed")
+
+[node name="Seed8" type="MeshInstance3D" parent="SamenGruppe"]
+transform = Transform3D(-0.2717, 0, -0.9624, 0, 1, 0, 0.9624, 0, -0.2717, 0.00318, 0.0032, 0.00035)
+mesh = SubResource("CapsuleMesh_seed")
+
+[node name="Seed9" type="MeshInstance3D" parent="SamenGruppe"]
+transform = Transform3D(0.1951, 0, -0.9808, 0, 1, 0, 0.9808, 0, 0.1951, 0.00963, 0.0032, 0.00367)
+mesh = SubResource("CapsuleMesh_seed")
+
+[node name="Seed10" type="MeshInstance3D" parent="SamenGruppe"]
+transform = Transform3D(-0.5292, 0, -0.8485, 0, 1, 0, 0.8485, 0, -0.5292, 0.00569, 0.0032, -0.00074)
+mesh = SubResource("CapsuleMesh_seed")
+
+[node name="Seed11" type="MeshInstance3D" parent="SamenGruppe"]
+transform = Transform3D(0.9967, 0, 0.0813, 0, 1, 0, -0.0813, 0, 0.9967, -0.00504, 0.0032, 0.00702)
+mesh = SubResource("CapsuleMesh_seed")
+
+[node name="Seed12" type="MeshInstance3D" parent="SamenGruppe"]
+transform = Transform3D(0.8340, 0, 0.5517, 0, 1, 0, -0.5517, 0, 0.8340, -0.00499, 0.0032, 0.00364)
+mesh = SubResource("CapsuleMesh_seed")
+
+[node name="Seed13" type="MeshInstance3D" parent="SamenGruppe"]
+transform = Transform3D(0.9693, 0, 0.2461, 0, 1, 0, -0.2461, 0, 0.9693, -0.00189, 0.0032, 0.00258)
+mesh = SubResource("CapsuleMesh_seed")
+
+[node name="Seed14" type="MeshInstance3D" parent="SamenGruppe"]
+transform = Transform3D(0.7521, 0, 0.6590, 0, 1, 0, -0.6590, 0, 0.7521, -0.00800, 0.0032, 0.00650)
+mesh = SubResource("CapsuleMesh_seed")
+
+[node name="Seed15" type="MeshInstance3D" parent="SamenGruppe"]
+transform = Transform3D(0.9994, 0, -0.0334, 0, 1, 0, 0.0334, 0, 0.9994, -0.00220, 0.0032, 0.00530)
+mesh = SubResource("CapsuleMesh_seed")
+

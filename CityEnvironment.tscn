@@ -2228,8 +2228,8 @@ roughness = 0.9
 material = SubResource("StandardMaterial3D_m7qdf")
 size = Vector3(0.24, 0.28, 150)
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_5xuta"]
-size = Vector3(0.24, 0.28, 150)
+[sub_resource type="ConvexPolygonShape3D" id="BoxShape3D_5xuta"]
+points = PackedVector3Array(-0.4, -0.14, -75, 0.4, -0.14, -75, -0.12, 0.14, -75, 0.12, 0.14, -75, -0.4, -0.14, 75, 0.4, -0.14, 75, -0.12, 0.14, 75, 0.12, 0.14, 75)
 
 [sub_resource type="BoxMesh" id="BoxMesh_fk4du"]
 material = SubResource("StandardMaterial3D_m7qdf")
@@ -2251,20 +2251,20 @@ size = Vector3(0.24, 0.28, 150)
 material = SubResource("StandardMaterial3D_m7qdf")
 size = Vector3(0.24, 0.28, 150)
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_2m14t"]
-size = Vector3(0.24, 0.28, 150)
+[sub_resource type="ConvexPolygonShape3D" id="BoxShape3D_2m14t"]
+points = PackedVector3Array(-0.4, -0.14, -75, 0.4, -0.14, -75, -0.12, 0.14, -75, 0.12, 0.14, -75, -0.4, -0.14, 75, 0.4, -0.14, 75, -0.12, 0.14, 75, 0.12, 0.14, 75)
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_u8ijr"]
-size = Vector3(0.24, 0.28, 150)
+[sub_resource type="ConvexPolygonShape3D" id="BoxShape3D_u8ijr"]
+points = PackedVector3Array(-0.4, -0.14, -75, 0.4, -0.14, -75, -0.12, 0.14, -75, 0.12, 0.14, -75, -0.4, -0.14, 75, 0.4, -0.14, 75, -0.12, 0.14, 75, 0.12, 0.14, 75)
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_c40wl"]
-size = Vector3(0.24, 0.28, 150)
+[sub_resource type="ConvexPolygonShape3D" id="BoxShape3D_c40wl"]
+points = PackedVector3Array(-0.4, -0.14, -75, 0.4, -0.14, -75, -0.12, 0.14, -75, 0.12, 0.14, -75, -0.4, -0.14, 75, 0.4, -0.14, 75, -0.12, 0.14, 75, 0.12, 0.14, 75)
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_gs62b"]
-size = Vector3(0.24, 0.28, 150)
+[sub_resource type="ConvexPolygonShape3D" id="BoxShape3D_gs62b"]
+points = PackedVector3Array(-0.4, -0.14, -75, 0.4, -0.14, -75, -0.12, 0.14, -75, 0.12, 0.14, -75, -0.4, -0.14, 75, 0.4, -0.14, 75, -0.12, 0.14, 75, 0.12, 0.14, 75)
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_qktpt"]
-size = Vector3(0.24, 0.28, 150)
+[sub_resource type="ConvexPolygonShape3D" id="BoxShape3D_qktpt"]
+points = PackedVector3Array(-0.4, -0.14, -75, 0.4, -0.14, -75, -0.12, 0.14, -75, 0.12, 0.14, -75, -0.4, -0.14, 75, 0.4, -0.14, 75, -0.12, 0.14, 75, 0.12, 0.14, 75)
 
 [sub_resource type="BoxMesh" id="BoxMesh_lin3f"]
 material = SubResource("StandardMaterial3D_rg22o")
@@ -2362,35 +2362,35 @@ size = Vector3(130, 0.28, 0.24)
 material = SubResource("StandardMaterial3D_m7qdf")
 size = Vector3(130, 0.28, 0.24)
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_cpvdm"]
-size = Vector3(0.24, 0.28, 150)
+[sub_resource type="ConvexPolygonShape3D" id="BoxShape3D_cpvdm"]
+points = PackedVector3Array(-0.4, -0.14, -75, 0.4, -0.14, -75, -0.12, 0.14, -75, 0.12, 0.14, -75, -0.4, -0.14, 75, 0.4, -0.14, 75, -0.12, 0.14, 75, 0.12, 0.14, 75)
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_w78xc"]
-size = Vector3(0.24, 0.28, 150)
+[sub_resource type="ConvexPolygonShape3D" id="BoxShape3D_w78xc"]
+points = PackedVector3Array(-0.4, -0.14, -75, 0.4, -0.14, -75, -0.12, 0.14, -75, 0.12, 0.14, -75, -0.4, -0.14, 75, 0.4, -0.14, 75, -0.12, 0.14, 75, 0.12, 0.14, 75)
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_6d3jo"]
-size = Vector3(130, 0.28, 0.24)
+[sub_resource type="ConvexPolygonShape3D" id="BoxShape3D_6d3jo"]
+points = PackedVector3Array(-65, -0.14, -0.4, -65, -0.14, 0.4, -65, 0.14, -0.12, -65, 0.14, 0.12, 65, -0.14, -0.4, 65, -0.14, 0.4, 65, 0.14, -0.12, 65, 0.14, 0.12)
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_m1ivb"]
-size = Vector3(130, 0.28, 0.24)
+[sub_resource type="ConvexPolygonShape3D" id="BoxShape3D_m1ivb"]
+points = PackedVector3Array(-65, -0.14, -0.4, -65, -0.14, 0.4, -65, 0.14, -0.12, -65, 0.14, 0.12, 65, -0.14, -0.4, 65, -0.14, 0.4, 65, 0.14, -0.12, 65, 0.14, 0.12)
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_pv2pl"]
-size = Vector3(130, 0.28, 0.24)
+[sub_resource type="ConvexPolygonShape3D" id="BoxShape3D_pv2pl"]
+points = PackedVector3Array(-65, -0.14, -0.4, -65, -0.14, 0.4, -65, 0.14, -0.12, -65, 0.14, 0.12, 65, -0.14, -0.4, 65, -0.14, 0.4, 65, 0.14, -0.12, 65, 0.14, 0.12)
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_0nvek"]
-size = Vector3(130, 0.28, 0.24)
+[sub_resource type="ConvexPolygonShape3D" id="BoxShape3D_0nvek"]
+points = PackedVector3Array(-65, -0.14, -0.4, -65, -0.14, 0.4, -65, 0.14, -0.12, -65, 0.14, 0.12, 65, -0.14, -0.4, 65, -0.14, 0.4, 65, 0.14, -0.12, 65, 0.14, 0.12)
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_d04bu"]
-size = Vector3(130, 0.28, 0.24)
+[sub_resource type="ConvexPolygonShape3D" id="BoxShape3D_d04bu"]
+points = PackedVector3Array(-65, -0.14, -0.4, -65, -0.14, 0.4, -65, 0.14, -0.12, -65, 0.14, 0.12, 65, -0.14, -0.4, 65, -0.14, 0.4, 65, 0.14, -0.12, 65, 0.14, 0.12)
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_xh8ed"]
-size = Vector3(130, 0.28, 0.24)
+[sub_resource type="ConvexPolygonShape3D" id="BoxShape3D_xh8ed"]
+points = PackedVector3Array(-65, -0.14, -0.4, -65, -0.14, 0.4, -65, 0.14, -0.12, -65, 0.14, 0.12, 65, -0.14, -0.4, 65, -0.14, 0.4, 65, 0.14, -0.12, 65, 0.14, 0.12)
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_m6b0c"]
-size = Vector3(130, 0.28, 0.24)
+[sub_resource type="ConvexPolygonShape3D" id="BoxShape3D_m6b0c"]
+points = PackedVector3Array(-65, -0.14, -0.4, -65, -0.14, 0.4, -65, 0.14, -0.12, -65, 0.14, 0.12, 65, -0.14, -0.4, 65, -0.14, 0.4, 65, 0.14, -0.12, 65, 0.14, 0.12)
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_ehsrc"]
-size = Vector3(130, 0.28, 0.24)
+[sub_resource type="ConvexPolygonShape3D" id="BoxShape3D_ehsrc"]
+points = PackedVector3Array(-65, -0.14, -0.4, -65, -0.14, 0.4, -65, 0.14, -0.12, -65, 0.14, 0.12, 65, -0.14, -0.4, 65, -0.14, 0.4, 65, 0.14, -0.12, 65, 0.14, 0.12)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_v8se0"]
 albedo_color = Color(0.78431374, 0.6666667, 0.47058824, 1)

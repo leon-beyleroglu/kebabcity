@@ -1,0 +1,93 @@
+[gd_scene format=3 uid="uid://d3yq6x7n2e1w8"]
+
+[sub_resource type="StandardMaterial3D" id="Mat_RoteZwiebel"]
+resource_name = "RoteZwiebelMaterial"
+albedo_color = Color(0.76, 0.42, 0.62, 1)
+roughness = 0.28
+subsurf_scatter_enabled = true
+subsurf_scatter_strength = 0.55
+subsurf_scatter_skin_mode = false
+subsurf_scatter_transmittance_color = Color(0.95, 0.85, 0.90, 1)
+subsurf_scatter_transmittance_depth = 0.04
+subsurf_scatter_transmittance_boost = 0.3
+clearcoat_enabled = true
+clearcoat = 0.65
+clearcoat_roughness = 0.15
+
+[sub_resource type="StandardMaterial3D" id="Mat_Zwiebel_Kern"]
+resource_name = "ZwiebelKernMaterial"
+albedo_color = Color(0.86, 0.62, 0.74, 1)
+roughness = 0.32
+subsurf_scatter_enabled = true
+subsurf_scatter_strength = 0.6
+clearcoat_enabled = true
+clearcoat = 0.55
+clearcoat_roughness = 0.2
+
+[sub_resource type="TorusMesh" id="Mesh_Ring_01"]
+material = SubResource("Mat_RoteZwiebel")
+inner_radius = 0.044
+outer_radius = 0.052
+rings = 36
+ring_segments = 14
+
+[sub_resource type="TorusMesh" id="Mesh_Ring_02"]
+material = SubResource("Mat_RoteZwiebel")
+inner_radius = 0.039
+outer_radius = 0.047
+rings = 36
+ring_segments = 14
+
+[sub_resource type="TorusMesh" id="Mesh_Ring_03"]
+material = SubResource("Mat_RoteZwiebel")
+inner_radius = 0.034
+outer_radius = 0.042
+rings = 36
+ring_segments = 14
+
+[sub_resource type="TorusMesh" id="Mesh_Ring_04"]
+material = SubResource("Mat_Zwiebel_Kern")
+inner_radius = 0.029
+outer_radius = 0.036
+rings = 32
+ring_segments = 12
+
+[sub_resource type="TorusMesh" id="Mesh_Ring_05"]
+material = SubResource("Mat_Zwiebel_Kern")
+inner_radius = 0.023
+outer_radius = 0.030
+rings = 32
+ring_segments = 12
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_zwiebel"]
+size = Vector3(0.12, 0.035, 0.13)
+
+[node name="ZwiebelRinge" type="RigidBody3D" groups=["ingredient", "zwiebel", "rote_zwiebel"]]
+collision_layer = 4
+collision_mask = 7
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.015, -0.01)
+shape = SubResource("BoxShape3D_zwiebel")
+
+[node name="RingeGruppe" type="Node3D" parent="."]
+
+[node name="Ring_01" type="MeshInstance3D" parent="RingeGruppe"]
+transform = Transform3D(1, 0, 0, 0, 0.9659, 0.2588, 0, -0.2588, 0.9659, 0, 0.005, 0.035)
+mesh = SubResource("Mesh_Ring_01")
+
+[node name="Ring_02" type="MeshInstance3D" parent="RingeGruppe"]
+transform = Transform3D(0.9962, -0.0226, 0.0844, 0, 0.9659, 0.2588, -0.0872, -0.2578, 0.9622, 0.006, 0.011, 0.018)
+mesh = SubResource("Mesh_Ring_02")
+
+[node name="Ring_03" type="MeshInstance3D" parent="RingeGruppe"]
+transform = Transform3D(0.9848, -0.045, 0.1677, 0, 0.9659, 0.2588, -0.1736, -0.2549, 0.9512, 0.012, 0.017, 0.0)
+mesh = SubResource("Mesh_Ring_03")
+
+[node name="Ring_04" type="MeshInstance3D" parent="RingeGruppe"]
+transform = Transform3D(0.9659, -0.067, 0.2499, 0, 0.9659, 0.2588, -0.2588, -0.25, 0.933, 0.018, 0.022, -0.018)
+mesh = SubResource("Mesh_Ring_04")
+
+[node name="Ring_05" type="MeshInstance3D" parent="RingeGruppe"]
+transform = Transform3D(0.9397, -0.0885, 0.33, 0, 0.9659, 0.2588, -0.342, -0.2432, 0.9077, 0.024, 0.027, -0.034)
+mesh = SubResource("Mesh_Ring_05")

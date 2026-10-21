@@ -2,8 +2,8 @@
 
 [ext_resource type="Script" uid="uid://dcib2ef3n568l" path="res://tofas.gd" id="1_tofas"]
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_uy66q"]
-size = Vector3(1.7, 0.9, 4.2)
+[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_chassis"]
+points = PackedVector3Array(-0.85, -0.42, -1.78, 0.85, -0.42, -1.78, -0.85, -0.14, -2.1, 0.85, -0.14, -2.1, -0.85, 0.42, -2.1, 0.85, 0.42, -2.1, -0.85, -0.42, 1.78, 0.85, -0.42, 1.78, -0.85, -0.14, 2.1, 0.85, -0.14, 2.1, -0.85, 0.42, 2.1, 0.85, 0.42, 2.1)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_p55jm"]
 albedo_color = Color(0.95, 0.95, 0.94, 1)
@@ -64,8 +64,8 @@ roughness = 0.85
 
 [sub_resource type="CylinderMesh" id="CylinderMesh_mbke1"]
 material = SubResource("MatTofasBumperPlastic")
-top_radius = 0.33
-bottom_radius = 0.33
+top_radius = 0.38
+bottom_radius = 0.38
 height = 0.22
 
 [sub_resource type="StandardMaterial3D" id="MatTofasRim"]
@@ -87,8 +87,8 @@ mass = 1050.0
 script = ExtResource("1_tofas")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1863125299]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45, 0)
-shape = SubResource("BoxShape3D_uy66q")
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.54, 0)
+shape = SubResource("ConvexPolygonShape3D_chassis")
 
 [node name="VisualModel" type="Node3D" parent="." unique_id=1669547560]
 
@@ -200,9 +200,10 @@ mesh = SubResource("CylinderMesh_omq6j")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.84, 0.28, -1.2)
 use_as_steering = true
 wheel_roll_influence = 0.2
-wheel_radius = 0.3
-suspension_travel = 0.14
-suspension_stiffness = 45.0
+wheel_radius = 0.38
+wheel_rest_length = 0.22
+suspension_travel = 0.3
+suspension_stiffness = 50.0
 damping_compression = 2.2
 damping_relaxation = 2.8
 
@@ -218,9 +219,10 @@ mesh = SubResource("CylinderMesh_joncj")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.84, 0.28, -1.2)
 use_as_steering = true
 wheel_roll_influence = 0.2
-wheel_radius = 0.3
-suspension_travel = 0.14
-suspension_stiffness = 45.0
+wheel_radius = 0.38
+wheel_rest_length = 0.22
+suspension_travel = 0.3
+suspension_stiffness = 50.0
 damping_compression = 2.2
 damping_relaxation = 2.8
 
@@ -236,9 +238,10 @@ mesh = SubResource("CylinderMesh_joncj")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.84, 0.28, 1.25)
 use_as_traction = true
 wheel_roll_influence = 0.2
-wheel_radius = 0.3
-suspension_travel = 0.14
-suspension_stiffness = 40.0
+wheel_radius = 0.38
+wheel_rest_length = 0.22
+suspension_travel = 0.3
+suspension_stiffness = 48.0
 damping_compression = 2.2
 damping_relaxation = 2.8
 
@@ -254,9 +257,10 @@ mesh = SubResource("CylinderMesh_joncj")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.84, 0.28, 1.25)
 use_as_traction = true
 wheel_roll_influence = 0.2
-wheel_radius = 0.3
-suspension_travel = 0.14
-suspension_stiffness = 40.0
+wheel_radius = 0.38
+wheel_rest_length = 0.22
+suspension_travel = 0.3
+suspension_stiffness = 48.0
 damping_compression = 2.2
 damping_relaxation = 2.8
 

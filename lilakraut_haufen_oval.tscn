@@ -1,0 +1,121 @@
+[gd_scene format=3 uid="uid://di3dgwwptu6j2"]
+
+[sub_resource type="StandardMaterial3D" id="Mat_LilaKraut_Blatt"]
+resource_name = "LilaKrautBlatt"
+cull_mode = 0
+albedo_color = Color(0.42, 0.12, 0.52, 1)
+roughness = 0.32
+subsurf_scatter_enabled = true
+subsurf_scatter_strength = 0.5
+subsurf_scatter_skin_mode = false
+subsurf_scatter_transmittance_color = Color(0.62, 0.20, 0.68, 1)
+subsurf_scatter_transmittance_depth = 0.04
+subsurf_scatter_transmittance_boost = 0.25
+clearcoat_enabled = true
+clearcoat = 0.6
+clearcoat_roughness = 0.18
+
+[sub_resource type="StandardMaterial3D" id="Mat_LilaKraut_Rippe"]
+resource_name = "LilaKrautRippeWeiss"
+cull_mode = 0
+albedo_color = Color(0.88, 0.82, 0.92, 1)
+roughness = 0.28
+subsurf_scatter_enabled = true
+subsurf_scatter_strength = 0.4
+clearcoat_enabled = true
+clearcoat = 0.55
+clearcoat_roughness = 0.22
+
+[sub_resource type="BoxMesh" id="StripLila1"]
+material = SubResource("Mat_LilaKraut_Blatt")
+size = Vector3(0.016, 0.0022, 0.078)
+
+[sub_resource type="BoxMesh" id="StripWeiss1"]
+material = SubResource("Mat_LilaKraut_Rippe")
+size = Vector3(0.019, 0.0028, 0.068)
+
+[sub_resource type="BoxMesh" id="StripLila2"]
+material = SubResource("Mat_LilaKraut_Blatt")
+size = Vector3(0.014, 0.0020, 0.086)
+
+[sub_resource type="BoxMesh" id="StripWeiss2"]
+material = SubResource("Mat_LilaKraut_Rippe")
+size = Vector3(0.017, 0.0032, 0.058)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_oval_kraut"]
+size = Vector3(0.105, 0.04, 0.075)
+
+[node name="LilaKrautHaufen" type="RigidBody3D" groups=["ingredient", "lilakraut", "rotes_kraut", "rotkohl"]]
+collision_layer = 4
+collision_mask = 7
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.02, 0)
+shape = SubResource("BoxShape3D_oval_kraut")
+
+[node name="KrautHaufen" type="Node3D" parent="."]
+
+[node name="Streifen_Basis_01" type="MeshInstance3D" parent="KrautHaufen"]
+transform = Transform3D(0.9347, 0.1386, 0.3273, -0.1013, 0.9865, -0.1287, -0.3407, 0.0872, 0.9361, 0.0000, 0.0080, 0.0000)
+mesh = SubResource("StripLila1")
+
+[node name="Streifen_Basis_02" type="MeshInstance3D" parent="KrautHaufen"]
+transform = Transform3D(0.7941, -0.1868, -0.7379, -0.0220, 0.9633, -0.2676, 0.6225, 0.1871, 0.6225, -0.0200, 0.0100, 0.0150)
+mesh = SubResource("StripWeiss1")
+
+[node name="Streifen_Basis_03" type="MeshInstance3D" parent="KrautHaufen"]
+transform = Transform3D(0.3888, -0.0777, 0.8080, -0.0888, 0.9865, 0.1376, -0.9872, -0.1531, 0.4604, 0.0250, 0.0090, -0.0120)
+mesh = SubResource("StripLila2")
+
+[node name="Streifen_Basis_04" type="MeshInstance3D" parent="KrautHaufen"]
+transform = Transform3D(0.9309, -0.2008, -0.3051, 0.2664, 0.9448, 0.1907, 0.2500, -0.2588, 0.9330, 0.0100, 0.0120, 0.0180)
+mesh = SubResource("StripWeiss2")
+
+[node name="Streifen_Mitte_01" type="MeshInstance3D" parent="KrautHaufen"]
+transform = Transform3D(-0.2165, 0.2865, 0.9333, 0.4845, 0.9700, -0.1854, -0.8713, 0.3746, -0.3171, -0.0150, 0.0160, -0.0100)
+mesh = SubResource("StripLila1")
+
+[node name="Streifen_Mitte_02" type="MeshInstance3D" parent="KrautHaufen"]
+transform = Transform3D(0.0316, -0.4421, -1.0067, 0.3492, 0.8619, -0.3676, 0.9366, -0.3090, 0.1651, 0.0200, 0.0180, 0.0080)
+mesh = SubResource("StripWeiss1")
+
+[node name="Streifen_Mitte_03" type="MeshInstance3D" parent="KrautHaufen"]
+transform = Transform3D(0.6453, 0.4185, 0.3618, -0.3233, 0.8529, -0.4100, -0.6496, 0.1997, 0.9277, -0.0320, 0.0150, 0.0050)
+mesh = SubResource("StripLila2")
+
+[node name="Streifen_Mitte_04" type="MeshInstance3D" parent="KrautHaufen"]
+transform = Transform3D(-0.6362, -0.2228, 0.6694, -0.4607, 0.8754, -0.1463, -0.5243, -0.3804, -0.6248, 0.0350, 0.0140, -0.0050)
+mesh = SubResource("StripWeiss2")
+
+[node name="Streifen_Mitte_05" type="MeshInstance3D" parent="KrautHaufen"]
+transform = Transform3D(0.8349, 0.1891, -0.6081, -0.4246, 0.8471, -0.3196, 0.4547, 0.5250, 0.7875, 0.0050, 0.0210, -0.0150)
+mesh = SubResource("StripLila1")
+
+[node name="Streifen_Mitte_06" type="MeshInstance3D" parent="KrautHaufen"]
+transform = Transform3D(0.1527, -0.3345, 0.9299, -0.1978, 1.1030, 0.4293, -0.9257, -0.1975, 0.0810, -0.0100, 0.0230, 0.0120)
+mesh = SubResource("StripWeiss1")
+
+[node name="Streifen_Oben_01" type="MeshInstance3D" parent="KrautHaufen"]
+transform = Transform3D(0.8354, 0.2120, 0.5072, 0.1579, 0.7912, -0.5908, -0.5265, 0.5736, 0.6275, 0.0120, 0.0270, -0.0060)
+mesh = SubResource("StripLila2")
+
+[node name="Streifen_Oben_02" type="MeshInstance3D" parent="KrautHaufen"]
+transform = Transform3D(0.2802, -0.2977, -0.8018, 0.6207, 0.9005, -0.1175, 0.8029, -0.4929, 0.4635, -0.0180, 0.0280, 0.0040)
+mesh = SubResource("StripWeiss2")
+
+[node name="Streifen_Oben_03" type="MeshInstance3D" parent="KrautHaufen"]
+transform = Transform3D(-0.5205, 0.3878, -0.6937, 0.0082, 0.8754, 0.4833, 0.7947, 0.2459, -0.4588, 0.0020, 0.0320, 0.0080)
+mesh = SubResource("StripLila1")
+
+[node name="Streifen_Kante_Ost" type="MeshInstance3D" parent="KrautHaufen"]
+transform = Transform3D(-0.0639, -0.4544, 0.6553, 0.1140, 0.8112, 0.5736, -0.8417, 0.1183, 0.0000, 0.0420, 0.0110, 0.0020)
+mesh = SubResource("StripWeiss1")
+
+[node name="Streifen_Kante_West" type="MeshInstance3D" parent="KrautHaufen"]
+transform = Transform3D(0.0383, 0.4124, -0.7423, 0.2523, 0.8403, 0.4798, 0.8699, -0.2177, -0.0761, -0.0400, 0.0120, -0.0040)
+mesh = SubResource("StripLila2")
+
+[node name="Streifen_Krone" type="MeshInstance3D" parent="KrautHaufen"]
+transform = Transform3D(0.7351, 0.0998, 0.1103, -0.0039, 0.7544, -0.6564, -0.1586, 0.5142, 0.5920, -0.0050, 0.0350, -0.0020)
+mesh = SubResource("StripLila1")
+

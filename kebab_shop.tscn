@@ -1410,6 +1410,16 @@ albedo_color = Color(0.105882354, 0.14509805, 0.3019608, 1)
 material = SubResource("StandardMaterial3D_j7xc5")
 size = Vector3(0.44030762, 1.0515137, 1)
 
+[sub_resource type="BoxMesh" id="BoxMesh_853is"]
+material = SubResource("StandardMaterial3D_qromb")
+size = Vector3(0.7282982, 1.1958008, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_63lsx"]
+size = Vector3(3.724121, 0.14, 1.15)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_wel7i"]
+size = Vector3(3.7280273, 0.14, 1.15)
+
 [node name="KebabShop" type="Node3D" unique_id=559436482]
 
 [node name="HUD" parent="." unique_id=1468771062 instance=ExtResource("24_hud")]
@@ -5690,7 +5700,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.2, 0.11, 0.48)
 [node name="QueueSlot_2" type="Marker3D" parent="CustomerQueueManager" unique_id=358303283]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.2, 0.11, 1.68)
 
-[node name="OrderNoteUI" type="CanvasLayer" parent="." unique_id=83326430]
+[node name="OrderNoteUI" type="CanvasLayer" parent="." unique_id=83326430 groups=["order_note_ui"]]
 unique_name_in_owner = true
 layer = 10
 visible = false
@@ -5875,3 +5885,19 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.2041687, 0, 18.678432)
 
 [node name="Tofas" parent="." unique_id=1892062956 instance=ExtResource("25_tofas")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.9016557, 0.010848671, 17.230373)
+
+[node name="schneidefläche" type="Node3D" parent="." unique_id=1332819777]
+
+[node name="schneidenunten" type="MeshInstance3D" parent="schneidefläche" unique_id=778034169]
+transform = Transform3D(-2.6226832e-07, 0, 1, 0, 1, 0, -6, 0, -4.371139e-08, 8.014815, 0.6891401, -3.3674905)
+material_override = SubResource("MatCounterCladding")
+mesh = SubResource("BoxMesh_853is")
+
+[node name="schneidearbeitsplatte" type="MeshInstance3D" parent="schneidefläche" unique_id=630182769]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 8.031451, 1.3278751, -3.24564)
+material_override = SubResource("MatInteriorStainless")
+mesh = SubResource("BoxMesh_63lsx")
+
+[node name="SurfaceCollision" type="CollisionShape3D" parent="schneidefläche" unique_id=1076389981]
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 8.031451, 1.3104563, -3.243687)
+shape = SubResource("BoxShape3D_wel7i")

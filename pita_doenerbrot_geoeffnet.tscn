@@ -1,0 +1,138 @@
+[gd_scene format=3 uid="uid://c5m2mak4w8q7x"]
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_kruste"]
+noise_type = 3
+frequency = 0.05
+fractal_octaves = 4
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_kruste_bump"]
+seamless = true
+as_normal_map = true
+bump_strength = 4.0
+noise = SubResource("FastNoiseLite_kruste")
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_krume"]
+noise_type = 2
+frequency = 0.09
+fractal_octaves = 3
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_krume_bump"]
+seamless = true
+as_normal_map = true
+bump_strength = 2.5
+noise = SubResource("FastNoiseLite_krume")
+
+[sub_resource type="StandardMaterial3D" id="Mat_Kruste_Gebacken"]
+resource_name = "PitaKrusteGebacken"
+albedo_color = Color(0.81, 0.58, 0.35, 1)
+roughness = 0.82
+normal_enabled = true
+normal_scale = 1.0
+normal_texture = SubResource("NoiseTexture2D_kruste_bump")
+uv1_scale = Vector3(3, 3, 3)
+
+[sub_resource type="StandardMaterial3D" id="Mat_Krume_Innen"]
+resource_name = "PitaKrumeInnen"
+albedo_color = Color(0.93, 0.89, 0.79, 1)
+roughness = 0.92
+normal_enabled = true
+normal_scale = 1.2
+normal_texture = SubResource("NoiseTexture2D_krume_bump")
+subsurf_scatter_enabled = true
+subsurf_scatter_strength = 0.3
+subsurf_scatter_transmittance_color = Color(0.96, 0.92, 0.84, 1)
+uv1_scale = Vector3(4, 4, 4)
+
+[sub_resource type="PrismMesh" id="PrismMesh_unterseite"]
+material = SubResource("Mat_Krume_Innen")
+left_to_right = 0.0
+size = Vector3(0.18, 0.025, 0.16)
+
+[sub_resource type="BoxMesh" id="BoxMesh_untere_kruste"]
+material = SubResource("Mat_Kruste_Gebacken")
+size = Vector3(0.185, 0.008, 0.165)
+
+[sub_resource type="PrismMesh" id="PrismMesh_oberseite"]
+material = SubResource("Mat_Krume_Innen")
+left_to_right = 0.0
+size = Vector3(0.18, 0.022, 0.15)
+
+[sub_resource type="BoxMesh" id="BoxMesh_obere_kruste"]
+material = SubResource("Mat_Kruste_Gebacken")
+size = Vector3(0.185, 0.007, 0.155)
+
+[sub_resource type="BoxMesh" id="BoxMesh_ruecken"]
+material = SubResource("Mat_Kruste_Gebacken")
+size = Vector3(0.02, 0.075, 0.17)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_boden"]
+size = Vector3(0.18, 0.025, 0.16)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_ruecken"]
+size = Vector3(0.025, 0.08, 0.17)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_deckel"]
+size = Vector3(0.17, 0.02, 0.15)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_tasche_trigger"]
+size = Vector3(0.14, 0.065, 0.13)
+
+[node name="PitaDoenerBrotGeoeffnet" type="RigidBody3D" groups=["bread", "container", "doener_brot", "pita_pocket"]]
+collision_layer = 4
+collision_mask = 7
+
+[node name="CollisionBoden" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.01, 0)
+shape = SubResource("BoxShape3D_boden")
+
+[node name="CollisionRueckwand" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.085, 0.045, 0)
+shape = SubResource("BoxShape3D_ruecken")
+
+[node name="CollisionDeckel" type="CollisionShape3D" parent="."]
+transform = Transform3D(0.9659, -0.2588, 0, 0.2588, 0.9659, 0, 0, 0, 1, 0.01, 0.072, 0)
+shape = SubResource("BoxShape3D_deckel")
+
+[node name="BrotMeshes" type="Node3D" parent="."]
+
+[node name="UntereKruste" type="MeshInstance3D" parent="BrotMeshes"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.002, 0)
+mesh = SubResource("BoxMesh_untere_kruste")
+
+[node name="UntereKrume" type="MeshInstance3D" parent="BrotMeshes"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.016, 0)
+mesh = SubResource("PrismMesh_unterseite")
+
+[node name="RueckenVerbindung" type="MeshInstance3D" parent="BrotMeshes"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.085, 0.042, 0)
+mesh = SubResource("BoxMesh_ruecken")
+
+[node name="OberseiteGruppe" type="Node3D" parent="BrotMeshes"]
+transform = Transform3D(0.9659, -0.2588, 0, 0.2588, 0.9659, 0, 0, 0, 1, -0.075, 0.05, 0)
+
+[node name="ObereKrume" type="MeshInstance3D" parent="BrotMeshes/OberseiteGruppe"]
+transform = Transform3D(1, 0, 0, 0, -1, -8.74228e-08, 0, 8.74228e-08, -1, 0.085, -0.008, 0)
+mesh = SubResource("PrismMesh_oberseite")
+
+[node name="ObereKruste" type="MeshInstance3D" parent="BrotMeshes/OberseiteGruppe"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.085, 0.006, 0)
+mesh = SubResource("BoxMesh_obere_kruste")
+
+[node name="FuellBereich" type="Area3D" parent="." groups=["pita_filling_area"]]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.015, 0.045, 0)
+collision_layer = 0
+collision_mask = 4
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="FuellBereich"]
+shape = SubResource("BoxShape3D_tasche_trigger")
+
+[node name="SpawnPunkteZutaten" type="Node3D" parent="."]
+
+[node name="Slot_Mitte" type="Marker3D" parent="SpawnPunkteZutaten"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.03, 0)
+
+[node name="Slot_Hinten" type="Marker3D" parent="SpawnPunkteZutaten"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.045, 0.035, 0)
+
+[node name="Slot_Vorne" type="Marker3D" parent="SpawnPunkteZutaten"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.045, 0.025, 0)

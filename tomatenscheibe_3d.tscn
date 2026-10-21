@@ -1,0 +1,239 @@
+[gd_scene format=3 uid="uid://vlrmx2t22eh3"]
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_skin"]
+noise_type = 3
+frequency = 0.06
+fractal_octaves = 2
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_skin_bump"]
+seamless = true
+as_normal_map = true
+bump_strength = 2.0
+noise = SubResource("FastNoiseLite_skin")
+
+[sub_resource type="StandardMaterial3D" id="Mat_OuterSkin"]
+resource_name = "TomateHaut"
+albedo_color = Color(0.95, 0.12, 0.06, 1)
+roughness = 0.22
+normal_enabled = true
+normal_scale = 0.8
+normal_texture = SubResource("NoiseTexture2D_skin_bump")
+clearcoat_enabled = true
+clearcoat = 0.85
+clearcoat_roughness = 0.15
+
+[sub_resource type="StandardMaterial3D" id="Mat_Flesh"]
+resource_name = "TomateFruchtfleisch"
+albedo_color = Color(1.0, 0.34, 0.22, 1)
+roughness = 0.35
+subsurf_scatter_enabled = true
+subsurf_scatter_strength = 0.45
+subsurf_scatter_transmittance_color = Color(1.0, 0.45, 0.25, 1)
+subsurf_scatter_transmittance_depth = 0.04
+clearcoat_enabled = true
+clearcoat = 0.65
+clearcoat_roughness = 0.2
+
+[sub_resource type="StandardMaterial3D" id="Mat_InnerFlesh"]
+resource_name = "TomateInnenwand"
+albedo_color = Color(0.98, 0.24, 0.16, 1)
+roughness = 0.25
+subsurf_scatter_enabled = true
+subsurf_scatter_strength = 0.5
+clearcoat_enabled = true
+clearcoat = 0.75
+clearcoat_roughness = 0.18
+
+[sub_resource type="StandardMaterial3D" id="Mat_Gel"]
+resource_name = "TomateGelee"
+albedo_color = Color(0.92, 0.10, 0.06, 0.88)
+transparency = 1
+roughness = 0.12
+subsurf_scatter_enabled = true
+subsurf_scatter_strength = 0.6
+clearcoat_enabled = true
+clearcoat = 0.95
+clearcoat_roughness = 0.08
+
+[sub_resource type="StandardMaterial3D" id="Mat_Core"]
+resource_name = "TomateKern"
+albedo_color = Color(1.0, 0.58, 0.38, 0.95)
+roughness = 0.3
+subsurf_scatter_enabled = true
+subsurf_scatter_strength = 0.35
+clearcoat_enabled = true
+clearcoat = 0.6
+
+[sub_resource type="StandardMaterial3D" id="Mat_Seed"]
+resource_name = "TomatenSamen"
+albedo_color = Color(1.0, 0.80, 0.42, 1)
+roughness = 0.22
+clearcoat_enabled = true
+clearcoat = 0.85
+clearcoat_roughness = 0.12
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_outerskin"]
+material = SubResource("Mat_OuterSkin")
+top_radius = 0.039
+bottom_radius = 0.039
+height = 0.007
+radial_segments = 48
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_flesh"]
+material = SubResource("Mat_Flesh")
+top_radius = 0.036
+bottom_radius = 0.036
+height = 0.0072
+radial_segments = 48
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_innerflesh"]
+material = SubResource("Mat_InnerFlesh")
+top_radius = 0.030
+bottom_radius = 0.030
+height = 0.0073
+radial_segments = 42
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_core"]
+material = SubResource("Mat_Core")
+top_radius = 0.009
+bottom_radius = 0.009
+height = 0.0074
+radial_segments = 24
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_seed"]
+material = SubResource("Mat_Seed")
+radius = 0.0011
+height = 0.0042
+radial_segments = 10
+rings = 4
+
+[sub_resource type="CylinderMesh" id="CylinderMesh_gel_pocket"]
+material = SubResource("Mat_Gel")
+top_radius = 0.0075
+bottom_radius = 0.0075
+height = 0.0074
+radial_segments = 18
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_tomate"]
+height = 0.0075
+radius = 0.039
+
+[node name="TomatoSlice3D" type="RigidBody3D" groups=["ingredient", "tomate", "tomato"]]
+collision_layer = 4
+collision_mask = 7
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("CylinderShape3D_tomate")
+
+[node name="MeshOuterSkin" type="MeshInstance3D" parent="."]
+mesh = SubResource("CylinderMesh_outerskin")
+
+[node name="MeshFlesh" type="MeshInstance3D" parent="."]
+mesh = SubResource("CylinderMesh_flesh")
+
+[node name="MeshInnerFlesh" type="MeshInstance3D" parent="."]
+mesh = SubResource("CylinderMesh_innerflesh")
+
+[node name="CenterCore" type="MeshInstance3D" parent="."]
+mesh = SubResource("CylinderMesh_core")
+
+[node name="KammernGelee" type="Node3D" parent="."]
+
+[node name="GelKammer_1" type="MeshInstance3D" parent="KammernGelee"]
+transform = Transform3D(1.1, 0, 0, 0, 1, 0, 0, 0, 1.8, 0.0033, 0.0001, -0.0215)
+mesh = SubResource("CylinderMesh_gel_pocket")
+
+[node name="GelKammer_2" type="MeshInstance3D" parent="KammernGelee"]
+transform = Transform3D(1.5, 0, 0.8, 0, 1, 0, -0.8, 0, 1.5, 0.0182, 0.0001, -0.0116)
+mesh = SubResource("CylinderMesh_gel_pocket")
+
+[node name="GelKammer_3" type="MeshInstance3D" parent="KammernGelee"]
+transform = Transform3D(1.5, 0, -0.8, 0, 1, 0, 0.8, 0, 1.5, 0.0182, 0.0001, 0.0116)
+mesh = SubResource("CylinderMesh_gel_pocket")
+
+[node name="GelKammer_4" type="MeshInstance3D" parent="KammernGelee"]
+transform = Transform3D(1.1, 0, 0, 0, 1, 0, 0, 0, 1.8, -0.0033, 0.0001, 0.0215)
+mesh = SubResource("CylinderMesh_gel_pocket")
+
+[node name="GelKammer_5" type="MeshInstance3D" parent="KammernGelee"]
+transform = Transform3D(1.5, 0, 0.8, 0, 1, 0, -0.8, 0, 1.5, -0.0182, 0.0001, 0.0116)
+mesh = SubResource("CylinderMesh_gel_pocket")
+
+[node name="GelKammer_6" type="MeshInstance3D" parent="KammernGelee"]
+transform = Transform3D(1.5, 0, -0.8, 0, 1, 0, 0.8, 0, 1.5, -0.0182, 0.0001, -0.0116)
+mesh = SubResource("CylinderMesh_gel_pocket")
+
+[node name="SamenGruppe" type="Node3D" parent="."]
+
+[node name="Seed1" type="MeshInstance3D" parent="SamenGruppe"]
+transform = Transform3D(-0.3865, 0, 0.9223, 0, 1, 0, -0.9223, 0, -0.3865, -0.00167, 0.0036, -0.01783)
+mesh = SubResource("CapsuleMesh_seed")
+
+[node name="Seed2" type="MeshInstance3D" parent="SamenGruppe"]
+transform = Transform3D(0.3711, 0, 0.9286, 0, 1, 0, -0.9286, 0, 0.3711, 0.00488, 0.0036, -0.02166)
+mesh = SubResource("CapsuleMesh_seed")
+
+[node name="Seed3" type="MeshInstance3D" parent="SamenGruppe"]
+transform = Transform3D(0.1527, 0, 0.9883, 0, 1, 0, -0.9883, 0, 0.1527, -0.00248, 0.0036, -0.02636)
+mesh = SubResource("CapsuleMesh_seed")
+
+[node name="Seed4" type="MeshInstance3D" parent="SamenGruppe"]
+transform = Transform3D(-0.9938, 0, 0.1116, 0, 1, 0, -0.1116, 0, -0.9938, 0.01383, 0.0036, -0.01047)
+mesh = SubResource("CapsuleMesh_seed")
+
+[node name="Seed5" type="MeshInstance3D" parent="SamenGruppe"]
+transform = Transform3D(-0.6545, 0, 0.7560, 0, 1, 0, -0.7560, 0, -0.6545, 0.02091, 0.0036, -0.00841)
+mesh = SubResource("CapsuleMesh_seed")
+
+[node name="Seed6" type="MeshInstance3D" parent="SamenGruppe"]
+transform = Transform3D(-0.8961, 0, 0.4438, 0, 1, 0, -0.4438, 0, -0.8961, 0.02104, 0.0036, -0.01597)
+mesh = SubResource("CapsuleMesh_seed")
+
+[node name="Seed7" type="MeshInstance3D" parent="SamenGruppe"]
+transform = Transform3D(-0.7475, 0, -0.6643, 0, 1, 0, 0.6643, 0, -0.7475, 0.01660, 0.0036, 0.00535)
+mesh = SubResource("CapsuleMesh_seed")
+
+[node name="Seed8" type="MeshInstance3D" parent="SamenGruppe"]
+transform = Transform3D(-0.9529, 0, -0.3034, 0, 1, 0, 0.3034, 0, -0.9529, 0.01798, 0.0036, 0.01415)
+mesh = SubResource("CapsuleMesh_seed")
+
+[node name="Seed9" type="MeshInstance3D" parent="SamenGruppe"]
+transform = Transform3D(-0.8686, 0, -0.4955, 0, 1, 0, 0.4955, 0, -0.8686, 0.02396, 0.0036, 0.01081)
+mesh = SubResource("CapsuleMesh_seed")
+
+[node name="Seed10" type="MeshInstance3D" parent="SamenGruppe"]
+transform = Transform3D(0.1760, 0, -0.9844, 0, 1, 0, 0.9844, 0, 0.1760, 0.00319, 0.0036, 0.01754)
+mesh = SubResource("CapsuleMesh_seed")
+
+[node name="Seed11" type="MeshInstance3D" parent="SamenGruppe"]
+transform = Transform3D(-0.2863, 0, -0.9581, 0, 1, 0, 0.9581, 0, -0.2863, -0.00472, 0.0036, 0.02269)
+mesh = SubResource("CapsuleMesh_seed")
+
+[node name="Seed12" type="MeshInstance3D" parent="SamenGruppe"]
+transform = Transform3D(0.3301, 0, -0.9439, 0, 1, 0, 0.9439, 0, 0.3301, 0.00158, 0.0036, 0.02701)
+mesh = SubResource("CapsuleMesh_seed")
+
+[node name="Seed13" type="MeshInstance3D" parent="SamenGruppe"]
+transform = Transform3D(0.6306, 0, -0.7761, 0, 1, 0, 0.7761, 0, 0.6306, -0.01429, 0.0036, 0.01114)
+mesh = SubResource("CapsuleMesh_seed")
+
+[node name="Seed14" type="MeshInstance3D" parent="SamenGruppe"]
+transform = Transform3D(0.7473, 0, -0.6645, 0, 1, 0, 0.6645, 0, 0.7473, -0.01992, 0.0036, 0.00806)
+mesh = SubResource("CapsuleMesh_seed")
+
+[node name="Seed15" type="MeshInstance3D" parent="SamenGruppe"]
+transform = Transform3D(0.9886, 0, -0.1507, 0, 1, 0, 0.1507, 0, 0.9886, -0.02254, 0.0036, 0.01541)
+mesh = SubResource("CapsuleMesh_seed")
+
+[node name="Seed16" type="MeshInstance3D" parent="SamenGruppe"]
+transform = Transform3D(0.8461, 0, 0.5330, 0, 1, 0, -0.5330, 0, 0.8461, -0.01637, 0.0036, -0.00681)
+mesh = SubResource("CapsuleMesh_seed")
+
+[node name="Seed17" type="MeshInstance3D" parent="SamenGruppe"]
+transform = Transform3D(0.9766, 0, 0.2152, 0, 1, 0, -0.2152, 0, 0.9766, -0.01752, 0.0036, -0.01392)
+mesh = SubResource("CapsuleMesh_seed")
+
+[node name="Seed18" type="MeshInstance3D" parent="SamenGruppe"]
+transform = Transform3D(0.8129, 0, 0.5824, 0, 1, 0, -0.5824, 0, 0.8129, -0.02537, 0.0036, -0.01023)
+mesh = SubResource("CapsuleMesh_seed")
+

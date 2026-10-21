@@ -1,0 +1,24 @@
+[gd_scene format=3 uid="uid://dwsxvcx1ba3gf"]
+
+[ext_resource type="PackedScene" uid="uid://b7v4k2q8x1nas" path="res://geschnittener_salat.tscn" id="1_ug0sx"]
+[ext_resource type="PackedScene" uid="uid://d3yq6x7n2e1w8" path="res://rote_zwiebel_ringe.tscn" id="2_cwqiw"]
+[ext_resource type="PackedScene" uid="uid://c6u7lam2v1q5e" path="res://gurkenscheibe_3d.tscn" id="3_0apy8"]
+[ext_resource type="PackedScene" uid="uid://vlrmx2t22eh3" path="res://tomatenscheibe_3d.tscn" id="4_5gaq5"]
+[ext_resource type="PackedScene" uid="uid://di3dgwwptu6j2" path="res://lilakraut_haufen_oval.tscn" id="5_lv0ha"]
+
+[node name="Node3D" type="Node3D" unique_id=119330814]
+
+[node name="GeschnittenerSalat" parent="." unique_id=701245 instance=ExtResource("1_ug0sx")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.2423167, 0.5318271, 2.1225004)
+
+[node name="ZwiebelRinge" parent="." unique_id=2055946090 instance=ExtResource("2_cwqiw")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.7481937, 1.2171924, 2.3445017)
+
+[node name="CucumberSlice3D" parent="." unique_id=743993695 instance=ExtResource("3_0apy8")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.1816134, 1.1022907, 2.6746511)
+
+[node name="TomatoSlice3D" parent="." unique_id=1302333742 instance=ExtResource("4_5gaq5")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.1793616, 1.11001, 2.7784526)
+
+[node name="LilaKrautHaufen" parent="." unique_id=690497203 instance=ExtResource("5_lv0ha")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.5859597, 0.7205193, 2.274928)
