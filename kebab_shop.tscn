@@ -15,7 +15,7 @@
 [ext_resource type="PackedScene" path="res://CustomerGala.tscn" id="20_customer_gala"]
 [ext_resource type="ArrayMesh" path="res://left_hand_viewmodel_mesh.tres" id="21_left_hand"]
 [ext_resource type="ArrayMesh" path="res://right_hand_viewmodel_mesh.tres" id="22_right_hand"]
-[ext_resource type="PackedScene" path="res://CityEnvironment.tscn" id="23_city_environment"]
+[ext_resource type="PackedScene" uid="uid://dg72gj52tm03b" path="res://CityEnvironment.tscn" id="23_city_environment"]
 [ext_resource type="PackedScene" path="res://HUD.tscn" id="24_hud"]
 [ext_resource type="PackedScene" uid="uid://clm8u42jlvahx" path="res://tofas.tscn" id="25_tofas"]
 
@@ -5225,10 +5225,10 @@ material_override = SubResource("MatLavashToast")
 mesh = SubResource("MeshLavashToastSpot")
 
 [node name="Tisch + Quad Stuhl" type="Node3D" parent="." unique_id=12718783]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.026535, 0, 10.463013)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -7.026535, 0, 11.371202)
 
 [node name="Tisch" type="StaticBody3D" parent="Tisch + Quad Stuhl" unique_id=22852693]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.28183174)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.7622738)
 
 [node name="Tischplatte" type="MeshInstance3D" parent="Tisch + Quad Stuhl/Tisch" unique_id=1476191308]
 transform = Transform3D(1.8, 0, 0, 0, 0.15, 0, 0, 0, 1.2, 0.79391575, 1.4094851, -8.316921)
@@ -5361,7 +5361,7 @@ material_override = SubResource("MatMetal")
 mesh = SubResource("BoxSmall")
 
 [node name="StaticBody3D" type="StaticBody3D" parent="Tisch + Quad Stuhl" unique_id=2122753757]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0.5452738)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1.6293936)
 
 [node name="Sitz" type="MeshInstance3D" parent="Tisch + Quad Stuhl/StaticBody3D" unique_id=1080395000]
 transform = Transform3D(0.88, 0, 0, 0, 0.14, 0, 0, 0, 0.8, 0, 1.11899, -9.924583)
@@ -5900,6 +5900,22 @@ mesh = SubResource("BoxMesh_63lsx")
 
 [node name="SurfaceCollision" type="CollisionShape3D" parent="schneidefläche" unique_id=1076389981]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 8.031451, 1.3104563, -3.243687)
+shape = SubResource("BoxShape3D_wel7i")
+
+[node name="waffenfläche" type="Node3D" parent="." unique_id=840178646]
+transform = Transform3D(-2.6226832e-07, 0, 1, 0, 1, 0, -6, 0, -4.371139e-08, -8.177597, 0.6891401, -3.3674905)
+
+[node name="waffenunten" type="MeshInstance3D" parent="waffenfläche" unique_id=1960453472]
+material_override = SubResource("MatCounterCladding")
+mesh = SubResource("BoxMesh_853is")
+
+[node name="waffenplatte" type="MeshInstance3D" parent="waffenfläche" unique_id=1830918976]
+transform = Transform3D(0.16666667, 0, 0, 0, 1, 0, 0, 0, 1, -0.020308375, 0.63873506, 0.016635895)
+material_override = SubResource("MatInteriorStainless")
+mesh = SubResource("BoxMesh_63lsx")
+
+[node name="SurfaceCollision2" type="CollisionShape3D" parent="waffenfläche" unique_id=834310276]
+transform = Transform3D(0.16666667, 0, 0, 0, 1, 0, 0, 0, 1, -0.020633936, 0.6213162, 0.016635895)
 shape = SubResource("BoxShape3D_wel7i")
 
 [node name="tofas_textured" parent="." unique_id=176736883 instance=ExtResource("25_tofas")]
