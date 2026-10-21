@@ -84,6 +84,8 @@ radius = 1.6
 
 [node name="Tofas" type="VehicleBody3D" unique_id=1278695565]
 mass = 1050.0
+center_of_mass_mode = 1
+center_of_mass = Vector3(0, -0.35, 0)
 script = ExtResource("1_tofas")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1863125299]
@@ -199,13 +201,14 @@ mesh = SubResource("CylinderMesh_omq6j")
 [node name="Wheel_FL" type="VehicleWheel3D" parent="." unique_id=192180207]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.84, 0.28, -1.2)
 use_as_steering = true
-wheel_roll_influence = 0.2
 wheel_radius = 0.38
 wheel_rest_length = 0.22
-suspension_travel = 0.3
-suspension_stiffness = 50.0
-damping_compression = 2.2
-damping_relaxation = 2.8
+suspension_travel = 0.24
+suspension_stiffness = 60.0
+damping_compression = 2.4
+damping_relaxation = 3.0
+wheel_friction_slip = 2.0
+wheel_roll_influence = 0.08
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Wheel_FL" unique_id=292482736]
 transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0)
@@ -218,13 +221,14 @@ mesh = SubResource("CylinderMesh_joncj")
 [node name="Wheel_FR" type="VehicleWheel3D" parent="." unique_id=1981887898]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.84, 0.28, -1.2)
 use_as_steering = true
-wheel_roll_influence = 0.2
 wheel_radius = 0.38
 wheel_rest_length = 0.22
-suspension_travel = 0.3
-suspension_stiffness = 50.0
-damping_compression = 2.2
-damping_relaxation = 2.8
+suspension_travel = 0.24
+suspension_stiffness = 60.0
+damping_compression = 2.4
+damping_relaxation = 3.0
+wheel_friction_slip = 2.0
+wheel_roll_influence = 0.08
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Wheel_FR" unique_id=746395073]
 transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0)
@@ -237,13 +241,14 @@ mesh = SubResource("CylinderMesh_joncj")
 [node name="Wheel_RL" type="VehicleWheel3D" parent="." unique_id=1492396075]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.84, 0.28, 1.25)
 use_as_traction = true
-wheel_roll_influence = 0.2
 wheel_radius = 0.38
 wheel_rest_length = 0.22
-suspension_travel = 0.3
-suspension_stiffness = 48.0
-damping_compression = 2.2
-damping_relaxation = 2.8
+suspension_travel = 0.24
+suspension_stiffness = 60.0
+damping_compression = 2.4
+damping_relaxation = 3.0
+wheel_friction_slip = 2.0
+wheel_roll_influence = 0.08
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Wheel_RL" unique_id=1209365851]
 transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0)
@@ -256,13 +261,14 @@ mesh = SubResource("CylinderMesh_joncj")
 [node name="Wheel_RR" type="VehicleWheel3D" parent="." unique_id=1812323529]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.84, 0.28, 1.25)
 use_as_traction = true
-wheel_roll_influence = 0.2
 wheel_radius = 0.38
 wheel_rest_length = 0.22
-suspension_travel = 0.3
-suspension_stiffness = 48.0
-damping_compression = 2.2
-damping_relaxation = 2.8
+suspension_travel = 0.24
+suspension_stiffness = 60.0
+damping_compression = 2.4
+damping_relaxation = 3.0
+wheel_friction_slip = 2.0
+wheel_roll_influence = 0.08
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Wheel_RR" unique_id=1509623662]
 transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0)

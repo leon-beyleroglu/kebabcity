@@ -9,6 +9,11 @@ extends VehicleBody3D
 @export var parking_brake_force := 60.0
 @export var max_steering_angle := 0.4
 @export var steering_lerp_speed := 8.0
+@export var center_of_mass_offset := Vector3(0.0, -0.35, 0.0)
+@export var downforce_multiplier := 45.0
+@export var rollover_recovery_delay := 2.0
+@export var rollover_up_dot_threshold := 0.35
+@export var rollover_lift_height := 0.75
 
 # This Tofas model's visible front is local -Z. Negative VehicleBody3D wheel
 # force therefore drives it toward its hood instead of toward its trunk.
@@ -19,6 +24,7 @@ var is_driving := false
 var nearby_player: CharacterBody3D
 var driver: CharacterBody3D
 var current_steer := 0.0
+var rollover_timer := 0.0
 var order_note_ui: CanvasLayer
 var order_note_was_visible := false
 
@@ -34,6 +40,8 @@ var order_note_was_visible := false
 
 func _ready() -> void:
 	mass = vehicle_mass
+	center_of_mass_mode = RigidBody3D.CENTER_OF_MASS_MODE_CUSTOM
+	center_of_mass = center_of_mass_offset
 	_configure_wheels()
 	order_note_ui = get_tree().get_first_node_in_group("order_note_ui") as CanvasLayer
 	interaction_area.body_entered.connect(_on_interaction_area_body_entered)
@@ -72,6 +80,7 @@ func exit_vehicle() -> void:
 	_set_rear_wheel_brake(0.0)
 	steering = 0.0
 	current_steer = 0.0
+	rollover_timer = 0.0
 	vehicle_camera.current = false
 	_restore_order_note()
 	var exiting_player := driver
@@ -94,6 +103,7 @@ func _physics_process(delta: float) -> void:
 	_set_rear_wheel_brake(0.0)
 
 	if not is_driving:
+		rollover_timer = 0.0
 		engine_force = 0.0
 		brake = parking_brake_force
 		current_steer = lerpf(
@@ -103,6 +113,8 @@ func _physics_process(delta: float) -> void:
 		)
 		steering = current_steer
 		return
+
+	_update_stability(delta)
 
 	var steer_input := _get_steer_input()
 	var target_steer := steer_input * max_steering_angle
@@ -149,6 +161,14 @@ func _get_steer_input() -> float:
 func _configure_wheels() -> void:
 	for wheel: VehicleWheel3D in [wheel_fl, wheel_fr, wheel_rl, wheel_rr]:
 		wheel.rotation = Vector3.ZERO
+		wheel.wheel_radius = 0.38
+		wheel.wheel_rest_length = 0.22
+		wheel.suspension_travel = 0.24
+		wheel.suspension_stiffness = 60.0
+		wheel.damping_compression = 2.4
+		wheel.damping_relaxation = 3.0
+		wheel.wheel_friction_slip = 2.0
+		wheel.wheel_roll_influence = 0.08
 
 	wheel_fl.use_as_steering = true
 	wheel_fr.use_as_steering = true
@@ -163,6 +183,33 @@ func _configure_wheels() -> void:
 func _set_rear_wheel_brake(force: float) -> void:
 	wheel_rl.brake = force
 	wheel_rr.brake = force
+
+
+func _update_stability(delta: float) -> void:
+	var up_alignment := global_transform.basis.y.normalized().dot(Vector3.UP)
+
+	if up_alignment >= rollover_up_dot_threshold:
+		rollover_timer = 0.0
+		apply_central_force(
+			-global_transform.basis.y.normalized()
+			* linear_velocity.length()
+			* downforce_multiplier
+		)
+		return
+
+	rollover_timer += delta
+	if rollover_timer >= rollover_recovery_delay:
+		_recover_upright()
+
+
+func _recover_upright() -> void:
+	var current_heading := global_rotation.y
+	linear_velocity = Vector3.ZERO
+	angular_velocity = Vector3.ZERO
+	global_rotation = Vector3(0.0, current_heading, 0.0)
+	global_position += Vector3.UP * rollover_lift_height
+	sleeping = false
+	rollover_timer = 0.0
 
 
 func _hide_order_note() -> void:
