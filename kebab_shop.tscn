@@ -5,6 +5,7 @@
 [ext_resource type="Texture2D" uid="uid://fh0htpsx3u6v" path="res://ga1.jpg" id="3_v6cui"]
 [ext_resource type="Texture2D" uid="uid://dsmjvcgs6uqdq" path="res://fb1.jpg" id="4_j7xc5"]
 [ext_resource type="Texture2D" uid="uid://fvcheoqkvxim" path="res://fbhinten.jpg" id="5_h3k53"]
+[ext_resource type="PackedScene" path="res://doener_fleisch_haufen.tscn" id="8_wuo8e"]
 [ext_resource type="Script" uid="uid://bufallvmof5b4" path="res://prep_station.gd" id="11_prep_station"]
 [ext_resource type="Script" uid="uid://gkwegvk4rorp" path="res://AssemblyStation.gd" id="12_assembly_station"]
 [ext_resource type="Texture2D" uid="uid://dvs03b1etto3r" path="res://textures/ingredients/cucumber_slice.svg" id="13_cucumber"]
@@ -24,13 +25,6 @@ roughness = 0.65
 
 [sub_resource type="BoxMesh" id="BoxFloor"]
 size = Vector3(18, 0.2, 11.943451)
-
-[sub_resource type="StandardMaterial3D" id="MatFloor"]
-albedo_color = Color(0, 0, 0, 1)
-roughness = 0.9
-
-[sub_resource type="BoxMesh" id="BoxMesh_carum"]
-size = Vector3(18.161194, 0.2, 12.20812)
 
 [sub_resource type="BoxShape3D" id="ShapeFloor"]
 size = Vector3(18, 0.2, 11.943451)
@@ -65,29 +59,29 @@ roughness = 0.82
 
 [sub_resource type="BoxMesh" id="BoxWall"]
 material = SubResource("MatWall")
-size = Vector3(17.530884, 4.5492187, 0.25)
+size = Vector3(17.530884, 5.579175, 0.25)
 
 [sub_resource type="BoxShape3D" id="ShapeWall"]
 size = Vector3(10.578186, 3.2, 0.25)
 
 [sub_resource type="BoxMesh" id="BoxMesh_ye7d8"]
 material = SubResource("MatWall")
-size = Vector3(12.860107, 4.4739013, 0.25)
+size = Vector3(12.860107, 5.539313, 0.25)
 
 [sub_resource type="BoxMesh" id="BoxMesh_hsot5"]
 material = SubResource("MatWall")
-size = Vector3(12.520386, 4.509668, 0.25)
+size = Vector3(12.520386, 5.544751, 0.25)
 
 [sub_resource type="BoxMesh" id="BoxSideWall"]
 material = SubResource("MatWall")
-size = Vector3(0.25, 4.475, 12)
+size = Vector3(0.25, 5.542676, 12)
 
 [sub_resource type="BoxShape3D" id="ShapeSideWall"]
 size = Vector3(0.25, 3.2, 12)
 
 [sub_resource type="BoxMesh" id="BoxMesh_l0yxp"]
 material = SubResource("MatWall")
-size = Vector3(0.25, 4.5178466, 12)
+size = Vector3(0.25, 5.559705, 12)
 
 [sub_resource type="BoxShape3D" id="ShapeCounter"]
 size = Vector3(8.001373, 1.2341797, 1.5786254)
@@ -258,7 +252,7 @@ roughness = 0.28
 
 [sub_resource type="BoxMesh" id="BoxMesh_t8aj2"]
 material = SubResource("StandardMaterial3D_qromb")
-size = Vector3(1.2135925, 1.1958008, 1)
+size = Vector3(1.2681198, 1.1958008, 1)
 
 [sub_resource type="StandardMaterial3D" id="MatCounterLaminate"]
 resource_name = "Warm Walnut Counter Laminate"
@@ -491,7 +485,7 @@ albedo_color = Color(0.78039217, 0.72156864, 0.61960787, 1)
 
 [sub_resource type="BoxMesh" id="BoxMesh_weg2u"]
 material = SubResource("MatMetal")
-size = Vector3(1, 3.5632873, 1)
+size = Vector3(1, 5.464383, 1)
 
 [sub_resource type="Environment" id="Environment"]
 background_mode = 1
@@ -1302,41 +1296,6 @@ height = 0.018
 radial_segments = 48
 rings = 1
 
-[sub_resource type="Gradient" id="GradientSliceEdgeMask"]
-offsets = PackedFloat32Array(0, 0.12, 0.28, 0.72, 0.9, 1)
-colors = PackedColorArray(1, 1, 1, 1, 0.88, 0.88, 0.88, 1, 0.06, 0.06, 0.06, 1, 0, 0, 0, 1, 0.34, 0.34, 0.34, 1, 0.82, 0.82, 0.82, 1)
-
-[sub_resource type="GradientTexture2D" id="TextureSliceEdgeMask"]
-gradient = SubResource("GradientSliceEdgeMask")
-width = 256
-height = 32
-fill_to = Vector2(0, 1)
-
-[sub_resource type="StandardMaterial3D" id="MatMeatSlice"]
-resource_name = "Single Shaved Doner Curl - Oily PBR"
-albedo_color = Color(0.96, 0.64, 0.34, 1)
-albedo_texture = SubResource("TextureMeatFibers")
-metallic_specular = 0.58
-roughness = 0.35
-normal_enabled = true
-normal_scale = 1.4
-normal_texture = SubResource("TextureMeatFiberNormal")
-clearcoat_enabled = true
-clearcoat = 0.25
-clearcoat_roughness = 0.14
-detail_enabled = true
-detail_mask = SubResource("TextureSliceEdgeMask")
-detail_blend_mode = 3
-detail_albedo = SubResource("TextureMeatScorch")
-detail_normal = SubResource("TextureMeatFiberNormal")
-uv1_scale = Vector3(3.8, 2.2, 3.8)
-
-[sub_resource type="TorusMesh" id="MeshMeatShaving"]
-inner_radius = 0.17
-outer_radius = 0.285
-rings = 12
-ring_segments = 64
-
 [sub_resource type="BoxMesh" id="BoxMesh_v6cui"]
 material = SubResource("MatMetal")
 size = Vector3(1.4320679, 0.8, 1)
@@ -1485,11 +1444,6 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.011563301, 0, -0.020159721)
 material_override = SubResource("MatInteriorFloorTile")
 mesh = SubResource("BoxFloor")
 
-[node name="Floor2" type="MeshInstance3D" parent="." unique_id=1114508677]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.035708427, 4.5002966, 0.034275055)
-material_override = SubResource("MatFloor")
-mesh = SubResource("BoxMesh_carum")
-
 [node name="FloorCollision" type="StaticBody3D" parent="." unique_id=697040111]
 
 [node name="FloorShape" type="CollisionShape3D" parent="FloorCollision" unique_id=915111853]
@@ -1498,7 +1452,7 @@ shape = SubResource("ShapeFloor")
 [node name="InteriorFinishes" type="Node3D" parent="." unique_id=1053731079]
 
 [node name="CeilingFinish" type="MeshInstance3D" parent="InteriorFinishes" unique_id=137532667]
-transform = Transform3D(17.65, 0, 0, 0, 0.025, 0, 0, 0, 11.65, 0, 4.385, 0)
+transform = Transform3D(17.65, 0, 0, 0, 0.025, 0, 0, 0, 11.65, 0, 5.546756, 0)
 material_override = SubResource("MatInteriorCeiling")
 mesh = SubResource("MeshInteriorFinishPanel")
 
@@ -1581,7 +1535,7 @@ mesh = SubResource("MeshInteriorFinishPanel")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.6, -5.875)
 
 [node name="Mesh" type="MeshInstance3D" parent="BackWall" unique_id=832768864]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.004211426, 0.6746093, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.004211426, 1.1895875, 0)
 mesh = SubResource("BoxWall")
 
 [node name="Collision" type="CollisionShape3D" parent="BackWall" unique_id=2012523530]
@@ -1591,7 +1545,7 @@ shape = SubResource("ShapeWall")
 transform = Transform3D(0.65, 0, 0, 0, 1, 0, 0, 0, 1, -6.2, 1.6, 5.875)
 
 [node name="Mesh" type="MeshInstance3D" parent="FrontWallLeft" unique_id=1078924085]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.1507573, 0.6369506, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.1507573, 1.1696564, 0)
 mesh = SubResource("BoxMesh_ye7d8")
 
 [node name="Collision" type="CollisionShape3D" parent="FrontWallLeft" unique_id=1783023936]
@@ -1602,7 +1556,7 @@ shape = SubResource("ShapeWall")
 transform = Transform3D(0.65, 0, 0, 0, 1, 0, 0, 0, 1, 6.2, 1.6, 5.875)
 
 [node name="Mesh" type="MeshInstance3D" parent="FrontWallRight" unique_id=185786909]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.9014287, 0.6548339, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.9014287, 1.1723756, 0)
 mesh = SubResource("BoxMesh_hsot5")
 
 [node name="Collision" type="CollisionShape3D" parent="FrontWallRight" unique_id=543958810]
@@ -1613,7 +1567,7 @@ shape = SubResource("ShapeWall")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8.875, 1.6, 0)
 
 [node name="Mesh" type="MeshInstance3D" parent="LeftWall" unique_id=1361801842]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.6374999, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.171338, 0)
 mesh = SubResource("BoxSideWall")
 
 [node name="Collision" type="CollisionShape3D" parent="LeftWall" unique_id=1111548401]
@@ -1623,7 +1577,7 @@ shape = SubResource("ShapeSideWall")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8.875, 1.6, 0)
 
 [node name="Mesh" type="MeshInstance3D" parent="RightWall" unique_id=574072898]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.65892327, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.1798524, 0)
 mesh = SubResource("BoxMesh_l0yxp")
 
 [node name="Collision" type="CollisionShape3D" parent="RightWall" unique_id=1382367547]
@@ -1740,20 +1694,19 @@ material_override = SubResource("MatOvenEnamel")
 mesh = SubResource("MeshOvenVent")
 
 [node name="HeatingElements" type="Node3D" parent="KitchenBackShelfCollision/Oven" unique_id=607318445]
-visible = false
 
 [node name="UpperElement" type="MeshInstance3D" parent="KitchenBackShelfCollision/Oven/HeatingElements" unique_id=1183696645]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.69, 0.568)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.57949173, 0.56799984)
 material_override = SubResource("MatOvenHeat")
 mesh = SubResource("MeshOvenHeatBar")
 
 [node name="MiddleElement" type="MeshInstance3D" parent="KitchenBackShelfCollision/Oven/HeatingElements" unique_id=1212191504]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.53, 0.568)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.41949165, 0.56799984)
 material_override = SubResource("MatOvenHeat")
 mesh = SubResource("MeshOvenHeatBar")
 
 [node name="LowerElement" type="MeshInstance3D" parent="KitchenBackShelfCollision/Oven/HeatingElements" unique_id=988992978]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.37, 0.568)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.2594918, 0.56799984)
 material_override = SubResource("MatOvenHeat")
 mesh = SubResource("MeshOvenHeatBar")
 
@@ -1777,13 +1730,13 @@ font_size = 48
 outline_size = 8
 
 [node name="BakingSlot_0" type="Marker3D" parent="KitchenBackShelfCollision/Oven" unique_id=269539900]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.34, 0.595)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.29979885, 0.5949998)
 
 [node name="BakingSlot_1" type="Marker3D" parent="KitchenBackShelfCollision/Oven" unique_id=1107072979]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.535, 0.595)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.58515465, 0.5949998)
 
 [node name="BakingSlot_2" type="Marker3D" parent="KitchenBackShelfCollision/Oven" unique_id=692954972]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.50958765, 0.5949998)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.44681966, 0.5949998)
 
 [node name="TrashCan" type="StaticBody3D" parent="." unique_id=2019941018 groups=["trash_can"]]
 transform = Transform3D(0.70710677, 0, -0.70710677, 0, 1, 0, 0.70710677, 0, 0.70710677, 4.1278877, 0.1, -4.5353136)
@@ -1831,7 +1784,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.525, 0)
 shape = SubResource("ShapeTrashCan")
 
 [node name="KitchenBackShelf2" type="MeshInstance3D" parent="." unique_id=1157267575]
-transform = Transform3D(6, 0, 0, 0, 1, 0, 0, 0, 1, -0.27799535, 0.6891401, -5.170214)
+transform = Transform3D(6, 0, 0, 0, 1, 0, 0, 0, 1, -0.39648747, 0.6891401, -5.170214)
 material_override = SubResource("MatCounterCladding")
 mesh = SubResource("BoxMesh_t8aj2")
 
@@ -1941,7 +1894,7 @@ material_override = SubResource("StandardMaterial3D_o7dl6")
 mesh = SubResource("MeshDripTrayRim")
 
 [node name="ShavedMeatPan" type="Node3D" parent="DonerSpit/Catchment" unique_id=394042216]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.9499998, -0.19777966, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.1435018, -0.19777966, 0)
 
 [node name="PanBasin" type="MeshInstance3D" parent="DonerSpit/Catchment/ShavedMeatPan" unique_id=1256926371]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.46139765, 0, 0)
@@ -1972,7 +1925,7 @@ mesh = SubResource("MeshGNContainerRimShort")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.11, 0)
 
 [node name="PortionSpawnPoint" type="Marker3D" parent="DonerSpit/Catchment" unique_id=1497249812]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.491293, -0.14911151, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.6752615, -0.14911151, 0)
 
 [node name="Grill" type="StaticBody3D" parent="." unique_id=7977972]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.7, 0.55, -2.1499195)
@@ -1990,7 +1943,7 @@ visible = false
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.5, 1.35, -3.8)
 
 [node name="eingang oben" type="MeshInstance3D" parent="." unique_id=1983536484]
-transform = Transform3D(2.7, 0, 0, 0, 0.55, 0, 0, 0, 0.25, 0, 3.520091, 5.876078)
+transform = Transform3D(2.7, 0, 0, 0, 0.55, 0, 0, 0, 0.25, 0, 4.0428925, 5.876078)
 material_override = SubResource("StandardMaterial3D_hsot5")
 mesh = SubResource("BoxMesh_weg2u")
 
@@ -5104,10 +5057,8 @@ mesh = SubResource("MeshFinishedDurumTop")
 [node name="MeatPortion" type="Node3D" parent="Test Ablage/Kebab Theke/PickupTemplates" unique_id=2118136433]
 metadata/pivot = "bottom_y_zero"
 
-[node name="SingleMeatStrip" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/PickupTemplates/MeatPortion" unique_id=1189374392]
-transform = Transform3D(0.9482213, -0.052534435, -0.19576135, 0.11777809, 0.31256592, -0.1289013, 0.29496565, 0.044075802, 0.6807804, 2.6170204, -0.26738608, 3.6214647)
-material_override = SubResource("MatMeatSlice")
-mesh = SubResource("MeshMeatShaving")
+[node name="DoenerFleischHaufen" parent="Test Ablage/Kebab Theke/PickupTemplates/MeatPortion" unique_id=1352633616 instance=ExtResource("8_wuo8e")]
+transform = Transform3D(0.15, 0, 0, 0, 0.15, 0, 0, 0, 0.15, 2.6239858, -0.30533648, 3.6148968)
 
 [node name="Seitenkasse" type="StaticBody3D" parent="Test Ablage/Kebab Theke" unique_id=806556078]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.8260694, 1.3, 16.68)
@@ -5162,7 +5113,7 @@ material_override = SubResource("MatReceipt")
 mesh = SubResource("BoxSmall")
 
 [node name="LavashAblage" type="StaticBody3D" parent="Test Ablage/Kebab Theke" unique_id=791172196]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.175043, 1.42, 17.798853)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 5.175043, 1.2184533, 17.798853)
 
 [node name="Ablagebrett" type="MeshInstance3D" parent="Test Ablage/Kebab Theke/LavashAblage" unique_id=274555217]
 transform = Transform3D(0.75, 0, 0, 0, 0.08, 0, 0, 0, 0.52, -2.360983, 0.0845654, -3.8082461)
