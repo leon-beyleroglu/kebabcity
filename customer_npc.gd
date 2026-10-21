@@ -244,17 +244,49 @@ func try_accept_durum(durum_data: Dictionary) -> bool:
 	var delivered_ingredients: Array[String] = []
 	var raw_ingredients: Array = durum_data.get("ingredients", [])
 	for ingredient in raw_ingredients:
-		delivered_ingredients.append(_normalize_ingredient(String(ingredient)))
-	for requested in requested_ingredients:
-		if _normalize_ingredient(requested) not in delivered_ingredients:
-			_show_rejection()
+		delivered_ingredients.append(String(ingredient))
+	if not validate_durum_order(delivered_ingredients, requested_ingredients):
+		_show_rejection()
+		return false
+	var normalized_delivery: Array[String] = []
+	for ingredient in delivered_ingredients:
+		normalized_delivery.append(_normalize_ingredient(ingredient))
+	_accept_order(normalized_delivery)
+	return true
+
+
+func validate_durum_order(
+	prepared_ingredients: Array[String],
+	order_ingredients: Array[String]
+) -> bool:
+	var normalized_prepared: Array[String] = []
+	for ingredient in prepared_ingredients:
+		normalized_prepared.append(_normalize_ingredient(ingredient))
+	var normalized_request: Array[String] = []
+	for ingredient in order_ingredients:
+		normalized_request.append(_normalize_ingredient(ingredient))
+	for ingredient in normalized_prepared:
+		if ingredient not in normalized_request:
+			_show_order_feedback("Falsche Bestellung!")
 			return false
-	_accept_order(delivered_ingredients)
+	for requested in normalized_request:
+		if requested not in normalized_prepared:
+			_show_order_feedback("Falsche Bestellung!")
+			return false
 	return true
 
 
 func _normalize_ingredient(ingredient: String) -> String:
 	return "cut_meat" if ingredient == "meat" else ingredient
+
+
+func _show_order_feedback(message: String, success := false) -> void:
+	if is_instance_valid(_queue_manager) and _queue_manager.has_method("show_order_feedback"):
+		_queue_manager.call("show_order_feedback", message, success)
+		return
+	var money_hud := get_tree().get_first_node_in_group("money_hud") as MoneyHUD
+	if is_instance_valid(money_hud):
+		money_hud.show_order_feedback(message, success)
 
 
 func _accept_order(delivered_ingredients: Array[String]) -> void:
