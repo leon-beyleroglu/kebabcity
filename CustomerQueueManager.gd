@@ -62,7 +62,7 @@ func customer_order_completed(customer: CustomerNPC) -> void:
 func add_money(amount: int) -> void:
 	current_money += amount
 	if is_instance_valid(money_hud):
-		money_hud.set_money(current_money)
+		money_hud.update_money(current_money)
 
 
 func show_order_feedback(message: String, success := false) -> void:

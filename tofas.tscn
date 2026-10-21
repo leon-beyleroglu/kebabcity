@@ -288,18 +288,30 @@ transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 
 visible = false
 mesh = SubResource("CylinderMesh_joncj")
 
-[node name="CameraPivot" type="Node3D" parent="."]
-position = Vector3(0, 1.2, 0)
+[node name="ThirdPersonRig" type="Node3D" parent="." unique_id=2044143651]
+position = Vector3(0, 1.6, -0.2)
 
-[node name="SpringArm3D" type="SpringArm3D" parent="CameraPivot"]
-rotation = Vector3(-0.17453292, 0, 0)
-collision_mask = 1
-spring_length = 5.0
-margin = 0.2
-
-[node name="VehicleCamera" type="Camera3D" parent="CameraPivot/SpringArm3D" unique_id=1692830361]
-current = false
+[node name="SpringArm3D" type="SpringArm3D" parent="ThirdPersonRig" unique_id=1949229634]
 position = Vector3(0, 0, 0)
+spring_length = 6.0
+margin = 0.2
+collision_mask = 1
+
+[node name="ExteriorCameraMount" type="Node3D" parent="ThirdPersonRig/SpringArm3D"]
+rotation = Vector3(0, 3.1415927, 0)
+
+[node name="ExteriorCamera" type="Camera3D" parent="ThirdPersonRig/SpringArm3D/ExteriorCameraMount" unique_id=1692830361]
+position = Vector3(0, 0.6, 0)
+rotation = Vector3(-0.20943952, 3.1415927, 0)
+current = false
+fov = 78.0
+
+[node name="CockpitRig" type="Node3D" parent="." unique_id=1267112027]
+
+[node name="InteriorCamera" type="Camera3D" parent="CockpitRig" unique_id=129708555]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.4810558, 1.2490606, -0.11463839)
+current = false
+fov = 80.0
 
 [node name="DriverSeat" type="Marker3D" parent="." unique_id=1584492653]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.42, 0.78, 0.15)

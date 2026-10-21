@@ -1,6 +1,8 @@
 extends CharacterBody3D
 
 signal hitscan_hit(collider: Object, position: Vector3, normal: Vector3)
+signal health_changed(current: float, max_val: float)
+signal shield_changed(current: float, max_val: float)
 
 @export var walk_speed := 5.0
 @export var sprint_speed := 9.0
@@ -9,6 +11,8 @@ signal hitscan_hit(collider: Object, position: Vector3, normal: Vector3)
 @export var acceleration := 20.0
 @export var deceleration := 26.0
 @export var hand_slot: Marker3D
+@export var max_health := 100.0
+@export var max_shield := 100.0
 
 @onready var camera: Camera3D = $Camera3D
 @onready var player_collision: CollisionShape3D = $CollisionShape3D
@@ -54,6 +58,8 @@ var awp_scoped := false
 var walking_parent: Node
 var nearby_vehicle: Node
 var active_vehicle: Node
+var health := 100.0
+var shield := 0.0
 
 const HumanHand = preload("res://human_hand.gd")
 const InteractionSystem = preload("res://interaction_system.gd")
@@ -82,6 +88,10 @@ const VEHICLE_INTERACTION_DISTANCE := 3.5
 
 func _ready() -> void:
 	add_to_group("player")
+	health = clampf(health, 0.0, max_health)
+	shield = clampf(shield, 0.0, max_shield)
+	health_changed.emit(health, max_health)
+	shield_changed.emit(shield, max_shield)
 	Engine.max_fps = 60
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 	camera.position = FIRST_PERSON_POSITION
@@ -112,6 +122,33 @@ func _ready() -> void:
 	interaction_system.name = "InteractionSystem"
 	add_child(interaction_system)
 	interaction_system.setup(self, camera, hand_slot)
+
+
+func take_damage(amount: float) -> void:
+	var remaining_damage := maxf(amount, 0.0)
+	if shield > 0.0 and remaining_damage > 0.0:
+		var absorbed := minf(shield, remaining_damage)
+		shield -= absorbed
+		remaining_damage -= absorbed
+		shield_changed.emit(shield, max_shield)
+	if remaining_damage > 0.0:
+		health = maxf(0.0, health - remaining_damage)
+		health_changed.emit(health, max_health)
+
+
+func heal(amount: float) -> void:
+	health = clampf(health + maxf(amount, 0.0), 0.0, max_health)
+	health_changed.emit(health, max_health)
+
+
+func set_health(value: float) -> void:
+	health = clampf(value, 0.0, max_health)
+	health_changed.emit(health, max_health)
+
+
+func set_shield(value: float) -> void:
+	shield = clampf(value, 0.0, max_shield)
+	shield_changed.emit(shield, max_shield)
 
 
 func _input(event: InputEvent) -> void:

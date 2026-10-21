@@ -1,6 +1,43 @@
-[gd_scene load_steps=2 format=3]
+[gd_scene load_steps=7 format=3]
 
 [ext_resource type="Script" path="res://HUD.gd" id="1_hud"]
+
+[sub_resource type="StyleBoxFlat" id="StyleArmorBackground"]
+bg_color = Color(0.25098, 0.25098, 0.27451, 1)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0, 0, 0, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleArmorFill"]
+bg_color = Color(0.901961, 0.901961, 0.901961, 1)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0, 0, 0, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleHealthBackground"]
+bg_color = Color(0.352941, 0.0627451, 0.0627451, 1)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0, 0, 0, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleHealthFill"]
+bg_color = Color(0.709804, 0.101961, 0.101961, 1)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(0, 0, 0, 1)
+
+[sub_resource type="SystemFont" id="FontRetroMoney"]
+font_names = PackedStringArray("Impact", "Arial Black", "DejaVu Sans")
+font_weight = 900
+font_stretch = 110
 
 [node name="HUD" type="CanvasLayer"]
 layer = 10
@@ -25,24 +62,56 @@ text = "Falsche Bestellung!"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="MarginContainer" type="MarginContainer" parent="."]
-anchors_preset = 2
-anchor_top = 1.0
-anchor_bottom = 1.0
-offset_left = 24.0
-offset_top = -72.0
-offset_right = 184.0
-offset_bottom = -24.0
-grow_vertical = 0
+[node name="TopRightHUD" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+grow_horizontal = 0
 mouse_filter = 2
 
-[node name="MoneyLabel" type="Label" parent="MarginContainer"]
-unique_name_in_owner = true
+[node name="MarginContainer" type="MarginContainer" parent="TopRightHUD"]
+layout_mode = 0
+offset_left = -252.0
+offset_top = 32.0
+offset_right = -32.0
+offset_bottom = 128.0
+mouse_filter = 2
+
+[node name="StatusStack" type="VBoxContainer" parent="TopRightHUD/MarginContainer"]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.2, 0.9, 0.3, 1)
-theme_override_colors/font_shadow_color = Color(0, 0, 0, 0.8)
-theme_override_constants/shadow_offset_x = 2
-theme_override_constants/shadow_offset_y = 2
-theme_override_font_sizes/font_size = 28
-text = "0 €"
+theme_override_constants/separation = 8
+alignment = 2
+
+[node name="ArmourBar" type="ProgressBar" parent="TopRightHUD/MarginContainer/StatusStack"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(220, 16)
+layout_mode = 2
+size_flags_horizontal = 10
+theme_override_styles/background = SubResource("StyleArmorBackground")
+theme_override_styles/fill = SubResource("StyleArmorFill")
+value = 0.0
+show_percentage = false
+
+[node name="HealthBar" type="ProgressBar" parent="TopRightHUD/MarginContainer/StatusStack"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(220, 16)
+layout_mode = 2
+size_flags_horizontal = 10
+theme_override_styles/background = SubResource("StyleHealthBackground")
+theme_override_styles/fill = SubResource("StyleHealthFill")
+value = 100.0
+show_percentage = false
+
+[node name="MoneyLabel" type="Label" parent="TopRightHUD/MarginContainer/StatusStack"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(220, 40)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.219608, 0.631373, 0.219608, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 8
+theme_override_fonts/font = SubResource("FontRetroMoney")
+theme_override_font_sizes/font_size = 38
+text = "$00000000"
+horizontal_alignment = 2
 vertical_alignment = 1

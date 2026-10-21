@@ -16,12 +16,17 @@ extends VehicleBody3D
 @export var rollover_lift_height := 0.75
 @export var interaction_distance := 3.5
 @export var camera_mouse_sensitivity := 0.003
-@export var camera_min_pitch := deg_to_rad(-45.0)
-@export var camera_max_pitch := deg_to_rad(20.0)
-@export var camera_default_pitch := deg_to_rad(-10.0)
+@export var camera_min_pitch := deg_to_rad(-55.0)
+@export var camera_max_pitch := deg_to_rad(10.0)
 @export var camera_auto_center_delay := 1.5
 @export var camera_auto_center_speed := 3.5
 @export var camera_auto_center_min_speed := 2.0
+@export var cockpit_min_yaw := deg_to_rad(-85.0)
+@export var cockpit_max_yaw := deg_to_rad(85.0)
+@export var cockpit_min_pitch := deg_to_rad(-25.0)
+@export var cockpit_max_pitch := deg_to_rad(25.0)
+@export var cockpit_auto_center_delay := 0.75
+@export var cockpit_auto_center_speed := 4.5
 
 # This Tofas model's visible front is local -Z. Negative VehicleBody3D wheel
 # force therefore drives it toward its hood instead of toward its trunk.
@@ -38,14 +43,24 @@ var order_note_was_visible := false
 var camera_yaw := 0.0
 var camera_pitch := 0.0
 var camera_mouse_idle_time := 0.0
+var cockpit_yaw := 0.0
+var cockpit_pitch := 0.0
+var is_cockpit_view := false
+var third_person_rig_rest_rotation := Vector3.ZERO
+var spring_arm_rest_rotation := Vector3.ZERO
+var exterior_camera_rest_transform := Transform3D.IDENTITY
+var interior_camera_rest_transform := Transform3D.IDENTITY
+var exterior_rest_pitch := 0.0
 
 @onready var wheel_fl: VehicleWheel3D = $Wheel_FL
 @onready var wheel_fr: VehicleWheel3D = $Wheel_FR
 @onready var wheel_rl: VehicleWheel3D = $Wheel_RL
 @onready var wheel_rr: VehicleWheel3D = $Wheel_RR
-@onready var camera_pivot: Node3D = $CameraPivot
-@onready var spring_arm: SpringArm3D = $CameraPivot/SpringArm3D
-@onready var vehicle_camera: Camera3D = $CameraPivot/SpringArm3D/VehicleCamera
+@onready var third_person_rig: Node3D = $ThirdPersonRig
+@onready var spring_arm: SpringArm3D = $ThirdPersonRig/SpringArm3D
+@onready var exterior_camera: Camera3D = $ThirdPersonRig/SpringArm3D/ExteriorCameraMount/ExteriorCamera
+@onready var cockpit_rig: Node3D = $CockpitRig
+@onready var interior_camera: Camera3D = $CockpitRig/InteriorCamera
 @onready var driver_seat: Marker3D = $DriverSeat
 @onready var exit_point: Marker3D = $ExitPoint
 
@@ -57,9 +72,17 @@ func _ready() -> void:
 	center_of_mass = center_of_mass_offset
 	_configure_wheels()
 	spring_arm.add_excluded_object(get_rid())
-	_reset_vehicle_camera()
+	third_person_rig_rest_rotation = third_person_rig.rotation
+	spring_arm_rest_rotation = spring_arm.rotation
+	exterior_camera_rest_transform = exterior_camera.transform
+	interior_camera_rest_transform = interior_camera.transform
+	exterior_rest_pitch = (
+		spring_arm_rest_rotation.x
+		+ exterior_camera_rest_transform.basis.get_euler().x
+	)
+	_reset_vehicle_cameras()
 	order_note_ui = get_tree().get_first_node_in_group("order_note_ui") as CanvasLayer
-	vehicle_camera.current = false
+	_set_vehicle_camera_current(false)
 	engine_force = 0.0
 	brake = parking_brake_force
 	steering = 0.0
@@ -88,8 +111,9 @@ func enter_vehicle(player: CharacterBody3D) -> void:
 		driver.set_process_input(false)
 		driver.reparent(driver_seat, false)
 		driver.transform = Transform3D.IDENTITY
-	_reset_vehicle_camera()
-	vehicle_camera.current = true
+	is_cockpit_view = false
+	_reset_vehicle_cameras()
+	_set_vehicle_camera_current(true)
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 
 
@@ -103,7 +127,9 @@ func exit_vehicle() -> void:
 	steering = 0.0
 	current_steer = 0.0
 	rollover_timer = 0.0
-	vehicle_camera.current = false
+	_set_vehicle_camera_current(false)
+	is_cockpit_view = false
+	_reset_vehicle_cameras()
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 	_restore_order_note()
 	var exiting_player := driver
@@ -144,19 +170,38 @@ func can_player_enter(player: CharacterBody3D) -> bool:
 func _unhandled_input(event: InputEvent) -> void:
 	if not is_driving:
 		return
+	if event is InputEventKey and event.pressed and not event.echo:
+		if event.keycode == KEY_V or event.physical_keycode == KEY_V:
+			is_cockpit_view = not is_cockpit_view
+			_set_vehicle_camera_current(true)
+			camera_mouse_idle_time = 0.0
+			get_viewport().set_input_as_handled()
+			return
 	if event is InputEventMouseMotion:
-		camera_yaw = wrapf(
-			camera_yaw - event.relative.x * camera_mouse_sensitivity,
-			-PI,
-			PI
-		)
-		camera_pitch = clampf(
-			camera_pitch - event.relative.y * camera_mouse_sensitivity,
-			camera_min_pitch,
-			camera_max_pitch
-		)
-		camera_pivot.rotation.y = camera_yaw
-		spring_arm.rotation.x = camera_pitch
+		if is_cockpit_view:
+			cockpit_yaw = clampf(
+				cockpit_yaw - event.relative.x * camera_mouse_sensitivity,
+				cockpit_min_yaw,
+				cockpit_max_yaw
+			)
+			cockpit_pitch = clampf(
+				cockpit_pitch - event.relative.y * camera_mouse_sensitivity,
+				cockpit_min_pitch,
+				cockpit_max_pitch
+			)
+			_apply_cockpit_look()
+		else:
+			camera_yaw = wrapf(
+				camera_yaw - event.relative.x * camera_mouse_sensitivity,
+				-PI,
+				PI
+			)
+			camera_pitch = clampf(
+				camera_pitch - event.relative.y * camera_mouse_sensitivity,
+				camera_min_pitch - exterior_rest_pitch,
+				camera_max_pitch - exterior_rest_pitch
+			)
+			_apply_exterior_look()
 		camera_mouse_idle_time = 0.0
 		get_viewport().set_input_as_handled()
 
@@ -177,7 +222,6 @@ func _physics_process(delta: float) -> void:
 		return
 
 	_update_stability(delta)
-	_update_vehicle_camera(delta)
 
 	var steer_input := _get_steer_input()
 	var target_steer := steer_input * max_steering_angle
@@ -192,6 +236,7 @@ func _physics_process(delta: float) -> void:
 	var reverse_pressed := Input.is_key_pressed(KEY_S) or Input.is_key_pressed(KEY_DOWN)
 	var handbrake_pressed := Input.is_key_pressed(KEY_SPACE)
 	var forward_speed := linear_velocity.dot(-global_transform.basis.z.normalized())
+	_update_vehicle_camera(delta, forward_pressed and not reverse_pressed)
 
 	if forward_pressed and not reverse_pressed:
 		engine_force = max_engine_force * DRIVETRAIN_DIRECTION
@@ -248,16 +293,48 @@ func _set_rear_wheel_brake(force: float) -> void:
 	wheel_rr.brake = force
 
 
-func _reset_vehicle_camera() -> void:
+func _reset_vehicle_cameras() -> void:
 	camera_yaw = 0.0
-	camera_pitch = clampf(camera_default_pitch, camera_min_pitch, camera_max_pitch)
+	camera_pitch = 0.0
+	cockpit_yaw = 0.0
+	cockpit_pitch = 0.0
 	camera_mouse_idle_time = 0.0
-	camera_pivot.rotation = Vector3.ZERO
-	spring_arm.rotation = Vector3(camera_pitch, 0.0, 0.0)
+	third_person_rig.rotation = third_person_rig_rest_rotation
+	spring_arm.rotation = spring_arm_rest_rotation
+	exterior_camera.transform = exterior_camera_rest_transform
+	interior_camera.transform = interior_camera_rest_transform
+	_apply_exterior_look()
+	_apply_cockpit_look()
 
 
-func _update_vehicle_camera(delta: float) -> void:
+func _set_vehicle_camera_current(enabled: bool) -> void:
+	exterior_camera.current = enabled and not is_cockpit_view
+	interior_camera.current = enabled and is_cockpit_view
+
+
+func _apply_exterior_look() -> void:
+	third_person_rig.rotation.y = third_person_rig_rest_rotation.y + camera_yaw
+	spring_arm.rotation.x = spring_arm_rest_rotation.x + camera_pitch
+
+
+func _apply_cockpit_look() -> void:
+	interior_camera.rotation = interior_camera_rest_transform.basis.get_euler() + Vector3(
+		cockpit_pitch,
+		cockpit_yaw,
+		0.0
+	)
+
+
+func _update_vehicle_camera(delta: float, accelerating_forward := false) -> void:
 	camera_mouse_idle_time += delta
+	if is_cockpit_view:
+		if not accelerating_forward or camera_mouse_idle_time < cockpit_auto_center_delay:
+			return
+		var cockpit_blend := 1.0 - exp(-cockpit_auto_center_speed * delta)
+		cockpit_yaw = lerp_angle(cockpit_yaw, 0.0, cockpit_blend)
+		cockpit_pitch = lerp_angle(cockpit_pitch, 0.0, cockpit_blend)
+		_apply_cockpit_look()
+		return
 	if linear_velocity.length() <= camera_auto_center_min_speed:
 		return
 	if camera_mouse_idle_time < camera_auto_center_delay:
@@ -267,7 +344,12 @@ func _update_vehicle_camera(delta: float) -> void:
 		0.0,
 		1.0 - exp(-camera_auto_center_speed * delta)
 	)
-	camera_pivot.rotation.y = camera_yaw
+	camera_pitch = lerp_angle(
+		camera_pitch,
+		0.0,
+		1.0 - exp(-camera_auto_center_speed * delta)
+	)
+	_apply_exterior_look()
 
 
 func _update_stability(delta: float) -> void:
