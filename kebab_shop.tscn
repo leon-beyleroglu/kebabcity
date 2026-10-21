@@ -5901,3 +5901,6 @@ mesh = SubResource("BoxMesh_63lsx")
 [node name="SurfaceCollision" type="CollisionShape3D" parent="schneidefläche" unique_id=1076389981]
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 8.031451, 1.3104563, -3.243687)
 shape = SubResource("BoxShape3D_wel7i")
+
+[node name="tofas_textured" parent="." unique_id=176736883 instance=ExtResource("25_tofas")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.827626, 0.010848671, 17.215115)

@@ -14,6 +14,7 @@ extends VehicleBody3D
 @export var rollover_recovery_delay := 2.0
 @export var rollover_up_dot_threshold := 0.35
 @export var rollover_lift_height := 0.75
+@export var interaction_distance := 3.5
 
 # This Tofas model's visible front is local -Z. Negative VehicleBody3D wheel
 # force therefore drives it toward its hood instead of toward its trunk.
@@ -21,8 +22,8 @@ const DRIVETRAIN_DIRECTION := -1.0
 
 var can_enter := false
 var is_driving := false
-var nearby_player: CharacterBody3D
 var driver: CharacterBody3D
+var driver_original_parent: Node
 var current_steer := 0.0
 var rollover_timer := 0.0
 var order_note_ui: CanvasLayer
@@ -32,20 +33,18 @@ var order_note_was_visible := false
 @onready var wheel_fr: VehicleWheel3D = $Wheel_FR
 @onready var wheel_rl: VehicleWheel3D = $Wheel_RL
 @onready var wheel_rr: VehicleWheel3D = $Wheel_RR
-@onready var interaction_area: Area3D = $InteractionArea
 @onready var vehicle_camera: Camera3D = $VehicleCamera
 @onready var driver_seat: Marker3D = $DriverSeat
 @onready var exit_point: Marker3D = $ExitPoint
 
 
 func _ready() -> void:
+	add_to_group("vehicles")
 	mass = vehicle_mass
 	center_of_mass_mode = RigidBody3D.CENTER_OF_MASS_MODE_CUSTOM
 	center_of_mass = center_of_mass_offset
 	_configure_wheels()
 	order_note_ui = get_tree().get_first_node_in_group("order_note_ui") as CanvasLayer
-	interaction_area.body_entered.connect(_on_interaction_area_body_entered)
-	interaction_area.body_exited.connect(_on_interaction_area_body_exited)
 	vehicle_camera.current = false
 	engine_force = 0.0
 	brake = parking_brake_force
@@ -53,9 +52,10 @@ func _ready() -> void:
 
 
 func enter_vehicle(player: CharacterBody3D) -> void:
-	if is_driving or not is_instance_valid(player):
+	if not can_player_enter(player):
 		return
 	driver = player
+	driver_original_parent = player.get_parent()
 	is_driving = true
 	can_enter = false
 	sleeping = false
@@ -64,9 +64,16 @@ func enter_vehicle(player: CharacterBody3D) -> void:
 		driver.call("enter_vehicle_mode", self, driver_seat)
 	else:
 		driver.visible = false
+		var player_collision := driver.get_node_or_null("CollisionShape3D") as CollisionShape3D
+		if player_collision != null:
+			player_collision.disabled = true
+		var player_camera := driver.get_node_or_null("Camera3D") as Camera3D
+		if player_camera != null:
+			player_camera.current = false
 		driver.set_physics_process(false)
 		driver.set_process_input(false)
-		driver.set_process_unhandled_input(false)
+		driver.reparent(driver_seat, false)
+		driver.transform = Transform3D.IDENTITY
 	vehicle_camera.current = true
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 
@@ -85,18 +92,37 @@ func exit_vehicle() -> void:
 	_restore_order_note()
 	var exiting_player := driver
 	driver = null
-	nearby_player = null
 	can_enter = false
 	if not is_instance_valid(exiting_player):
+		driver_original_parent = null
 		return
 	if exiting_player.has_method("exit_vehicle_mode"):
 		exiting_player.call("exit_vehicle_mode", exit_point.global_transform)
 	else:
+		var target_parent := driver_original_parent
+		if not is_instance_valid(target_parent):
+			target_parent = get_tree().current_scene
+		exiting_player.reparent(target_parent, false)
 		exiting_player.global_transform = exit_point.global_transform
+		var player_collision := exiting_player.get_node_or_null("CollisionShape3D") as CollisionShape3D
+		if player_collision != null:
+			player_collision.disabled = false
+		var player_camera := exiting_player.get_node_or_null("Camera3D") as Camera3D
+		if player_camera != null:
+			player_camera.current = true
 		exiting_player.visible = true
 		exiting_player.set_physics_process(true)
 		exiting_player.set_process_input(true)
 		exiting_player.set_process_unhandled_input(true)
+	driver_original_parent = null
+
+
+func can_player_enter(player: CharacterBody3D) -> bool:
+	if is_driving or not is_instance_valid(player) or not is_inside_tree():
+		can_enter = false
+		return false
+	can_enter = global_position.distance_to(player.global_position) <= interaction_distance
+	return can_enter
 
 
 func _physics_process(delta: float) -> void:
@@ -125,8 +151,8 @@ func _physics_process(delta: float) -> void:
 	)
 	steering = current_steer
 
-	var forward_pressed := Input.is_action_pressed("move_forward") or Input.is_key_pressed(KEY_UP)
-	var reverse_pressed := Input.is_action_pressed("move_backward") or Input.is_key_pressed(KEY_DOWN)
+	var forward_pressed := Input.is_key_pressed(KEY_W) or Input.is_key_pressed(KEY_UP)
+	var reverse_pressed := Input.is_key_pressed(KEY_S) or Input.is_key_pressed(KEY_DOWN)
 	var handbrake_pressed := Input.is_key_pressed(KEY_SPACE)
 	var forward_speed := linear_velocity.dot(-global_transform.basis.z.normalized())
 
@@ -150,10 +176,10 @@ func _physics_process(delta: float) -> void:
 
 
 func _get_steer_input() -> float:
-	var steer_input := Input.get_action_strength("move_left") - Input.get_action_strength("move_right")
-	if Input.is_key_pressed(KEY_LEFT):
+	var steer_input := 0.0
+	if Input.is_key_pressed(KEY_A) or Input.is_key_pressed(KEY_LEFT):
 		steer_input += 1.0
-	if Input.is_key_pressed(KEY_RIGHT):
+	if Input.is_key_pressed(KEY_D) or Input.is_key_pressed(KEY_RIGHT):
 		steer_input -= 1.0
 	return clampf(steer_input, -1.0, 1.0)
 
@@ -223,19 +249,3 @@ func _hide_order_note() -> void:
 func _restore_order_note() -> void:
 	if is_instance_valid(order_note_ui):
 		order_note_ui.visible = order_note_was_visible
-
-
-func _on_interaction_area_body_entered(body: Node3D) -> void:
-	if body is CharacterBody3D and body.is_in_group("player") and not is_driving:
-		nearby_player = body as CharacterBody3D
-		can_enter = true
-		if body.has_method("set_nearby_vehicle"):
-			body.call("set_nearby_vehicle", self)
-
-
-func _on_interaction_area_body_exited(body: Node3D) -> void:
-	if body == nearby_player and not is_driving:
-		if body.has_method("set_nearby_vehicle"):
-			body.call("set_nearby_vehicle", null)
-		nearby_player = null
-		can_enter = false

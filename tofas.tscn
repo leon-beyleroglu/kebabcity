@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://clm8u42jlvahx"]
 
 [ext_resource type="Script" uid="uid://dcib2ef3n568l" path="res://tofas.gd" id="1_tofas"]
+[ext_resource type="PackedScene" uid="uid://cmhgymy4xnaxr" path="res://tofas_textured.glb" id="2_textured"]
 
 [sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_chassis"]
 points = PackedVector3Array(-0.85, -0.42, -1.78, 0.85, -0.42, -1.78, -0.85, -0.14, -2.1, 0.85, -0.14, -2.1, -0.85, 0.42, -2.1, 0.85, 0.42, -2.1, -0.85, -0.42, 1.78, 0.85, -0.42, 1.78, -0.85, -0.14, 2.1, 0.85, -0.14, 2.1, -0.85, 0.42, 2.1, 0.85, 0.42, 2.1)
@@ -79,9 +80,6 @@ top_radius = 0.22
 bottom_radius = 0.22
 height = 0.24
 
-[sub_resource type="SphereShape3D" id="SphereShape3D_interaction"]
-radius = 1.6
-
 [node name="Tofas" type="VehicleBody3D" unique_id=1278695565]
 mass = 1050.0
 center_of_mass_mode = 1
@@ -93,6 +91,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.54, 0)
 shape = SubResource("ConvexPolygonShape3D_chassis")
 
 [node name="VisualModel" type="Node3D" parent="." unique_id=1669547560]
+visible = false
 
 [node name="MotorhaubeFront" type="CSGBox3D" parent="VisualModel" unique_id=822791487]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0008203387, 0.4178833, -1.25)
@@ -198,99 +197,102 @@ material = SubResource("StandardMaterial3D_xp8xj")
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, -0.58, 0.18, 2.05)
 mesh = SubResource("CylinderMesh_omq6j")
 
+[node name="tofas_textured" parent="." unique_id=826923501 instance=ExtResource("2_textured")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.724, 0)
+
 [node name="Wheel_FL" type="VehicleWheel3D" parent="." unique_id=192180207]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.84, 0.28, -1.2)
 use_as_steering = true
+wheel_roll_influence = 0.08
 wheel_radius = 0.38
 wheel_rest_length = 0.22
+wheel_friction_slip = 2.0
 suspension_travel = 0.24
 suspension_stiffness = 60.0
 damping_compression = 2.4
 damping_relaxation = 3.0
-wheel_friction_slip = 2.0
-wheel_roll_influence = 0.08
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Wheel_FL" unique_id=292482736]
 transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0)
+visible = false
 mesh = SubResource("CylinderMesh_mbke1")
 
 [node name="Rim" type="MeshInstance3D" parent="Wheel_FL" unique_id=796493385]
 transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0)
+visible = false
 mesh = SubResource("CylinderMesh_joncj")
 
 [node name="Wheel_FR" type="VehicleWheel3D" parent="." unique_id=1981887898]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.84, 0.28, -1.2)
 use_as_steering = true
+wheel_roll_influence = 0.08
 wheel_radius = 0.38
 wheel_rest_length = 0.22
+wheel_friction_slip = 2.0
 suspension_travel = 0.24
 suspension_stiffness = 60.0
 damping_compression = 2.4
 damping_relaxation = 3.0
-wheel_friction_slip = 2.0
-wheel_roll_influence = 0.08
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Wheel_FR" unique_id=746395073]
 transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0)
+visible = false
 mesh = SubResource("CylinderMesh_mbke1")
 
 [node name="Rim" type="MeshInstance3D" parent="Wheel_FR" unique_id=228169933]
 transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0)
+visible = false
 mesh = SubResource("CylinderMesh_joncj")
 
 [node name="Wheel_RL" type="VehicleWheel3D" parent="." unique_id=1492396075]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.84, 0.28, 1.25)
 use_as_traction = true
+wheel_roll_influence = 0.08
 wheel_radius = 0.38
 wheel_rest_length = 0.22
+wheel_friction_slip = 2.0
 suspension_travel = 0.24
 suspension_stiffness = 60.0
 damping_compression = 2.4
 damping_relaxation = 3.0
-wheel_friction_slip = 2.0
-wheel_roll_influence = 0.08
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Wheel_RL" unique_id=1209365851]
 transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0)
+visible = false
 mesh = SubResource("CylinderMesh_mbke1")
 
 [node name="MeshInstance3D2" type="MeshInstance3D" parent="Wheel_RL" unique_id=993114931]
 transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0)
+visible = false
 mesh = SubResource("CylinderMesh_joncj")
 
 [node name="Wheel_RR" type="VehicleWheel3D" parent="." unique_id=1812323529]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.84, 0.28, 1.25)
 use_as_traction = true
+wheel_roll_influence = 0.08
 wheel_radius = 0.38
 wheel_rest_length = 0.22
+wheel_friction_slip = 2.0
 suspension_travel = 0.24
 suspension_stiffness = 60.0
 damping_compression = 2.4
 damping_relaxation = 3.0
-wheel_friction_slip = 2.0
-wheel_roll_influence = 0.08
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Wheel_RR" unique_id=1509623662]
 transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0)
+visible = false
 mesh = SubResource("CylinderMesh_mbke1")
 
 [node name="Rim" type="MeshInstance3D" parent="Wheel_RR" unique_id=1942740166]
 transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0)
+visible = false
 mesh = SubResource("CylinderMesh_joncj")
 
-[node name="InteractionArea" type="Area3D" parent="." unique_id=382896659]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.15, 0.75, 0.1)
-collision_layer = 0
-monitorable = false
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="InteractionArea" unique_id=1144463467]
-shape = SubResource("SphereShape3D_interaction")
-
 [node name="VehicleCamera" type="Camera3D" parent="." unique_id=1692830361]
-transform = Transform3D(1, 0, 0, 0, 0.9800666, 0.19866933, 0, -0.19866933, 0.9800666, 0, 2, 4.5)
+transform = Transform3D(1, 0, 0, 0, 0.9555837, 0.29471993, 0, -0.29471993, 0.9555837, 0, 2.7424026, 4.4633856)
 
 [node name="DriverSeat" type="Marker3D" parent="." unique_id=1584492653]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.42, 0.78, 0.15)
 
 [node name="ExitPoint" type="Marker3D" parent="." unique_id=293176297]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.65, 0.25, 0.15)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.8, 0.25, 0.15)

@@ -56,6 +56,7 @@ const AK47_FIRE_INTERVAL := 0.1
 const AK47_RANGE := 100.0
 const AK47_DAMAGE := 25
 const AK47_CAMERA_KICK := deg_to_rad(1.4)
+const VEHICLE_INTERACTION_DISTANCE := 3.5
 
 func _ready() -> void:
 	add_to_group("player")
@@ -89,15 +90,6 @@ func _ready() -> void:
 
 func _input(event: InputEvent) -> void:
 	if event is InputEventKey and event.pressed and not event.echo:
-		if event.keycode == KEY_E or event.physical_keycode == KEY_E:
-			if is_instance_valid(active_vehicle):
-				active_vehicle.call("exit_vehicle")
-			elif is_instance_valid(nearby_vehicle) and bool(nearby_vehicle.get("can_enter")):
-				nearby_vehicle.call("enter_vehicle", self)
-			else:
-				return
-			get_viewport().set_input_as_handled()
-			return
 		if is_instance_valid(active_vehicle):
 			return
 		if event.keycode == KEY_1 or event.physical_keycode == KEY_1:
@@ -114,6 +106,12 @@ func _input(event: InputEvent) -> void:
 
 
 func _unhandled_input(event: InputEvent) -> void:
+	if event is InputEventKey and event.pressed and not event.echo and event.keycode == KEY_E:
+		if _try_vehicle_interaction():
+			get_viewport().set_input_as_handled()
+		return
+	if is_instance_valid(active_vehicle):
+		return
 	if event is InputEventKey and event.pressed and not event.echo and event.keycode == KEY_F5:
 		_toggle_camera_mode()
 		get_viewport().set_input_as_handled()
@@ -233,6 +231,34 @@ func set_nearby_vehicle(vehicle: Node) -> void:
 	nearby_vehicle = vehicle
 
 
+func _try_vehicle_interaction() -> bool:
+	if is_instance_valid(active_vehicle):
+		active_vehicle.call("exit_vehicle")
+		return true
+
+	var vehicle := _find_closest_vehicle()
+	if not is_instance_valid(vehicle):
+		return false
+	vehicle.call("enter_vehicle", self)
+	return is_instance_valid(active_vehicle)
+
+
+func _find_closest_vehicle() -> Node:
+	var closest_vehicle: Node = null
+	var closest_distance := VEHICLE_INTERACTION_DISTANCE
+	for candidate: Node in get_tree().get_nodes_in_group("vehicles"):
+		if not candidate is Node3D or not candidate.has_method("enter_vehicle"):
+			continue
+		if candidate.has_method("can_player_enter") and not bool(candidate.call("can_player_enter", self)):
+			continue
+		var candidate_3d := candidate as Node3D
+		var distance := global_position.distance_to(candidate_3d.global_position)
+		if distance <= closest_distance:
+			closest_distance = distance
+			closest_vehicle = candidate
+	return closest_vehicle
+
+
 func enter_vehicle_mode(vehicle: Node, driver_seat: Marker3D) -> void:
 	if not is_instance_valid(vehicle) or not is_instance_valid(driver_seat):
 		return
@@ -252,7 +278,7 @@ func enter_vehicle_mode(vehicle: Node, driver_seat: Marker3D) -> void:
 	camera.current = false
 	player_collision.disabled = true
 	set_physics_process(false)
-	set_process_unhandled_input(false)
+	set_process_input(false)
 	reparent(driver_seat, false)
 	transform = Transform3D.IDENTITY
 
@@ -271,6 +297,7 @@ func exit_vehicle_mode(exit_transform: Transform3D) -> void:
 	first_person_hands.visible = not third_person and not is_holding_gun
 	camera.current = true
 	set_physics_process(true)
+	set_process_input(true)
 	set_process_unhandled_input(true)
 	if is_instance_valid(interaction_system):
 		interaction_system.set_process_unhandled_input(true)
