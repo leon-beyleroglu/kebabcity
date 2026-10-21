@@ -288,8 +288,18 @@ transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 
 visible = false
 mesh = SubResource("CylinderMesh_joncj")
 
-[node name="VehicleCamera" type="Camera3D" parent="." unique_id=1692830361]
-transform = Transform3D(1, 0, 0, 0, 0.9555837, 0.29471993, 0, -0.29471993, 0.9555837, 0, 2.7424026, 4.4633856)
+[node name="CameraPivot" type="Node3D" parent="."]
+position = Vector3(0, 1.2, 0)
+
+[node name="SpringArm3D" type="SpringArm3D" parent="CameraPivot"]
+rotation = Vector3(-0.17453292, 0, 0)
+collision_mask = 1
+spring_length = 5.0
+margin = 0.2
+
+[node name="VehicleCamera" type="Camera3D" parent="CameraPivot/SpringArm3D" unique_id=1692830361]
+current = false
+position = Vector3(0, 0, 0)
 
 [node name="DriverSeat" type="Marker3D" parent="." unique_id=1584492653]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.42, 0.78, 0.15)

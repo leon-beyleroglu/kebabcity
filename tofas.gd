@@ -15,6 +15,13 @@ extends VehicleBody3D
 @export var rollover_up_dot_threshold := 0.35
 @export var rollover_lift_height := 0.75
 @export var interaction_distance := 3.5
+@export var camera_mouse_sensitivity := 0.003
+@export var camera_min_pitch := deg_to_rad(-45.0)
+@export var camera_max_pitch := deg_to_rad(20.0)
+@export var camera_default_pitch := deg_to_rad(-10.0)
+@export var camera_auto_center_delay := 1.5
+@export var camera_auto_center_speed := 3.5
+@export var camera_auto_center_min_speed := 2.0
 
 # This Tofas model's visible front is local -Z. Negative VehicleBody3D wheel
 # force therefore drives it toward its hood instead of toward its trunk.
@@ -28,12 +35,17 @@ var current_steer := 0.0
 var rollover_timer := 0.0
 var order_note_ui: CanvasLayer
 var order_note_was_visible := false
+var camera_yaw := 0.0
+var camera_pitch := 0.0
+var camera_mouse_idle_time := 0.0
 
 @onready var wheel_fl: VehicleWheel3D = $Wheel_FL
 @onready var wheel_fr: VehicleWheel3D = $Wheel_FR
 @onready var wheel_rl: VehicleWheel3D = $Wheel_RL
 @onready var wheel_rr: VehicleWheel3D = $Wheel_RR
-@onready var vehicle_camera: Camera3D = $VehicleCamera
+@onready var camera_pivot: Node3D = $CameraPivot
+@onready var spring_arm: SpringArm3D = $CameraPivot/SpringArm3D
+@onready var vehicle_camera: Camera3D = $CameraPivot/SpringArm3D/VehicleCamera
 @onready var driver_seat: Marker3D = $DriverSeat
 @onready var exit_point: Marker3D = $ExitPoint
 
@@ -44,6 +56,8 @@ func _ready() -> void:
 	center_of_mass_mode = RigidBody3D.CENTER_OF_MASS_MODE_CUSTOM
 	center_of_mass = center_of_mass_offset
 	_configure_wheels()
+	spring_arm.add_excluded_object(get_rid())
+	_reset_vehicle_camera()
 	order_note_ui = get_tree().get_first_node_in_group("order_note_ui") as CanvasLayer
 	vehicle_camera.current = false
 	engine_force = 0.0
@@ -74,6 +88,7 @@ func enter_vehicle(player: CharacterBody3D) -> void:
 		driver.set_process_input(false)
 		driver.reparent(driver_seat, false)
 		driver.transform = Transform3D.IDENTITY
+	_reset_vehicle_camera()
 	vehicle_camera.current = true
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 
@@ -89,6 +104,7 @@ func exit_vehicle() -> void:
 	current_steer = 0.0
 	rollover_timer = 0.0
 	vehicle_camera.current = false
+	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 	_restore_order_note()
 	var exiting_player := driver
 	driver = null
@@ -125,6 +141,26 @@ func can_player_enter(player: CharacterBody3D) -> bool:
 	return can_enter
 
 
+func _unhandled_input(event: InputEvent) -> void:
+	if not is_driving:
+		return
+	if event is InputEventMouseMotion:
+		camera_yaw = wrapf(
+			camera_yaw - event.relative.x * camera_mouse_sensitivity,
+			-PI,
+			PI
+		)
+		camera_pitch = clampf(
+			camera_pitch - event.relative.y * camera_mouse_sensitivity,
+			camera_min_pitch,
+			camera_max_pitch
+		)
+		camera_pivot.rotation.y = camera_yaw
+		spring_arm.rotation.x = camera_pitch
+		camera_mouse_idle_time = 0.0
+		get_viewport().set_input_as_handled()
+
+
 func _physics_process(delta: float) -> void:
 	_set_rear_wheel_brake(0.0)
 
@@ -141,6 +177,7 @@ func _physics_process(delta: float) -> void:
 		return
 
 	_update_stability(delta)
+	_update_vehicle_camera(delta)
 
 	var steer_input := _get_steer_input()
 	var target_steer := steer_input * max_steering_angle
@@ -209,6 +246,28 @@ func _configure_wheels() -> void:
 func _set_rear_wheel_brake(force: float) -> void:
 	wheel_rl.brake = force
 	wheel_rr.brake = force
+
+
+func _reset_vehicle_camera() -> void:
+	camera_yaw = 0.0
+	camera_pitch = clampf(camera_default_pitch, camera_min_pitch, camera_max_pitch)
+	camera_mouse_idle_time = 0.0
+	camera_pivot.rotation = Vector3.ZERO
+	spring_arm.rotation = Vector3(camera_pitch, 0.0, 0.0)
+
+
+func _update_vehicle_camera(delta: float) -> void:
+	camera_mouse_idle_time += delta
+	if linear_velocity.length() <= camera_auto_center_min_speed:
+		return
+	if camera_mouse_idle_time < camera_auto_center_delay:
+		return
+	camera_yaw = lerp_angle(
+		camera_yaw,
+		0.0,
+		1.0 - exp(-camera_auto_center_speed * delta)
+	)
+	camera_pivot.rotation.y = camera_yaw
 
 
 func _update_stability(delta: float) -> void:
