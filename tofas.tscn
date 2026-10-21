@@ -1,12 +1,9 @@
 [gd_scene format=3 uid="uid://clm8u42jlvahx"]
 
-[ext_resource type="Script" path="res://tofas.gd" id="1_tofas"]
+[ext_resource type="Script" uid="uid://dcib2ef3n568l" path="res://tofas.gd" id="1_tofas"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_uy66q"]
 size = Vector3(1.7, 0.9, 4.2)
-
-[sub_resource type="SphereShape3D" id="SphereShape3D_interaction"]
-radius = 1.6
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_p55jm"]
 albedo_color = Color(0.95, 0.95, 0.94, 1)
@@ -82,6 +79,9 @@ top_radius = 0.22
 bottom_radius = 0.22
 height = 0.24
 
+[sub_resource type="SphereShape3D" id="SphereShape3D_interaction"]
+radius = 1.6
+
 [node name="Tofas" type="VehicleBody3D" unique_id=1278695565]
 mass = 1050.0
 script = ExtResource("1_tofas")
@@ -93,27 +93,27 @@ shape = SubResource("BoxShape3D_uy66q")
 [node name="VisualModel" type="Node3D" parent="." unique_id=1669547560]
 
 [node name="MotorhaubeFront" type="CSGBox3D" parent="VisualModel" unique_id=822791487]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.46852052, -1.25)
-size = Vector3(1.64, 0.55704105, 1.45)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0008203387, 0.4178833, -1.25)
+size = Vector3(1.6383593, 0.45576662, 1.45)
 material = SubResource("StandardMaterial3D_p55jm")
 
 [node name="MotorhaubeFront2" type="CSGBox3D" parent="VisualModel" unique_id=1835704416]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.4091591, 0.037719727)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.2764689, 0.037719727)
 size = Vector3(1.64, 0.04951662, 1.3883728)
 material = SubResource("StandardMaterial3D_p55jm")
 
 [node name="KofferraumHeck" type="CSGBox3D" parent="VisualModel" unique_id=1659315914]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.45542288, 1.3500013)
-size = Vector3(1.64, 0.49084595, 1.25)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.48511618, 1.3500013)
+size = Vector3(1.64, 0.5502325, 1.25)
 material = SubResource("StandardMaterial3D_p55jm")
 
 [node name="KabineUnten" type="CSGBox3D" parent="VisualModel" unique_id=599521776]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.54297364, 0.05000019)
-size = Vector3(1.64, 0.6859473, 1.4)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.4778711, 0.05000019)
+size = Vector3(1.64, 0.5557422, 1.4)
 material = SubResource("StandardMaterial3D_p55jm")
 
 [node name="DachAufbau" type="CSGBox3D" parent="VisualModel" unique_id=2143497252]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.012895107, 1.1375874, 0.041879654)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.012895107, 1.0048972, 0.041879654)
 size = Vector3(1.6451465, 0.51421875, 1.3887695)
 material = SubResource("StandardMaterial3D_daw6t")
 
@@ -199,7 +199,6 @@ mesh = SubResource("CylinderMesh_omq6j")
 [node name="Wheel_FL" type="VehicleWheel3D" parent="." unique_id=192180207]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.84, 0.28, -1.2)
 use_as_steering = true
-use_as_traction = false
 wheel_roll_influence = 0.2
 wheel_radius = 0.3
 suspension_travel = 0.14
@@ -218,7 +217,6 @@ mesh = SubResource("CylinderMesh_joncj")
 [node name="Wheel_FR" type="VehicleWheel3D" parent="." unique_id=1981887898]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.84, 0.28, -1.2)
 use_as_steering = true
-use_as_traction = false
 wheel_roll_influence = 0.2
 wheel_radius = 0.3
 suspension_travel = 0.14
@@ -236,7 +234,6 @@ mesh = SubResource("CylinderMesh_joncj")
 
 [node name="Wheel_RL" type="VehicleWheel3D" parent="." unique_id=1492396075]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.84, 0.28, 1.25)
-use_as_steering = false
 use_as_traction = true
 wheel_roll_influence = 0.2
 wheel_radius = 0.3
@@ -255,7 +252,6 @@ mesh = SubResource("CylinderMesh_joncj")
 
 [node name="Wheel_RR" type="VehicleWheel3D" parent="." unique_id=1812323529]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.84, 0.28, 1.25)
-use_as_steering = false
 use_as_traction = true
 wheel_roll_influence = 0.2
 wheel_radius = 0.3
@@ -272,23 +268,19 @@ mesh = SubResource("CylinderMesh_mbke1")
 transform = Transform3D(-4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0)
 mesh = SubResource("CylinderMesh_joncj")
 
-[node name="InteractionArea" type="Area3D" parent="."]
-position = Vector3(-1.15, 0.75, 0.1)
+[node name="InteractionArea" type="Area3D" parent="." unique_id=382896659]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.15, 0.75, 0.1)
 collision_layer = 0
-collision_mask = 1
-monitoring = true
 monitorable = false
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="InteractionArea"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="InteractionArea" unique_id=1144463467]
 shape = SubResource("SphereShape3D_interaction")
 
-[node name="VehicleCamera" type="Camera3D" parent="."]
-position = Vector3(0, 2, 4.5)
-rotation = Vector3(-0.2, 0, 0)
-current = false
+[node name="VehicleCamera" type="Camera3D" parent="." unique_id=1692830361]
+transform = Transform3D(1, 0, 0, 0, 0.9800666, 0.19866933, 0, -0.19866933, 0.9800666, 0, 2, 4.5)
 
-[node name="DriverSeat" type="Marker3D" parent="."]
-position = Vector3(-0.42, 0.78, 0.15)
+[node name="DriverSeat" type="Marker3D" parent="." unique_id=1584492653]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.42, 0.78, 0.15)
 
-[node name="ExitPoint" type="Marker3D" parent="."]
-position = Vector3(-1.65, 0.25, 0.15)
+[node name="ExitPoint" type="Marker3D" parent="." unique_id=293176297]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.65, 0.25, 0.15)
