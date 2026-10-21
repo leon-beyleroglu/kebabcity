@@ -18,6 +18,14 @@ signal hitscan_hit(collider: Object, position: Vector3, normal: Vector3)
 @onready var muzzle_point: Marker3D = %MuzzlePoint
 @onready var muzzle_light: OmniLight3D = %MuzzleLight
 @onready var muzzle_ray: RayCast3D = %MuzzleRay
+@onready var glock: Node3D = $Camera3D/HoldSocket/Glock
+@onready var glock_muzzle_light: OmniLight3D = $Camera3D/HoldSocket/Glock/GlockMuzzlePoint/GlockMuzzleLight
+@onready var awp: Node3D = $Camera3D/HoldSocket/AWP
+@onready var awp_muzzle_light: OmniLight3D = $Camera3D/HoldSocket/AWP/AWPMuzzlePoint/AWPMuzzleLight
+@onready var doener_messer: Node3D = $Camera3D/HoldSocket/DoenerMesser
+@onready var blade_hit_area: RayCast3D = $Camera3D/HoldSocket/DoenerMesser/BladeHitArea
+
+enum Slot { NONE, AK47, GLOCK, AWP, KNIFE }
 
 var avatar_model: Node3D
 var arm_pivots: Array[Node3D] = []
@@ -34,12 +42,15 @@ var walk_phase := 0.0
 var motion_blend := 0.0
 var idle_time := 0.0
 var is_holding_gun := false
-var gun_fire_cooldown := 0.0
+var current_slot := Slot.NONE
+var weapon_fire_cooldown := 0.0
 var muzzle_flash_time := 0.0
 var camera_recoil_pitch := 0.0
 var weapon_recoil := 0.0
-var ak47_rest_position := Vector3.ZERO
-var ak47_rest_rotation := Vector3.ZERO
+var weapon_rest_transforms: Dictionary = {}
+var active_muzzle_light: OmniLight3D
+var knife_swing_tween: Tween
+var awp_scoped := false
 var walking_parent: Node
 var nearby_vehicle: Node
 var active_vehicle: Node
@@ -56,6 +67,17 @@ const AK47_FIRE_INTERVAL := 0.1
 const AK47_RANGE := 100.0
 const AK47_DAMAGE := 25
 const AK47_CAMERA_KICK := deg_to_rad(1.4)
+const GLOCK_FIRE_INTERVAL := 0.28
+const GLOCK_RANGE := 100.0
+const GLOCK_DAMAGE := 38
+const GLOCK_CAMERA_KICK := deg_to_rad(0.85)
+const AWP_FIRE_INTERVAL := 1.2
+const AWP_RANGE := 400.0
+const AWP_DAMAGE := 120
+const AWP_CAMERA_KICK := deg_to_rad(5.5)
+const AWP_SCOPE_FOV := 30.0
+const KNIFE_ATTACK_INTERVAL := 0.42
+const KNIFE_DAMAGE := 45
 const VEHICLE_INTERACTION_DISTANCE := 3.5
 
 func _ready() -> void:
@@ -67,13 +89,17 @@ func _ready() -> void:
 	first_person_pitch = camera.rotation.x
 	camera.near = 0.06
 	camera.fov = 72.0
-	ak47.scale = Vector3.ONE
-	ak47.visible = false
-	ak47_rest_position = ak47.position
-	ak47_rest_rotation = ak47.rotation
+	for slot in [Slot.AK47, Slot.GLOCK, Slot.AWP, Slot.KNIFE]:
+		var weapon := _weapon_for_slot(slot)
+		weapon.visible = false
+		weapon_rest_transforms[slot] = weapon.transform
 	muzzle_light.visible = false
+	glock_muzzle_light.visible = false
+	awp_muzzle_light.visible = false
 	muzzle_ray.enabled = false
 	muzzle_ray.add_exception(self)
+	blade_hit_area.enabled = false
+	blade_hit_area.add_exception(self)
 	var camera_volume := SphereShape3D.new()
 	camera_volume.radius = 0.24
 	camera_query.shape = camera_volume
@@ -89,19 +115,15 @@ func _ready() -> void:
 
 
 func _input(event: InputEvent) -> void:
-	if event is InputEventKey and event.pressed and not event.echo:
+	if event is InputEventMouseButton and event.pressed:
 		if is_instance_valid(active_vehicle):
 			return
-		if event.keycode == KEY_1 or event.physical_keycode == KEY_1:
-			_set_gun_equipped(not ak47.visible)
+		if event.button_index == MOUSE_BUTTON_LEFT and current_slot != Slot.NONE:
+			Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
+			_try_primary_action()
 			get_viewport().set_input_as_handled()
-			return
-	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
-		if is_instance_valid(active_vehicle):
-			return
-		Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
-		if is_holding_gun:
-			_try_fire_ak47()
+		elif event.button_index == MOUSE_BUTTON_RIGHT and current_slot == Slot.AWP:
+			_set_awp_scope(not awp_scoped)
 			get_viewport().set_input_as_handled()
 
 
@@ -112,6 +134,12 @@ func _unhandled_input(event: InputEvent) -> void:
 		return
 	if is_instance_valid(active_vehicle):
 		return
+	if event is InputEventKey and event.pressed and not event.echo:
+		var slot := _slot_from_key(event)
+		if slot != Slot.NONE:
+			_equip_slot(Slot.NONE if current_slot == slot else slot)
+			get_viewport().set_input_as_handled()
+			return
 	if event is InputEventKey and event.pressed and not event.echo and event.keycode == KEY_F5:
 		_toggle_camera_mode()
 		get_viewport().set_input_as_handled()
@@ -172,13 +200,14 @@ func _physics_process(delta: float) -> void:
 		velocity.z = move_toward(velocity.z, 0, deceleration * delta)
 	move_and_slide()
 	_animate_actor(delta)
-	_update_ak47(delta)
+	_update_weapon_state(delta)
 	if camera.current:
 		_update_camera(delta)
 
 func _update_camera(delta: float) -> void:
 	var sprinting := Input.is_action_pressed("sprint") and Vector2(velocity.x, velocity.z).length() > walk_speed
-	camera.fov = lerpf(camera.fov, 77.0 if sprinting else 72.0, 1.0 - exp(-delta * 5.0))
+	var target_fov := AWP_SCOPE_FOV if current_slot == Slot.AWP and awp_scoped else (77.0 if sprinting else 72.0)
+	camera.fov = lerpf(camera.fov, target_fov, 1.0 - exp(-delta * 9.0))
 	if not third_person:
 		camera.rotation.x = clampf(first_person_pitch + camera_recoil_pitch, deg_to_rad(-85), deg_to_rad(85))
 		return
@@ -202,27 +231,63 @@ func _update_camera(delta: float) -> void:
 	avatar_model.visible = camera_distance > 0.95
 
 
-func _set_gun_equipped(equipped: bool) -> void:
-	if equipped and third_person:
+func _slot_from_key(event: InputEventKey) -> int:
+	var key := event.physical_keycode if event.physical_keycode != 0 else event.keycode
+	match key:
+		KEY_1:
+			return Slot.AK47
+		KEY_2:
+			return Slot.GLOCK
+		KEY_3:
+			return Slot.AWP
+		KEY_4:
+			return Slot.KNIFE
+	return Slot.NONE
+
+
+func _weapon_for_slot(slot: int) -> Node3D:
+	match slot:
+		Slot.AK47:
+			return ak47
+		Slot.GLOCK:
+			return glock
+		Slot.AWP:
+			return awp
+		Slot.KNIFE:
+			return doener_messer
+	return null
+
+
+func _equip_slot(slot: int) -> void:
+	if slot != Slot.NONE and third_person:
 		return
-	if equipped and is_instance_valid(interaction_system) and is_instance_valid(interaction_system.held_item):
+	if slot != Slot.NONE and is_instance_valid(interaction_system) and is_instance_valid(interaction_system.held_item):
 		interaction_system._return_held()
-	ak47.visible = equipped
-	is_holding_gun = ak47.visible
+	_set_awp_scope(false)
+	if is_instance_valid(knife_swing_tween):
+		knife_swing_tween.kill()
+	for weapon_slot in [Slot.AK47, Slot.GLOCK, Slot.AWP, Slot.KNIFE]:
+		var weapon := _weapon_for_slot(weapon_slot)
+		weapon.visible = weapon_slot == slot
+		weapon.transform = weapon_rest_transforms.get(weapon_slot, weapon.transform)
+	current_slot = slot
+	is_holding_gun = current_slot != Slot.NONE
 	first_person_hands.visible = not is_holding_gun and not third_person
-	muzzle_ray.enabled = is_holding_gun
+	muzzle_ray.enabled = current_slot == Slot.AK47
+	blade_hit_area.enabled = current_slot == Slot.KNIFE
 	if is_instance_valid(interaction_system):
 		interaction_system.set_process_unhandled_input(not is_holding_gun)
 		if is_holding_gun:
 			interaction_system._clear_focus()
 			interaction_system._reset_cutting()
-	if not is_holding_gun:
-		muzzle_light.visible = false
-		muzzle_flash_time = 0.0
-		camera_recoil_pitch = 0.0
-		weapon_recoil = 0.0
-		ak47.position = ak47_rest_position
-		ak47.rotation = ak47_rest_rotation
+	_hide_muzzle_flashes()
+	weapon_fire_cooldown = 0.0
+	camera_recoil_pitch = 0.0
+	weapon_recoil = 0.0
+
+
+func _set_gun_equipped(equipped: bool) -> void:
+	_equip_slot(Slot.AK47 if equipped else Slot.NONE)
 
 
 func set_nearby_vehicle(vehicle: Node) -> void:
@@ -267,7 +332,7 @@ func enter_vehicle_mode(vehicle: Node, driver_seat: Marker3D) -> void:
 	if third_person:
 		_toggle_camera_mode()
 	if is_holding_gun:
-		_set_gun_equipped(false)
+		_equip_slot(Slot.NONE)
 	if is_instance_valid(interaction_system):
 		if is_instance_valid(interaction_system.held_item):
 			interaction_system._return_held()
@@ -300,21 +365,35 @@ func exit_vehicle_mode(exit_transform: Transform3D) -> void:
 	set_process_input(true)
 	set_process_unhandled_input(true)
 	if is_instance_valid(interaction_system):
-		interaction_system.set_process_unhandled_input(true)
+		interaction_system.set_process_unhandled_input(current_slot == Slot.NONE)
 
 
-func _try_fire_ak47() -> void:
-	if not is_holding_gun or third_person or gun_fire_cooldown > 0.0:
+func _try_primary_action() -> void:
+	match current_slot:
+		Slot.AK47:
+			_try_firearm(AK47_FIRE_INTERVAL, AK47_RANGE, AK47_DAMAGE, AK47_CAMERA_KICK, muzzle_light, 0.055)
+		Slot.GLOCK:
+			_try_firearm(GLOCK_FIRE_INTERVAL, GLOCK_RANGE, GLOCK_DAMAGE, GLOCK_CAMERA_KICK, glock_muzzle_light, 0.032)
+		Slot.AWP:
+			_try_firearm(AWP_FIRE_INTERVAL, AWP_RANGE, AWP_DAMAGE, AWP_CAMERA_KICK, awp_muzzle_light, 0.085)
+		Slot.KNIFE:
+			_try_knife_attack()
+
+
+func _try_firearm(interval: float, max_range: float, damage: int, camera_kick: float, flash: OmniLight3D, recoil_distance: float) -> void:
+	if current_slot == Slot.NONE or third_person or weapon_fire_cooldown > 0.0:
 		return
-	gun_fire_cooldown = AK47_FIRE_INTERVAL
+	weapon_fire_cooldown = interval
+	_hide_muzzle_flashes()
 	muzzle_flash_time = 0.05
-	muzzle_light.visible = true
-	camera_recoil_pitch = minf(camera_recoil_pitch + AK47_CAMERA_KICK, deg_to_rad(8.0))
-	weapon_recoil = 1.0
+	active_muzzle_light = flash
+	active_muzzle_light.visible = true
+	camera_recoil_pitch = minf(camera_recoil_pitch + camera_kick, deg_to_rad(12.0))
+	weapon_recoil = maxf(weapon_recoil, recoil_distance)
 
 	var viewport_center := get_viewport().get_visible_rect().size * 0.5
 	var ray_origin := camera.project_ray_origin(viewport_center)
-	var ray_end := ray_origin + camera.project_ray_normal(viewport_center) * AK47_RANGE
+	var ray_end := ray_origin + camera.project_ray_normal(viewport_center) * max_range
 	var query := PhysicsRayQueryParameters3D.create(ray_origin, ray_end)
 	query.exclude = [get_rid()]
 	query.collide_with_areas = true
@@ -326,20 +405,82 @@ func _try_fire_ak47() -> void:
 	var hit_position := hit.get("position", ray_end) as Vector3
 	var hit_normal := hit.get("normal", Vector3.UP) as Vector3
 	hitscan_hit.emit(collider, hit_position, hit_normal)
-	if is_instance_valid(collider) and collider.has_method("take_damage"):
-		collider.call("take_damage", AK47_DAMAGE)
+	_apply_damage(collider, damage)
 
 
-func _update_ak47(delta: float) -> void:
-	gun_fire_cooldown = maxf(0.0, gun_fire_cooldown - delta)
+func _try_knife_attack() -> void:
+	if current_slot != Slot.KNIFE or third_person or weapon_fire_cooldown > 0.0:
+		return
+	weapon_fire_cooldown = KNIFE_ATTACK_INTERVAL
+	if is_instance_valid(knife_swing_tween):
+		knife_swing_tween.kill()
+	var rest: Transform3D = weapon_rest_transforms[Slot.KNIFE]
+	doener_messer.transform = rest
+	knife_swing_tween = create_tween()
+	knife_swing_tween.set_trans(Tween.TRANS_QUAD)
+	knife_swing_tween.set_ease(Tween.EASE_OUT)
+	knife_swing_tween.tween_property(doener_messer, "rotation", rest.basis.get_euler() + Vector3(deg_to_rad(-52.0), 0.0, deg_to_rad(-8.0)), 0.09)
+	knife_swing_tween.set_ease(Tween.EASE_IN_OUT)
+	knife_swing_tween.tween_property(doener_messer, "transform", rest, 0.16)
+
+	blade_hit_area.force_raycast_update()
+	if not blade_hit_area.is_colliding():
+		return
+	var collider := blade_hit_area.get_collider() as Object
+	var hit_position := blade_hit_area.get_collision_point()
+	var hit_normal := blade_hit_area.get_collision_normal()
+	hitscan_hit.emit(collider, hit_position, hit_normal)
+	if is_instance_valid(collider) and collider is Area3D and collider.has_meta("doner_meat_station"):
+		if is_instance_valid(interaction_system):
+			interaction_system._spawn_meat_portion()
+		return
+	if _apply_damage(collider, KNIFE_DAMAGE):
+		return
+	if is_instance_valid(collider) and collider.has_method("melee_impact"):
+		collider.call("melee_impact", hit_position, hit_normal)
+	elif is_instance_valid(collider) and collider.has_method("hit_by_melee"):
+		collider.call("hit_by_melee", KNIFE_DAMAGE, hit_position, hit_normal)
+
+
+func _apply_damage(collider: Object, damage: int) -> bool:
+	var target := collider as Node
+	for _depth in range(4):
+		if not is_instance_valid(target):
+			break
+		if target.has_method("take_damage"):
+			target.call("take_damage", damage)
+			return true
+		target = target.get_parent()
+	return false
+
+
+func _set_awp_scope(enabled: bool) -> void:
+	awp_scoped = enabled and current_slot == Slot.AWP and not third_person
+
+
+func _hide_muzzle_flashes() -> void:
+	muzzle_light.visible = false
+	glock_muzzle_light.visible = false
+	awp_muzzle_light.visible = false
+	active_muzzle_light = null
+	muzzle_flash_time = 0.0
+
+
+func _update_weapon_state(delta: float) -> void:
+	weapon_fire_cooldown = maxf(0.0, weapon_fire_cooldown - delta)
 	if muzzle_flash_time > 0.0:
 		muzzle_flash_time = maxf(0.0, muzzle_flash_time - delta)
 		if muzzle_flash_time <= 0.0:
-			muzzle_light.visible = false
+			_hide_muzzle_flashes()
 	camera_recoil_pitch = move_toward(camera_recoil_pitch, 0.0, deg_to_rad(7.5) * delta)
-	weapon_recoil = move_toward(weapon_recoil, 0.0, 8.0 * delta)
-	ak47.position = ak47_rest_position + Vector3(0, 0, weapon_recoil * 0.035)
-	ak47.rotation = ak47_rest_rotation + Vector3(weapon_recoil * deg_to_rad(3.5), 0, 0)
+	weapon_recoil = move_toward(weapon_recoil, 0.0, 0.55 * delta)
+	if current_slot in [Slot.AK47, Slot.GLOCK, Slot.AWP]:
+		var weapon := _weapon_for_slot(current_slot)
+		var rest: Transform3D = weapon_rest_transforms[current_slot]
+		weapon.position = rest.origin + Vector3(0.0, 0.0, weapon_recoil)
+		weapon.rotation = rest.basis.get_euler() + Vector3(weapon_recoil * 1.8, 0.0, 0.0)
+	if current_slot == Slot.AK47 and Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT):
+		_try_primary_action()
 
 func _animate_actor(delta: float) -> void:
 	idle_time += delta

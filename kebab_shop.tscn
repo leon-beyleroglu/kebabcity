@@ -545,6 +545,69 @@ roughness = 0.38
 material = SubResource("StandardMaterial3D_wel7i")
 size = Vector3(0.12, 0.3, 0.105)
 
+[sub_resource type="StandardMaterial3D" id="MatGlockPolymer"]
+albedo_color = Color(0.018, 0.022, 0.026, 1)
+roughness = 0.62
+
+[sub_resource type="BoxMesh" id="MeshGlockFrame"]
+material = SubResource("MatGlockPolymer")
+size = Vector3(0.15, 0.11, 0.25)
+
+[sub_resource type="StandardMaterial3D" id="MatGlockSteel"]
+albedo_color = Color(0.095, 0.105, 0.115, 1)
+metallic = 0.82
+roughness = 0.3
+
+[sub_resource type="BoxMesh" id="MeshGlockSlide"]
+material = SubResource("MatGlockSteel")
+size = Vector3(0.145, 0.075, 0.34)
+
+[sub_resource type="BoxMesh" id="MeshGlockGrip"]
+material = SubResource("MatGlockPolymer")
+size = Vector3(0.13, 0.25, 0.115)
+
+[sub_resource type="CylinderMesh" id="MeshGlockBarrel"]
+material = SubResource("MatGlockSteel")
+top_radius = 0.018
+bottom_radius = 0.018
+height = 0.12
+radial_segments = 12
+
+[sub_resource type="StandardMaterial3D" id="MatAWPBody"]
+albedo_color = Color(0.18, 0.22, 0.11, 1)
+roughness = 0.7
+
+[sub_resource type="BoxMesh" id="MeshAWPBody"]
+material = SubResource("MatAWPBody")
+size = Vector3(0.18, 0.17, 0.5)
+
+[sub_resource type="BoxMesh" id="MeshAWPStock"]
+material = SubResource("MatAWPBody")
+size = Vector3(0.17, 0.22, 0.38)
+
+[sub_resource type="StandardMaterial3D" id="MatAWPMetal"]
+albedo_color = Color(0.025, 0.03, 0.032, 1)
+metallic = 0.78
+roughness = 0.34
+
+[sub_resource type="CylinderMesh" id="MeshAWPBarrel"]
+material = SubResource("MatAWPMetal")
+top_radius = 0.022
+bottom_radius = 0.027
+height = 0.82
+radial_segments = 16
+
+[sub_resource type="CylinderMesh" id="MeshAWPScope"]
+material = SubResource("MatAWPMetal")
+top_radius = 0.05
+bottom_radius = 0.05
+height = 0.36
+radial_segments = 16
+
+[sub_resource type="BoxMesh" id="MeshAWPMagazine"]
+material = SubResource("MatAWPMetal")
+size = Vector3(0.13, 0.2, 0.16)
+
 [sub_resource type="StandardMaterial3D" id="MatViewmodelSkin"]
 resource_name = "Lightweight Natural Skin PBR"
 cull_mode = 2
@@ -2055,6 +2118,99 @@ omni_attenuation = 1.6
 unique_name_in_owner = true
 target_position = Vector3(0, 0, -100)
 collision_mask = 255
+collide_with_areas = true
+
+[node name="Glock" type="Node3D" parent="Player/Camera3D/HoldSocket" unique_id=1268234254]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.23, -0.22, -0.43)
+visible = false
+
+[node name="Frame" type="MeshInstance3D" parent="Player/Camera3D/HoldSocket/Glock" unique_id=1630164123]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.015, -0.14)
+cast_shadow = 0
+mesh = SubResource("MeshGlockFrame")
+
+[node name="Slide" type="MeshInstance3D" parent="Player/Camera3D/HoldSocket/Glock" unique_id=667022027]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.07, -0.17)
+cast_shadow = 0
+mesh = SubResource("MeshGlockSlide")
+
+[node name="Grip" type="MeshInstance3D" parent="Player/Camera3D/HoldSocket/Glock" unique_id=256651751]
+transform = Transform3D(1, 0, 0, 0, 0.978148, 0.207912, 0, -0.207912, 0.978148, 0, -0.17, -0.045)
+cast_shadow = 0
+mesh = SubResource("MeshGlockGrip")
+
+[node name="Barrel" type="MeshInstance3D" parent="Player/Camera3D/HoldSocket/Glock" unique_id=468133793]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0.066, -0.38)
+cast_shadow = 0
+mesh = SubResource("MeshGlockBarrel")
+
+[node name="GlockMuzzlePoint" type="Marker3D" parent="Player/Camera3D/HoldSocket/Glock" unique_id=234885068]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.066, -0.45)
+
+[node name="GlockMuzzleLight" type="OmniLight3D" parent="Player/Camera3D/HoldSocket/Glock/GlockMuzzlePoint" unique_id=1112195375]
+visible = false
+light_color = Color(1, 0.68, 0.26, 1)
+light_energy = 4.2
+omni_range = 2.5
+omni_attenuation = 1.6
+
+[node name="AWP" type="Node3D" parent="Player/Camera3D/HoldSocket" unique_id=258024061]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.25, -0.24, -0.39)
+visible = false
+
+[node name="Body" type="MeshInstance3D" parent="Player/Camera3D/HoldSocket/AWP" unique_id=807420523]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.34)
+cast_shadow = 0
+mesh = SubResource("MeshAWPBody")
+
+[node name="Stock" type="MeshInstance3D" parent="Player/Camera3D/HoldSocket/AWP" unique_id=1985779987]
+transform = Transform3D(1, 0, 0, 0, 0.992809, 0.119712, 0, -0.119712, 0.992809, 0, -0.03, 0.08)
+cast_shadow = 0
+mesh = SubResource("MeshAWPStock")
+
+[node name="LongBarrel" type="MeshInstance3D" parent="Player/Camera3D/HoldSocket/AWP" unique_id=674399850]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0.03, -0.98)
+cast_shadow = 0
+mesh = SubResource("MeshAWPBarrel")
+
+[node name="ScopeTube" type="MeshInstance3D" parent="Player/Camera3D/HoldSocket/AWP" unique_id=1366593413]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0.18, -0.4)
+cast_shadow = 0
+mesh = SubResource("MeshAWPScope")
+
+[node name="Magazine" type="MeshInstance3D" parent="Player/Camera3D/HoldSocket/AWP" unique_id=693054532]
+transform = Transform3D(1, 0, 0, 0, 0.984808, -0.173648, 0, 0.173648, 0.984808, 0, -0.17, -0.31)
+cast_shadow = 0
+mesh = SubResource("MeshAWPMagazine")
+
+[node name="AWPMuzzlePoint" type="Marker3D" parent="Player/Camera3D/HoldSocket/AWP" unique_id=1571839721]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.03, -1.42)
+
+[node name="AWPMuzzleLight" type="OmniLight3D" parent="Player/Camera3D/HoldSocket/AWP/AWPMuzzlePoint" unique_id=1585477425]
+visible = false
+light_color = Color(1, 0.58, 0.18, 1)
+light_energy = 8.0
+omni_range = 4.0
+omni_attenuation = 1.45
+
+[node name="DoenerMesser" type="Node3D" parent="Player/Camera3D/HoldSocket" unique_id=998738574]
+transform = Transform3D(-1, -8.742278e-08, 3.821371e-15, 0, -4.371139e-08, -1, 8.742278e-08, -1, 4.371139e-08, 0.28, -0.18000007, -0.6795299)
+visible = false
+
+[node name="LongBlade" type="MeshInstance3D" parent="Player/Camera3D/HoldSocket/DoenerMesser" unique_id=1390863633]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.18, 0)
+cast_shadow = 0
+mesh = SubResource("MeshKnifeBlade")
+
+[node name="Handle" type="MeshInstance3D" parent="Player/Camera3D/HoldSocket/DoenerMesser" unique_id=1168728704]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.31, 0)
+cast_shadow = 0
+mesh = SubResource("MeshKnifeHandle")
+
+[node name="BladeHitArea" type="RayCast3D" parent="Player/Camera3D/HoldSocket/DoenerMesser" unique_id=457020486]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0.08, 0)
+target_position = Vector3(0, 0, -1.8)
+collision_mask = 511
 collide_with_areas = true
 
 [node name="InteractionRayCast" type="RayCast3D" parent="Player/Camera3D" unique_id=1249246311]
