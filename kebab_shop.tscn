@@ -1481,16 +1481,16 @@ size = Vector3(0.44030762, 1.0515137, 1)
 
 [sub_resource type="BoxMesh" id="BoxMesh_853is"]
 material = SubResource("StandardMaterial3D_qromb")
-size = Vector3(0.7282982, 1.1958008, 1)
+size = Vector3(0.58924675, 1.1958008, 1.7827148)
 
 [sub_resource type="BoxMesh" id="BoxMesh_63lsx"]
-size = Vector3(4.459778, 0.14, 1.15)
+size = Vector3(3.6219788, 0.14, 1.906543)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_wel7i"]
-size = Vector3(3.7280273, 0.14, 1.15)
+size = Vector3(3.1384277, 0.14, 1.8992188)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_00dk3"]
-size = Vector3(3.9204712, 0.9034961, 1.2019775)
+size = Vector3(3.171173, 0.9034961, 1.9745239)
 
 [sub_resource type="BoxMesh" id="BoxMesh_00dk3"]
 size = Vector3(4.402649, 0.14, 1.15)
@@ -6067,25 +6067,25 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.2041687, 0, 18.678432)
 [node name="schneidefläche" type="Node3D" parent="." unique_id=1332819777]
 
 [node name="schneidenunten" type="MeshInstance3D" parent="schneidefläche" unique_id=778034169]
-transform = Transform3D(-2.6226832e-07, 0, 1, 0, 1, 0, -6, 0, -4.371139e-08, 8.014815, 0.6891401, -3.3674905)
+transform = Transform3D(-2.6226832e-07, 0, 1, 0, 1, 0, -6, 0, -4.371139e-08, 7.623458, 0.6891401, -3.7846448)
 material_override = SubResource("MatCounterCladding")
 mesh = SubResource("BoxMesh_853is")
 
 [node name="schneidearbeitsplatte" type="MeshInstance3D" parent="schneidefläche" unique_id=630182769]
-transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 8.031451, 1.3278751, -3.3476603)
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 7.6531796, 1.3278751, -3.7665598)
 material_override = SubResource("MatInteriorStainless")
 mesh = SubResource("BoxMesh_63lsx")
 
 [node name="SurfaceCollision" type="CollisionShape3D" parent="schneidefläche" unique_id=1076389981]
-transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 8.031451, 1.3104563, -3.243687)
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 7.6568418, 1.3104563, -3.5384867)
 shape = SubResource("BoxShape3D_wel7i")
 
 [node name="SurfaceCollision2" type="CollisionShape3D" parent="schneidefläche" unique_id=1044373905]
-transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 8.110588, 0.83684826, -3.147465)
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 7.7243147, 0.83684826, -3.522114)
 shape = SubResource("BoxShape3D_00dk3")
 
 [node name="VegetableCuttingStation" parent="." unique_id=1683175060 instance=ExtResource("30_cutting_station")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8.02, 1.3978751, -1.55)
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 7.0444126, 1.3978751, -3.464729)
 
 [node name="OnionSupply" parent="." unique_id=1738261552 instance=ExtResource("31_supply_crate")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 8.02, 1.3978751, -2.3)
