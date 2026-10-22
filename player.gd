@@ -28,6 +28,7 @@ signal shield_changed(current: float, max_val: float)
 @onready var awp_muzzle_light: OmniLight3D = $Camera3D/HoldSocket/AWP/AWPMuzzlePoint/AWPMuzzleLight
 @onready var doener_messer: Node3D = $Camera3D/HoldSocket/DoenerMesser
 @onready var blade_hit_area: RayCast3D = $Camera3D/HoldSocket/DoenerMesser/BladeHitArea
+@onready var weapon_pickup_ray: RayCast3D = $Camera3D/WeaponPickupRay
 
 enum Slot { NONE, AK47, GLOCK, AWP, KNIFE }
 
@@ -103,6 +104,7 @@ func _ready() -> void:
 		var weapon := _weapon_for_slot(slot)
 		weapon.visible = false
 		weapon_rest_transforms[slot] = weapon.transform
+	_synchronize_weapon_inventory()
 	muzzle_light.visible = false
 	glock_muzzle_light.visible = false
 	awp_muzzle_light.visible = false
@@ -110,6 +112,12 @@ func _ready() -> void:
 	muzzle_ray.add_exception(self)
 	blade_hit_area.enabled = false
 	blade_hit_area.add_exception(self)
+	weapon_pickup_ray.enabled = true
+	weapon_pickup_ray.target_position = Vector3(0.0, 0.0, -2.5)
+	weapon_pickup_ray.collision_mask = RestingWeapon.INTERACTION_LAYER
+	weapon_pickup_ray.collide_with_areas = true
+	weapon_pickup_ray.collide_with_bodies = false
+	weapon_pickup_ray.add_exception(self)
 	var camera_volume := SphereShape3D.new()
 	camera_volume.radius = 0.24
 	camera_query.shape = camera_volume
@@ -165,12 +173,22 @@ func _input(event: InputEvent) -> void:
 
 
 func _unhandled_input(event: InputEvent) -> void:
-	if event is InputEventKey and event.pressed and not event.echo and event.keycode == KEY_E:
-		if _try_vehicle_interaction():
-			get_viewport().set_input_as_handled()
-		return
+	if event is InputEventKey and event.pressed and not event.echo:
+		var key_event := event as InputEventKey
+		var physical_key: Key = key_event.physical_keycode if key_event.physical_keycode != 0 else key_event.keycode
+		if physical_key == KEY_E:
+			if _try_pickup_table_weapon() or _try_vehicle_interaction():
+				get_viewport().set_input_as_handled()
+			return
 	if is_instance_valid(active_vehicle):
 		return
+	if event is InputEventKey and event.pressed and not event.echo:
+		var key_event := event as InputEventKey
+		var physical_key: Key = key_event.physical_keycode if key_event.physical_keycode != 0 else key_event.keycode
+		if physical_key == KEY_G:
+			if _try_drop_current_weapon():
+				get_viewport().set_input_as_handled()
+			return
 	if event is InputEventKey and event.pressed and not event.echo:
 		var slot := _slot_from_key(event)
 		if slot != Slot.NONE:
@@ -295,8 +313,36 @@ func _weapon_for_slot(slot: int) -> Node3D:
 	return null
 
 
+func _weapon_id_for_slot(slot: int) -> String:
+	match slot:
+		Slot.AK47:
+			return "ak47"
+		Slot.GLOCK:
+			return "glock"
+		Slot.AWP:
+			return "awp"
+		Slot.KNIFE:
+			return "knife"
+	return ""
+
+
+func _slot_for_weapon_id(weapon_id: String) -> int:
+	match _normalize_weapon_id(weapon_id):
+		"ak47":
+			return Slot.AK47
+		"glock":
+			return Slot.GLOCK
+		"awp":
+			return Slot.AWP
+		"knife":
+			return Slot.KNIFE
+	return Slot.NONE
+
+
 func _equip_slot(slot: int) -> void:
 	if slot != Slot.NONE and third_person:
+		return
+	if slot != Slot.NONE and not _owns_weapon(_weapon_id_for_slot(slot)):
 		return
 	if slot != Slot.NONE and is_instance_valid(interaction_system) and is_instance_valid(interaction_system.held_item):
 		interaction_system._return_held()
@@ -321,6 +367,102 @@ func _equip_slot(slot: int) -> void:
 	weapon_fire_cooldown = 0.0
 	camera_recoil_pitch = 0.0
 	weapon_recoil = 0.0
+
+
+func _try_drop_current_weapon() -> bool:
+	if current_slot == Slot.NONE:
+		return false
+
+	var weapon_table := _find_nearby_weapon_table()
+	if not is_instance_valid(weapon_table):
+		return false
+
+	var weapon_id := _weapon_id_for_slot(current_slot)
+	if weapon_id.is_empty() or not weapon_table.place_weapon_on_table(weapon_id):
+		return false
+
+	_remove_owned_weapon(weapon_id)
+	_equip_slot(Slot.NONE)
+	return true
+
+
+func _try_pickup_table_weapon() -> bool:
+	if is_instance_valid(active_vehicle) or not is_instance_valid(weapon_pickup_ray):
+		return false
+
+	weapon_pickup_ray.force_raycast_update()
+	if not weapon_pickup_ray.is_colliding():
+		return false
+
+	var target := weapon_pickup_ray.get_collider() as RestingWeapon
+	if not is_instance_valid(target):
+		return false
+
+	var weapon_id := _normalize_weapon_id(target.weapon_type)
+	var assigned_slot := _slot_for_weapon_id(weapon_id)
+	if assigned_slot == Slot.NONE or target.assigned_slot != assigned_slot:
+		return false
+	if not target.pickup_weapon():
+		return false
+
+	GameState.retrieve_weapon_from_table(weapon_id)
+	return true
+
+
+func _find_nearby_weapon_table() -> WeaponTable:
+	var closest_table: WeaponTable
+	var closest_distance := INF
+	for candidate: Node in get_tree().get_nodes_in_group("weapon_table"):
+		var table := candidate as WeaponTable
+		if not is_instance_valid(table) or not table.is_player_in_range(self):
+			continue
+		var distance := global_position.distance_squared_to(table.global_position)
+		if distance < closest_distance:
+			closest_distance = distance
+			closest_table = table
+	return closest_table
+
+
+func _synchronize_weapon_inventory() -> void:
+	var has_tracked_weapon := false
+	for owned_weapon: String in GameState.owned_weapons:
+		if _normalize_weapon_id(owned_weapon) in ["ak47", "glock", "awp", "knife"]:
+			has_tracked_weapon = true
+			break
+
+	for slot in [Slot.AK47, Slot.GLOCK, Slot.AWP, Slot.KNIFE]:
+		var weapon_id := _weapon_id_for_slot(slot)
+		if GameState.table_stored_weapons.has(weapon_id):
+			_remove_owned_weapon(weapon_id)
+		elif not has_tracked_weapon and not _owns_weapon(weapon_id):
+			GameState.owned_weapons.append(weapon_id)
+
+
+func _owns_weapon(weapon_id: String) -> bool:
+	for owned_weapon: String in GameState.owned_weapons:
+		if _normalize_weapon_id(owned_weapon) == weapon_id:
+			return true
+	return false
+
+
+func _remove_owned_weapon(weapon_id: String) -> void:
+	for index in range(GameState.owned_weapons.size() - 1, -1, -1):
+		if _normalize_weapon_id(GameState.owned_weapons[index]) == weapon_id:
+			GameState.owned_weapons.remove_at(index)
+
+
+func _normalize_weapon_id(weapon_id: String) -> String:
+	var normalized := weapon_id.strip_edges().to_lower().replace("-", "").replace("_", "")
+	match normalized:
+		"glock", "glock17":
+			return "glock"
+		"ak47", "ak":
+			return "ak47"
+		"awp":
+			return "awp"
+		"knife", "doenermesser", "dönermesser":
+			return "knife"
+	return normalized
 
 
 func _set_gun_equipped(equipped: bool) -> void:

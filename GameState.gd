@@ -27,12 +27,14 @@ var counter_items: Array[Dictionary] = []
 var prep_counter_items: Array[String] = []
 var meat_tray_portions: int = 0
 var oven_data: Dictionary = {"item_type": "", "timer_progress": 0.0, "is_baked": false}
+var table_stored_weapons: Array[String] = []
 
 var _restore_player_transform := false
 var _restore_counter_inventory := false
 var _restore_prep_counter := false
 var _restore_meat_tray := false
 var _restore_oven := false
+var _restore_weapon_table := false
 
 
 func _ready() -> void:
@@ -46,6 +48,7 @@ func save_game() -> void:
 		player_rotation_y = player.rotation.y
 	counter_items = _collect_counter_items(player)
 	_collect_station_data()
+	_collect_weapon_table_data()
 
 	var save_data: Dictionary = {
 		"money": money,
@@ -69,6 +72,7 @@ func save_game() -> void:
 		"prep_counter_items": prep_counter_items,
 		"meat_tray_portions": meat_tray_portions,
 		"oven_data": oven_data,
+		"table_stored_weapons": table_stored_weapons,
 	}
 	var file := FileAccess.open(SAVE_PATH, FileAccess.WRITE)
 	if file == null:
@@ -106,6 +110,20 @@ func load_game() -> bool:
 	var loaded_weapons: Variant = save_data.get("owned_weapons", owned_weapons)
 	if loaded_weapons is Array:
 		owned_weapons.assign(loaded_weapons)
+
+	_restore_weapon_table = save_data.has("table_stored_weapons")
+	if _restore_weapon_table:
+		var loaded_table_weapons: Variant = save_data["table_stored_weapons"]
+		if loaded_table_weapons is Array:
+			table_stored_weapons.clear()
+			for raw_weapon: Variant in loaded_table_weapons:
+				var weapon_id := _normalize_weapon_id(String(raw_weapon))
+				if not weapon_id.is_empty() and not table_stored_weapons.has(weapon_id):
+					table_stored_weapons.append(weapon_id)
+			for weapon_id: String in table_stored_weapons:
+				_remove_owned_weapon(weapon_id)
+		else:
+			_restore_weapon_table = false
 	var loaded_ammo: Variant = save_data.get("ammo", ammo)
 	if loaded_ammo is Dictionary:
 		var restored_ammo: Dictionary = {}
@@ -226,6 +244,22 @@ func _collect_station_data() -> void:
 			oven_data = saved_oven
 
 
+func _collect_weapon_table_data() -> void:
+	var weapon_table := get_tree().get_first_node_in_group("weapon_table")
+	if not is_instance_valid(weapon_table) or not weapon_table.has_method("get_save_data"):
+		return
+	var table_data: Variant = weapon_table.call("get_save_data")
+	if not table_data is Dictionary:
+		return
+	var saved_weapons: Variant = table_data.get("weapons", [])
+	if saved_weapons is Array:
+		table_stored_weapons.clear()
+		for raw_weapon: Variant in saved_weapons:
+			var weapon_id := _normalize_weapon_id(String(raw_weapon))
+			if not weapon_id.is_empty() and not table_stored_weapons.has(weapon_id):
+				table_stored_weapons.append(weapon_id)
+
+
 func _restore_scene_state(attempt: int = 0) -> void:
 	var needs_retry := false
 	var player := get_tree().get_first_node_in_group("player") as Node3D
@@ -282,6 +316,17 @@ func _restore_scene_state(attempt: int = 0) -> void:
 		else:
 			needs_retry = true
 
+	if _restore_weapon_table:
+		var weapon_table := get_tree().get_first_node_in_group("weapon_table")
+		if (
+			is_instance_valid(weapon_table)
+			and weapon_table.has_method("load_save_data")
+			and bool(weapon_table.call("load_save_data", {"weapons": table_stored_weapons}))
+		):
+			_restore_weapon_table = false
+		else:
+			needs_retry = true
+
 	if needs_retry and attempt < 16:
 		call_deferred("_restore_scene_state", attempt + 1)
 
@@ -325,3 +370,39 @@ func consume_ingredient(item: String, count: int = 1) -> bool:
 	ingredient_stock[item] = remaining
 	stock_updated.emit(item, remaining)
 	return true
+
+
+func retrieve_weapon_from_table(weapon_type: String) -> bool:
+	var weapon_id := _normalize_weapon_id(weapon_type)
+	if weapon_id.is_empty():
+		return false
+
+	while table_stored_weapons.has(weapon_id):
+		table_stored_weapons.erase(weapon_id)
+
+	for owned_weapon: String in owned_weapons:
+		if _normalize_weapon_id(owned_weapon) == weapon_id:
+			return true
+
+	owned_weapons.append(weapon_id)
+	return true
+
+
+func _remove_owned_weapon(weapon_id: String) -> void:
+	for index in range(owned_weapons.size() - 1, -1, -1):
+		if _normalize_weapon_id(owned_weapons[index]) == weapon_id:
+			owned_weapons.remove_at(index)
+
+
+func _normalize_weapon_id(weapon_id: String) -> String:
+	var normalized := weapon_id.strip_edges().to_lower().replace("-", "").replace("_", "")
+	match normalized:
+		"glock", "glock17":
+			return "glock"
+		"ak47", "ak":
+			return "ak47"
+		"awp":
+			return "awp"
+		"knife", "doenermesser", "dönermesser":
+			return "knife"
+	return normalized

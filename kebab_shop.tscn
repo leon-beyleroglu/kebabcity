@@ -21,6 +21,7 @@
 [ext_resource type="PackedScene" path="res://PauseMenu.tscn" id="26_pause"]
 [ext_resource type="Script" uid="uid://b126u3mdvklda" path="res://MeatTray.gd" id="27_meat_tray"]
 [ext_resource type="Script" uid="uid://cvdx88dxawbt0" path="res://OvenStation.gd" id="28_oven_station"]
+[ext_resource type="Script" path="res://WeaponTable.gd" id="29_weapon_table"]
 
 [sub_resource type="StandardMaterial3D" id="MatInteriorFloorTile"]
 resource_name = "Non-Slip Terracotta Floor Tile"
@@ -1481,13 +1482,16 @@ material = SubResource("StandardMaterial3D_qromb")
 size = Vector3(0.7282982, 1.1958008, 1)
 
 [sub_resource type="BoxMesh" id="BoxMesh_63lsx"]
-size = Vector3(3.724121, 0.14, 1.15)
+size = Vector3(4.459778, 0.14, 1.15)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_wel7i"]
 size = Vector3(3.7280273, 0.14, 1.15)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_00dk3"]
 size = Vector3(3.9204712, 0.9034961, 1.2019775)
+
+[sub_resource type="BoxMesh" id="BoxMesh_00dk3"]
+size = Vector3(4.402649, 0.14, 1.15)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_au230"]
 size = Vector3(4.362671, 1.1890186, 1.15)
@@ -2230,6 +2234,12 @@ collide_with_areas = true
 target_position = Vector3(0, 0, -3.6)
 collision_mask = 130
 collide_with_areas = true
+
+[node name="WeaponPickupRay" type="RayCast3D" parent="Player/Camera3D"]
+target_position = Vector3(0, 0, -2.5)
+collision_mask = 4
+collide_with_areas = true
+collide_with_bodies = false
 
 [node name="ArmsHolder" type="Node3D" parent="Player/Camera3D" unique_id=1693876997]
 
@@ -6060,7 +6070,7 @@ material_override = SubResource("MatCounterCladding")
 mesh = SubResource("BoxMesh_853is")
 
 [node name="schneidearbeitsplatte" type="MeshInstance3D" parent="schneidefläche" unique_id=630182769]
-transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 8.031451, 1.3278751, -3.24564)
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 8.031451, 1.3278751, -3.3476603)
 material_override = SubResource("MatInteriorStainless")
 mesh = SubResource("BoxMesh_63lsx")
 
@@ -6072,17 +6082,18 @@ shape = SubResource("BoxShape3D_wel7i")
 transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 8.110588, 0.83684826, -3.147465)
 shape = SubResource("BoxShape3D_00dk3")
 
-[node name="waffenfläche" type="Node3D" parent="." unique_id=840178646]
+[node name="waffenfläche" type="StaticBody3D" parent="." unique_id=840178646 groups=["weapon_table"]]
 transform = Transform3D(-2.6226832e-07, 0, 1, 0, 1, 0, -6, 0, -4.371139e-08, -8.177597, 0.6891401, -3.3674905)
+script = ExtResource("29_weapon_table")
 
 [node name="waffenunten" type="MeshInstance3D" parent="waffenfläche" unique_id=1960453472]
 material_override = SubResource("MatCounterCladding")
 mesh = SubResource("BoxMesh_853is")
 
 [node name="waffenplatte" type="MeshInstance3D" parent="waffenfläche" unique_id=1830918976]
-transform = Transform3D(0.16666667, 0, 0, 0, 1, 0, 0, 0, 1, -0.020308375, 0.63873506, 0.016635895)
+transform = Transform3D(0.16666667, 0, 0, 0, 1, 0, 0, 0, 1, 0.0013438463, 0.63873506, 0.016635895)
 material_override = SubResource("MatInteriorStainless")
-mesh = SubResource("BoxMesh_63lsx")
+mesh = SubResource("BoxMesh_00dk3")
 
 [node name="SurfaceCollision2" type="CollisionShape3D" parent="waffenfläche" unique_id=834310276]
 transform = Transform3D(0.16666667, 0, 0, 0, 1, 0, 0, 0, 1, -0.020633936, 0.6213162, 0.016635895)
@@ -6091,6 +6102,22 @@ shape = SubResource("BoxShape3D_wel7i")
 [node name="SurfaceCollision3" type="CollisionShape3D" parent="waffenfläche" unique_id=335203287]
 transform = Transform3D(0.16666667, 0, 0, 0, 1, 0, 0, 0, 1, -0.003432095, 0.02953273, -0.07314873)
 shape = SubResource("BoxShape3D_au230")
+
+[node name="Slots" type="Node3D" parent="waffenfläche"]
+top_level = true
+position = Vector3(-8.160961, 1.3978751, -3.3755536)
+
+[node name="GlockSlot" type="Marker3D" parent="waffenfläche/Slots"]
+position = Vector3(0, 0, 1.65)
+
+[node name="AK47Slot" type="Marker3D" parent="waffenfläche/Slots"]
+position = Vector3(0, 0, 0.05)
+
+[node name="AWPSlot" type="Marker3D" parent="waffenfläche/Slots"]
+position = Vector3(0, 0, -1.25)
+
+[node name="KnifeSlot" type="Marker3D" parent="waffenfläche/Slots"]
+position = Vector3(0, 0, 0.95)
 
 [node name="tofas_textured" parent="." unique_id=176736883 instance=ExtResource("25_tofas")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.827626, 0.010848671, 17.215115)
