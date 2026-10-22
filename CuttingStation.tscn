@@ -1,0 +1,54 @@
+[gd_scene load_steps=6 format=3]
+
+[ext_resource type="Script" path="res://CuttingStation.gd" id="1_station"]
+
+[sub_resource type="StandardMaterial3D" id="BoardMaterial"]
+albedo_color = Color(0.58, 0.34, 0.14, 1)
+roughness = 0.84
+
+[sub_resource type="BoxMesh" id="BoardMesh"]
+material = SubResource("BoardMaterial")
+size = Vector3(0.9, 0.08, 0.55)
+
+[sub_resource type="BoxShape3D" id="BoardShape"]
+size = Vector3(0.9, 0.08, 0.55)
+
+[sub_resource type="BoxShape3D" id="InteractionShape"]
+size = Vector3(0.94, 0.32, 0.59)
+
+[node name="CuttingStation" type="StaticBody3D" groups=["cutting_station"]]
+script = ExtResource("1_station")
+
+[node name="BoardMesh" type="MeshInstance3D" parent="."]
+position = Vector3(0, 0.04, 0)
+mesh = SubResource("BoardMesh")
+
+[node name="BoardCollision" type="CollisionShape3D" parent="."]
+position = Vector3(0, 0.04, 0)
+shape = SubResource("BoardShape")
+
+[node name="BoardSurface" type="Marker3D" parent="."]
+position = Vector3(0, 0.08, 0)
+
+[node name="KnifeSocket" type="Marker3D" parent="."]
+position = Vector3(0.32, 0.1, 0)
+rotation = Vector3(0, 0, 1.5707964)
+
+[node name="StationArea" type="Area3D" parent="."]
+position = Vector3(0, 0.18, 0)
+collision_layer = 128
+collision_mask = 0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StationArea"]
+shape = SubResource("InteractionShape")
+
+[node name="Progress3D" type="Label3D" parent="."]
+position = Vector3(0, 0.55, 0)
+visible = false
+text = ""
+font_size = 40
+outline_size = 8
+modulate = Color(1, 0.88, 0.32, 1)
+billboard = 1
+no_depth_test = true
+

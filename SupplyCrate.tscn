@@ -1,0 +1,86 @@
+[gd_scene load_steps=10 format=3]
+
+[ext_resource type="Script" path="res://SupplyCrate.gd" id="1_crate"]
+
+[sub_resource type="StandardMaterial3D" id="CrateMaterial"]
+albedo_color = Color(0.32, 0.18, 0.075, 1)
+roughness = 0.9
+
+[sub_resource type="BoxMesh" id="BottomMesh"]
+material = SubResource("CrateMaterial")
+size = Vector3(0.8, 0.05, 0.6)
+
+[sub_resource type="BoxMesh" id="LongWallMesh"]
+material = SubResource("CrateMaterial")
+size = Vector3(0.8, 0.4, 0.045)
+
+[sub_resource type="BoxMesh" id="ShortWallMesh"]
+material = SubResource("CrateMaterial")
+size = Vector3(0.045, 0.4, 0.51)
+
+[sub_resource type="BoxShape3D" id="BottomShape"]
+size = Vector3(0.8, 0.05, 0.6)
+
+[sub_resource type="BoxShape3D" id="LongWallShape"]
+size = Vector3(0.8, 0.4, 0.045)
+
+[sub_resource type="BoxShape3D" id="ShortWallShape"]
+size = Vector3(0.045, 0.4, 0.51)
+
+[sub_resource type="BoxShape3D" id="PickupShape"]
+size = Vector3(0.84, 0.5, 0.64)
+
+[node name="SupplyCrate" type="StaticBody3D"]
+script = ExtResource("1_crate")
+
+[node name="Bottom" type="MeshInstance3D" parent="."]
+position = Vector3(0, 0.025, 0)
+mesh = SubResource("BottomMesh")
+
+[node name="FrontWall" type="MeshInstance3D" parent="."]
+position = Vector3(0, 0.2, 0.2775)
+mesh = SubResource("LongWallMesh")
+
+[node name="BackWall" type="MeshInstance3D" parent="."]
+position = Vector3(0, 0.2, -0.2775)
+mesh = SubResource("LongWallMesh")
+
+[node name="LeftWall" type="MeshInstance3D" parent="."]
+position = Vector3(-0.3775, 0.2, 0)
+mesh = SubResource("ShortWallMesh")
+
+[node name="RightWall" type="MeshInstance3D" parent="."]
+position = Vector3(0.3775, 0.2, 0)
+mesh = SubResource("ShortWallMesh")
+
+[node name="BottomCollision" type="CollisionShape3D" parent="."]
+position = Vector3(0, 0.025, 0)
+shape = SubResource("BottomShape")
+
+[node name="FrontCollision" type="CollisionShape3D" parent="."]
+position = Vector3(0, 0.2, 0.2775)
+shape = SubResource("LongWallShape")
+
+[node name="BackCollision" type="CollisionShape3D" parent="."]
+position = Vector3(0, 0.2, -0.2775)
+shape = SubResource("LongWallShape")
+
+[node name="LeftCollision" type="CollisionShape3D" parent="."]
+position = Vector3(-0.3775, 0.2, 0)
+shape = SubResource("ShortWallShape")
+
+[node name="RightCollision" type="CollisionShape3D" parent="."]
+position = Vector3(0.3775, 0.2, 0)
+shape = SubResource("ShortWallShape")
+
+[node name="PreviewItems" type="Node3D" parent="."]
+position = Vector3(0, 0.34, 0)
+
+[node name="PickupArea" type="Area3D" parent="."]
+position = Vector3(0, 0.25, 0)
+collision_layer = 128
+collision_mask = 0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="PickupArea"]
+shape = SubResource("PickupShape")
+

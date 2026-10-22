@@ -78,6 +78,8 @@ func setup(owner_player: CharacterBody3D, view_camera: Camera3D, hand_slot: Mark
 	_resolve_hand_sockets()
 	_setup_input()
 	_setup_ui()
+	if not GameState.stock_updated.is_connected(_on_stock_updated):
+		GameState.stock_updated.connect(_on_stock_updated)
 	call_deferred("_register_scene_targets")
 
 func _setup_input() -> void:
@@ -185,6 +187,7 @@ func _register_scene_targets() -> void:
 		var oven_station := oven as OvenStation
 		if is_instance_valid(oven_station):
 			oven_station.configure_persistence(get_oven_save_data, load_oven_save_data)
+	_sync_all_container_fill_visuals()
 
 
 func _restore_prep_counter_items(item_ids: Array[String], station: PrepStation) -> void:
@@ -542,6 +545,16 @@ func _unhandled_input(event: InputEvent) -> void:
 
 
 func handle_interaction(collider: Object, hit_position: Vector3, hit_normal: Vector3) -> void:
+	var collider_node := collider as Node
+	if is_instance_valid(collider_node):
+		var supply_crate := collider_node.get_meta("supply_crate_owner", null) as SupplyCrate
+		if is_instance_valid(supply_crate):
+			supply_crate.interact(self)
+			return
+		var cutting_station := collider_node.get_meta("cutting_station_owner", null) as CuttingStation
+		if is_instance_valid(cutting_station):
+			cutting_station.interact(self)
+			return
 	_clear_focus()
 	focus_hit_position = hit_position
 	focus_hit_normal = hit_normal.normalized()
@@ -563,6 +576,8 @@ func handle_interaction(collider: Object, hit_position: Vector3, hit_normal: Vec
 		_interact_with_oven()
 	elif focused_sauce_bin:
 		_interact_with_sauce_bin(focused_sauce_bin)
+	elif focused_container and held_item:
+		_try_refill_ingredient_container(focused_container)
 	elif focused_container and not held_item:
 		interact_with_container(focused_container)
 	elif focused_prep and held_item:
@@ -689,8 +704,12 @@ func interact_with_container(container: Node3D) -> void:
 		template = pickup_templates.get(item_id) as Node3D
 	if not is_instance_valid(template):
 		return
+	if not GameState.consume_ingredient(item_id):
+		_update_container_fill_visual(container, item_id)
+		return
 	var new_visual := template.duplicate() as Node3D
 	if not is_instance_valid(new_visual) or new_visual == template:
+		GameState.add_ingredient_stock(item_id, 1)
 		return
 	_normalize_pickup_copy(new_visual)
 	new_visual.visible = true
@@ -709,6 +728,108 @@ func interact_with_container(container: Node3D) -> void:
 	held_visual.name = "Held_%s" % item_id
 	if not _attach_held_visual(held_visual):
 		_return_held()
+		GameState.add_ingredient_stock(item_id, 1)
+	_update_container_fill_visual(container, item_id)
+
+
+func can_accept_produced_item() -> bool:
+	return not is_instance_valid(held_item)
+
+
+func get_held_item_id() -> String:
+	return held_item.item_id if is_instance_valid(held_item) else ""
+
+
+func hold_produced_item(item_id: String, display_name: String, visual: Node3D) -> bool:
+	if not can_accept_produced_item() or not is_instance_valid(visual) or not is_instance_valid(hold_socket):
+		return false
+	var new_item: Area3D = InteractableItemScript.new()
+	new_item.name = "Held_%s" % item_id
+	get_tree().current_scene.add_child(new_item)
+	new_item.global_position = player.global_position if is_instance_valid(player) else Vector3.ZERO
+	new_item.configure(item_id, display_name, visual, true)
+	held_origin_station = null
+	held_origin_transform = Transform3D.IDENTITY
+	held_item = new_item
+	held_item_id = item_id
+	held_item.pickup()
+	held_visual = visual
+	held_visual.name = "HeldVisual_%s" % item_id
+	if not _attach_held_visual(held_visual):
+		consume_held_item(item_id)
+		return false
+	return true
+
+
+func consume_held_item(expected_item_id: String = "") -> bool:
+	if not is_instance_valid(held_item):
+		return false
+	if not expected_item_id.is_empty() and held_item.item_id != expected_item_id:
+		return false
+	var source_visual := held_item.source_visual as Node3D
+	if is_instance_valid(held_visual):
+		held_visual.queue_free()
+	if is_instance_valid(source_visual) and source_visual != held_visual:
+		source_visual.queue_free()
+	held_item.queue_free()
+	held_item = null
+	held_item_id = ""
+	held_visual = null
+	held_sauce_home = null
+	held_origin_station = null
+	held_origin_transform = Transform3D.IDENTITY
+	_reset_cutting()
+	return true
+
+
+func _try_refill_ingredient_container(container: Node3D) -> bool:
+	if not is_instance_valid(held_item) or not held_item.item_id.begins_with("sliced_"):
+		return false
+	var ingredient_id := WholeVegetableFactory.normalize_ingredient_id(held_item.item_id)
+	var target_stock_id := String(container.get_meta("ingredient_id", ""))
+	if ingredient_id.is_empty() or WholeVegetableFactory.stock_id(ingredient_id) != target_stock_id:
+		return false
+	GameState.add_ingredient_stock(target_stock_id, 10)
+	_update_container_fill_visual(container, target_stock_id)
+	return consume_held_item(held_item.item_id)
+
+
+func _update_container_fill_visual(container: Node3D, ingredient_id: String) -> void:
+	var content_names := {
+		"salad": "Salat",
+		"tomato": "Tomaten",
+		"onion": "Zwiebeln",
+		"red_cabbage": "Kraut",
+		"cucumber": "Gurkenstreifen",
+	}
+	var content := container.get_node_or_null(String(content_names.get(ingredient_id, ""))) as Node3D
+	if not is_instance_valid(content):
+		return
+	content.visible = int(GameState.ingredient_stock.get(ingredient_id, 0)) > 0
+	if not content.has_meta("full_scale"):
+		content.set_meta("full_scale", content.scale)
+	var full_scale := content.get_meta("full_scale", Vector3.ONE) as Vector3
+	var fill_ratio := clampf(float(GameState.ingredient_stock.get(ingredient_id, 0)) / 50.0, 0.15, 1.0)
+	content.scale = Vector3(full_scale.x, full_scale.y * fill_ratio, full_scale.z)
+
+
+func _on_stock_updated(ingredient_id: String, _remaining: int) -> void:
+	var scene := get_tree().current_scene
+	if not is_instance_valid(scene):
+		return
+	var ingredients_root := scene.get_node_or_null("Test Ablage/Kebab Theke/Zutaten")
+	if not is_instance_valid(ingredients_root):
+		return
+	for child in ingredients_root.get_children():
+		var container := child as Node3D
+		if is_instance_valid(container) and String(container.get_meta("ingredient_id", "")) == ingredient_id:
+			_update_container_fill_visual(container, ingredient_id)
+			return
+
+
+func _sync_all_container_fill_visuals() -> void:
+	for ingredient_id: String in ["salad", "tomato", "onion", "red_cabbage", "cucumber"]:
+		_on_stock_updated(ingredient_id, int(GameState.ingredient_stock.get(ingredient_id, 0)))
 
 
 func _is_sauce_ladle(item_id: String) -> bool:

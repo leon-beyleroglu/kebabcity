@@ -609,6 +609,10 @@ func _try_knife_attack() -> void:
 	var hit_position := blade_hit_area.get_collision_point()
 	var hit_normal := blade_hit_area.get_collision_normal()
 	hitscan_hit.emit(collider, hit_position, hit_normal)
+	if is_instance_valid(collider) and collider is Node:
+		var cutting_station := (collider as Node).get_meta("cutting_station_owner", null) as CuttingStation
+		if is_instance_valid(cutting_station) and cutting_station.perform_chop():
+			return
 	if is_instance_valid(collider) and collider is Area3D and collider.has_meta("doner_meat_station"):
 		if is_instance_valid(interaction_system):
 			interaction_system._spawn_meat_portion()

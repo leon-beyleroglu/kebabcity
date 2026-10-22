@@ -18,7 +18,16 @@ var armour: float = 0.0
 var max_armour: float = 100.0
 var owned_weapons: Array[String] = ["unarmed"]
 var ammo: Dictionary = {"AK47": 90, "Glock": 34, "AWP": 10}
-var ingredient_stock: Dictionary = {"meat": 50, "bread": 50, "sauce": 50, "salad": 50}
+var ingredient_stock: Dictionary = {
+	"meat": 50,
+	"bread": 50,
+	"sauce": 50,
+	"salad": 50,
+	"onion": 50,
+	"cucumber": 50,
+	"tomato": 50,
+	"red_cabbage": 50,
+}
 var unlocked_upgrades: Array[String] = []
 var rival_reputation: int = 20
 var player_position: Vector3 = Vector3.ZERO
@@ -28,6 +37,7 @@ var prep_counter_items: Array[String] = []
 var meat_tray_portions: int = 0
 var oven_data: Dictionary = {"item_type": "", "timer_progress": 0.0, "is_baked": false}
 var table_stored_weapons: Array[String] = []
+var cutting_station_data: Dictionary = {"item_on_board": "", "chop_progress": 0, "is_chopped": false}
 
 var _restore_player_transform := false
 var _restore_counter_inventory := false
@@ -35,6 +45,7 @@ var _restore_prep_counter := false
 var _restore_meat_tray := false
 var _restore_oven := false
 var _restore_weapon_table := false
+var _restore_cutting_station := false
 
 
 func _ready() -> void:
@@ -73,6 +84,7 @@ func save_game() -> void:
 		"meat_tray_portions": meat_tray_portions,
 		"oven_data": oven_data,
 		"table_stored_weapons": table_stored_weapons,
+		"cutting_station": cutting_station_data,
 	}
 	var file := FileAccess.open(SAVE_PATH, FileAccess.WRITE)
 	if file == null:
@@ -132,7 +144,7 @@ func load_game() -> bool:
 		ammo = restored_ammo
 	var loaded_stock: Variant = save_data.get("ingredient_stock", ingredient_stock)
 	if loaded_stock is Dictionary:
-		var restored_stock: Dictionary = {}
+		var restored_stock: Dictionary = ingredient_stock.duplicate(true)
 		for item: Variant in loaded_stock:
 			restored_stock[String(item)] = int(loaded_stock[item])
 		ingredient_stock = restored_stock
@@ -192,6 +204,14 @@ func load_game() -> bool:
 		else:
 			_restore_oven = false
 
+	_restore_cutting_station = save_data.has("cutting_station")
+	if _restore_cutting_station:
+		var loaded_cutting_data: Variant = save_data["cutting_station"]
+		if loaded_cutting_data is Dictionary:
+			cutting_station_data = loaded_cutting_data.duplicate(true)
+		else:
+			_restore_cutting_station = false
+
 	money_changed.emit(money)
 	day_changed.emit(day)
 	health_changed.emit(player_health, max_health)
@@ -242,6 +262,12 @@ func _collect_station_data() -> void:
 		var saved_oven: Variant = oven.call("get_save_data")
 		if saved_oven is Dictionary:
 			oven_data = saved_oven
+
+	var cutting_station := get_tree().get_first_node_in_group("cutting_station")
+	if is_instance_valid(cutting_station) and cutting_station.has_method("get_save_data"):
+		var saved_cutting_station: Variant = cutting_station.call("get_save_data")
+		if saved_cutting_station is Dictionary:
+			cutting_station_data = saved_cutting_station.duplicate(true)
 
 
 func _collect_weapon_table_data() -> void:
@@ -327,6 +353,17 @@ func _restore_scene_state(attempt: int = 0) -> void:
 		else:
 			needs_retry = true
 
+	if _restore_cutting_station:
+		var cutting_station := get_tree().get_first_node_in_group("cutting_station")
+		if (
+			is_instance_valid(cutting_station)
+			and cutting_station.has_method("load_save_data")
+			and bool(cutting_station.call("load_save_data", cutting_station_data))
+		):
+			_restore_cutting_station = false
+		else:
+			needs_retry = true
+
 	if needs_retry and attempt < 16:
 		call_deferred("_restore_scene_state", attempt + 1)
 
@@ -370,6 +407,15 @@ func consume_ingredient(item: String, count: int = 1) -> bool:
 	ingredient_stock[item] = remaining
 	stock_updated.emit(item, remaining)
 	return true
+
+
+func add_ingredient_stock(item: String, count: int) -> int:
+	if item.is_empty() or count <= 0:
+		return int(ingredient_stock.get(item, 0))
+	var remaining := int(ingredient_stock.get(item, 0)) + count
+	ingredient_stock[item] = remaining
+	stock_updated.emit(item, remaining)
+	return remaining
 
 
 func retrieve_weapon_from_table(weapon_type: String) -> bool:
