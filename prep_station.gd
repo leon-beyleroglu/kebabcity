@@ -13,9 +13,11 @@ const PREP_ITEM_LAYER := 1 << 8
 var current_ingredients: Array[String] = []
 var current_items: Array[Area3D] = []
 var detection_area: Area3D
+var _item_restore_callback: Callable
 
 
 func _ready() -> void:
+	add_to_group("prep_counter")
 	add_to_group("prep_surface")
 	add_to_group("work_surface")
 	set_meta("assembly_station", true)
@@ -30,6 +32,41 @@ func _ready() -> void:
 		return
 	_build_surface()
 	_build_detection_area()
+
+
+func configure_persistence(item_restore_callback: Callable) -> void:
+	_item_restore_callback = item_restore_callback
+
+
+func get_save_data() -> Dictionary:
+	return {"items": current_ingredients.duplicate()}
+
+
+func get_surface_contact_position(local_x: float, local_z: float) -> Vector3:
+	var surface := get_node_or_null("PrepWorktop") as MeshInstance3D
+	if is_instance_valid(surface) and is_instance_valid(surface.mesh):
+		return surface.to_global(Vector3(local_x, surface.mesh.get_aabb().end.y, local_z))
+	return to_global(Vector3(local_x, surface_size.y * 0.5, local_z))
+
+
+func load_save_data(data: Dictionary) -> bool:
+	if not _item_restore_callback.is_valid():
+		return false
+
+	var saved_items: Array[String] = []
+	var raw_items: Variant = data.get("items", [])
+	if raw_items is Array:
+		saved_items.assign(raw_items)
+
+	var items_to_remove := current_items.duplicate()
+	current_items.clear()
+	current_ingredients.clear()
+	for item: Area3D in items_to_remove:
+		if is_instance_valid(item):
+			item.queue_free()
+
+	_item_restore_callback.call(saved_items)
+	return true
 
 
 func _build_surface() -> void:

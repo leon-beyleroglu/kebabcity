@@ -12,10 +12,12 @@ var _feedback_tween: Tween
 
 func _ready() -> void:
 	add_to_group("money_hud")
-	update_health(100.0, 100.0)
-	update_shield(0.0, 100.0)
-	update_money(0)
-	call_deferred("_connect_player_stats")
+	GameState.health_changed.connect(update_health)
+	GameState.armour_changed.connect(update_shield)
+	GameState.money_changed.connect(update_money)
+	update_health(GameState.player_health, GameState.max_health)
+	update_shield(GameState.armour, GameState.max_armour)
+	set_money(GameState.money, false)
 
 
 func update_health(current: float, max_val: float) -> void:
@@ -48,18 +50,6 @@ func _set_money_display(amount: int, animate: bool) -> void:
 	_money_tween = create_tween()
 	_money_tween.set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
 	_money_tween.tween_property(money_label, "scale", Vector2.ONE, 0.2)
-
-
-func _connect_player_stats() -> void:
-	var player := get_tree().get_first_node_in_group("player")
-	if not is_instance_valid(player):
-		return
-	if player.has_signal("health_changed") and not player.health_changed.is_connected(update_health):
-		player.health_changed.connect(update_health)
-	if player.has_signal("shield_changed") and not player.shield_changed.is_connected(update_shield):
-		player.shield_changed.connect(update_shield)
-	update_health(float(player.health), float(player.max_health))
-	update_shield(float(player.shield), float(player.max_shield))
 
 
 func show_order_feedback(message: String, success := false) -> void:

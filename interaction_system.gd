@@ -47,6 +47,7 @@ var held_origin_station: Node3D
 var held_origin_transform := Transform3D.IDENTITY
 var meat_visual: Node3D
 var meat_spawn_point: Marker3D
+var meat_tray: MeatTray
 var cut_progress := 0.0
 var cut_anim_time := 0.0
 var cut_requires_release := false
@@ -140,6 +141,15 @@ func _register_scene_targets() -> void:
 			"cut_meat": templates_root.get_node_or_null("MeatPortion"),
 		}
 		templates_root.visible = false
+	var prep_counter := get_tree().get_first_node_in_group("prep_counter") as PrepStation
+	if is_instance_valid(prep_counter):
+		prep_counter.configure_persistence(_restore_prep_counter_items.bind(prep_counter))
+	var assembly_counter := _get_counter_station()
+	if is_instance_valid(assembly_counter):
+		assembly_counter.configure_persistence(_restore_assembly_counter_items.bind(assembly_counter))
+	meat_tray = get_tree().get_first_node_in_group("meat_tray") as MeatTray
+	if is_instance_valid(meat_tray):
+		meat_tray.configure_persistence(_restore_meat_tray_portions)
 	_register_existing_item(root.get_node_or_null("Test Ablage/Kebab Theke/LavashAblage/Lavash1"), "lavash", "Lavash")
 	_register_existing_item(root.get_node_or_null("Test Ablage/Kebab Theke/LavashAblage/Lavash2"), "lavash", "Lavash")
 	_register_existing_item(root.get_node_or_null("Test Ablage/Kebab Theke/LavashAblage/Lavash3"), "lavash", "Lavash")
@@ -172,6 +182,200 @@ func _register_scene_targets() -> void:
 		oven_heating_elements = oven.get_node_or_null("HeatingElements") as Node3D
 		_set_oven_heat(false)
 		_update_oven_label()
+		var oven_station := oven as OvenStation
+		if is_instance_valid(oven_station):
+			oven_station.configure_persistence(get_oven_save_data, load_oven_save_data)
+
+
+func _restore_prep_counter_items(item_ids: Array[String], station: PrepStation) -> void:
+	var item_count := item_ids.size()
+	for index in item_count:
+		var item_id := item_ids[index]
+		var visual := _duplicate_pickup_template(item_id)
+		if not is_instance_valid(visual):
+			continue
+		var item: Area3D = InteractableItemScript.new()
+		item.name = "RestoredPrep_%02d_%s" % [index + 1, item_id.to_pascal_case()]
+		station.add_child(item)
+		_add_box_collider(item, _item_collision_size(item_id))
+		item.configure(item_id, item_id.capitalize(), visual, false)
+		item.add_child(visual)
+		visual.transform = Transform3D.IDENTITY
+		visual.scale = Vector3.ONE
+		visual.visible = true
+		var column_count := mini(maxi(item_count, 1), 6)
+		var column := index % column_count
+		var row := index / column_count
+		var local_x := 0.0
+		if column_count > 1:
+			local_x = lerpf(-station.surface_size.x * 0.38, station.surface_size.x * 0.38, float(column) / float(column_count - 1))
+		item.global_position = station.get_surface_contact_position(local_x, float(row) * 0.22)
+		item.rotation = Vector3.ZERO
+		item.add_to_group("placed_items")
+		station.place_item(item, item_id, item.global_position)
+		item.original_transform = item.global_transform
+
+
+func _restore_meat_tray_portions(portion_count: int) -> void:
+	for _index in maxi(portion_count, 0):
+		_create_meat_tray_portion()
+
+
+func get_oven_save_data() -> Dictionary:
+	var slots: Array[Dictionary] = []
+	var first_item_type := ""
+	var first_timer_progress := 0.0
+	var first_is_baked := false
+	for slot_index in oven_slot_states.size():
+		var state := oven_slot_states[slot_index]
+		var item_type := ""
+		var is_baked := state == OvenSlotState.FINISHED
+		var timer_remaining := 0.0
+		var timer_progress := 0.0
+		if state == OvenSlotState.BAKING:
+			item_type = "lavash"
+			timer_remaining = oven_slot_times[slot_index]
+			timer_progress = clampf(OVEN_BAKE_DURATION - timer_remaining, 0.0, OVEN_BAKE_DURATION)
+		elif is_baked:
+			item_type = "baked_lavash"
+			timer_progress = OVEN_BAKE_DURATION
+		slots.append({
+			"item_type": item_type,
+			"timer_progress": timer_progress,
+			"timer_remaining": timer_remaining,
+			"is_baked": is_baked,
+		})
+		if first_item_type.is_empty() and not item_type.is_empty():
+			first_item_type = item_type
+			first_timer_progress = timer_progress
+			first_is_baked = is_baked
+	return {
+		"item_type": first_item_type,
+		"timer_progress": first_timer_progress,
+		"is_baked": first_is_baked,
+		"slots": slots,
+	}
+
+
+func load_oven_save_data(data: Dictionary) -> void:
+	for slot_index in oven_slot_visuals.size():
+		if is_instance_valid(oven_slot_visuals[slot_index]):
+			oven_slot_visuals[slot_index].queue_free()
+		oven_slot_visuals[slot_index] = null
+		oven_slot_states[slot_index] = OvenSlotState.EMPTY
+		oven_slot_times[slot_index] = 0.0
+	current_lavash_count = 0
+
+	var saved_slots: Array = data.get("slots", [])
+	if saved_slots.is_empty() and not String(data.get("item_type", "")).is_empty():
+		saved_slots.append(data)
+	for slot_index in mini(saved_slots.size(), baking_slots.size()):
+		var slot_data: Variant = saved_slots[slot_index]
+		if not slot_data is Dictionary:
+			continue
+		var item_type := String(slot_data.get("item_type", ""))
+		if item_type.is_empty():
+			continue
+		var is_baked := bool(slot_data.get("is_baked", false)) or item_type == "baked_lavash"
+		var visual_id := "baked_lavash" if is_baked else "lavash"
+		var visual := _duplicate_pickup_template(visual_id)
+		if not is_instance_valid(visual):
+			continue
+		baking_slots[slot_index].add_child(visual)
+		visual.transform = Transform3D.IDENTITY
+		visual.scale = Vector3.ONE
+		visual.visible = true
+		oven_slot_visuals[slot_index] = visual
+		oven_slot_states[slot_index] = OvenSlotState.FINISHED if is_baked else OvenSlotState.BAKING
+		if not is_baked:
+			var fallback_remaining := OVEN_BAKE_DURATION - float(slot_data.get("timer_progress", 0.0))
+			oven_slot_times[slot_index] = clampf(float(slot_data.get("timer_remaining", fallback_remaining)), 0.0, OVEN_BAKE_DURATION)
+			if oven_slot_times[slot_index] <= 0.0:
+				_finish_oven_bake(slot_index)
+		current_lavash_count += 1
+	_set_oven_heat(oven_slot_states.has(OvenSlotState.BAKING))
+	_update_oven_label()
+
+
+func _restore_assembly_counter_items(saved_items: Array[Dictionary], station: AssemblyStation) -> void:
+	for entry_index in saved_items.size():
+		var entry := saved_items[entry_index]
+		var item_type := String(entry.get("type", ""))
+		var is_baked := bool(entry.get("is_baked", false))
+		if item_type == "lavash_bread" or (item_type == "lavash" and is_baked):
+			item_type = "baked_lavash"
+		if item_type.is_empty():
+			continue
+
+		var item: Node3D
+		if item_type == "durum_assembly":
+			var assembly := _duplicate_pickup_template("durum_assembly") as Area3D
+			if not is_instance_valid(assembly):
+				continue
+			assembly.set_meta("durum_assembly", true)
+			assembly.set_meta("ingredients", entry.get("ingredients", []).duplicate())
+			item = assembly
+		else:
+			var visual_type := "baked_lavash" if is_baked else item_type
+			if item_type == "baked_lavash":
+				visual_type = "baked_lavash"
+			var visual := _duplicate_pickup_template(visual_type)
+			if not is_instance_valid(visual):
+				continue
+			var restored_item: Area3D = InteractableItemScript.new()
+			restored_item.name = "Restored_%02d_%s" % [entry_index + 1, visual_type.to_pascal_case()]
+			station.get_placed_items_container().add_child(restored_item)
+			_add_box_collider(restored_item, _item_collision_size(visual_type))
+			restored_item.configure(visual_type, visual_type.capitalize(), visual, false)
+			restored_item.add_child(visual)
+			visual.transform = Transform3D.IDENTITY
+			visual.scale = Vector3.ONE
+			visual.visible = true
+			item = restored_item
+
+		if item.get_parent() == null:
+			station.get_placed_items_container().add_child(item)
+		var slot_index := int(entry.get("slot_index", entry_index))
+		item.set_meta("save_slot_index", slot_index)
+		var slot_position := station.get_slot_position(slot_index, saved_items.size())
+		if entry.has("local_x") and entry.has("local_z"):
+			slot_position = station.table_mesh.to_global(Vector3(
+				float(entry["local_x"]),
+				station.get_surface_local_y(),
+				float(entry["local_z"])
+			))
+		if station.place_item(item, item_type, slot_position, Vector3.UP) == null:
+			item.queue_free()
+			continue
+		_freeze_counter_item(item)
+		var interactive_item := item as InteractableItem
+		if is_instance_valid(interactive_item):
+			interactive_item.original_transform = interactive_item.global_transform
+
+
+func _freeze_counter_item(item: Node3D) -> void:
+	var rigid_item := item as RigidBody3D
+	if is_instance_valid(rigid_item):
+		rigid_item.freeze_mode = RigidBody3D.FREEZE_MODE_STATIC
+		rigid_item.freeze = true
+		rigid_item.linear_velocity = Vector3.ZERO
+		rigid_item.angular_velocity = Vector3.ZERO
+	for child: Node in item.find_children("*", "RigidBody3D", true, false):
+		var rigid_child := child as RigidBody3D
+		if not is_instance_valid(rigid_child):
+			continue
+		rigid_child.freeze_mode = RigidBody3D.FREEZE_MODE_STATIC
+		rigid_child.freeze = true
+		rigid_child.linear_velocity = Vector3.ZERO
+		rigid_child.angular_velocity = Vector3.ZERO
+
+
+func _get_counter_station() -> AssemblyStation:
+	for node: Node in get_tree().get_nodes_in_group("work_surface"):
+		if node is AssemblyStation:
+			return node as AssemblyStation
+	return null
+
 
 func _optimize_small_meshes(root: Node) -> void:
 	if not is_instance_valid(root):
@@ -1481,23 +1685,34 @@ func _reset_cutting() -> void:
 		held_visual.scale = Vector3.ONE
 
 func _spawn_meat_portion() -> void:
+	_create_meat_tray_portion()
+
+
+func _create_meat_tray_portion() -> Area3D:
 	var visual := _duplicate_pickup_template("cut_meat")
 	if not is_instance_valid(visual) or not is_instance_valid(meat_spawn_point):
 		if is_instance_valid(visual):
 			visual.queue_free()
-		return
+		return null
 	portions_created += 1
 	var item: Area3D = InteractableItemScript.new()
 	item.name = "CutMeatPortion_%02d" % portions_created
-	get_tree().current_scene.add_child(item)
-	var row := (portions_created - 1) % 4
-	var stack := floori(float(portions_created - 1) / 4.0)
+	if is_instance_valid(meat_tray):
+		meat_tray.add_child(item)
+	else:
+		get_tree().current_scene.add_child(item)
+	var active_index := meat_tray.current_portions if is_instance_valid(meat_tray) else portions_created - 1
+	var row := active_index % 4
+	var stack := floori(float(active_index) / 4.0)
 	item.global_position = meat_spawn_point.global_position + Vector3((row - 1.5) * 0.24, stack * 0.08, 0)
 	visual.name = "FreshCutMeat"
 	item.add_child(visual)
 	visual.transform = Transform3D.IDENTITY
 	_add_box_collider(item, Vector3(0.42, 0.22, 0.42))
 	item.configure("cut_meat", "geschnittenes Dönerfleisch", visual)
+	if is_instance_valid(meat_tray):
+		meat_tray.register_portion(item)
+	return item
 
 func _create_item_model(parent: Node3D, id: String, held: bool) -> void:
 	match id:

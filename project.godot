@@ -15,6 +15,10 @@ run/main_scene="res://kebab_shop.tscn"
 config/features=PackedStringArray("4.7", "Forward Plus")
 config/icon="res://icon.svg"
 
+[autoload]
+
+GameState="*res://GameState.gd"
+
 [display]
 
 window/stretch/mode="canvas_items"

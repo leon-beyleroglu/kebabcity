@@ -1,14 +1,11 @@
 class_name CustomerQueueManager
 extends Node3D
 
-const ORDER_REWARD := 10
-
 @export var npc_scenes: Array[PackedScene] = []
 @export_range(1, 3, 1) var queue_capacity := 3
 @export var hud_path := NodePath("../HUD")
 
 var customers: Array[CustomerNPC] = []
-var current_money: int = 0
 var _queue_slots: Array[Marker3D] = []
 var _spawn_serial := 0
 var _started := false
@@ -23,8 +20,6 @@ var _started := false
 
 func _ready() -> void:
 	_hide_order_note()
-	if is_instance_valid(money_hud):
-		money_hud.set_money(current_money, false)
 	_queue_slots = [
 		$QueueSlot_0 as Marker3D,
 		$QueueSlot_1 as Marker3D,
@@ -48,8 +43,8 @@ func _initialize_queue() -> void:
 func customer_order_completed(customer: CustomerNPC) -> void:
 	if customers.is_empty() or customers[0] != customer:
 		return
-	add_money(ORDER_REWARD)
-	show_order_feedback("Richtig! +%d €" % ORDER_REWARD, true)
+	GameState.add_money(10)
+	show_order_feedback("Richtig! +10 €", true)
 	_hide_order_note()
 	customers.pop_front()
 	customer.begin_exit(customer_exit_point)
@@ -57,12 +52,6 @@ func customer_order_completed(customer: CustomerNPC) -> void:
 		customers[index].assign_queue_slot(index, _queue_slots[index])
 	if customers.size() < mini(queue_capacity, _queue_slots.size()):
 		_spawn_customer(randi_range(0, npc_scenes.size() - 1))
-
-
-func add_money(amount: int) -> void:
-	current_money += amount
-	if is_instance_valid(money_hud):
-		money_hud.update_money(current_money)
 
 
 func show_order_feedback(message: String, success := false) -> void:
