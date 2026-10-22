@@ -84,6 +84,59 @@ static func create_sliced(raw_id: String) -> Node3D:
 	return root
 
 
+static func create_cut_stage(raw_id: String, stage: int, total_stages: int = 4) -> Node3D:
+	var ingredient_id := normalize_ingredient_id(raw_id)
+	if ingredient_id.is_empty():
+		return null
+	var clamped_stage := clampi(stage, 0, total_stages)
+	if clamped_stage <= 0:
+		return create_whole(ingredient_id)
+	if clamped_stage >= total_stages:
+		return create_sliced(ingredient_id)
+
+	var root := Node3D.new()
+	root.name = "CutStage%d%s" % [clamped_stage, ingredient_id.to_pascal_case()]
+	root.set_meta("ingredient_id", ingredient_id)
+	root.set_meta("cut_stage", clamped_stage)
+
+	# Keep a shrinking portion of the original vegetable while adding visible cut pieces.
+	var remaining := create_whole(ingredient_id)
+	if is_instance_valid(remaining):
+		root.add_child(remaining)
+		var remaining_scale := 1.0 - float(clamped_stage) * 0.18
+		remaining.scale = Vector3(remaining_scale, 1.0, 1.0)
+		remaining.position = Vector3(
+			-0.035 * float(clamped_stage),
+			_whole_contact_height(ingredient_id),
+			0.0
+		)
+
+	var color := _ingredient_color(ingredient_id).lightened(0.08)
+	var piece_count := clamped_stage * 2
+	for index in piece_count:
+		var piece := MeshInstance3D.new()
+		piece.name = "CutPiece%d" % index
+		if ingredient_id == "cucumber" or ingredient_id == "onion" or ingredient_id == "tomato":
+			var disc := CylinderMesh.new()
+			disc.top_radius = 0.028 + float(index % 2) * 0.006
+			disc.bottom_radius = disc.top_radius
+			disc.height = 0.014
+			disc.radial_segments = 14
+			disc.material = _material(color, 0.7)
+			piece.mesh = disc
+		else:
+			var chunk := BoxMesh.new()
+			chunk.size = Vector3(0.038, 0.018, 0.034)
+			chunk.material = _material(color, 0.82)
+			piece.mesh = chunk
+		var column := index % 3
+		var row := index / 3
+		piece.position = Vector3(0.045 + float(column) * 0.045, 0.012 + float(row) * 0.018, -0.04 + float(index % 2) * 0.075)
+		piece.rotation = Vector3(0.0, float(index) * 0.73, deg_to_rad(float((index % 3) - 1) * 8.0))
+		root.add_child(piece)
+	return root
+
+
 static func _build_onion(root: Node3D) -> void:
 	var body := SphereMesh.new()
 	body.radius = 0.08
@@ -181,6 +234,19 @@ static func _ingredient_color(ingredient_id: String) -> Color:
 		"red_cabbage":
 			return Color("713182")
 	return Color.WHITE
+
+
+static func _whole_contact_height(ingredient_id: String) -> float:
+	match ingredient_id:
+		"onion", "tomato":
+			return 0.06
+		"cucumber":
+			return 0.035
+		"lettuce":
+			return 0.07
+		"red_cabbage":
+			return 0.09
+	return 0.05
 
 
 static func _material(color: Color, roughness: float, metallic: float = 0.0) -> StandardMaterial3D:

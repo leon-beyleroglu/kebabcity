@@ -59,6 +59,7 @@ var awp_scoped := false
 var walking_parent: Node
 var nearby_vehicle: Node
 var active_vehicle: Node
+var cutting_input_locked := false
 var health := 100.0
 var shield := 0.0
 
@@ -160,6 +161,8 @@ func set_shield(value: float) -> void:
 
 
 func _input(event: InputEvent) -> void:
+	if cutting_input_locked:
+		return
 	if event is InputEventMouseButton and event.pressed:
 		if is_instance_valid(active_vehicle):
 			return
@@ -173,6 +176,8 @@ func _input(event: InputEvent) -> void:
 
 
 func _unhandled_input(event: InputEvent) -> void:
+	if cutting_input_locked:
+		return
 	if event is InputEventKey and event.pressed and not event.echo:
 		var key_event := event as InputEventKey
 		var physical_key: Key = key_event.physical_keycode if key_event.physical_keycode != 0 else key_event.keycode
@@ -236,7 +241,25 @@ func _toggle_camera_mode() -> void:
 		first_person_pitch = orbit_pitch
 		camera.rotation = Vector3(first_person_pitch, 0, 0)
 
+
+func set_cutting_input_locked(locked: bool) -> void:
+	cutting_input_locked = locked
+	velocity.x = 0.0
+	velocity.z = 0.0
+	_set_awp_scope(false)
+	if is_instance_valid(interaction_system):
+		interaction_system.set_process_unhandled_input(not locked and current_slot == Slot.NONE)
+
+
 func _physics_process(delta: float) -> void:
+	if cutting_input_locked:
+		if not is_on_floor():
+			velocity.y -= gravity * delta
+		velocity.x = move_toward(velocity.x, 0.0, deceleration * delta)
+		velocity.z = move_toward(velocity.z, 0.0, deceleration * delta)
+		move_and_slide()
+		_update_weapon_state(delta)
+		return
 	if not is_on_floor():
 		velocity.y -= gravity * delta
 	if Input.is_action_just_pressed("jump") and is_on_floor():
@@ -609,10 +632,6 @@ func _try_knife_attack() -> void:
 	var hit_position := blade_hit_area.get_collision_point()
 	var hit_normal := blade_hit_area.get_collision_normal()
 	hitscan_hit.emit(collider, hit_position, hit_normal)
-	if is_instance_valid(collider) and collider is Node:
-		var cutting_station := (collider as Node).get_meta("cutting_station_owner", null) as CuttingStation
-		if is_instance_valid(cutting_station) and cutting_station.perform_chop():
-			return
 	if is_instance_valid(collider) and collider is Area3D and collider.has_meta("doner_meat_station"):
 		if is_instance_valid(interaction_system):
 			interaction_system._spawn_meat_portion()
