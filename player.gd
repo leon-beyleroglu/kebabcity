@@ -60,6 +60,7 @@ var walking_parent: Node
 var nearby_vehicle: Node
 var active_vehicle: Node
 var cutting_input_locked := false
+var held_kitchen_item: Dictionary = {}
 var health := 100.0
 var shield := 0.0
 
@@ -191,6 +192,10 @@ func _unhandled_input(event: InputEvent) -> void:
 		var key_event := event as InputEventKey
 		var physical_key: Key = key_event.physical_keycode if key_event.physical_keycode != 0 else key_event.keycode
 		if physical_key == KEY_G:
+			if not held_kitchen_item.is_empty():
+				if is_instance_valid(interaction_system) and interaction_system.place_held_kitchen_item_from_raycast():
+					get_viewport().set_input_as_handled()
+				return
 			if _try_drop_current_weapon():
 				get_viewport().set_input_as_handled()
 			return
@@ -249,6 +254,28 @@ func set_cutting_input_locked(locked: bool) -> void:
 	_set_awp_scope(false)
 	if is_instance_valid(interaction_system):
 		interaction_system.set_process_unhandled_input(not locked and current_slot == Slot.NONE)
+
+
+func set_held_kitchen_item(data: Dictionary) -> bool:
+	var normalized := PickupableItem.normalize_item_data(data)
+	if normalized.is_empty():
+		return false
+	held_kitchen_item = normalized
+	return true
+
+
+func clear_held_kitchen_item() -> void:
+	held_kitchen_item = {}
+
+
+func get_held_kitchen_item_data() -> Dictionary:
+	return held_kitchen_item.duplicate(true)
+
+
+func restore_held_kitchen_item(data: Dictionary) -> bool:
+	if not is_instance_valid(interaction_system):
+		return false
+	return interaction_system.hold_kitchen_item_data(data)
 
 
 func _physics_process(delta: float) -> void:

@@ -1,0 +1,10 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://PickupableItem.gd" id="1_item"]
+
+[node name="PickupableItem" type="Area3D" groups=["pickupable_item"]]
+collision_layer = 128
+collision_mask = 0
+monitoring = false
+monitorable = true
+script = ExtResource("1_item")

@@ -72,7 +72,7 @@ func setup(owner_player: CharacterBody3D, view_camera: Camera3D, hand_slot: Mark
 	camera = view_camera
 	interaction_ray = camera.get_node_or_null("InteractionRayCast") as RayCast3D
 	if is_instance_valid(interaction_ray):
-		interaction_ray.collision_mask |= TABLE_ITEM_LAYER
+		interaction_ray.collision_mask |= INTERACTION_LAYER | TABLE_ITEM_LAYER
 		interaction_ray.collide_with_areas = true
 	hold_socket = hand_slot
 	_resolve_hand_sockets()
@@ -547,6 +547,10 @@ func _unhandled_input(event: InputEvent) -> void:
 func handle_interaction(collider: Object, hit_position: Vector3, hit_normal: Vector3) -> void:
 	var collider_node := collider as Node
 	if is_instance_valid(collider_node):
+		var pickupable_item := collider_node as PickupableItem
+		if is_instance_valid(pickupable_item):
+			pickup_world_kitchen_item(pickupable_item)
+			return
 		var supply_crate := collider_node.get_meta("supply_crate_owner", null) as SupplyCrate
 		if is_instance_valid(supply_crate):
 			supply_crate.interact(self)
@@ -583,7 +587,9 @@ func handle_interaction(collider: Object, hit_position: Vector3, hit_normal: Vec
 	elif focused_prep and held_item:
 		if not _can_place_on_station(focused_prep, focus_hit_normal):
 			return
-		if held_item.item_id == "baked_lavash":
+		if _is_held_kitchen_item():
+			place_held_kitchen_item(focused_prep, focus_hit_position, focus_hit_normal)
+		elif held_item.item_id == "baked_lavash":
 			_create_durum_assembly(focused_prep, focus_hit_position, focus_hit_normal)
 		elif _is_sauce_portion(held_item.item_id):
 			_drop_held_sauce(focused_prep, focus_hit_position, false)
@@ -733,7 +739,11 @@ func interact_with_container(container: Node3D) -> void:
 
 
 func can_accept_produced_item() -> bool:
-	return not is_instance_valid(held_item)
+	if is_instance_valid(held_item):
+		return false
+	if is_instance_valid(player) and player.has_method("get_held_kitchen_item_data"):
+		return (player.call("get_held_kitchen_item_data") as Dictionary).is_empty()
+	return true
 
 
 func get_held_item_id() -> String:
@@ -758,6 +768,30 @@ func hold_produced_item(item_id: String, display_name: String, visual: Node3D) -
 	if not _attach_held_visual(held_visual):
 		consume_held_item(item_id)
 		return false
+	var kitchen_data := PickupableItem.data_for_id(item_id)
+	if not kitchen_data.is_empty() and is_instance_valid(player) and player.has_method("set_held_kitchen_item"):
+		player.call("set_held_kitchen_item", kitchen_data)
+	return true
+
+
+func hold_kitchen_item_data(data: Dictionary) -> bool:
+	var normalized := PickupableItem.normalize_item_data(data)
+	if normalized.is_empty() or not can_accept_produced_item():
+		return false
+	var item_id := String(normalized["id"])
+	var ingredient_id := WholeVegetableFactory.normalize_ingredient_id(item_id)
+	var visual := (
+		WholeVegetableFactory.create_sliced(ingredient_id)
+		if bool(normalized["is_cut"])
+		else WholeVegetableFactory.create_whole(ingredient_id)
+	)
+	if not is_instance_valid(visual):
+		return false
+	if not hold_produced_item(item_id, WholeVegetableFactory.display_name(ingredient_id), visual):
+		visual.queue_free()
+		return false
+	if is_instance_valid(player) and player.has_method("set_held_kitchen_item"):
+		player.call("set_held_kitchen_item", normalized)
 	return true
 
 
@@ -778,8 +812,114 @@ func consume_held_item(expected_item_id: String = "") -> bool:
 	held_sauce_home = null
 	held_origin_station = null
 	held_origin_transform = Transform3D.IDENTITY
+	_clear_player_kitchen_item()
 	_reset_cutting()
 	return true
+
+
+func pickup_world_kitchen_item(target: PickupableItem) -> bool:
+	if not is_instance_valid(target) or not can_accept_produced_item():
+		return false
+	var data := target.get_item_data()
+	if data.is_empty() or not hold_kitchen_item_data(data):
+		return false
+	target.queue_free()
+	return true
+
+
+func place_held_kitchen_item_from_raycast() -> bool:
+	if not _is_held_kitchen_item() or not is_instance_valid(interaction_ray):
+		return false
+	interaction_ray.force_raycast_update()
+	if not interaction_ray.is_colliding():
+		return false
+	var collider := interaction_ray.get_collider() as Node
+	if not is_instance_valid(collider):
+		return false
+	var cutting_station := collider.get_meta("cutting_station_owner", null) as CuttingStation
+	if is_instance_valid(cutting_station):
+		return cutting_station.interact(self)
+	if collider is Area3D and collider.has_meta("ingredient_id") and collider.has_meta("pickup_template"):
+		return _try_refill_ingredient_container(collider)
+	if not _is_valid_kitchen_surface(collider):
+		return false
+	return place_held_kitchen_item(
+		collider as Node3D,
+		interaction_ray.get_collision_point(),
+		interaction_ray.get_collision_normal()
+	)
+
+
+func place_held_kitchen_item(surface: Node3D, hit_position: Vector3, hit_normal: Vector3) -> bool:
+	if not _is_held_kitchen_item() or not is_instance_valid(surface):
+		return false
+	if hit_normal.normalized().y <= 0.75:
+		return false
+	var data := player.call("get_held_kitchen_item_data") as Dictionary
+	var scene := get_tree().current_scene
+	if data.is_empty() or not is_instance_valid(scene):
+		return false
+	var placed := PickupableItem.spawn(scene, data, Vector3.ZERO)
+	if not is_instance_valid(placed):
+		return false
+	var slot := _find_kitchen_surface_slot(surface, hit_position)
+	if is_instance_valid(slot):
+		placed.global_transform = slot.global_transform
+	else:
+		var snapped_position := _snapped_station_position(surface, hit_position, hit_normal)
+		placed.place_at_surface(snapped_position, hit_normal)
+	if not consume_held_item(String(data["id"])):
+		placed.queue_free()
+		return false
+	return true
+
+
+func _is_held_kitchen_item() -> bool:
+	if not is_instance_valid(player) or not player.has_method("get_held_kitchen_item_data"):
+		return false
+	var data := player.call("get_held_kitchen_item_data") as Dictionary
+	return not data.is_empty() and is_instance_valid(held_item) and held_item.item_id == String(data.get("id", ""))
+
+
+func _clear_player_kitchen_item() -> void:
+	if is_instance_valid(player) and player.has_method("clear_held_kitchen_item"):
+		player.call("clear_held_kitchen_item")
+
+
+func _is_valid_kitchen_surface(target: Node) -> bool:
+	if not is_instance_valid(target) or not target is Node3D:
+		return false
+	return (
+		target.is_in_group("work_surface")
+		or target.is_in_group("prep_surface")
+		or target.is_in_group("kitchen_item_surface")
+		or target.has_meta("work_surface")
+		or target.has_meta("kitchen_item_surface")
+	)
+
+
+func _find_kitchen_surface_slot(surface: Node3D, hit_position: Vector3) -> Marker3D:
+	var closest: Marker3D
+	var closest_distance := INF
+	for candidate_node in surface.find_children("*", "Marker3D", true, false):
+		var candidate := candidate_node as Marker3D
+		if not is_instance_valid(candidate):
+			continue
+		if not candidate.is_in_group("kitchen_item_slot") and not candidate.name.begins_with("ItemSlot"):
+			continue
+		var occupied := false
+		for placed_node in get_tree().get_nodes_in_group("pickupable_item"):
+			var placed := placed_node as Node3D
+			if is_instance_valid(placed) and placed.global_position.distance_to(candidate.global_position) < 0.12:
+				occupied = true
+				break
+		if occupied:
+			continue
+		var distance := candidate.global_position.distance_to(hit_position)
+		if distance < closest_distance:
+			closest = candidate
+			closest_distance = distance
+	return closest
 
 
 func _try_refill_ingredient_container(container: Node3D) -> bool:
@@ -1502,6 +1642,7 @@ func _return_held() -> void:
 	held_sauce_home = null
 	held_origin_station = null
 	held_origin_transform = Transform3D.IDENTITY
+	_clear_player_kitchen_item()
 	_reset_cutting()
 
 
@@ -1523,6 +1664,7 @@ func _discard_held_item() -> void:
 	held_sauce_home = null
 	held_origin_station = null
 	held_origin_transform = Transform3D.IDENTITY
+	_clear_player_kitchen_item()
 	_reset_cutting()
 
 

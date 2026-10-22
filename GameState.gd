@@ -38,6 +38,8 @@ var meat_tray_portions: int = 0
 var oven_data: Dictionary = {"item_type": "", "timer_progress": 0.0, "is_baked": false}
 var table_stored_weapons: Array[String] = []
 var cutting_station_data: Dictionary = {"item_on_board": "", "chop_progress": 0, "is_chopped": false}
+var placed_world_items: Array[Dictionary] = []
+var held_kitchen_item: Dictionary = {}
 
 var _restore_player_transform := false
 var _restore_counter_inventory := false
@@ -46,6 +48,8 @@ var _restore_meat_tray := false
 var _restore_oven := false
 var _restore_weapon_table := false
 var _restore_cutting_station := false
+var _restore_placed_world_items := false
+var _restore_held_kitchen_item := false
 
 
 func _ready() -> void:
@@ -60,6 +64,7 @@ func save_game() -> void:
 	counter_items = _collect_counter_items(player)
 	_collect_station_data()
 	_collect_weapon_table_data()
+	_collect_kitchen_item_data(player)
 
 	var save_data: Dictionary = {
 		"money": money,
@@ -85,6 +90,8 @@ func save_game() -> void:
 		"oven_data": oven_data,
 		"table_stored_weapons": table_stored_weapons,
 		"cutting_station": cutting_station_data,
+		"placed_world_items": placed_world_items,
+		"held_kitchen_item": held_kitchen_item,
 	}
 	var file := FileAccess.open(SAVE_PATH, FileAccess.WRITE)
 	if file == null:
@@ -212,6 +219,34 @@ func load_game() -> bool:
 		else:
 			_restore_cutting_station = false
 
+	_restore_placed_world_items = save_data.has("placed_world_items")
+	if _restore_placed_world_items:
+		placed_world_items.clear()
+		var loaded_world_items: Variant = save_data["placed_world_items"]
+		if loaded_world_items is Array:
+			for raw_item: Variant in loaded_world_items:
+				if not raw_item is Dictionary:
+					continue
+				var normalized := PickupableItem.normalize_item_data(raw_item)
+				if normalized.is_empty():
+					continue
+				normalized["pos"] = raw_item.get("pos", {})
+				normalized["rot"] = raw_item.get("rot", {})
+				placed_world_items.append(normalized)
+		else:
+			_restore_placed_world_items = false
+
+	_restore_held_kitchen_item = save_data.has("held_kitchen_item")
+	if _restore_held_kitchen_item:
+		var loaded_held_item: Variant = save_data["held_kitchen_item"]
+		if loaded_held_item is Dictionary and not loaded_held_item.is_empty():
+			held_kitchen_item = PickupableItem.normalize_item_data(loaded_held_item)
+			if held_kitchen_item.is_empty():
+				_restore_held_kitchen_item = false
+		else:
+			held_kitchen_item = {}
+			_restore_held_kitchen_item = false
+
 	money_changed.emit(money)
 	day_changed.emit(day)
 	health_changed.emit(player_health, max_health)
@@ -284,6 +319,22 @@ func _collect_weapon_table_data() -> void:
 			var weapon_id := _normalize_weapon_id(String(raw_weapon))
 			if not weapon_id.is_empty() and not table_stored_weapons.has(weapon_id):
 				table_stored_weapons.append(weapon_id)
+
+
+func _collect_kitchen_item_data(player: Node3D) -> void:
+	placed_world_items.clear()
+	for item_node in get_tree().get_nodes_in_group("pickupable_item"):
+		var item := item_node as PickupableItem
+		if not is_instance_valid(item):
+			continue
+		var saved_item := item.get_save_data()
+		if not saved_item.is_empty():
+			placed_world_items.append(saved_item)
+	held_kitchen_item = {}
+	if is_instance_valid(player) and player.has_method("get_held_kitchen_item_data"):
+		var player_item: Variant = player.call("get_held_kitchen_item_data")
+		if player_item is Dictionary:
+			held_kitchen_item = PickupableItem.normalize_item_data(player_item)
 
 
 func _restore_scene_state(attempt: int = 0) -> void:
@@ -361,6 +412,34 @@ func _restore_scene_state(attempt: int = 0) -> void:
 			and bool(cutting_station.call("load_save_data", cutting_station_data))
 		):
 			_restore_cutting_station = false
+		else:
+			needs_retry = true
+
+	if _restore_placed_world_items:
+		var scene := get_tree().current_scene
+		if is_instance_valid(scene):
+			for existing_node in get_tree().get_nodes_in_group("pickupable_item"):
+				var existing := existing_node as Node
+				if is_instance_valid(existing):
+					existing.free()
+			for saved_item: Dictionary in placed_world_items:
+				PickupableItem.spawn(
+					scene,
+					saved_item,
+					PickupableItem.vector_from_data(saved_item.get("pos", {})),
+					PickupableItem.vector_from_data(saved_item.get("rot", {}))
+				)
+			_restore_placed_world_items = false
+		else:
+			needs_retry = true
+
+	if _restore_held_kitchen_item:
+		if (
+			is_instance_valid(player)
+			and player.has_method("restore_held_kitchen_item")
+			and bool(player.call("restore_held_kitchen_item", held_kitchen_item))
+		):
+			_restore_held_kitchen_item = false
 		else:
 			needs_retry = true
 
