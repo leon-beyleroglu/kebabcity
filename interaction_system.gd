@@ -551,11 +551,15 @@ func handle_interaction(collider: Object, hit_position: Vector3, hit_normal: Vec
 		if is_instance_valid(pickupable_item):
 			pickup_world_kitchen_item(pickupable_item)
 			return
-		var supply_crate := collider_node.get_meta("supply_crate_owner", null) as SupplyCrate
+		var supply_crate: SupplyCrate
+		if collider_node.has_meta("supply_crate_owner"):
+			supply_crate = collider_node.get_meta("supply_crate_owner") as SupplyCrate
 		if is_instance_valid(supply_crate):
 			supply_crate.interact(self)
 			return
-		var cutting_station := collider_node.get_meta("cutting_station_owner", null) as CuttingStation
+		var cutting_station: CuttingStation
+		if collider_node.has_meta("cutting_station_owner"):
+			cutting_station = collider_node.get_meta("cutting_station_owner") as CuttingStation
 		if is_instance_valid(cutting_station):
 			cutting_station.interact(self)
 			return
@@ -645,7 +649,9 @@ func pickup_placed_item(target_item: Node3D) -> void:
 		return
 	if not is_instance_valid(hold_socket):
 		return
-	var origin_station := hit_item.get_meta("prep_station", null) as Node3D
+	var origin_station: Node3D
+	if hit_item.has_meta("prep_station"):
+		origin_station = hit_item.get_meta("prep_station") as Node3D
 	held_origin_station = origin_station
 	held_origin_transform = hit_item.global_transform
 	if is_instance_valid(origin_station) and origin_station.has_method("remove_item"):
@@ -836,7 +842,9 @@ func place_held_kitchen_item_from_raycast() -> bool:
 	var collider := interaction_ray.get_collider() as Node
 	if not is_instance_valid(collider):
 		return false
-	var cutting_station := collider.get_meta("cutting_station_owner", null) as CuttingStation
+	var cutting_station: CuttingStation
+	if collider.has_meta("cutting_station_owner"):
+		cutting_station = collider.get_meta("cutting_station_owner") as CuttingStation
 	if is_instance_valid(cutting_station):
 		return cutting_station.interact(self)
 	if collider is Area3D and collider.has_meta("ingredient_id") and collider.has_meta("pickup_template"):

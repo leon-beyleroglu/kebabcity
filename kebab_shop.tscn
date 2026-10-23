@@ -1490,13 +1490,17 @@ size = Vector3(3.6219788, 0.14, 1.906543)
 size = Vector3(3.1384277, 0.14, 1.8992188)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_00dk3"]
-size = Vector3(3.171173, 0.9034961, 1.9745239)
+size = Vector3(3.171173, 0.9034961, 2.1039612)
+
+[sub_resource type="BoxMesh" id="BoxMesh_mqn3m"]
+material = SubResource("StandardMaterial3D_qromb")
+size = Vector3(0.58924675, 1.1958008, 1.4489746)
 
 [sub_resource type="BoxMesh" id="BoxMesh_00dk3"]
 size = Vector3(4.402649, 0.14, 1.15)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_au230"]
-size = Vector3(4.362671, 1.1890186, 1.15)
+size = Vector3(4.362671, 1.1890186, 1.2245728)
 
 [node name="KebabShop" type="Node3D" unique_id=559436482]
 
@@ -6081,7 +6085,7 @@ transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 7.65
 shape = SubResource("BoxShape3D_wel7i")
 
 [node name="SurfaceCollision2" type="CollisionShape3D" parent="schneidefläche" unique_id=1044373905]
-transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 7.7243147, 0.83684826, -3.522114)
+transform = Transform3D(-4.371139e-08, 0, 1, 0, 1, 0, -1, 0, -4.371139e-08, 7.659596, 0.83684826, -3.522114)
 shape = SubResource("BoxShape3D_00dk3")
 
 [node name="VegetableCuttingStation" parent="." unique_id=1683175060 instance=ExtResource("30_cutting_station")]
@@ -6111,8 +6115,9 @@ transform = Transform3D(-2.6226832e-07, 0, 1, 0, 1, 0, -6, 0, -4.371139e-08, -8.
 script = ExtResource("29_weapon_table")
 
 [node name="waffenunten" type="MeshInstance3D" parent="waffenfläche" unique_id=1960453472]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -0.16687012)
 material_override = SubResource("MatCounterCladding")
-mesh = SubResource("BoxMesh_853is")
+mesh = SubResource("BoxMesh_mqn3m")
 
 [node name="waffenplatte" type="MeshInstance3D" parent="waffenfläche" unique_id=1830918976]
 transform = Transform3D(0.16666667, 0, 0, 0, 1, 0, 0, 0, 1, 0.0013438463, 0.63873506, 0.016635895)
@@ -6124,7 +6129,7 @@ transform = Transform3D(0.16666667, 0, 0, 0, 1, 0, 0, 0, 1, -0.020633936, 0.6213
 shape = SubResource("BoxShape3D_wel7i")
 
 [node name="SurfaceCollision3" type="CollisionShape3D" parent="waffenfläche" unique_id=335203287]
-transform = Transform3D(0.16666667, 0, 0, 0, 1, 0, 0, 0, 1, -0.003432095, 0.02953273, -0.07314873)
+transform = Transform3D(0.16666667, 0, 0, 0, 1, 0, 0, 0, 1, -0.0034320354, 0.02953273, -0.035862923)
 shape = SubResource("BoxShape3D_au230")
 
 [node name="Slots" type="Node3D" parent="waffenfläche" unique_id=1742324720]
