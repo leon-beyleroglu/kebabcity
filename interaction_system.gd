@@ -8,6 +8,7 @@ const RolledDoenerScene := preload("res://RolledDoener.tscn")
 
 const INTERACTION_RANGE := 3.2
 const INTERACTION_LAYER := 1 << 7
+const RESTAURANT_OWNER_LAYER := RestaurantOwner.OWNER_INTERACTION_LAYER
 const TABLE_ITEM_LAYER := 1 << 1
 const PREP_ITEM_LAYER := 1 << 8
 const CUT_DURATION := 1.0
@@ -75,7 +76,7 @@ func setup(owner_player: CharacterBody3D, view_camera: Camera3D, hand_slot: Mark
 	camera = view_camera
 	interaction_ray = camera.get_node_or_null("InteractionRayCast") as RayCast3D
 	if is_instance_valid(interaction_ray):
-		interaction_ray.collision_mask |= INTERACTION_LAYER | TABLE_ITEM_LAYER
+		interaction_ray.collision_mask |= INTERACTION_LAYER | TABLE_ITEM_LAYER | RESTAURANT_OWNER_LAYER
 		interaction_ray.collide_with_areas = true
 	hold_socket = hand_slot
 	_resolve_hand_sockets()
@@ -499,7 +500,11 @@ func _update_focus() -> void:
 		focus_hit_normal = interaction_ray.get_collision_normal().normalized()
 		collider = interaction_ray.get_collider()
 	else:
-		var query := PhysicsRayQueryParameters3D.create(camera.global_position, camera.global_position - camera.global_basis.z * INTERACTION_RANGE, INTERACTION_LAYER | TABLE_ITEM_LAYER)
+		var query := PhysicsRayQueryParameters3D.create(
+			camera.global_position,
+			camera.global_position - camera.global_basis.z * INTERACTION_RANGE,
+			INTERACTION_LAYER | TABLE_ITEM_LAYER | RESTAURANT_OWNER_LAYER
+		)
 		query.collide_with_areas = true
 		query.collide_with_bodies = true
 		var hit := camera.get_world_3d().direct_space_state.intersect_ray(query)
@@ -593,6 +598,9 @@ func _unhandled_input(event: InputEvent) -> void:
 func handle_interaction(collider: Object, hit_position: Vector3, hit_normal: Vector3) -> void:
 	var collider_node := collider as Node
 	if is_instance_valid(collider_node):
+		var restaurant_owner := _restaurant_owner_from_collider(collider_node)
+		if is_instance_valid(restaurant_owner) and restaurant_owner.interact(self):
+			return
 		var trunk := _trunk_from_collider(collider_node)
 		if is_instance_valid(trunk) and trunk.interact(player):
 			return
@@ -681,6 +689,17 @@ func _trunk_from_collider(collider: Object) -> TrunkInteractionArea:
 		return trunk
 	if collider_node.has_meta("trunk_interaction_owner"):
 		return collider_node.get_meta("trunk_interaction_owner") as TrunkInteractionArea
+	return null
+
+
+func _restaurant_owner_from_collider(collider: Object) -> RestaurantOwner:
+	var collider_node := collider as Node
+	if not is_instance_valid(collider_node):
+		return null
+	if collider_node is RestaurantOwner:
+		return collider_node as RestaurantOwner
+	if collider_node.has_meta("restaurant_owner"):
+		return collider_node.get_meta("restaurant_owner") as RestaurantOwner
 	return null
 
 

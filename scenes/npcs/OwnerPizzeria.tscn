@@ -1,0 +1,194 @@
+[gd_scene load_steps=15 format=3]
+
+[ext_resource type="Script" path="res://scenes/npcs/RestaurantOwner.gd" id="1_owner"]
+
+[sub_resource type="StandardMaterial3D" id="MatWhite"]
+resource_local_to_scene = true
+albedo_color = Color(0.94, 0.94, 0.9, 1)
+roughness = 0.82
+
+[sub_resource type="StandardMaterial3D" id="MatRed"]
+resource_local_to_scene = true
+albedo_color = Color(0.55, 0.08, 0.055, 1)
+roughness = 0.8
+
+[sub_resource type="StandardMaterial3D" id="MatSkin"]
+resource_local_to_scene = true
+albedo_color = Color(0.78, 0.55, 0.39, 1)
+roughness = 0.9
+
+[sub_resource type="StandardMaterial3D" id="MatHair"]
+resource_local_to_scene = true
+albedo_color = Color(0.09, 0.055, 0.035, 1)
+roughness = 0.95
+
+[sub_resource type="StandardMaterial3D" id="MatDark"]
+albedo_color = Color(0.035, 0.04, 0.045, 1)
+roughness = 0.7
+
+[sub_resource type="BoxMesh" id="TorsoMesh"]
+size = Vector3(0.62, 0.82, 0.34)
+
+[sub_resource type="CapsuleMesh" id="HeadMesh"]
+radius = 0.25
+height = 0.52
+radial_segments = 12
+rings = 5
+
+[sub_resource type="CapsuleMesh" id="LimbMesh"]
+radius = 0.105
+height = 0.7
+radial_segments = 8
+rings = 3
+
+[sub_resource type="CapsuleMesh" id="LegMesh"]
+radius = 0.12
+height = 0.78
+radial_segments = 8
+rings = 3
+
+[sub_resource type="CylinderMesh" id="HatBaseMesh"]
+top_radius = 0.26
+bottom_radius = 0.25
+height = 0.18
+radial_segments = 12
+
+[sub_resource type="CylinderMesh" id="HatTopMesh"]
+top_radius = 0.3
+bottom_radius = 0.23
+height = 0.42
+radial_segments = 12
+
+[sub_resource type="BoxMesh" id="EyeMesh"]
+size = Vector3(0.045, 0.045, 0.025)
+
+[sub_resource type="CapsuleShape3D" id="BodyShape"]
+radius = 0.35
+height = 1.82
+
+[sub_resource type="BoxShape3D" id="InteractionShape"]
+size = Vector3(1.5, 1.9, 1.2)
+
+[node name="OwnerPizzeria" type="CharacterBody3D"]
+script = ExtResource("1_owner")
+owner_name = "Luigi"
+restaurant_id = &"pizzeria"
+restaurant_name = "Pizzeria Bella Napoli"
+greeting_text = "Benvenuto bei Bella Napoli!"
+skin_color = Color(0.78, 0.55, 0.39, 1)
+outfit_primary = Color(0.94, 0.94, 0.9, 1)
+outfit_accent = Color(0.55, 0.08, 0.055, 1)
+torso_mesh = SubResource("TorsoMesh")
+head_mesh = SubResource("HeadMesh")
+
+[node name="BodyCollision" type="CollisionShape3D" parent="."]
+position = Vector3(0, 0.91, 0)
+shape = SubResource("BodyShape")
+
+[node name="Rig" type="Node3D" parent="."]
+
+[node name="Torso" type="Node3D" parent="Rig"]
+position = Vector3(0, 1.12, 0)
+
+[node name="Body" type="MeshInstance3D" parent="Rig/Torso"]
+material_override = SubResource("MatWhite")
+mesh = SubResource("TorsoMesh")
+metadata/palette_slot = "primary"
+
+[node name="Neckerchief" type="MeshInstance3D" parent="Rig/Torso"]
+position = Vector3(0, 0.28, -0.19)
+material_override = SubResource("MatRed")
+mesh = SubResource("EyeMesh")
+scale = Vector3(3.6, 1.6, 1)
+metadata/palette_slot = "accent"
+
+[node name="Head" type="Node3D" parent="Rig"]
+position = Vector3(0, 1.76, 0)
+
+[node name="Face" type="MeshInstance3D" parent="Rig/Head"]
+material_override = SubResource("MatSkin")
+mesh = SubResource("HeadMesh")
+metadata/palette_slot = "skin"
+
+[node name="Hair" type="MeshInstance3D" parent="Rig/Head"]
+position = Vector3(0, 0.19, 0.03)
+scale = Vector3(0.88, 0.25, 0.9)
+material_override = SubResource("MatHair")
+mesh = SubResource("HeadMesh")
+metadata/palette_slot = "hair"
+
+[node name="LeftEye" type="MeshInstance3D" parent="Rig/Head"]
+position = Vector3(-0.085, 0.045, -0.238)
+material_override = SubResource("MatDark")
+mesh = SubResource("EyeMesh")
+
+[node name="RightEye" type="MeshInstance3D" parent="Rig/Head"]
+position = Vector3(0.085, 0.045, -0.238)
+material_override = SubResource("MatDark")
+mesh = SubResource("EyeMesh")
+
+[node name="Toque" type="Node3D" parent="Rig/Head"]
+position = Vector3(0, 0.37, 0)
+
+[node name="HatBase" type="MeshInstance3D" parent="Rig/Head/Toque"]
+material_override = SubResource("MatWhite")
+mesh = SubResource("HatBaseMesh")
+metadata/palette_slot = "primary"
+
+[node name="HatTop" type="MeshInstance3D" parent="Rig/Head/Toque"]
+position = Vector3(0, 0.27, 0)
+material_override = SubResource("MatWhite")
+mesh = SubResource("HatTopMesh")
+metadata/palette_slot = "primary"
+
+[node name="LeftArm" type="Node3D" parent="Rig"]
+position = Vector3(-0.41, 1.12, 0)
+rotation_degrees = Vector3(0, 0, -8)
+
+[node name="Arm" type="MeshInstance3D" parent="Rig/LeftArm"]
+material_override = SubResource("MatWhite")
+mesh = SubResource("LimbMesh")
+metadata/palette_slot = "primary"
+
+[node name="RightArm" type="Node3D" parent="Rig"]
+position = Vector3(0.41, 1.12, 0)
+rotation_degrees = Vector3(0, 0, 8)
+
+[node name="Arm" type="MeshInstance3D" parent="Rig/RightArm"]
+material_override = SubResource("MatWhite")
+mesh = SubResource("LimbMesh")
+metadata/palette_slot = "primary"
+
+[node name="LeftLeg" type="Node3D" parent="Rig"]
+position = Vector3(-0.17, 0.43, 0)
+
+[node name="Leg" type="MeshInstance3D" parent="Rig/LeftLeg"]
+material_override = SubResource("MatHair")
+mesh = SubResource("LegMesh")
+metadata/palette_slot = "hair"
+
+[node name="RightLeg" type="Node3D" parent="Rig"]
+position = Vector3(0.17, 0.43, 0)
+
+[node name="Leg" type="MeshInstance3D" parent="Rig/RightLeg"]
+material_override = SubResource("MatHair")
+mesh = SubResource("LegMesh")
+metadata/palette_slot = "hair"
+
+[node name="InteractionArea" type="Area3D" parent="."]
+position = Vector3(0, 1.1, -0.9)
+collision_layer = 4
+collision_mask = 0
+monitoring = false
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="InteractionArea"]
+shape = SubResource("InteractionShape")
+
+[node name="NameLabel" type="Label3D" parent="."]
+position = Vector3(0, 2.7, 0)
+billboard = 1
+pixel_size = 0.004
+text = "Luigi"
+font_size = 28
+outline_size = 8
+

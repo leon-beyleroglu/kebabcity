@@ -1,6 +1,9 @@
 [gd_scene format=4 uid="uid://dg72gj52tm03b"]
 
 [ext_resource type="PackedScene" path="res://Supermarket.tscn" id="1_supermarket"]
+[ext_resource type="PackedScene" path="res://scenes/buildings/Pizzeria.tscn" id="2_pizzeria"]
+[ext_resource type="PackedScene" path="res://scenes/buildings/IndianRestaurant.tscn" id="3_indian"]
+[ext_resource type="PackedScene" path="res://scenes/buildings/GyrosShop.tscn" id="4_gyros"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_gehlm"]
 resource_name = "City_Asphalt_PBR"
@@ -22813,6 +22816,17 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.1, 18)
 shape = SubResource("BoxShape3D_6emnc")
 
 [node name="Buildings" type="Node3D" parent="." unique_id=2002816871]
+
+[node name="ModularRestaurants" type="Node3D" parent="Buildings" unique_id=1341874402]
+
+[node name="PizzeriaBellaNapoli" parent="Buildings/ModularRestaurants" unique_id=858378259 instance=ExtResource("2_pizzeria")]
+transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, -60.5, 0, -14)
+
+[node name="TajMahalRestaurant" parent="Buildings/ModularRestaurants" unique_id=1235172538 instance=ExtResource("3_indian")]
+transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, -60.5, 0, 0)
+
+[node name="AkropolisGyros" parent="Buildings/ModularRestaurants" unique_id=259113079 instance=ExtResource("4_gyros")]
+transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, -60.5, 0, 14)
 
 [node name="Building_01" type="Node3D" parent="Buildings" unique_id=524127838]
 transform = Transform3D(-4.371139e-08, 0, -1, 0, 1, 0, 1, 0, -4.371139e-08, -32, 0, -13.857474)

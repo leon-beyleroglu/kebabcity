@@ -1,0 +1,416 @@
+[gd_scene load_steps=32 format=3]
+
+[ext_resource type="Script" path="res://scenes/buildings/RestaurantBuilding.gd" id="1_building"]
+[ext_resource type="PackedScene" path="res://scenes/npcs/OwnerIndian.tscn" id="2_owner"]
+
+[sub_resource type="StandardMaterial3D" id="MatFacade"]
+resource_local_to_scene = true
+albedo_color = Color(0.91, 0.51, 0.12, 1)
+roughness = 0.9
+
+[sub_resource type="StandardMaterial3D" id="MatSecondary"]
+resource_local_to_scene = true
+albedo_color = Color(0.52, 0.035, 0.045, 1)
+roughness = 0.86
+
+[sub_resource type="StandardMaterial3D" id="MatAccent"]
+resource_local_to_scene = true
+albedo_color = Color(0.96, 0.64, 0.15, 1)
+metallic = 0.28
+roughness = 0.5
+
+[sub_resource type="StandardMaterial3D" id="MatWood"]
+albedo_color = Color(0.17, 0.065, 0.035, 1)
+roughness = 0.9
+
+[sub_resource type="StandardMaterial3D" id="MatBrass"]
+albedo_color = Color(0.83, 0.47, 0.08, 1)
+metallic = 0.72
+roughness = 0.34
+
+[sub_resource type="StandardMaterial3D" id="MatGlass"]
+transparency = 1
+albedo_color = Color(0.23, 0.48, 0.59, 0.5)
+metallic = 0.12
+roughness = 0.2
+
+[sub_resource type="StandardMaterial3D" id="MatDark"]
+albedo_color = Color(0.045, 0.03, 0.025, 1)
+roughness = 0.86
+
+[sub_resource type="StandardMaterial3D" id="MatAsphalt"]
+albedo_color = Color(0.115, 0.13, 0.15, 1)
+roughness = 0.98
+
+[sub_resource type="StandardMaterial3D" id="MatParkingLine"]
+albedo_color = Color(0.92, 0.88, 0.68, 1)
+roughness = 0.9
+
+[sub_resource type="BoxMesh" id="BackWallMesh"]
+size = Vector3(11, 5.5, 0.3)
+
+[sub_resource type="BoxMesh" id="SideWallMesh"]
+size = Vector3(0.3, 5.5, 9)
+
+[sub_resource type="BoxMesh" id="FrontColumnMesh"]
+size = Vector3(3.7, 3.9, 0.3)
+
+[sub_resource type="BoxMesh" id="FrontHeaderMesh"]
+size = Vector3(11, 1.6, 0.3)
+
+[sub_resource type="BoxMesh" id="FloorMesh"]
+size = Vector3(11, 0.15, 9)
+
+[sub_resource type="BoxMesh" id="RoofMesh"]
+size = Vector3(11.4, 0.28, 9.4)
+
+[sub_resource type="BoxMesh" id="CounterMesh"]
+size = Vector3(6.8, 1.05, 0.95)
+
+[sub_resource type="BoxMesh" id="SignBoardMesh"]
+size = Vector3(6.2, 1.05, 0.2)
+
+[sub_resource type="BoxMesh" id="WindowLowerMesh"]
+size = Vector3(2.0, 1.65, 0.06)
+
+[sub_resource type="CylinderMesh" id="WindowArchMesh"]
+top_radius = 1.0
+bottom_radius = 1.0
+height = 0.06
+radial_segments = 16
+
+[sub_resource type="BoxMesh" id="DoorLowerMesh"]
+size = Vector3(1.5, 1.8, 0.08)
+
+[sub_resource type="CylinderMesh" id="DoorArchMesh"]
+top_radius = 0.75
+bottom_radius = 0.75
+height = 0.08
+radial_segments = 16
+
+[sub_resource type="CapsuleMesh" id="DomeMesh"]
+radius = 1.0
+height = 2.0
+radial_segments = 16
+rings = 6
+
+[sub_resource type="CylinderMesh" id="FinialMesh"]
+top_radius = 0.04
+bottom_radius = 0.1
+height = 0.65
+radial_segments = 8
+
+[sub_resource type="CylinderMesh" id="BuffetTrayMesh"]
+top_radius = 0.48
+bottom_radius = 0.52
+height = 0.16
+radial_segments = 12
+
+[sub_resource type="CapsuleMesh" id="BuffetLidMesh"]
+radius = 0.47
+height = 0.95
+radial_segments = 12
+rings = 5
+
+[sub_resource type="BoxMesh" id="ParkingMesh"]
+size = Vector3(10.8, 0.025, 4.6)
+
+[sub_resource type="BoxMesh" id="ParkingLineMesh"]
+size = Vector3(0.09, 0.035, 4.3)
+
+[sub_resource type="BoxShape3D" id="BackShape"]
+size = Vector3(11, 5.5, 0.3)
+
+[sub_resource type="BoxShape3D" id="SideShape"]
+size = Vector3(0.3, 5.5, 9)
+
+[sub_resource type="BoxShape3D" id="ColumnShape"]
+size = Vector3(3.7, 3.9, 0.3)
+
+[sub_resource type="BoxShape3D" id="HeaderShape"]
+size = Vector3(11, 1.6, 0.3)
+
+[sub_resource type="BoxShape3D" id="FloorShape"]
+size = Vector3(11, 0.15, 9)
+
+[sub_resource type="BoxShape3D" id="CounterShape"]
+size = Vector3(6.8, 1.05, 0.95)
+
+[node name="IndianRestaurant" type="StaticBody3D"]
+script = ExtResource("1_building")
+restaurant_id = &"indian_restaurant"
+display_name = "Taj Mahal"
+description = "Saffron and deep-red restaurant with brass buffet and rooftop domes."
+facade_color = Color(0.91, 0.51, 0.12, 1)
+secondary_color = Color(0.52, 0.035, 0.045, 1)
+accent_color = Color(0.96, 0.64, 0.15, 1)
+sign_color = Color(1, 0.78, 0.22, 1)
+sign_text_color = Color(0.32, 0.025, 0.035, 1)
+main_wall_mesh = SubResource("BackWallMesh")
+counter_mesh = SubResource("CounterMesh")
+
+[node name="CollisionBackWall" type="CollisionShape3D" parent="."]
+position = Vector3(0, 2.75, 4.35)
+shape = SubResource("BackShape")
+
+[node name="CollisionFloor" type="CollisionShape3D" parent="."]
+position = Vector3(0, 0.075, 0)
+shape = SubResource("FloorShape")
+
+[node name="CollisionLeftWall" type="CollisionShape3D" parent="."]
+position = Vector3(-5.35, 2.75, 0)
+shape = SubResource("SideShape")
+
+[node name="CollisionRightWall" type="CollisionShape3D" parent="."]
+position = Vector3(5.35, 2.75, 0)
+shape = SubResource("SideShape")
+
+[node name="CollisionFrontLeft" type="CollisionShape3D" parent="."]
+position = Vector3(-3.65, 1.95, -4.35)
+shape = SubResource("ColumnShape")
+
+[node name="CollisionFrontRight" type="CollisionShape3D" parent="."]
+position = Vector3(3.65, 1.95, -4.35)
+shape = SubResource("ColumnShape")
+
+[node name="CollisionFrontHeader" type="CollisionShape3D" parent="."]
+position = Vector3(0, 4.7, -4.35)
+shape = SubResource("HeaderShape")
+
+[node name="CollisionOrderCounter" type="CollisionShape3D" parent="."]
+position = Vector3(0, 0.6, 1.0)
+shape = SubResource("CounterShape")
+
+[node name="Exterior" type="Node3D" parent="."]
+
+[node name="Floor" type="MeshInstance3D" parent="Exterior"]
+position = Vector3(0, 0.075, 0)
+material_override = SubResource("MatSecondary")
+mesh = SubResource("FloorMesh")
+metadata/palette_slot = "secondary"
+
+[node name="BackWall" type="MeshInstance3D" parent="Exterior"]
+position = Vector3(0, 2.75, 4.35)
+material_override = SubResource("MatFacade")
+mesh = SubResource("BackWallMesh")
+metadata/palette_slot = "facade"
+
+[node name="LeftWall" type="MeshInstance3D" parent="Exterior"]
+position = Vector3(-5.35, 2.75, 0)
+material_override = SubResource("MatFacade")
+mesh = SubResource("SideWallMesh")
+metadata/palette_slot = "facade"
+
+[node name="RightWall" type="MeshInstance3D" parent="Exterior"]
+position = Vector3(5.35, 2.75, 0)
+material_override = SubResource("MatFacade")
+mesh = SubResource("SideWallMesh")
+metadata/palette_slot = "facade"
+
+[node name="FrontLeft" type="MeshInstance3D" parent="Exterior"]
+position = Vector3(-3.65, 1.95, -4.35)
+material_override = SubResource("MatSecondary")
+mesh = SubResource("FrontColumnMesh")
+metadata/palette_slot = "secondary"
+
+[node name="FrontRight" type="MeshInstance3D" parent="Exterior"]
+position = Vector3(3.65, 1.95, -4.35)
+material_override = SubResource("MatSecondary")
+mesh = SubResource("FrontColumnMesh")
+metadata/palette_slot = "secondary"
+
+[node name="FrontHeader" type="MeshInstance3D" parent="Exterior"]
+position = Vector3(0, 4.7, -4.35)
+material_override = SubResource("MatFacade")
+mesh = SubResource("FrontHeaderMesh")
+metadata/palette_slot = "facade"
+
+[node name="Roof" type="MeshInstance3D" parent="Exterior"]
+position = Vector3(0, 5.58, 0)
+material_override = SubResource("MatSecondary")
+mesh = SubResource("RoofMesh")
+metadata/palette_slot = "secondary"
+
+[node name="ArchedWindows" type="Node3D" parent="Exterior"]
+
+[node name="LeftWindowLower" type="MeshInstance3D" parent="Exterior/ArchedWindows"]
+position = Vector3(-3.65, 1.55, -4.52)
+material_override = SubResource("MatGlass")
+mesh = SubResource("WindowLowerMesh")
+
+[node name="LeftWindowArch" type="MeshInstance3D" parent="Exterior/ArchedWindows"]
+position = Vector3(-3.65, 2.38, -4.52)
+rotation_degrees = Vector3(90, 0, 0)
+material_override = SubResource("MatGlass")
+mesh = SubResource("WindowArchMesh")
+
+[node name="RightWindowLower" type="MeshInstance3D" parent="Exterior/ArchedWindows"]
+position = Vector3(3.65, 1.55, -4.52)
+material_override = SubResource("MatGlass")
+mesh = SubResource("WindowLowerMesh")
+
+[node name="RightWindowArch" type="MeshInstance3D" parent="Exterior/ArchedWindows"]
+position = Vector3(3.65, 2.38, -4.52)
+rotation_degrees = Vector3(90, 0, 0)
+material_override = SubResource("MatGlass")
+mesh = SubResource("WindowArchMesh")
+
+[node name="DoorLower" type="MeshInstance3D" parent="Exterior/ArchedWindows"]
+position = Vector3(0, 1.35, -4.52)
+material_override = SubResource("MatGlass")
+mesh = SubResource("DoorLowerMesh")
+
+[node name="DoorArch" type="MeshInstance3D" parent="Exterior/ArchedWindows"]
+position = Vector3(0, 2.25, -4.52)
+rotation_degrees = Vector3(90, 0, 0)
+material_override = SubResource("MatGlass")
+mesh = SubResource("DoorArchMesh")
+
+[node name="Sign" type="Node3D" parent="Exterior"]
+position = Vector3(0, 4.68, -4.59)
+
+[node name="SignBoard" type="MeshInstance3D" parent="Exterior/Sign"]
+material_override = SubResource("MatAccent")
+mesh = SubResource("SignBoardMesh")
+metadata/palette_slot = "sign"
+
+[node name="SignText" type="Label3D" parent="Exterior/Sign"]
+position = Vector3(0, 0, -0.12)
+rotation_degrees = Vector3(0, 180, 0)
+pixel_size = 0.01
+modulate = Color(0.32, 0.025, 0.035, 1)
+text = "Taj Mahal"
+font_size = 48
+outline_size = 5
+
+[node name="RooftopDomes" type="Node3D" parent="Exterior"]
+
+[node name="DomeCenter" type="MeshInstance3D" parent="Exterior/RooftopDomes"]
+position = Vector3(0, 5.95, 0)
+scale = Vector3(1.45, 0.6, 1.45)
+material_override = SubResource("MatAccent")
+mesh = SubResource("DomeMesh")
+metadata/palette_slot = "accent"
+
+[node name="DomeLeft" type="MeshInstance3D" parent="Exterior/RooftopDomes"]
+position = Vector3(-3.2, 5.87, 0.7)
+scale = Vector3(0.85, 0.45, 0.85)
+material_override = SubResource("MatAccent")
+mesh = SubResource("DomeMesh")
+metadata/palette_slot = "accent"
+
+[node name="DomeRight" type="MeshInstance3D" parent="Exterior/RooftopDomes"]
+position = Vector3(3.2, 5.87, 0.7)
+scale = Vector3(0.85, 0.45, 0.85)
+material_override = SubResource("MatAccent")
+mesh = SubResource("DomeMesh")
+metadata/palette_slot = "accent"
+
+[node name="FinialCenter" type="MeshInstance3D" parent="Exterior/RooftopDomes"]
+position = Vector3(0, 7.05, 0)
+material_override = SubResource("MatBrass")
+mesh = SubResource("FinialMesh")
+
+[node name="FinialLeft" type="MeshInstance3D" parent="Exterior/RooftopDomes"]
+position = Vector3(-3.2, 6.65, 0.7)
+material_override = SubResource("MatBrass")
+mesh = SubResource("FinialMesh")
+
+[node name="FinialRight" type="MeshInstance3D" parent="Exterior/RooftopDomes"]
+position = Vector3(3.2, 6.65, 0.7)
+material_override = SubResource("MatBrass")
+mesh = SubResource("FinialMesh")
+
+[node name="Interior" type="Node3D" parent="."]
+
+[node name="OrderCounter" type="Node3D" parent="Interior"]
+position = Vector3(0, 0, 1.0)
+
+[node name="CounterBody" type="MeshInstance3D" parent="Interior/OrderCounter"]
+position = Vector3(0, 0.6, 0)
+material_override = SubResource("MatWood")
+mesh = SubResource("CounterMesh")
+
+[node name="CounterTrim" type="MeshInstance3D" parent="Interior/OrderCounter"]
+position = Vector3(0, 1.14, 0)
+scale = Vector3(1.04, 0.1, 1.1)
+material_override = SubResource("MatAccent")
+mesh = SubResource("CounterMesh")
+metadata/palette_slot = "accent"
+
+[node name="BrassBuffet" type="Node3D" parent="Interior/OrderCounter"]
+
+[node name="Tray01" type="MeshInstance3D" parent="Interior/OrderCounter/BrassBuffet"]
+position = Vector3(-2.15, 1.32, 0)
+material_override = SubResource("MatBrass")
+mesh = SubResource("BuffetTrayMesh")
+
+[node name="Lid01" type="MeshInstance3D" parent="Interior/OrderCounter/BrassBuffet"]
+position = Vector3(-2.15, 1.53, 0)
+scale = Vector3(1, 0.4, 1)
+material_override = SubResource("MatBrass")
+mesh = SubResource("BuffetLidMesh")
+
+[node name="Tray02" type="MeshInstance3D" parent="Interior/OrderCounter/BrassBuffet"]
+position = Vector3(0, 1.32, 0)
+material_override = SubResource("MatBrass")
+mesh = SubResource("BuffetTrayMesh")
+
+[node name="Lid02" type="MeshInstance3D" parent="Interior/OrderCounter/BrassBuffet"]
+position = Vector3(0, 1.53, 0)
+scale = Vector3(1, 0.4, 1)
+material_override = SubResource("MatBrass")
+mesh = SubResource("BuffetLidMesh")
+
+[node name="Tray03" type="MeshInstance3D" parent="Interior/OrderCounter/BrassBuffet"]
+position = Vector3(2.15, 1.32, 0)
+material_override = SubResource("MatBrass")
+mesh = SubResource("BuffetTrayMesh")
+
+[node name="Lid03" type="MeshInstance3D" parent="Interior/OrderCounter/BrassBuffet"]
+position = Vector3(2.15, 1.53, 0)
+scale = Vector3(1, 0.4, 1)
+material_override = SubResource("MatBrass")
+mesh = SubResource("BuffetLidMesh")
+
+[node name="OwnerAnchor" type="Marker3D" parent="Interior"]
+position = Vector3(0, 0.15, 2.15)
+
+[node name="OwnerIndian" parent="Interior/OwnerAnchor" instance=ExtResource("2_owner")]
+
+[node name="Parking" type="Node3D" parent="."]
+
+[node name="ParkingSurface" type="MeshInstance3D" parent="Parking"]
+position = Vector3(0, 0.02, -7.5)
+material_override = SubResource("MatAsphalt")
+mesh = SubResource("ParkingMesh")
+
+[node name="LineLeft" type="MeshInstance3D" parent="Parking"]
+position = Vector3(-5.25, 0.045, -7.5)
+material_override = SubResource("MatParkingLine")
+mesh = SubResource("ParkingLineMesh")
+
+[node name="Line01" type="MeshInstance3D" parent="Parking"]
+position = Vector3(-1.75, 0.045, -7.5)
+material_override = SubResource("MatParkingLine")
+mesh = SubResource("ParkingLineMesh")
+
+[node name="Line02" type="MeshInstance3D" parent="Parking"]
+position = Vector3(1.75, 0.045, -7.5)
+material_override = SubResource("MatParkingLine")
+mesh = SubResource("ParkingLineMesh")
+
+[node name="LineRight" type="MeshInstance3D" parent="Parking"]
+position = Vector3(5.25, 0.045, -7.5)
+material_override = SubResource("MatParkingLine")
+mesh = SubResource("ParkingLineMesh")
+
+[node name="ParkingBay01" type="Marker3D" parent="Parking"]
+position = Vector3(-3.5, 0.08, -7.5)
+
+[node name="ParkingBay02" type="Marker3D" parent="Parking"]
+position = Vector3(0, 0.08, -7.5)
+
+[node name="ParkingBay03" type="Marker3D" parent="Parking"]
+position = Vector3(3.5, 0.08, -7.5)
+
