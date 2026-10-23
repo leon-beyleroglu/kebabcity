@@ -7,6 +7,16 @@ signal health_changed(current: float, max_val: float)
 signal armour_changed(current: float, max_val: float)
 signal day_changed(new_day: int)
 signal stock_updated(item: String, remaining: int)
+signal counter_stock_updated(ingredient_name: String, remaining: int)
+
+const COUNTER_MAX_STOCK := 10
+const COUNTER_INGREDIENTS: Array[String] = [
+	"onion",
+	"cucumber",
+	"lettuce",
+	"tomato",
+	"red_cabbage",
+]
 
 var money: int = 0
 var day: int = 1
@@ -22,11 +32,19 @@ var ingredient_stock: Dictionary = {
 	"meat": 50,
 	"bread": 50,
 	"sauce": 50,
-	"salad": 50,
-	"onion": 50,
-	"cucumber": 50,
-	"tomato": 50,
-	"red_cabbage": 50,
+	"salad": 10,
+	"lettuce": 10,
+	"onion": 10,
+	"cucumber": 10,
+	"tomato": 10,
+	"red_cabbage": 10,
+}
+var counter_stocks: Dictionary = {
+	"onion": 10,
+	"cucumber": 10,
+	"lettuce": 10,
+	"tomato": 10,
+	"red_cabbage": 10,
 }
 var unlocked_upgrades: Array[String] = []
 var rival_reputation: int = 20
@@ -40,6 +58,11 @@ var table_stored_weapons: Array[String] = []
 var cutting_station_data: Dictionary = {"item_on_board": "", "chop_progress": 0, "is_chopped": false}
 var placed_world_items: Array[Dictionary] = []
 var held_kitchen_item: Dictionary = {}
+var placed_lavash: Dictionary = {
+	"is_present": false,
+	"is_baked": false,
+	"toppings": [],
+}
 
 var _restore_player_transform := false
 var _restore_counter_inventory := false
@@ -62,6 +85,7 @@ func save_game() -> void:
 		player_position = player.global_position
 		player_rotation_y = player.rotation.y
 	counter_items = _collect_counter_items(player)
+	placed_lavash = _collect_placed_lavash(counter_items)
 	_collect_station_data()
 	_collect_weapon_table_data()
 	_collect_kitchen_item_data(player)
@@ -76,6 +100,7 @@ func save_game() -> void:
 		"owned_weapons": owned_weapons,
 		"ammo": ammo,
 		"ingredient_stock": ingredient_stock,
+		"counter_stocks": counter_stocks,
 		"unlocked_upgrades": unlocked_upgrades,
 		"rival_reputation": rival_reputation,
 		"player_pos": {
@@ -85,6 +110,7 @@ func save_game() -> void:
 		},
 		"player_rot_y": player_rotation_y,
 		"counter_items": counter_items,
+		"placed_lavash": placed_lavash,
 		"prep_counter_items": prep_counter_items,
 		"meat_tray_portions": meat_tray_portions,
 		"oven_data": oven_data,
@@ -155,6 +181,24 @@ func load_game() -> bool:
 		for item: Variant in loaded_stock:
 			restored_stock[String(item)] = int(loaded_stock[item])
 		ingredient_stock = restored_stock
+	var loaded_counter_stocks: Variant = save_data.get("counter_stocks", {})
+	if loaded_counter_stocks is Dictionary and not loaded_counter_stocks.is_empty():
+		for ingredient_name: String in COUNTER_INGREDIENTS:
+			counter_stocks[ingredient_name] = clampi(
+				int(loaded_counter_stocks.get(ingredient_name, COUNTER_MAX_STOCK)),
+				0,
+				COUNTER_MAX_STOCK
+			)
+	else:
+		# Migrate old saves which stored Gastronorm stock only in ingredient_stock.
+		for ingredient_name: String in COUNTER_INGREDIENTS:
+			var legacy_key := _ingredient_stock_key(ingredient_name)
+			counter_stocks[ingredient_name] = clampi(
+				int(ingredient_stock.get(legacy_key, COUNTER_MAX_STOCK)),
+				0,
+				COUNTER_MAX_STOCK
+			)
+	_sync_counter_stock_aliases()
 	var loaded_upgrades: Variant = save_data.get("unlocked_upgrades", unlocked_upgrades)
 	if loaded_upgrades is Array:
 		unlocked_upgrades.assign(loaded_upgrades)
@@ -190,6 +234,19 @@ func load_game() -> bool:
 					})
 		else:
 			_restore_counter_inventory = false
+	var loaded_placed_lavash: Variant = save_data.get("placed_lavash", {})
+	if loaded_placed_lavash is Dictionary:
+		placed_lavash = _normalize_placed_lavash(loaded_placed_lavash)
+	else:
+		placed_lavash = _collect_placed_lavash(counter_items)
+	if bool(placed_lavash.get("is_present", false)) and not _counter_items_have_lavash(counter_items):
+		counter_items.append({
+			"type": "durum_assembly" if not (placed_lavash.get("toppings", []) as Array).is_empty() else "baked_lavash",
+			"is_baked": bool(placed_lavash.get("is_baked", true)),
+			"ingredients": (placed_lavash.get("toppings", []) as Array).duplicate(),
+			"slot_index": counter_items.size(),
+		})
+		_restore_counter_inventory = true
 
 	_restore_prep_counter = save_data.has("prep_counter_items")
 	if _restore_prep_counter:
@@ -253,6 +310,8 @@ func load_game() -> bool:
 	armour_changed.emit(armour, max_armour)
 	for item: String in ingredient_stock:
 		stock_updated.emit(item, int(ingredient_stock[item]))
+	for ingredient_name: String in COUNTER_INGREDIENTS:
+		counter_stock_updated.emit(ingredient_name, int(counter_stocks[ingredient_name]))
 
 	if get_tree().current_scene == null:
 		call_deferred("_restore_scene_state")
@@ -275,6 +334,24 @@ func _collect_counter_items(_player: Node3D) -> Array[Dictionary]:
 			if saved_item is Dictionary:
 				items.append(saved_item)
 	return items
+
+
+func _collect_placed_lavash(items: Array[Dictionary]) -> Dictionary:
+	for entry: Dictionary in items:
+		var item_type := String(entry.get("type", ""))
+		if item_type != "baked_lavash" and item_type != "durum_assembly":
+			continue
+		var raw_toppings: Variant = entry.get("ingredients", [])
+		var toppings: Array[String] = []
+		if raw_toppings is Array:
+			for raw_topping: Variant in raw_toppings:
+				toppings.append(String(raw_topping))
+		return {
+			"is_present": true,
+			"is_baked": bool(entry.get("is_baked", true)),
+			"toppings": toppings,
+		}
+	return {"is_present": false, "is_baked": false, "toppings": []}
 
 
 func _collect_station_data() -> void:
@@ -477,6 +554,9 @@ func take_damage(amount: float) -> void:
 
 
 func consume_ingredient(item: String, count: int = 1) -> bool:
+	var counter_ingredient := _normalize_counter_ingredient(item)
+	if not counter_ingredient.is_empty():
+		return consume_counter_ingredient(counter_ingredient, count)
 	if count <= 0 or not ingredient_stock.has(item):
 		return false
 	var remaining := int(ingredient_stock[item])
@@ -489,12 +569,100 @@ func consume_ingredient(item: String, count: int = 1) -> bool:
 
 
 func add_ingredient_stock(item: String, count: int) -> int:
+	var counter_ingredient := _normalize_counter_ingredient(item)
 	if item.is_empty() or count <= 0:
-		return int(ingredient_stock.get(item, 0))
+		return (
+			get_counter_stock(counter_ingredient)
+			if not counter_ingredient.is_empty()
+			else int(ingredient_stock.get(item, 0))
+		)
+	if not counter_ingredient.is_empty():
+		return set_counter_stock(
+			counter_ingredient,
+			get_counter_stock(counter_ingredient) + count
+		)
 	var remaining := int(ingredient_stock.get(item, 0)) + count
 	ingredient_stock[item] = remaining
 	stock_updated.emit(item, remaining)
 	return remaining
+
+
+func get_counter_stock(item: String) -> int:
+	var ingredient_name := _normalize_counter_ingredient(item)
+	if ingredient_name.is_empty():
+		return 0
+	return int(counter_stocks.get(ingredient_name, COUNTER_MAX_STOCK))
+
+
+func set_counter_stock(item: String, value: int) -> int:
+	var ingredient_name := _normalize_counter_ingredient(item)
+	if ingredient_name.is_empty():
+		return 0
+	var remaining := clampi(value, 0, COUNTER_MAX_STOCK)
+	counter_stocks[ingredient_name] = remaining
+	var stock_key := _ingredient_stock_key(ingredient_name)
+	ingredient_stock[stock_key] = remaining
+	# Keep both names synchronized while older systems still refer to salad.
+	if ingredient_name == "lettuce":
+		ingredient_stock["lettuce"] = remaining
+		ingredient_stock["salad"] = remaining
+	stock_updated.emit(stock_key, remaining)
+	counter_stock_updated.emit(ingredient_name, remaining)
+	return remaining
+
+
+func consume_counter_ingredient(item: String, count: int = 1) -> bool:
+	var ingredient_name := _normalize_counter_ingredient(item)
+	if ingredient_name.is_empty() or count <= 0:
+		return false
+	var remaining := get_counter_stock(ingredient_name)
+	if count > remaining:
+		return false
+	set_counter_stock(ingredient_name, remaining - count)
+	return true
+
+
+func _sync_counter_stock_aliases() -> void:
+	for ingredient_name: String in COUNTER_INGREDIENTS:
+		var remaining := clampi(
+			int(counter_stocks.get(ingredient_name, COUNTER_MAX_STOCK)),
+			0,
+			COUNTER_MAX_STOCK
+		)
+		counter_stocks[ingredient_name] = remaining
+		ingredient_stock[_ingredient_stock_key(ingredient_name)] = remaining
+		if ingredient_name == "lettuce":
+			ingredient_stock["lettuce"] = remaining
+
+
+func _normalize_counter_ingredient(item: String) -> String:
+	var ingredient_name := WholeVegetableFactory.normalize_ingredient_id(item)
+	return ingredient_name if COUNTER_INGREDIENTS.has(ingredient_name) else ""
+
+
+func _ingredient_stock_key(ingredient_name: String) -> String:
+	return "salad" if ingredient_name == "lettuce" else ingredient_name
+
+
+func _normalize_placed_lavash(data: Dictionary) -> Dictionary:
+	var toppings: Array[String] = []
+	var raw_toppings: Variant = data.get("toppings", data.get("ingredients", []))
+	if raw_toppings is Array:
+		for raw_topping: Variant in raw_toppings:
+			toppings.append(String(raw_topping))
+	return {
+		"is_present": bool(data.get("is_present", false)),
+		"is_baked": bool(data.get("is_baked", false)),
+		"toppings": toppings,
+	}
+
+
+func _counter_items_have_lavash(items: Array[Dictionary]) -> bool:
+	for entry: Dictionary in items:
+		var item_type := String(entry.get("type", ""))
+		if item_type == "baked_lavash" or item_type == "durum_assembly":
+			return true
+	return false
 
 
 func retrieve_weapon_from_table(weapon_type: String) -> bool:

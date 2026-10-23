@@ -24,6 +24,8 @@
 [ext_resource type="Script" uid="uid://diis4ayjqcdmb" path="res://WeaponTable.gd" id="29_weapon_table"]
 [ext_resource type="PackedScene" path="res://CuttingStation.tscn" id="30_cutting_station"]
 [ext_resource type="PackedScene" path="res://SupplyCrate.tscn" id="31_supply_crate"]
+[ext_resource type="Script" path="res://PrepCounter.gd" id="32_prep_counter"]
+[ext_resource type="Script" path="res://LavashAssembly.gd" id="33_lavash_assembly"]
 
 [sub_resource type="StandardMaterial3D" id="MatInteriorFloorTile"]
 resource_name = "Non-Slip Terracotta Floor Tile"
@@ -2523,6 +2525,9 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.45040023, 1.36, 16.906445)
 collision_layer = 128
 collision_mask = 0
 monitoring = false
+script = ExtResource("32_prep_counter")
+ingredient_name = "lettuce"
+fill_mesh_path = NodePath("Salat")
 metadata/ingredient_id = "salad"
 metadata/ingredient_label = "Salat"
 metadata/pickup_template = NodePath("../../PickupTemplates/SaladPortion")
@@ -2734,6 +2739,9 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.6067531, 1.36, 16.913622)
 collision_layer = 128
 collision_mask = 0
 monitoring = false
+script = ExtResource("32_prep_counter")
+ingredient_name = "tomato"
+fill_mesh_path = NodePath("Tomaten")
 metadata/ingredient_id = "tomato"
 metadata/ingredient_label = "Tomaten"
 metadata/pickup_template = NodePath("../../PickupTemplates/TomatoPortion")
@@ -3050,6 +3058,9 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.55, 1.36, 16.88481)
 collision_layer = 128
 collision_mask = 0
 monitoring = false
+script = ExtResource("32_prep_counter")
+ingredient_name = "onion"
+fill_mesh_path = NodePath("Zwiebeln")
 metadata/ingredient_id = "onion"
 metadata/ingredient_label = "Zwiebeln"
 metadata/pickup_template = NodePath("../../PickupTemplates/OnionPortion")
@@ -4086,6 +4097,9 @@ transform = Transform3D(0.78, 0, 0, 0, 1, 0, 0, 0, 1, 2.4025977, 1.36, 16.879683
 collision_layer = 128
 collision_mask = 0
 monitoring = false
+script = ExtResource("32_prep_counter")
+ingredient_name = "red_cabbage"
+fill_mesh_path = NodePath("Kraut")
 metadata/ingredient_id = "red_cabbage"
 metadata/ingredient_label = "Lila Kraut"
 metadata/pickup_template = NodePath("../../PickupTemplates/RedCabbagePortion")
@@ -4881,6 +4895,9 @@ transform = Transform3D(0.88, 0, 0, 0, 1, 0, 0, 0, 1, -1.48, 1.36, 16.91)
 collision_layer = 128
 collision_mask = 0
 monitoring = false
+script = ExtResource("32_prep_counter")
+ingredient_name = "cucumber"
+fill_mesh_path = NodePath("Gurkenstreifen")
 metadata/ingredient_id = "cucumber"
 metadata/ingredient_label = "Gurken"
 metadata/pickup_template = NodePath("../../PickupTemplates/CucumberPortion")
@@ -5198,6 +5215,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.54278755, 0, 1.158596)
 collision_layer = 0
 collision_mask = 0
 monitoring = false
+script = ExtResource("33_lavash_assembly")
 metadata/durum_assembly = true
 metadata/ingredients = []
 metadata/pivot = "bottom_y_zero"

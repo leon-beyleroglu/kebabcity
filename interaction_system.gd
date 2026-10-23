@@ -311,12 +311,13 @@ func _restore_assembly_counter_items(saved_items: Array[Dictionary], station: As
 			continue
 
 		var item: Node3D
+		var toppings_to_restore: Array = entry.get("ingredients", [])
 		if item_type == "durum_assembly":
 			var assembly := _duplicate_pickup_template("durum_assembly") as Area3D
 			if not is_instance_valid(assembly):
 				continue
 			assembly.set_meta("durum_assembly", true)
-			assembly.set_meta("ingredients", entry.get("ingredients", []).duplicate())
+			assembly.set_meta("ingredients", toppings_to_restore.duplicate())
 			item = assembly
 		else:
 			var visual_type := "baked_lavash" if is_baked else item_type
@@ -350,6 +351,9 @@ func _restore_assembly_counter_items(saved_items: Array[Dictionary], station: As
 		if station.place_item(item, item_type, slot_position, Vector3.UP) == null:
 			item.queue_free()
 			continue
+		var lavash_assembly := item as LavashAssembly
+		if is_instance_valid(lavash_assembly) and not toppings_to_restore.is_empty():
+			lavash_assembly.restore_toppings(toppings_to_restore, _duplicate_pickup_template)
 		_freeze_counter_item(item)
 		var interactive_item := item as InteractableItem
 		if is_instance_valid(interactive_item):
@@ -716,7 +720,13 @@ func interact_with_container(container: Node3D) -> void:
 		template = pickup_templates.get(item_id) as Node3D
 	if not is_instance_valid(template):
 		return
-	if not GameState.consume_ingredient(item_id):
+	var prep_container := container as PrepCounter
+	var portion_taken := (
+		prep_container.take_portion()
+		if is_instance_valid(prep_container)
+		else GameState.consume_ingredient(item_id)
+	)
+	if not portion_taken:
 		_update_container_fill_visual(container, item_id)
 		return
 	var new_visual := template.duplicate() as Node3D
@@ -933,16 +943,30 @@ func _find_kitchen_surface_slot(surface: Node3D, hit_position: Vector3) -> Marke
 func _try_refill_ingredient_container(container: Node3D) -> bool:
 	if not is_instance_valid(held_item) or not held_item.item_id.begins_with("sliced_"):
 		return false
+	var prep_container := container as PrepCounter
+	if is_instance_valid(prep_container):
+		return prep_container.refill_from_sliced_item(
+			held_item.item_id,
+			consume_held_item
+		)
 	var ingredient_id := WholeVegetableFactory.normalize_ingredient_id(held_item.item_id)
 	var target_stock_id := String(container.get_meta("ingredient_id", ""))
 	if ingredient_id.is_empty() or WholeVegetableFactory.stock_id(ingredient_id) != target_stock_id:
 		return false
-	GameState.add_ingredient_stock(target_stock_id, 10)
+	if GameState.get_counter_stock(ingredient_id) >= GameState.COUNTER_MAX_STOCK:
+		return false
+	if not consume_held_item(held_item.item_id):
+		return false
+	GameState.set_counter_stock(ingredient_id, GameState.COUNTER_MAX_STOCK)
 	_update_container_fill_visual(container, target_stock_id)
-	return consume_held_item(held_item.item_id)
+	return true
 
 
 func _update_container_fill_visual(container: Node3D, ingredient_id: String) -> void:
+	var prep_container := container as PrepCounter
+	if is_instance_valid(prep_container):
+		prep_container.set_stock(GameState.get_counter_stock(ingredient_id), false)
+		return
 	var content_names := {
 		"salad": "Salat",
 		"tomato": "Tomaten",
@@ -957,7 +981,11 @@ func _update_container_fill_visual(container: Node3D, ingredient_id: String) -> 
 	if not content.has_meta("full_scale"):
 		content.set_meta("full_scale", content.scale)
 	var full_scale := content.get_meta("full_scale", Vector3.ONE) as Vector3
-	var fill_ratio := clampf(float(GameState.ingredient_stock.get(ingredient_id, 0)) / 50.0, 0.15, 1.0)
+	var fill_ratio := clampf(
+		float(GameState.get_counter_stock(ingredient_id)) / float(GameState.COUNTER_MAX_STOCK),
+		0.0,
+		1.0
+	)
 	content.scale = Vector3(full_scale.x, full_scale.y * fill_ratio, full_scale.z)
 
 
@@ -1147,20 +1175,6 @@ func _add_held_ingredient_to_durum(lavash_node: Area3D) -> void:
 	var item := held_item
 	var visual := held_visual
 	var item_id: String = item.item_id
-	var lavash_length := 0.7
-	var y_offset := 0.025
-	match item_id:
-		"cut_meat":
-			y_offset = 0.01
-		"garlic_sauce", "cocktail_sauce":
-			y_offset = 0.04
-
-	var local_pos := Vector3(
-		randf_range(-lavash_length * 0.35, lavash_length * 0.35),
-		y_offset,
-		randf_range(-0.03, 0.03)
-	)
-
 	if visual != item:
 		if visual.get_parent() == null:
 			item.add_child(visual)
@@ -1171,25 +1185,34 @@ func _add_held_ingredient_to_durum(lavash_node: Area3D) -> void:
 		visual.visible = true
 		item.source_visual = visual
 
-	item.reparent(lavash_node)
-	item.position = local_pos
-	item.rotation = Vector3(
-		0.0,
-		randf_range(-PI, PI),
-		randf_range(-0.1, 0.1)
-	)
-	item.scale = Vector3.ONE
-	var placed_count := int(lavash_node.get_meta("placed_count", 0))
-	item.name = "Ingredient_%02d_%s" % [placed_count + 1, item_id.to_pascal_case()]
 	item.available = false
 	item.collision_layer = 0
 	item.collision_mask = 0
 	_set_collisions_enabled(item, false)
 
-	var ingredients: Array = lavash_node.get_meta("ingredients", [])
-	ingredients.append(item_id)
-	lavash_node.set_meta("ingredients", ingredients)
-	lavash_node.set_meta("placed_count", placed_count + 1)
+	var assembly := lavash_node as LavashAssembly
+	if is_instance_valid(assembly):
+		if not assembly.add_topping(item_id, item):
+			item.available = true
+			item.collision_layer = INTERACTION_LAYER
+			_set_collisions_enabled(item, true)
+			return
+	else:
+		var lavash_length := 0.7
+		item.reparent(lavash_node)
+		item.position = Vector3(
+			randf_range(-lavash_length * 0.35, lavash_length * 0.35),
+			0.01 if item_id == "cut_meat" else 0.025,
+			randf_range(-0.03, 0.03)
+		)
+		item.rotation = Vector3(0.0, randf_range(-PI, PI), randf_range(-0.1, 0.1))
+		item.scale = Vector3.ONE
+		var placed_count := int(lavash_node.get_meta("placed_count", 0))
+		item.name = "Ingredient_%02d_%s" % [placed_count + 1, item_id.to_pascal_case()]
+		var ingredients: Array = lavash_node.get_meta("ingredients", [])
+		ingredients.append(item_id)
+		lavash_node.set_meta("ingredients", ingredients)
+		lavash_node.set_meta("placed_count", placed_count + 1)
 
 	held_item = null
 	held_item_id = ""
@@ -1221,16 +1244,22 @@ func _add_sauce_to_durum(assembly: Area3D, hit_position: Vector3) -> void:
 			applied_sauce_count += 1
 	var local_pos := Vector3(0.0, 0.040, -0.015) if applied_sauce_count == 0 else Vector3(0.0, 0.042, 0.015)
 
-	assembly.add_child(portion_visual)
-	portion_visual.name = "Sauce_%s_%02d" % [portion_id.to_pascal_case(), int(assembly.get_meta("placed_count", 0)) + 1]
-	portion_visual.position = local_pos
-	portion_visual.rotation = Vector3.ZERO
-	portion_visual.scale = Vector3.ONE
-	portion_visual.visible = true
+	var lavash_assembly := assembly as LavashAssembly
+	if is_instance_valid(lavash_assembly):
+		if not lavash_assembly.add_topping(portion_id, portion_visual):
+			portion_visual.queue_free()
+			return
+	else:
+		assembly.add_child(portion_visual)
+		portion_visual.name = "Sauce_%s_%02d" % [portion_id.to_pascal_case(), int(assembly.get_meta("placed_count", 0)) + 1]
+		portion_visual.position = local_pos
+		portion_visual.rotation = Vector3.ZERO
+		portion_visual.scale = Vector3.ONE
+		portion_visual.visible = true
 
-	ingredients.append(portion_id)
-	assembly.set_meta("ingredients", ingredients)
-	assembly.set_meta("placed_count", int(assembly.get_meta("placed_count", 0)) + 1)
+		ingredients.append(portion_id)
+		assembly.set_meta("ingredients", ingredients)
+		assembly.set_meta("placed_count", int(assembly.get_meta("placed_count", 0)) + 1)
 
 	_cancel_ladle_scoop()
 	held_item.set_meta("is_filled", false)
@@ -1243,7 +1272,13 @@ func _roll_durum(assembly: Area3D) -> bool:
 	if not is_instance_valid(assembly) or is_instance_valid(held_item):
 		return false
 	var ingredients: Array = assembly.get_meta("ingredients", [])
-	if ingredients.is_empty():
+	var lavash_assembly := assembly as LavashAssembly
+	if is_instance_valid(lavash_assembly):
+		var meal_data := lavash_assembly.finalize_meal()
+		if meal_data.is_empty():
+			return false
+		ingredients = meal_data.get("ingredients", [])
+	elif ingredients.is_empty():
 		return false
 	var finished_visual := _duplicate_pickup_template("finished_durum")
 	if not is_instance_valid(finished_visual):
