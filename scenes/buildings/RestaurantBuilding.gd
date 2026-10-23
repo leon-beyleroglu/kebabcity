@@ -58,9 +58,10 @@ var _refresh_queued := false
 
 
 func _ready() -> void:
-	add_to_group("modular_restaurant")
 	_apply_customization()
-	_connect_owner()
+	if not Engine.is_editor_hint():
+		add_to_group("modular_restaurant")
+		_connect_owner()
 
 
 func get_restaurant_owner() -> RestaurantOwner:

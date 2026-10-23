@@ -54,12 +54,13 @@ var _refresh_queued := false
 
 
 func _ready() -> void:
-	add_to_group("restaurant_owner")
 	_apply_customization()
-	_setup_interaction_area()
+	if not Engine.is_editor_hint():
+		add_to_group("restaurant_owner")
+		_setup_interaction_area()
 
 
-func interact(_interaction_system: KebabInteractionSystem = null) -> bool:
+func interact(_interaction_system: Node = null) -> bool:
 	interaction_requested.emit(self)
 	var hud := get_tree().get_first_node_in_group("money_hud")
 	if is_instance_valid(hud) and hud.has_method("show_order_feedback"):
@@ -78,8 +79,10 @@ func _setup_interaction_area() -> void:
 	area.collision_mask = 0
 	area.monitoring = false
 	area.monitorable = true
-	area.set_meta("restaurant_owner", self)
-	set_meta("restaurant_owner", self)
+	# Keep metadata serializable. Storing `self` here makes editor scene saves
+	# recursively serialize the complete CharacterBody3D.
+	area.set_meta("restaurant_owner", true)
+	set_meta("restaurant_owner", true)
 
 
 func _queue_visual_refresh() -> void:

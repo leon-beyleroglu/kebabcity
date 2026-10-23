@@ -696,10 +696,11 @@ func _restaurant_owner_from_collider(collider: Object) -> RestaurantOwner:
 	var collider_node := collider as Node
 	if not is_instance_valid(collider_node):
 		return null
-	if collider_node is RestaurantOwner:
-		return collider_node as RestaurantOwner
-	if collider_node.has_meta("restaurant_owner"):
-		return collider_node.get_meta("restaurant_owner") as RestaurantOwner
+	var current_node: Node = collider_node
+	while is_instance_valid(current_node):
+		if current_node is RestaurantOwner:
+			return current_node as RestaurantOwner
+		current_node = current_node.get_parent()
 	return null
 
 
