@@ -3,6 +3,7 @@ extends Node
 
 const InteractableItemScript = preload("res://interactable_item.gd")
 const DonerMeatStationScript = preload("res://doner_meat_station.gd")
+const DoenerTongsScript = preload("res://DoenerTongs.gd")
 const LavashAssemblyScene := preload("res://LavashAssembly.tscn")
 const RolledDoenerScene := preload("res://RolledDoener.tscn")
 
@@ -14,7 +15,7 @@ const PREP_ITEM_LAYER := 1 << 8
 const CUT_DURATION := 1.0
 const OVEN_BAKE_DURATION := 10.0
 const OVEN_CAPACITY := 3
-const DURUM_INGREDIENT_IDS := ["tomato", "salad", "red_cabbage", "onion", "cucumber", "cut_meat", "garlic_sauce", "cocktail_sauce"]
+const DURUM_INGREDIENT_IDS := ["tomato", "salad", "red_cabbage", "onion", "cucumber", "cut_meat", "meat_portion", "garlic_sauce", "cocktail_sauce"]
 
 enum OvenSlotState { EMPTY, BAKING, FINISHED }
 
@@ -598,6 +599,9 @@ func _unhandled_input(event: InputEvent) -> void:
 func handle_interaction(collider: Object, hit_position: Vector3, hit_normal: Vector3) -> void:
 	var collider_node := collider as Node
 	if is_instance_valid(collider_node):
+		var doener_station := _doener_grill_station_from_collider(collider_node)
+		if is_instance_valid(doener_station) and doener_station.interact(player, self, collider_node):
+			return
 		var restaurant_owner := _restaurant_owner_from_collider(collider_node)
 		if is_instance_valid(restaurant_owner) and restaurant_owner.interact(self):
 			return
@@ -700,6 +704,20 @@ func _restaurant_owner_from_collider(collider: Object) -> RestaurantOwner:
 	while is_instance_valid(current_node):
 		if current_node is RestaurantOwner:
 			return current_node as RestaurantOwner
+		current_node = current_node.get_parent()
+	return null
+
+
+func _doener_grill_station_from_collider(collider: Object) -> DoenerGrillStation:
+	var current_node := collider as Node
+	while is_instance_valid(current_node):
+		var station := current_node as DoenerGrillStation
+		if is_instance_valid(station):
+			return station
+		if current_node.has_meta("doener_grill_station_owner"):
+			station = current_node.get_meta("doener_grill_station_owner") as DoenerGrillStation
+			if is_instance_valid(station):
+				return station
 		current_node = current_node.get_parent()
 	return null
 
@@ -871,6 +889,14 @@ func can_accept_produced_item() -> bool:
 	return true
 
 
+func can_accept_cutting_mode() -> bool:
+	return can_accept_produced_item() and not is_instance_valid(held_item)
+
+
+func hold_meat_portion() -> bool:
+	return hold_kitchen_item_data(PickupableItem.data_for_id("meat_portion"))
+
+
 func get_held_item_id() -> String:
 	return held_item.item_id if is_instance_valid(held_item) else ""
 
@@ -905,14 +931,19 @@ func hold_kitchen_item_data(data: Dictionary) -> bool:
 		return false
 	var item_id := String(normalized["id"])
 	var ingredient_id := WholeVegetableFactory.normalize_ingredient_id(item_id)
-	var visual := (
-		WholeVegetableFactory.create_sliced(ingredient_id)
-		if bool(normalized["is_cut"])
-		else WholeVegetableFactory.create_whole(ingredient_id)
-	)
+	var visual: Node3D
+	if item_id == "meat_portion":
+		visual = DoenerTongsScript.create_viewmodel(true)
+	else:
+		visual = (
+			WholeVegetableFactory.create_sliced(ingredient_id)
+			if bool(normalized["is_cut"])
+			else WholeVegetableFactory.create_whole(ingredient_id)
+		)
 	if not is_instance_valid(visual):
 		return false
-	if not hold_produced_item(item_id, WholeVegetableFactory.display_name(ingredient_id), visual):
+	var display_name := "Dönerfleisch in Zange" if item_id == "meat_portion" else WholeVegetableFactory.display_name(ingredient_id)
+	if not hold_produced_item(item_id, display_name, visual):
 		visual.queue_free()
 		return false
 	if is_instance_valid(player) and player.has_method("set_held_kitchen_item"):
@@ -925,9 +956,18 @@ func consume_held_item(expected_item_id: String = "") -> bool:
 		return false
 	if not expected_item_id.is_empty() and held_item.item_id != expected_item_id:
 		return false
+	var consumed_item_id: String = held_item.item_id
 	var source_visual := held_item.source_visual as Node3D
 	if is_instance_valid(held_visual):
-		held_visual.queue_free()
+		if consumed_item_id == "meat_portion" and held_visual.has_method("set_meat_visible"):
+			held_visual.call("set_meat_visible", false)
+			var empty_tongs := held_visual
+			var release_tween := create_tween()
+			release_tween.tween_interval(0.18)
+			release_tween.tween_property(empty_tongs, "scale", Vector3.ZERO, 0.12)
+			release_tween.tween_callback(empty_tongs.queue_free)
+		else:
+			held_visual.queue_free()
 	if is_instance_valid(source_visual) and source_visual != held_visual:
 		source_visual.queue_free()
 	held_item.queue_free()
@@ -1037,7 +1077,7 @@ func _held_item_to_ingredient(item_id: String) -> String:
 			return item_id
 		"salad", "lettuce":
 			return "lettuce"
-		"cut_meat", "meat":
+		"cut_meat", "meat", "meat_portion":
 			return "meat"
 	return ""
 
@@ -1316,7 +1356,12 @@ func _add_held_ingredient_to_durum(lavash_node: Area3D) -> void:
 	var held_ingredient := _get_player_held_ingredient()
 	if held_ingredient.is_empty():
 		held_ingredient = _held_item_to_ingredient(held_item.item_id)
-	if held_ingredient.is_empty() or not assembly.add_topping(held_ingredient):
+	var topping_added := (
+		assembly.add_meat_portion()
+		if held_item.item_id == "meat_portion"
+		else assembly.add_topping(held_ingredient)
+	)
+	if held_ingredient.is_empty() or not topping_added:
 		return
 	consume_held_item(held_item.item_id)
 
@@ -1956,6 +2001,8 @@ func _item_collision_size(item_id: String) -> Vector3:
 			return Vector3(0.34, 0.72, 0.34)
 		"cut_meat":
 			return Vector3(0.42, 0.22, 0.42)
+		"meat_portion":
+			return Vector3(0.22, 0.12, 0.22)
 		_:
 			return Vector3(0.5, 0.3, 0.5)
 

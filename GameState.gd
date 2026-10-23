@@ -91,6 +91,7 @@ var player_rotation_y: float = 0.0
 var counter_items: Array[Dictionary] = []
 var prep_counter_items: Array[String] = []
 var meat_tray_portions: int = 0
+var lavash_meat_count: int = 0
 var oven_data: Dictionary = {"item_type": "", "timer_progress": 0.0, "is_baked": false}
 var table_stored_weapons: Array[String] = []
 var cutting_station_data: Dictionary = {"item_on_board": "", "chop_progress": 0, "is_chopped": false}
@@ -138,6 +139,7 @@ func save_game() -> void:
 	counter_items = _collect_counter_items(player)
 	placed_lavash_state = _collect_placed_lavash(counter_items)
 	placed_lavash = placed_lavash_state.duplicate(true)
+	lavash_meat_count = _count_lavash_meat(placed_lavash_state)
 	_collect_station_data()
 	_collect_weapon_table_data()
 	_collect_kitchen_item_data(player)
@@ -173,6 +175,7 @@ func save_game() -> void:
 		"placed_lavash_state": placed_lavash_state,
 		"prep_counter_items": prep_counter_items,
 		"meat_tray_portions": meat_tray_portions,
+		"lavash_meat_count": lavash_meat_count,
 		"oven_data": oven_data,
 		"table_stored_weapons": table_stored_weapons,
 		"cutting_station": cutting_station_data,
@@ -316,6 +319,14 @@ func load_game() -> bool:
 	else:
 		placed_lavash_state = _collect_placed_lavash(counter_items)
 	placed_lavash = placed_lavash_state.duplicate(true)
+	var toppings_meat_count := _count_lavash_meat(placed_lavash_state)
+	lavash_meat_count = (
+		maxi(int(save_data.get("lavash_meat_count", toppings_meat_count)), 0)
+		if bool(placed_lavash_state.get("is_present", false))
+		else 0
+	)
+	if lavash_meat_count > toppings_meat_count:
+		_append_missing_lavash_meat(lavash_meat_count - toppings_meat_count)
 	if bool(placed_lavash_state.get("is_present", false)) and not _counter_items_have_lavash(counter_items):
 		counter_items.append({
 			"type": "durum_assembly" if not (placed_lavash_state.get("toppings", []) as Array).is_empty() else "baked_lavash",
@@ -336,7 +347,7 @@ func load_game() -> bool:
 
 	_restore_meat_tray = save_data.has("meat_tray_portions")
 	if _restore_meat_tray:
-		meat_tray_portions = maxi(int(save_data["meat_tray_portions"]), 0)
+		meat_tray_portions = clampi(int(save_data["meat_tray_portions"]), 0, 3)
 
 	_restore_oven = save_data.has("oven_data")
 	if _restore_oven:
@@ -452,7 +463,7 @@ func _collect_station_data() -> void:
 	if is_instance_valid(meat_tray) and meat_tray.has_method("get_save_data"):
 		var tray_data: Variant = meat_tray.call("get_save_data")
 		if tray_data is Dictionary:
-			meat_tray_portions = maxi(int(tray_data.get("portions", 0)), 0)
+			meat_tray_portions = clampi(int(tray_data.get("portions", 0)), 0, 3)
 
 	var oven := get_tree().get_first_node_in_group("oven")
 	if is_instance_valid(oven) and oven.has_method("get_save_data"):
@@ -1183,6 +1194,41 @@ func _normalize_placed_lavash(data: Dictionary) -> Dictionary:
 		"is_rolled": bool(data.get("is_rolled", false)),
 		"toppings": toppings,
 	}
+
+
+func _count_lavash_meat(state: Dictionary) -> int:
+	var count := 0
+	var raw_toppings: Variant = state.get("toppings", state.get("ingredients", []))
+	if raw_toppings is Array:
+		for raw_topping: Variant in raw_toppings:
+			var topping := String(raw_topping).strip_edges().to_lower()
+			if topping == "meat" or topping == "cut_meat" or topping == "meat_portion":
+				count += 1
+	return count
+
+
+func _append_missing_lavash_meat(amount: int) -> void:
+	if amount <= 0 or not bool(placed_lavash_state.get("is_present", false)):
+		return
+	var toppings: Array[String] = []
+	var raw_toppings: Variant = placed_lavash_state.get("toppings", [])
+	if raw_toppings is Array:
+		for raw_topping: Variant in raw_toppings:
+			toppings.append(String(raw_topping))
+	for _index in amount:
+		toppings.append("meat")
+	placed_lavash_state["toppings"] = toppings
+	placed_lavash = placed_lavash_state.duplicate(true)
+	for item_index in counter_items.size():
+		var entry := counter_items[item_index]
+		var item_type := String(entry.get("type", ""))
+		if item_type != "baked_lavash" and item_type != "durum_assembly":
+			continue
+		entry["type"] = "durum_assembly"
+		entry["ingredients"] = toppings.duplicate()
+		counter_items[item_index] = entry
+		_restore_counter_inventory = true
+		break
 
 
 func _counter_items_have_lavash(items: Array[Dictionary]) -> bool:

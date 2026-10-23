@@ -3,6 +3,7 @@ extends Area3D
 
 const DEFAULT_SCENE_PATH := "res://PickupableItem.tscn"
 const INTERACTION_LAYER := 1 << 7
+const DoenerTongsScript := preload("res://DoenerTongs.gd")
 
 var item_data: Dictionary = {}
 var item_visual: Node3D
@@ -53,6 +54,15 @@ func place_at_surface(point: Vector3, normal: Vector3) -> void:
 
 static func normalize_item_data(data: Dictionary) -> Dictionary:
 	var item_id := String(data.get("id", "")).strip_edges().to_lower()
+	if item_id == "cut_meat":
+		item_id = "meat_portion"
+	if item_id == "meat_portion":
+		return {
+			"id": "meat_portion",
+			"type": "meat",
+			"is_cut": true,
+			"scene_path": String(data.get("scene_path", DEFAULT_SCENE_PATH)),
+		}
 	var prefix := ""
 	if item_id.begins_with("whole_"):
 		prefix = "whole_"
@@ -125,6 +135,11 @@ func _rebuild_visual() -> void:
 	if is_instance_valid(item_visual):
 		item_visual.queue_free()
 	var item_id := String(item_data.get("id", ""))
+	if item_id == "meat_portion":
+		item_visual = DoenerTongsScript.create_meat_portion_visual()
+		add_child(item_visual)
+		item_visual.position = Vector3(0.0, _visual_contact_height(item_id), 0.0)
+		return
 	var ingredient_id := WholeVegetableFactory.normalize_ingredient_id(item_id)
 	item_visual = (
 		WholeVegetableFactory.create_sliced(ingredient_id)
@@ -153,6 +168,8 @@ func _rebuild_collision() -> void:
 
 
 func _visual_contact_height(item_id: String) -> float:
+	if item_id == "meat_portion":
+		return 0.025
 	if item_id.begins_with("sliced_"):
 		return 0.018
 	match WholeVegetableFactory.normalize_ingredient_id(item_id):
@@ -168,6 +185,8 @@ func _visual_contact_height(item_id: String) -> float:
 
 
 func _collision_size(item_id: String) -> Vector3:
+	if item_id == "meat_portion":
+		return Vector3(0.22, 0.08, 0.18)
 	if item_id.begins_with("sliced_"):
 		return Vector3(0.2, 0.055, 0.16)
 	match WholeVegetableFactory.normalize_ingredient_id(item_id):

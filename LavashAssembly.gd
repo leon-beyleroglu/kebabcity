@@ -83,12 +83,16 @@ func add_topping(ingredient_name: String, topping_visual: Node3D = null) -> bool
 		visual.reparent(container, false)
 	var topping_index := current_toppings.size()
 	visual.name = "Topping_%02d_%s" % [topping_index + 1, topping.to_pascal_case()]
-	visual.position = _topping_position(topping_index)
-	visual.rotation = Vector3(
-		randf_range(-0.06, 0.06),
-		randf_range(-PI, PI),
-		randf_range(-0.08, 0.08)
-	)
+	if topping == "meat":
+		visual.position = Vector3(0.0, 0.005 * float(topping_index), 0.0)
+		visual.rotation = Vector3.ZERO
+	else:
+		visual.position = _topping_position(topping_index)
+		visual.rotation = Vector3(
+			randf_range(-0.06, 0.06),
+			randf_range(-PI, PI),
+			randf_range(-0.08, 0.08)
+		)
 	visual.scale = Vector3.ONE
 	visual.visible = true
 	_disable_topping_collisions(visual)
@@ -96,6 +100,10 @@ func add_topping(ingredient_name: String, topping_visual: Node3D = null) -> bool
 	_sync_metadata()
 	topping_added.emit(topping, get_toppings())
 	return true
+
+
+func add_meat_portion() -> bool:
+	return add_topping("meat")
 
 
 func restore_toppings(toppings: Array, _visual_factory := Callable()) -> void:
@@ -189,6 +197,8 @@ func get_save_data() -> Dictionary:
 
 
 func _create_topping_visual(topping: String) -> Node3D:
+	if topping == "meat":
+		return _create_centered_meat_strips(current_toppings.size())
 	var cluster := Node3D.new()
 	var piece_count := 6
 	match topping:
@@ -196,7 +206,7 @@ func _create_topping_visual(topping: String) -> Node3D:
 			piece_count = 4
 		"cucumber", "tomato":
 			piece_count = 5
-		"red_cabbage", "meat":
+		"red_cabbage":
 			piece_count = 7
 	for piece_index in piece_count:
 		var piece := MeshInstance3D.new()
@@ -213,6 +223,27 @@ func _create_topping_visual(topping: String) -> Node3D:
 			randf_range(-0.14, 0.14)
 		)
 		cluster.add_child(piece)
+	return cluster
+
+
+func _create_centered_meat_strips(topping_index: int) -> Node3D:
+	var cluster := Node3D.new()
+	cluster.name = "CenteredMeatStrips"
+	for strip_index in 9:
+		var strip := MeshInstance3D.new()
+		strip.name = "MeatStrip_%02d" % (strip_index + 1)
+		strip.mesh = _mesh_for_topping("meat", strip_index)
+		strip.position = Vector3(
+			randf_range(-0.025, 0.025),
+			0.005 + float(strip_index % 3) * 0.004 + float(topping_index) * 0.002,
+			randf_range(-0.16, 0.16)
+		)
+		strip.rotation = Vector3(
+			randf_range(-0.04, 0.04),
+			randf_range(-0.2, 0.2),
+			randf_range(-0.04, 0.04)
+		)
+		cluster.add_child(strip)
 	return cluster
 
 
@@ -251,7 +282,7 @@ func _mesh_for_topping(topping: String, piece_index: int) -> PrimitiveMesh:
 			return cabbage_strand
 		"meat":
 			var meat_strip := BoxMesh.new()
-			meat_strip.size = Vector3(0.07, 0.014, 0.025)
+			meat_strip.size = Vector3(0.022, 0.012, 0.075)
 			meat_strip.material = _material(Color("75401f") if piece_index % 3 else Color("3e2114"), 0.7)
 			return meat_strip
 		"garlic_sauce", "cocktail_sauce":
@@ -369,6 +400,7 @@ func _sync_metadata() -> void:
 	set_meta("is_rolled", is_rolled)
 	set_meta("ingredients", current_toppings.duplicate())
 	set_meta("placed_count", current_toppings.size())
+	set_meta("meat_count", current_toppings.count("meat"))
 
 
 func _normalize_topping(raw_id: String) -> String:
@@ -377,7 +409,7 @@ func _normalize_topping(raw_id: String) -> String:
 		normalized = normalized.trim_prefix("sliced_")
 	if normalized == "salad":
 		normalized = "lettuce"
-	elif normalized == "cut_meat":
+	elif normalized == "cut_meat" or normalized == "meat_portion":
 		normalized = "meat"
 	return normalized if ALLOWED_TOPPINGS.has(normalized) else ""
 

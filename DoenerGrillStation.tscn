@@ -1,0 +1,209 @@
+[gd_scene format=3 uid="uid://ow11y3f0l66v"]
+
+[ext_resource type="Script" uid="uid://b8cljqlx6qanx" path="res://DoenerGrillStation.gd" id="1_station"]
+
+[sub_resource type="StandardMaterial3D" id="MatSteel"]
+albedo_color = Color(0.58, 0.62, 0.65, 1)
+metallic = 0.88
+roughness = 0.24
+
+[sub_resource type="BoxMesh" id="MeshBase"]
+material = SubResource("MatSteel")
+size = Vector3(0.85, 0.14, 0.76)
+
+[sub_resource type="BoxShape3D" id="ShapeBase"]
+size = Vector3(0.85, 0.14, 0.76)
+
+[sub_resource type="StandardMaterial3D" id="MatDarkSteel"]
+albedo_color = Color(0.14, 0.16, 0.17, 1)
+metallic = 0.72
+roughness = 0.32
+
+[sub_resource type="CylinderMesh" id="MeshSkewer"]
+material = SubResource("MatDarkSteel")
+top_radius = 0.018
+bottom_radius = 0.018
+height = 1.72
+radial_segments = 12
+
+[sub_resource type="StandardMaterial3D" id="MatMeat"]
+albedo_color = Color(0.34, 0.15, 0.065, 1)
+roughness = 0.76
+
+[sub_resource type="CylinderMesh" id="MeshMeatCone"]
+material = SubResource("MatMeat")
+top_radius = 0.2
+bottom_radius = 0.39
+height = 1.24
+radial_segments = 24
+rings = 8
+
+[sub_resource type="StandardMaterial3D" id="MatMeatSear"]
+albedo_color = Color(0.15, 0.055, 0.025, 1)
+roughness = 0.82
+
+[sub_resource type="TorusMesh" id="MeshSearBand"]
+material = SubResource("MatMeatSear")
+inner_radius = 0.315
+outer_radius = 0.35
+rings = 24
+ring_segments = 6
+
+[sub_resource type="BoxMesh" id="MeshTray"]
+material = SubResource("MatSteel")
+size = Vector3(0.68, 0.055, 0.56)
+
+[sub_resource type="BoxMesh" id="MeshTrayRimLong"]
+material = SubResource("MatSteel")
+size = Vector3(0.72, 0.1, 0.035)
+
+[sub_resource type="BoxMesh" id="MeshTrayRimShort"]
+material = SubResource("MatSteel")
+size = Vector3(0.035, 0.1, 0.56)
+
+[sub_resource type="BoxShape3D" id="ShapeTrayInteraction"]
+size = Vector3(0.76, 0.24, 0.64)
+
+[sub_resource type="BoxMesh" id="MeshKnifeBlade"]
+material = SubResource("MatSteel")
+size = Vector3(0.58, 0.045, 0.075)
+
+[sub_resource type="StandardMaterial3D" id="MatKnifeHandle"]
+albedo_color = Color(0.08, 0.065, 0.055, 1)
+roughness = 0.78
+
+[sub_resource type="BoxMesh" id="MeshKnifeHandle"]
+material = SubResource("MatKnifeHandle")
+size = Vector3(0.22, 0.075, 0.1)
+
+[sub_resource type="ParticleProcessMaterial" id="SliceParticleProcess"]
+direction = Vector3(0, 0.3, 1)
+spread = 48.0
+initial_velocity_min = 0.16
+initial_velocity_max = 0.38
+gravity = Vector3(0, -2.4, 0)
+scale_min = 0.35
+scale_max = 0.75
+
+[sub_resource type="SphereMesh" id="SliceParticleMesh"]
+material = SubResource("MatMeat")
+radius = 0.012
+height = 0.024
+radial_segments = 6
+rings = 3
+
+[sub_resource type="BoxShape3D" id="ShapeGrillInteraction"]
+size = Vector3(0.88, 1.5, 0.72)
+
+[node name="DoenerGrillStation" type="StaticBody3D" unique_id=984159570 groups=["doener_grill_station", "meat_tray"]]
+script = ExtResource("1_station")
+
+[node name="Base" type="MeshInstance3D" parent="." unique_id=275361995]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.07, 0)
+mesh = SubResource("MeshBase")
+
+[node name="BaseCollision" type="CollisionShape3D" parent="." unique_id=631337969]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.07, 0)
+shape = SubResource("ShapeBase")
+
+[node name="SkewerRod" type="MeshInstance3D" parent="." unique_id=1926558996]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.9, 0)
+mesh = SubResource("MeshSkewer")
+
+[node name="SpitMesh" type="MeshInstance3D" parent="." unique_id=255125612]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.79, 0)
+mesh = SubResource("MeshMeatCone")
+
+[node name="SearBandLower" type="MeshInstance3D" parent="SpitMesh" unique_id=854376490]
+transform = Transform3D(1, 0, 0, 0, -3.6199901e-06, -1, 0, 1, -3.6199901e-06, 0, -0.34, 0)
+mesh = SubResource("MeshSearBand")
+
+[node name="SearBandUpper" type="MeshInstance3D" parent="SpitMesh" unique_id=1900216192]
+transform = Transform3D(0.82, 0, 0, 0, -2.968392e-06, -0.82, 0, 0.82, -2.968392e-06, 0, 0.08, 0)
+mesh = SubResource("MeshSearBand")
+
+[node name="CatchTray" type="Area3D" parent="." unique_id=1881655887]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.0496559, 0.13, 0.21270034)
+collision_layer = 128
+collision_mask = 0
+monitoring = false
+
+[node name="TrayBasin" type="MeshInstance3D" parent="CatchTray" unique_id=653430588]
+mesh = SubResource("MeshTray")
+
+[node name="RimFront" type="MeshInstance3D" parent="CatchTray" unique_id=363556610]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.06, 0.28)
+mesh = SubResource("MeshTrayRimLong")
+
+[node name="RimBack" type="MeshInstance3D" parent="CatchTray" unique_id=210146651]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.06, -0.28)
+mesh = SubResource("MeshTrayRimLong")
+
+[node name="RimLeft" type="MeshInstance3D" parent="CatchTray" unique_id=633953716]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.34, 0.06, 0)
+mesh = SubResource("MeshTrayRimShort")
+
+[node name="RimRight" type="MeshInstance3D" parent="CatchTray" unique_id=589659977]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.34, 0.06, 0)
+mesh = SubResource("MeshTrayRimShort")
+
+[node name="TrayCollision" type="CollisionShape3D" parent="CatchTray" unique_id=2053136710]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.09, 0)
+shape = SubResource("ShapeTrayInteraction")
+
+[node name="TraySpawnPoints" type="Node3D" parent="CatchTray" unique_id=355741929]
+
+[node name="SpawnPoint_01" type="Marker3D" parent="CatchTray/TraySpawnPoints" unique_id=2129910459]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.21, 0.075, 0)
+
+[node name="SpawnPoint_02" type="Marker3D" parent="CatchTray/TraySpawnPoints" unique_id=697703582]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.075, 0)
+
+[node name="SpawnPoint_03" type="Marker3D" parent="CatchTray/TraySpawnPoints" unique_id=826665599]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.21, 0.075, 0)
+
+[node name="PortionVisuals" type="Node3D" parent="CatchTray" unique_id=2076513838]
+
+[node name="CameraTarget" type="Marker3D" parent="." unique_id=47173888]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.77, 0)
+
+[node name="GrillCam" type="Camera3D" parent="." unique_id=312116720]
+transform = Transform3D(0.94230384, -7.0207107e-09, 0.33475897, -0.08400861, 0.9679994, 0.23647353, -0.3240465, -0.25095254, 0.9121495, 0.33790654, 1.08, 1.3673693)
+fov = 50.0
+near = 0.03
+
+[node name="KnifeRig" type="Node3D" parent="." unique_id=1854008135]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.18, 0.36)
+visible = false
+
+[node name="KnifeMesh" type="MeshInstance3D" parent="KnifeRig" unique_id=960000303]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.08, 0, 0)
+mesh = SubResource("MeshKnifeBlade")
+
+[node name="KnifeHandle" type="MeshInstance3D" parent="KnifeRig" unique_id=245728360]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.32, 0, 0)
+mesh = SubResource("MeshKnifeHandle")
+
+[node name="SliceParticles" type="GPUParticles3D" parent="KnifeRig" unique_id=1804174551]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.08, -0.02, -0.12)
+emitting = false
+amount = 14
+lifetime = 0.42
+one_shot = true
+explosiveness = 0.95
+process_material = SubResource("SliceParticleProcess")
+draw_pass_1 = SubResource("SliceParticleMesh")
+
+[node name="InteractArea" type="Area3D" parent="." unique_id=1036983894]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.82, 0)
+collision_layer = 128
+collision_mask = 0
+monitoring = false
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="InteractArea" unique_id=302195951]
+shape = SubResource("ShapeGrillInteraction")
+
+[node name="SliceSFX" type="AudioStreamPlayer3D" parent="." unique_id=336189577]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.75, 0)
+unit_size = 2.0
+max_distance = 8.0

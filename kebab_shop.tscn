@@ -20,7 +20,6 @@
 [ext_resource type="PackedScene" uid="uid://clm8u42jlvahx" path="res://tofas.tscn" id="25_tofas"]
 [ext_resource type="PackedScene" path="res://PauseMenu.tscn" id="26_pause"]
 [ext_resource type="PackedScene" path="res://scenes/npcs/OwnerIndian.tscn" id="27_33jpk"]
-[ext_resource type="Script" uid="uid://b126u3mdvklda" path="res://MeatTray.gd" id="27_meat_tray"]
 [ext_resource type="PackedScene" path="res://scenes/npcs/OwnerGyros.tscn" id="28_0yh3i"]
 [ext_resource type="Script" uid="uid://cvdx88dxawbt0" path="res://OvenStation.gd" id="28_oven_station"]
 [ext_resource type="PackedScene" path="res://scenes/npcs/OwnerPizzeria.tscn" id="29_ebyhw"]
@@ -29,6 +28,7 @@
 [ext_resource type="PackedScene" path="res://SupplyCrate.tscn" id="31_supply_crate"]
 [ext_resource type="Script" uid="uid://cjm3640td8fvx" path="res://PrepCounter.gd" id="32_prep_counter"]
 [ext_resource type="Script" uid="uid://kehu74db4laf" path="res://LavashAssembly.gd" id="33_lavash_assembly"]
+[ext_resource type="PackedScene" uid="uid://ow11y3f0l66v" path="res://DoenerGrillStation.tscn" id="34_doener_grill"]
 
 [sub_resource type="StandardMaterial3D" id="MatInteriorFloorTile"]
 resource_name = "Non-Slip Terracotta Floor Tile"
@@ -258,14 +258,14 @@ albedo_color = Color(0.34, 0.075, 0.035, 1)
 metallic_specular = 0.38
 roughness = 0.42
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_qromb"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_33jpk"]
 albedo_color = Color(0, 0, 0, 1)
 metallic = 0.85
 roughness = 0.28
 
 [sub_resource type="BoxMesh" id="BoxMesh_t8aj2"]
-material = SubResource("StandardMaterial3D_qromb")
-size = Vector3(1.2681198, 1.1958008, 1)
+material = SubResource("StandardMaterial3D_33jpk")
+size = Vector3(1.4231224, 1.1958008, 1)
 
 [sub_resource type="StandardMaterial3D" id="MatCounterLaminate"]
 resource_name = "Warm Walnut Counter Laminate"
@@ -305,196 +305,13 @@ roughness = 0.78
 material = SubResource("MatKnifeHandle")
 size = Vector3(0.12, 0.34, 0.09)
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_o7dl6"]
-resource_name = "Spit Brushed Stainless Steel PBR"
-albedo_color = Color(0.58, 0.62, 0.65, 1)
-metallic = 0.85
-metallic_specular = 0.72
-roughness = 0.2
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_hsot5"]
+albedo_color = Color(0.78039217, 0.72156864, 0.61960787, 1)
 
 [sub_resource type="StandardMaterial3D" id="MatMetal"]
 albedo_color = Color(0, 0, 0, 1)
 metallic = 0.85
 roughness = 0.28
-
-[sub_resource type="BoxMesh" id="BoxSmall"]
-material = SubResource("MatMetal")
-size = Vector3(1, 1.4751419, 1)
-
-[sub_resource type="CylinderMesh" id="Cylinder"]
-top_radius = 0.055
-bottom_radius = 0.055
-height = 2.75
-radial_segments = 48
-
-[sub_resource type="Gradient" id="GradientMeatFiberColor"]
-offsets = PackedFloat32Array(0, 0.18, 0.43, 0.68, 0.86, 1)
-colors = PackedColorArray(0.055, 0.009, 0.003, 1, 0.19, 0.035, 0.008, 1, 0.46, 0.12, 0.025, 1, 0.72, 0.27, 0.065, 1, 0.36, 0.075, 0.012, 1, 0.09, 0.014, 0.003, 1)
-
-[sub_resource type="FastNoiseLite" id="NoiseMeatFibers"]
-noise_type = 3
-seed = 1847
-frequency = 0.055
-fractal_octaves = 6
-fractal_lacunarity = 2.6
-fractal_gain = 0.58
-domain_warp_enabled = true
-domain_warp_amplitude = 28.0
-domain_warp_frequency = 0.018
-domain_warp_fractal_octaves = 4
-
-[sub_resource type="NoiseTexture2D" id="TextureMeatFibers"]
-height = 1024
-noise = SubResource("NoiseMeatFibers")
-color_ramp = SubResource("GradientMeatFiberColor")
-seamless = true
-
-[sub_resource type="Gradient" id="GradientMeatScorch"]
-offsets = PackedFloat32Array(0, 0.38, 0.62, 0.8, 1)
-colors = PackedColorArray(0.025, 0.003, 0.001, 1, 0.07, 0.008, 0.002, 1, 0.18, 0.025, 0.004, 1, 0.42, 0.1, 0.015, 1, 0.11, 0.012, 0.002, 1)
-
-[sub_resource type="FastNoiseLite" id="NoiseMeatScorch"]
-seed = 907
-frequency = 0.11
-fractal_octaves = 4
-fractal_lacunarity = 2.3
-fractal_gain = 0.47
-
-[sub_resource type="NoiseTexture2D" id="TextureMeatScorch"]
-noise = SubResource("NoiseMeatScorch")
-color_ramp = SubResource("GradientMeatScorch")
-seamless = true
-
-[sub_resource type="Gradient" id="GradientScorchMask"]
-offsets = PackedFloat32Array(0, 0.5, 0.64, 0.8, 1)
-colors = PackedColorArray(0, 0, 0, 1, 0.03, 0.03, 0.03, 1, 0.32, 0.32, 0.32, 1, 0.86, 0.86, 0.86, 1, 1, 1, 1, 1)
-
-[sub_resource type="NoiseTexture2D" id="TextureMeatScorchMask"]
-noise = SubResource("NoiseMeatScorch")
-color_ramp = SubResource("GradientScorchMask")
-seamless = true
-
-[sub_resource type="NoiseTexture2D" id="TextureMeatFiberNormal"]
-height = 1024
-noise = SubResource("NoiseMeatFibers")
-seamless = true
-as_normal_map = true
-bump_strength = 7.5
-
-[sub_resource type="StandardMaterial3D" id="MatMeatRoasted"]
-resource_name = "Roasted Doner Cone - Fibrous PBR"
-albedo_color = Color(0.78, 0.47, 0.25, 1)
-albedo_texture = SubResource("TextureMeatFibers")
-roughness = 0.53
-normal_enabled = true
-normal_scale = 1.35
-normal_texture = SubResource("TextureMeatFiberNormal")
-clearcoat_enabled = true
-clearcoat = 0.25
-clearcoat_roughness = 0.24
-detail_enabled = true
-detail_mask = SubResource("TextureMeatScorchMask")
-detail_blend_mode = 3
-detail_albedo = SubResource("TextureMeatScorch")
-detail_normal = SubResource("TextureMeatFiberNormal")
-uv1_scale = Vector3(5.5, 1.6, 5.5)
-
-[sub_resource type="CylinderMesh" id="MeshSpitMeatBottom"]
-top_radius = 0.37
-bottom_radius = 0.23
-height = 0.32
-rings = 8
-
-[sub_resource type="StandardMaterial3D" id="MatMeatCut"]
-resource_name = "Freshly Exposed Doner Layers - PBR"
-albedo_color = Color(0.96, 0.61, 0.32, 1)
-albedo_texture = SubResource("TextureMeatFibers")
-metallic_specular = 0.55
-roughness = 0.46
-normal_enabled = true
-normal_scale = 1.15
-normal_texture = SubResource("TextureMeatFiberNormal")
-clearcoat_enabled = true
-clearcoat = 0.25
-clearcoat_roughness = 0.18
-detail_enabled = true
-detail_mask = SubResource("TextureMeatScorchMask")
-detail_blend_mode = 3
-detail_albedo = SubResource("TextureMeatScorch")
-detail_normal = SubResource("TextureMeatFiberNormal")
-uv1_scale = Vector3(6.5, 1.4, 6.5)
-
-[sub_resource type="CylinderMesh" id="MeshSpitMeatLower"]
-bottom_radius = 0.34
-height = 0.34
-rings = 8
-
-[sub_resource type="CylinderMesh" id="MeshSpitMeatMiddle"]
-top_radius = 0.63
-bottom_radius = 0.47
-height = 0.38
-rings = 10
-
-[sub_resource type="CylinderMesh" id="MeshSpitMeatUpper"]
-top_radius = 0.72
-bottom_radius = 0.6
-height = 0.4
-rings = 10
-
-[sub_resource type="CylinderMesh" id="MeshSpitMeatCrown"]
-top_radius = 0.6
-bottom_radius = 0.7
-height = 0.34
-rings = 8
-
-[sub_resource type="StandardMaterial3D" id="MatMeatCaramelized"]
-resource_name = "Charred Crisp Doner Edges - PBR"
-albedo_color = Color(0.31, 0.105, 0.025, 1)
-albedo_texture = SubResource("TextureMeatScorch")
-metallic_specular = 0.42
-roughness = 0.61
-normal_enabled = true
-normal_scale = 1.6
-normal_texture = SubResource("TextureMeatFiberNormal")
-clearcoat_enabled = true
-clearcoat = 0.16
-clearcoat_roughness = 0.3
-uv1_scale = Vector3(8, 2, 8)
-
-[sub_resource type="CylinderMesh" id="MeshSpitSearBandWide"]
-top_radius = 0.505
-bottom_radius = 0.505
-height = 0.032
-rings = 2
-
-[sub_resource type="CylinderMesh" id="MeshSpitSearBandNarrow"]
-top_radius = 0.655
-bottom_radius = 0.655
-height = 0.026
-rings = 2
-
-[sub_resource type="CylinderMesh" id="MeshMeatCatchmentTray"]
-top_radius = 0.78
-bottom_radius = 0.72
-height = 0.095
-
-[sub_resource type="TorusMesh" id="MeshDripTrayRim"]
-inner_radius = 0.71
-outer_radius = 0.79
-rings = 12
-ring_segments = 64
-
-[sub_resource type="BoxMesh" id="MeshGNContainerBase"]
-size = Vector3(1.15, 0.08, 0.76)
-
-[sub_resource type="BoxMesh" id="MeshGNContainerRimLong"]
-size = Vector3(1.19, 0.095, 0.045)
-
-[sub_resource type="BoxMesh" id="MeshGNContainerRimShort"]
-size = Vector3(0.045, 0.095, 0.76)
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_hsot5"]
-albedo_color = Color(0.78039217, 0.72156864, 0.61960787, 1)
 
 [sub_resource type="BoxMesh" id="BoxMesh_weg2u"]
 material = SubResource("MatMetal")
@@ -671,6 +488,10 @@ radius = 0.105
 height = 0.78
 radial_segments = 12
 rings = 6
+
+[sub_resource type="BoxMesh" id="BoxSmall"]
+material = SubResource("MatMetal")
+size = Vector3(1, 1.4751419, 1)
 
 [sub_resource type="StandardMaterial3D" id="MatTrousers"]
 albedo_color = Color(0.06, 0.08, 0.11, 1)
@@ -1484,6 +1305,11 @@ albedo_color = Color(0.105882354, 0.14509805, 0.3019608, 1)
 material = SubResource("StandardMaterial3D_j7xc5")
 size = Vector3(0.44030762, 1.0515137, 1)
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_qromb"]
+albedo_color = Color(0, 0, 0, 1)
+metallic = 0.85
+roughness = 0.28
+
 [sub_resource type="BoxMesh" id="BoxMesh_853is"]
 material = SubResource("StandardMaterial3D_qromb")
 size = Vector3(0.58924675, 1.1958008, 1.7827148)
@@ -1859,12 +1685,12 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.525, 0)
 shape = SubResource("ShapeTrashCan")
 
 [node name="KitchenBackShelf2" type="MeshInstance3D" parent="." unique_id=1157267575]
-transform = Transform3D(6, 0, 0, 0, 1, 0, 0, 0, 1, -0.39648747, 0.6891401, -5.170214)
+transform = Transform3D(6, 0, 0, 0, 1, 0, 0, 0, 1, -0.86149526, 0.6891401, -5.170214)
 material_override = SubResource("MatCounterCladding")
 mesh = SubResource("BoxMesh_t8aj2")
 
 [node name="KnifeWallMount" type="StaticBody3D" parent="." unique_id=537123794 groups=["knife_mount"]]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.72, 2, -5.68)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -5.123362, 2, -5.68)
 collision_layer = 128
 collision_mask = 0
 metadata/knife_mount = true
@@ -1900,108 +1726,8 @@ mesh = SubResource("MeshKnifeBlade")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.31, 0)
 mesh = SubResource("MeshKnifeHandle")
 
-[node name="DonerSpit" type="Node3D" parent="." unique_id=231999689]
-transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, -3.9592829, 0.6649709, -2.4962418)
-
-[node name="Base" type="MeshInstance3D" parent="DonerSpit" unique_id=1536134390]
-transform = Transform3D(1.35, 0, 0, 0, 0.14, 0, 0, 0, 1.35, 0.30502558, 1.22, -5.176435)
-material_override = SubResource("StandardMaterial3D_o7dl6")
-mesh = SubResource("BoxSmall")
-
-[node name="SkewerRod" type="MeshInstance3D" parent="DonerSpit" unique_id=352803591]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.30502558, 2.57, -5.176435)
-material_override = SubResource("StandardMaterial3D_o7dl6")
-mesh = SubResource("Cylinder")
-
-[node name="Meat" type="Node3D" parent="DonerSpit" unique_id=1155044594]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.30502558, 2.78, -5.176435)
-
-[node name="LayerBottom" type="MeshInstance3D" parent="DonerSpit/Meat" unique_id=154632073]
-transform = Transform3D(0.9992, 0, 0.0399893, 0, 1, 0, -0.0399893, 0, 0.9992, -0.012, -0.7, 0.006)
-material_override = SubResource("MatMeatRoasted")
-mesh = SubResource("MeshSpitMeatBottom")
-
-[node name="LayerLower" type="MeshInstance3D" parent="DonerSpit/Meat" unique_id=1358668921]
-transform = Transform3D(0.99280864, 0, 0.119712204, 0, 1, 0, -0.119712204, 0, 0.99280864, 0.014, -0.4, -0.009)
-material_override = SubResource("MatMeatCut")
-mesh = SubResource("MeshSpitMeatLower")
-
-[node name="LayerMiddle" type="MeshInstance3D" parent="DonerSpit/Meat" unique_id=538908325]
-transform = Transform3D(0.9959527, 0, -0.08987855, 0, 1, 0, 0.08987855, 0, 0.9959527, -0.008, -0.06, 0.012)
-material_override = SubResource("MatMeatRoasted")
-mesh = SubResource("MeshSpitMeatMiddle")
-
-[node name="LayerUpper" type="MeshInstance3D" parent="DonerSpit/Meat" unique_id=191618715]
-transform = Transform3D(0.98722726, 0, 0.15931821, 0, 1, 0, -0.15931821, 0, 0.98722726, 0.012, 0.3, -0.006)
-material_override = SubResource("MatMeatCut")
-mesh = SubResource("MeshSpitMeatUpper")
-
-[node name="LayerCrown" type="MeshInstance3D" parent="DonerSpit/Meat" unique_id=1635717603]
-transform = Transform3D(0.99820054, 0, -0.059964005, 0, 1, 0, 0.059964005, 0, 0.99820054, -0.006, 0.65, 0.008)
-material_override = SubResource("MatMeatRoasted")
-mesh = SubResource("MeshSpitMeatCrown")
-
-[node name="SearBandLower" type="MeshInstance3D" parent="DonerSpit/Meat" unique_id=876549955]
-transform = Transform3D(0.99875, 0, 0.0499792, 0, 1, 0, -0.0499792, 0, 0.99875, 0.012, -0.235, -0.009)
-material_override = SubResource("MatMeatCaramelized")
-mesh = SubResource("MeshSpitSearBandWide")
-
-[node name="SearBandMiddle" type="MeshInstance3D" parent="DonerSpit/Meat" unique_id=1119652773]
-transform = Transform3D(0.996802, 0, -0.0799147, 0, 1, 0, 0.0799147, 0, 0.996802, -0.009, 0.115, 0.011)
-material_override = SubResource("MatMeatCaramelized")
-mesh = SubResource("MeshSpitSearBandNarrow")
-
-[node name="TopCap" type="MeshInstance3D" parent="DonerSpit" unique_id=175268866]
-transform = Transform3D(2.2, 0, 0, 0, 0.08, 0, 0, 0, 2.2, 0.30502558, 3.91, -5.176435)
-material_override = SubResource("StandardMaterial3D_o7dl6")
-mesh = SubResource("Cylinder")
-
-[node name="Catchment" type="Node3D" parent="DonerSpit" unique_id=1995470949]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.30502558, 1.48, -5.176435)
-
-[node name="DripTray" type="MeshInstance3D" parent="DonerSpit/Catchment" unique_id=2143795450]
-material_override = SubResource("StandardMaterial3D_o7dl6")
-mesh = SubResource("MeshMeatCatchmentTray")
-
-[node name="RaisedDripRim" type="MeshInstance3D" parent="DonerSpit/Catchment" unique_id=21905384]
-transform = Transform3D(1, 0, 0, 0, 0.48, 0, 0, 0, 1, 0, 0.075, 0)
-material_override = SubResource("StandardMaterial3D_o7dl6")
-mesh = SubResource("MeshDripTrayRim")
-
-[node name="ShavedMeatPan" type="Node3D" parent="DonerSpit/Catchment" unique_id=394042216]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.1435018, -0.19777966, 0)
-script = ExtResource("27_meat_tray")
-
-[node name="PanBasin" type="MeshInstance3D" parent="DonerSpit/Catchment/ShavedMeatPan" unique_id=1256926371]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.46139765, 0, 0)
-material_override = SubResource("StandardMaterial3D_o7dl6")
-mesh = SubResource("MeshGNContainerBase")
-
-[node name="RimFront" type="MeshInstance3D" parent="DonerSpit/Catchment/ShavedMeatPan" unique_id=1651340614]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.47430086, 0.06500006, 0.3800001)
-material_override = SubResource("StandardMaterial3D_o7dl6")
-mesh = SubResource("MeshGNContainerRimLong")
-
-[node name="RimBack" type="MeshInstance3D" parent="DonerSpit/Catchment/ShavedMeatPan" unique_id=1602406509]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.47430086, 0.06500006, -0.3800001)
-material_override = SubResource("StandardMaterial3D_o7dl6")
-mesh = SubResource("MeshGNContainerRimLong")
-
-[node name="RimLeft" type="MeshInstance3D" parent="DonerSpit/Catchment/ShavedMeatPan" unique_id=1829862518]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.10069895, 0.06500006, 0)
-material_override = SubResource("StandardMaterial3D_o7dl6")
-mesh = SubResource("MeshGNContainerRimShort")
-
-[node name="RimRight" type="MeshInstance3D" parent="DonerSpit/Catchment/ShavedMeatPan" unique_id=822990898]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.0493007, 0.06500006, 0)
-material_override = SubResource("StandardMaterial3D_o7dl6")
-mesh = SubResource("MeshGNContainerRimShort")
-
-[node name="CutMeatPile" type="Node3D" parent="DonerSpit/Catchment/ShavedMeatPan" unique_id=219635934]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.11, 0)
-
-[node name="PortionSpawnPoint" type="Marker3D" parent="DonerSpit/Catchment" unique_id=1497249812]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.6752615, -0.14911151, 0)
+[node name="DoenerGrillStation" parent="." unique_id=1717603124 instance=ExtResource("34_doener_grill")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.224365, 1.27497, -5.08446)
 
 [node name="Grill" type="StaticBody3D" parent="." unique_id=7977972]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.7, 0.55, -2.1499195)
