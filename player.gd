@@ -464,7 +464,7 @@ func _try_drop_current_weapon() -> bool:
 	if weapon_id.is_empty() or not weapon_table.place_weapon_on_table(weapon_id):
 		return false
 
-	_remove_owned_weapon(weapon_id)
+	GameState.remove_weapon_from_player(weapon_id)
 	_equip_slot(Slot.NONE)
 	return true
 
@@ -485,11 +485,12 @@ func _try_pickup_table_weapon() -> bool:
 	var assigned_slot := _slot_for_weapon_id(weapon_id)
 	if assigned_slot == Slot.NONE or target.assigned_slot != assigned_slot:
 		return false
+	if not GameState.can_add_player_item(weapon_id, 1):
+		return false
 	if not target.pickup_weapon():
 		return false
 
-	GameState.retrieve_weapon_from_table(weapon_id)
-	return true
+	return GameState.retrieve_weapon_from_table(weapon_id)
 
 
 func _find_nearby_weapon_table() -> WeaponTable:
@@ -507,25 +508,20 @@ func _find_nearby_weapon_table() -> WeaponTable:
 
 
 func _synchronize_weapon_inventory() -> void:
-	var has_tracked_weapon := false
-	for owned_weapon: String in GameState.owned_weapons:
-		if _normalize_weapon_id(owned_weapon) in ["ak47", "glock", "awp", "knife"]:
-			has_tracked_weapon = true
-			break
+	GameState.sync_weapon_ownership()
+	sync_weapon_slots_from_inventory()
 
-	for slot in [Slot.AK47, Slot.GLOCK, Slot.AWP, Slot.KNIFE]:
-		var weapon_id := _weapon_id_for_slot(slot)
-		if GameState.table_stored_weapons.has(weapon_id):
-			_remove_owned_weapon(weapon_id)
-		elif not has_tracked_weapon and not _owns_weapon(weapon_id):
-			GameState.owned_weapons.append(weapon_id)
+
+func sync_weapon_slots_from_inventory() -> void:
+	if current_slot == Slot.NONE:
+		return
+	var equipped_weapon_id := _weapon_id_for_slot(current_slot)
+	if not GameState.player_has_weapon(equipped_weapon_id):
+		_equip_slot(Slot.NONE)
 
 
 func _owns_weapon(weapon_id: String) -> bool:
-	for owned_weapon: String in GameState.owned_weapons:
-		if _normalize_weapon_id(owned_weapon) == weapon_id:
-			return true
-	return false
+	return GameState.player_has_weapon(weapon_id)
 
 
 func _remove_owned_weapon(weapon_id: String) -> void:

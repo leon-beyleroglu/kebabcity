@@ -179,9 +179,8 @@ func _clear_display_weapons() -> void:
 func _sync_game_state() -> void:
 	GameState.table_stored_weapons.assign(stored_weapons)
 	for weapon_id: String in stored_weapons:
-		for index in range(GameState.owned_weapons.size() - 1, -1, -1):
-			if _normalize_weapon_id(GameState.owned_weapons[index]) == weapon_id:
-				GameState.owned_weapons.remove_at(index)
+		GameState.remove_weapon_from_player(weapon_id)
+	GameState.sync_weapon_ownership()
 
 
 func _normalize_weapon_id(weapon_type: String) -> String:

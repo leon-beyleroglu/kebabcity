@@ -10,6 +10,11 @@ signal stock_updated(item: String, remaining: int)
 signal counter_stock_updated(ingredient_name: String, remaining: int)
 signal raw_supply_stock_updated(ingredient_type: String, remaining: int)
 signal inventory_item_changed(item_id: String, count: int)
+signal inventory_slots_changed
+
+const PLAYER_MAX_SLOTS: int = 10
+const TRUNK_MAX_SLOTS: int = 20
+const WEAPON_ITEM_IDS: Array[String] = ["knife", "glock", "ak47", "awp"]
 
 const COUNTER_MAX_STOCK := 10
 const COUNTER_INGREDIENTS: Array[String] = [
@@ -77,6 +82,8 @@ var inventory_items: Dictionary = {
 	"whole_tomato": 0,
 	"whole_red_cabbage": 0,
 }
+var player_slots: Array[Dictionary] = []
+var trunk_slots: Array[Dictionary] = []
 var unlocked_upgrades: Array[String] = []
 var rival_reputation: int = 20
 var player_position: Vector3 = Vector3.ZERO
@@ -117,7 +124,10 @@ var _restore_tofas_trunk := false
 
 
 func _ready() -> void:
-	load_game()
+	_ensure_fixed_slot_arrays()
+	if not load_game():
+		_seed_default_player_slots()
+		_sync_slot_state(true)
 
 
 func save_game() -> void:
@@ -133,6 +143,7 @@ func save_game() -> void:
 	_collect_kitchen_item_data(player)
 	_collect_raw_supply_stocks()
 	_collect_tofas_trunk_items()
+	_sync_slot_state(false)
 
 	var save_data: Dictionary = {
 		"money": money,
@@ -147,6 +158,8 @@ func save_game() -> void:
 		"counter_stocks": counter_stocks,
 		"raw_supply_stocks": raw_supply_stocks,
 		"inventory_items": inventory_items,
+		"player_slots": player_slots,
+		"trunk_slots": trunk_slots,
 		"unlocked_upgrades": unlocked_upgrades,
 		"rival_reputation": rival_reputation,
 		"player_pos": {
@@ -257,26 +270,7 @@ func load_game() -> bool:
 			0,
 			RAW_SUPPLY_MAX_STOCK
 		)
-	var loaded_inventory: Variant = save_data.get("inventory_items", {})
-	if not loaded_inventory is Dictionary:
-		loaded_inventory = {}
-	for item_id: String in INVENTORY_ITEM_IDS:
-		inventory_items[item_id] = maxi(int(loaded_inventory.get(item_id, 0)), 0)
-	tofas_trunk_items.clear()
-	var loaded_trunk_items: Variant = save_data.get("tofas_trunk_items", [])
-	if loaded_trunk_items is Array:
-		for raw_trunk_item: Variant in loaded_trunk_items:
-			if not raw_trunk_item is Dictionary:
-				continue
-			var trunk_item_id := String(raw_trunk_item.get("id", "")).strip_edges().to_lower()
-			var trunk_item_count := maxi(int(raw_trunk_item.get("count", 0)), 0)
-			if not INVENTORY_ITEM_IDS.has(trunk_item_id) or trunk_item_count <= 0:
-				continue
-			tofas_trunk_items.append({
-				"slot": clampi(int(raw_trunk_item.get("slot", tofas_trunk_items.size())), 0, 19),
-				"id": trunk_item_id,
-				"count": trunk_item_count,
-			})
+	_restore_inventory_slots(save_data)
 	_restore_tofas_trunk = true
 	var loaded_upgrades: Variant = save_data.get("unlocked_upgrades", unlocked_upgrades)
 	if loaded_upgrades is Array:
@@ -400,6 +394,8 @@ func load_game() -> bool:
 		raw_supply_stock_updated.emit(ingredient_name, int(raw_supply_stocks[ingredient_name]))
 	for item_id: String in INVENTORY_ITEM_IDS:
 		inventory_item_changed.emit(item_id, int(inventory_items[item_id]))
+	inventory_slots_changed.emit()
+	_notify_player_weapon_state()
 
 	if get_tree().current_scene == null:
 		call_deferred("_restore_scene_state")
@@ -519,16 +515,15 @@ func _collect_raw_supply_stocks() -> void:
 
 
 func _collect_tofas_trunk_items() -> void:
-	var trunk := get_tree().get_first_node_in_group("tofas_trunk")
-	if not is_instance_valid(trunk) or not trunk.has_method("get_save_data"):
-		return
-	var saved_items: Variant = trunk.call("get_save_data")
-	if not saved_items is Array:
-		return
+	_ensure_fixed_slot_arrays()
 	tofas_trunk_items.clear()
-	for raw_item: Variant in saved_items:
-		if raw_item is Dictionary:
-			tofas_trunk_items.append(raw_item.duplicate(true))
+	for slot_index in TRUNK_MAX_SLOTS:
+		var item := trunk_slots[slot_index]
+		if item.is_empty():
+			continue
+		var saved_item := item.duplicate(true)
+		saved_item["slot"] = slot_index
+		tofas_trunk_items.append(saved_item)
 
 
 func _restore_scene_state(attempt: int = 0) -> void:
@@ -624,7 +619,7 @@ func _restore_scene_state(attempt: int = 0) -> void:
 	if _restore_tofas_trunk:
 		var trunk := get_tree().get_first_node_in_group("tofas_trunk")
 		if is_instance_valid(trunk) and trunk.has_method("load_save_data"):
-			trunk.call("load_save_data", tofas_trunk_items)
+			trunk.call("load_save_data", trunk_slots)
 			_restore_tofas_trunk = false
 		else:
 			needs_retry = true
@@ -748,33 +743,135 @@ func set_raw_supply_stock(item: String, value: int) -> int:
 	return remaining
 
 
-func add_inventory_item(item_id: String, amount: int = 1) -> void:
-	var normalized_id := _normalize_inventory_item(item_id)
-	if normalized_id.is_empty() or amount <= 0:
-		return
-	var new_count := get_inventory_count(normalized_id) + amount
-	inventory_items[normalized_id] = new_count
-	inventory_item_changed.emit(normalized_id, new_count)
+func add_inventory_item(item_id: String, amount: int = 1) -> bool:
+	var item := _slot_item_for_id(item_id, amount)
+	if item.is_empty() or not _add_to_slot_array(player_slots, PLAYER_MAX_SLOTS, item):
+		return false
+	_sync_slot_state(true)
+	return true
 
 
 func remove_inventory_item(item_id: String, amount: int = 1) -> bool:
-	var normalized_id := _normalize_inventory_item(item_id)
-	if normalized_id.is_empty() or amount <= 0:
+	var normalized_id := _normalize_slot_item_id(item_id)
+	if normalized_id.is_empty() or amount <= 0 or get_inventory_count(normalized_id) < amount:
 		return false
-	var current_count := get_inventory_count(normalized_id)
-	if current_count < amount:
-		return false
-	var new_count := current_count - amount
-	inventory_items[normalized_id] = new_count
-	inventory_item_changed.emit(normalized_id, new_count)
+	var remaining := amount
+	for slot_index in PLAYER_MAX_SLOTS:
+		var slot_item := player_slots[slot_index]
+		if String(slot_item.get("id", "")) != normalized_id:
+			continue
+		var slot_count := int(slot_item.get("count", 0))
+		var removed := mini(slot_count, remaining)
+		slot_count -= removed
+		remaining -= removed
+		player_slots[slot_index] = (
+			{}
+			if slot_count <= 0
+			else _slot_item_for_id(normalized_id, slot_count)
+		)
+		if remaining <= 0:
+			break
+	_sync_slot_state(true)
 	return true
 
 
 func get_inventory_count(item_id: String) -> int:
-	var normalized_id := _normalize_inventory_item(item_id)
+	var normalized_id := _normalize_slot_item_id(item_id)
 	if normalized_id.is_empty():
 		return 0
-	return maxi(int(inventory_items.get(normalized_id, 0)), 0)
+	var total := 0
+	for slot_item: Dictionary in player_slots:
+		if String(slot_item.get("id", "")) == normalized_id:
+			total += maxi(int(slot_item.get("count", 0)), 0)
+	return total
+
+
+func can_add_player_item(item_id: String, amount: int = 1) -> bool:
+	var item := _slot_item_for_id(item_id, amount)
+	if item.is_empty():
+		return false
+	if String(item.get("type", "")) == "ingredient":
+		for slot_item: Dictionary in player_slots:
+			if String(slot_item.get("id", "")) == String(item["id"]):
+				return true
+	else:
+		if _slot_array_has_item(player_slots, String(item["id"])):
+			return false
+	return _find_empty_slot(player_slots, PLAYER_MAX_SLOTS) >= 0
+
+
+func get_inventory_slot(container_name: String, slot_index: int) -> Dictionary:
+	var slots := _slots_for_container(container_name)
+	var max_slots := _max_slots_for_container(container_name)
+	if slot_index < 0 or slot_index >= max_slots:
+		return {}
+	return slots[slot_index].duplicate(true)
+
+
+func move_inventory_slot(
+	from_container: String,
+	from_index: int,
+	to_container: String,
+	to_index: int
+) -> bool:
+	var source_slots := _slots_for_container(from_container)
+	var target_slots := _slots_for_container(to_container)
+	var source_max := _max_slots_for_container(from_container)
+	var target_max := _max_slots_for_container(to_container)
+	if (
+		source_max == 0
+		or target_max == 0
+		or from_index < 0
+		or from_index >= source_max
+		or to_index < 0
+		or to_index >= target_max
+		or (from_container == to_container and from_index == to_index)
+	):
+		return false
+	var source_item := source_slots[from_index].duplicate(true)
+	if source_item.is_empty():
+		return false
+	var target_item := target_slots[to_index].duplicate(true)
+	if (
+		not target_item.is_empty()
+		and String(source_item.get("type", "")) == "ingredient"
+		and String(target_item.get("type", "")) == "ingredient"
+		and String(source_item.get("id", "")) == String(target_item.get("id", ""))
+	):
+		target_item["count"] = int(target_item.get("count", 0)) + int(source_item.get("count", 0))
+		target_slots[to_index] = target_item
+		source_slots[from_index] = {}
+	else:
+		target_slots[to_index] = source_item
+		source_slots[from_index] = target_item
+	_sync_slot_state(true)
+	return true
+
+
+func player_has_weapon(weapon_id: String) -> bool:
+	var normalized_id := _normalize_weapon_id(weapon_id)
+	return (
+		WEAPON_ITEM_IDS.has(normalized_id)
+		and _slot_array_has_item(player_slots, normalized_id)
+		and not _slot_array_has_item(trunk_slots, normalized_id)
+		and not table_stored_weapons.has(normalized_id)
+	)
+
+
+func remove_weapon_from_player(weapon_id: String) -> bool:
+	var normalized_id := _normalize_weapon_id(weapon_id)
+	var removed := false
+	for slot_index in PLAYER_MAX_SLOTS:
+		if String(player_slots[slot_index].get("id", "")) == normalized_id:
+			player_slots[slot_index] = {}
+			removed = true
+	if removed:
+		_sync_slot_state(true)
+	return removed
+
+
+func sync_weapon_ownership() -> void:
+	_sync_slot_state(true)
 
 
 func set_counter_stock(item: String, value: int) -> int:
@@ -828,6 +925,134 @@ func _normalize_raw_supply_ingredient(item: String) -> String:
 	return ingredient_name if RAW_SUPPLY_INGREDIENTS.has(ingredient_name) else ""
 
 
+func _restore_inventory_slots(save_data: Dictionary) -> void:
+	player_slots.clear()
+	trunk_slots.clear()
+	_ensure_fixed_slot_arrays()
+
+	var loaded_player_slots: Variant = save_data.get("player_slots", [])
+	if loaded_player_slots is Array and save_data.has("player_slots"):
+		_load_fixed_slot_array(player_slots, loaded_player_slots, PLAYER_MAX_SLOTS)
+	else:
+		var loaded_inventory: Variant = save_data.get("inventory_items", {})
+		if loaded_inventory is Dictionary:
+			for item_id: String in INVENTORY_ITEM_IDS:
+				var count := maxi(int(loaded_inventory.get(item_id, 0)), 0)
+				if count > 0:
+					_add_to_slot_array(
+						player_slots,
+						PLAYER_MAX_SLOTS,
+						_slot_item_for_id(item_id, count)
+					)
+		var migrated_weapon_count := 0
+		for raw_weapon: String in owned_weapons:
+			var weapon_id := _normalize_weapon_id(raw_weapon)
+			if not WEAPON_ITEM_IDS.has(weapon_id) or table_stored_weapons.has(weapon_id):
+				continue
+			if _add_to_slot_array(
+				player_slots,
+				PLAYER_MAX_SLOTS,
+				_slot_item_for_id(weapon_id, 1)
+			):
+				migrated_weapon_count += 1
+		if migrated_weapon_count == 0:
+			for weapon_id: String in ["ak47", "glock", "awp", "knife"]:
+				if not table_stored_weapons.has(weapon_id):
+					_add_to_slot_array(
+						player_slots,
+						PLAYER_MAX_SLOTS,
+						_slot_item_for_id(weapon_id, 1)
+					)
+
+	var loaded_trunk_slots: Variant = save_data.get("trunk_slots", [])
+	if loaded_trunk_slots is Array and save_data.has("trunk_slots"):
+		_load_fixed_slot_array(trunk_slots, loaded_trunk_slots, TRUNK_MAX_SLOTS)
+	else:
+		var loaded_trunk_items: Variant = save_data.get("tofas_trunk_items", [])
+		if loaded_trunk_items is Array:
+			for raw_item: Variant in loaded_trunk_items:
+				if not raw_item is Dictionary:
+					continue
+				var normalized_item := _normalize_slot_item(raw_item)
+				if normalized_item.is_empty():
+					continue
+				var target_slot := int(raw_item.get("slot", -1))
+				if (
+					target_slot < 0
+					or target_slot >= TRUNK_MAX_SLOTS
+					or not trunk_slots[target_slot].is_empty()
+				):
+					target_slot = _find_empty_slot(trunk_slots, TRUNK_MAX_SLOTS)
+				if target_slot >= 0:
+					trunk_slots[target_slot] = normalized_item
+
+	_resolve_weapon_location_conflicts()
+	_sync_slot_state(false)
+
+
+func _ensure_fixed_slot_arrays() -> void:
+	_ensure_slot_array_size(player_slots, PLAYER_MAX_SLOTS)
+	_ensure_slot_array_size(trunk_slots, TRUNK_MAX_SLOTS)
+
+
+func _ensure_slot_array_size(slots: Array[Dictionary], required_size: int) -> void:
+	if slots.size() > required_size:
+		slots.resize(required_size)
+	while slots.size() < required_size:
+		slots.append({})
+	for slot_index in required_size:
+		slots[slot_index] = _normalize_slot_item(slots[slot_index])
+
+
+func _load_fixed_slot_array(
+	target: Array[Dictionary],
+	raw_slots: Array,
+	required_size: int
+) -> void:
+	target.clear()
+	for slot_index in required_size:
+		var raw_item: Variant = raw_slots[slot_index] if slot_index < raw_slots.size() else {}
+		target.append(_normalize_slot_item(raw_item) if raw_item is Dictionary else {})
+
+
+func _seed_default_player_slots() -> void:
+	player_slots.clear()
+	trunk_slots.clear()
+	_ensure_fixed_slot_arrays()
+	for weapon_id: String in ["ak47", "glock", "awp", "knife"]:
+		_add_to_slot_array(
+			player_slots,
+			PLAYER_MAX_SLOTS,
+			_slot_item_for_id(weapon_id, 1)
+		)
+
+
+func _normalize_slot_item(raw_item: Dictionary) -> Dictionary:
+	var item_id := _normalize_slot_item_id(String(raw_item.get("id", "")))
+	if item_id.is_empty():
+		return {}
+	var is_weapon := WEAPON_ITEM_IDS.has(item_id)
+	var count := 1 if is_weapon else maxi(int(raw_item.get("count", 0)), 0)
+	if count <= 0:
+		return {}
+	return {
+		"id": item_id,
+		"type": "weapon" if is_weapon else "ingredient",
+		"count": count,
+	}
+
+
+func _slot_item_for_id(item_id: String, count: int) -> Dictionary:
+	return _normalize_slot_item({"id": item_id, "count": count})
+
+
+func _normalize_slot_item_id(item_id: String) -> String:
+	var weapon_id := _normalize_weapon_id(item_id)
+	if WEAPON_ITEM_IDS.has(weapon_id):
+		return weapon_id
+	return _normalize_inventory_item(item_id)
+
+
 func _normalize_inventory_item(item_id: String) -> String:
 	var normalized_id := item_id.strip_edges().to_lower()
 	if not normalized_id.begins_with("whole_"):
@@ -835,6 +1060,111 @@ func _normalize_inventory_item(item_id: String) -> String:
 	var ingredient_name := WholeVegetableFactory.normalize_ingredient_id(normalized_id)
 	normalized_id = "whole_%s" % ingredient_name
 	return normalized_id if INVENTORY_ITEM_IDS.has(normalized_id) else ""
+
+
+func _add_to_slot_array(
+	slots: Array[Dictionary],
+	max_slots: int,
+	item: Dictionary
+) -> bool:
+	var normalized_item := _normalize_slot_item(item)
+	if normalized_item.is_empty():
+		return false
+	var item_id := String(normalized_item["id"])
+	if String(normalized_item["type"]) == "ingredient":
+		for slot_index in max_slots:
+			if String(slots[slot_index].get("id", "")) == item_id:
+				var stacked_item := slots[slot_index]
+				stacked_item["count"] = int(stacked_item.get("count", 0)) + int(normalized_item["count"])
+				slots[slot_index] = stacked_item
+				return true
+	elif _slot_array_has_item(slots, item_id):
+		return false
+	var empty_slot := _find_empty_slot(slots, max_slots)
+	if empty_slot < 0:
+		return false
+	slots[empty_slot] = normalized_item
+	return true
+
+
+func _find_empty_slot(slots: Array[Dictionary], max_slots: int) -> int:
+	for slot_index in max_slots:
+		if slots[slot_index].is_empty():
+			return slot_index
+	return -1
+
+
+func _slot_array_has_item(slots: Array[Dictionary], item_id: String) -> bool:
+	for slot_item: Dictionary in slots:
+		if String(slot_item.get("id", "")) == item_id:
+			return true
+	return false
+
+
+func _slots_for_container(container_name: String) -> Array[Dictionary]:
+	match container_name:
+		"player":
+			return player_slots
+		"trunk":
+			return trunk_slots
+	return [] as Array[Dictionary]
+
+
+func _max_slots_for_container(container_name: String) -> int:
+	match container_name:
+		"player":
+			return PLAYER_MAX_SLOTS
+		"trunk":
+			return TRUNK_MAX_SLOTS
+	return 0
+
+
+func _resolve_weapon_location_conflicts() -> void:
+	for weapon_id: String in WEAPON_ITEM_IDS:
+		var keep_player_copy := (
+			not _slot_array_has_item(trunk_slots, weapon_id)
+			and not table_stored_weapons.has(weapon_id)
+		)
+		var player_copy_found := false
+		for slot_index in PLAYER_MAX_SLOTS:
+			if String(player_slots[slot_index].get("id", "")) != weapon_id:
+				continue
+			if keep_player_copy and not player_copy_found:
+				player_copy_found = true
+			else:
+				player_slots[slot_index] = {}
+		var trunk_copy_found := false
+		for slot_index in TRUNK_MAX_SLOTS:
+			if String(trunk_slots[slot_index].get("id", "")) != weapon_id:
+				continue
+			if not trunk_copy_found:
+				trunk_copy_found = true
+			else:
+				trunk_slots[slot_index] = {}
+
+
+func _sync_slot_state(emit_signals: bool) -> void:
+	_ensure_fixed_slot_arrays()
+	for item_id: String in INVENTORY_ITEM_IDS:
+		inventory_items[item_id] = get_inventory_count(item_id)
+	_collect_tofas_trunk_items()
+	owned_weapons.clear()
+	owned_weapons.append("unarmed")
+	for weapon_id: String in WEAPON_ITEM_IDS:
+		if player_has_weapon(weapon_id):
+			owned_weapons.append(weapon_id)
+	if not emit_signals:
+		return
+	for item_id: String in INVENTORY_ITEM_IDS:
+		inventory_item_changed.emit(item_id, int(inventory_items[item_id]))
+	inventory_slots_changed.emit()
+	_notify_player_weapon_state()
+
+
+func _notify_player_weapon_state() -> void:
+	var player := get_tree().get_first_node_in_group("player")
+	if is_instance_valid(player) and player.has_method("sync_weapon_slots_from_inventory"):
+		player.call("sync_weapon_slots_from_inventory")
 
 
 func _ingredient_stock_key(ingredient_name: String) -> String:
@@ -865,18 +1195,12 @@ func _counter_items_have_lavash(items: Array[Dictionary]) -> bool:
 
 func retrieve_weapon_from_table(weapon_type: String) -> bool:
 	var weapon_id := _normalize_weapon_id(weapon_type)
-	if weapon_id.is_empty():
+	if not WEAPON_ITEM_IDS.has(weapon_id) or not can_add_player_item(weapon_id, 1):
 		return false
 
 	while table_stored_weapons.has(weapon_id):
 		table_stored_weapons.erase(weapon_id)
-
-	for owned_weapon: String in owned_weapons:
-		if _normalize_weapon_id(owned_weapon) == weapon_id:
-			return true
-
-	owned_weapons.append(weapon_id)
-	return true
+	return add_inventory_item(weapon_id, 1)
 
 
 func _remove_owned_weapon(weapon_id: String) -> void:

@@ -45,10 +45,15 @@ func purchase_item() -> bool:
 	if GameState.money < ITEM_PRICE:
 		_show_feedback("Nicht genug Geld – %d€ benötigt" % ITEM_PRICE, false)
 		return false
+	if not PlayerInventory.can_add(item_id, 1):
+		_show_feedback("Rucksack ist voll", false)
+		return false
 	if not GameState.spend_money(ITEM_PRICE):
 		return false
 
-	PlayerInventory.add_item(item_id, 1)
+	if not PlayerInventory.add_item(item_id, 1):
+		GameState.add_money(ITEM_PRICE)
+		return false
 	var inventory_count := PlayerInventory.get_count(item_id)
 	if cash_register.stream != null:
 		cash_register.play()

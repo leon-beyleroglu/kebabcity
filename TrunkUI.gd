@@ -1,8 +1,6 @@
 class_name TrunkUI
 extends CanvasLayer
 
-const SLOT_COUNT := 20
-
 @onready var root_control: Control = $Control
 @onready var player_grid: GridContainer = %PlayerGrid
 @onready var trunk_grid: GridContainer = %TrunkGrid
@@ -11,8 +9,8 @@ const SLOT_COUNT := 20
 @onready var close_button: Button = %CloseButton
 
 var active_trunk: TrunkInteractionArea
-var player_slots: Array[TrunkItemSlot] = []
-var trunk_slots: Array[TrunkItemSlot] = []
+var player_slot_controls: Array[TrunkItemSlot] = []
+var trunk_slot_controls: Array[TrunkItemSlot] = []
 var _locked_player: Node
 var _opened_frame := -1
 
@@ -20,22 +18,28 @@ var _opened_frame := -1
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	add_to_group("trunk_ui")
-	_build_slots(player_grid, player_slots, "player")
-	_build_slots(trunk_grid, trunk_slots, "trunk")
+	_build_slots(
+		player_grid,
+		player_slot_controls,
+		"player",
+		GameState.PLAYER_MAX_SLOTS
+	)
+	_build_slots(
+		trunk_grid,
+		trunk_slot_controls,
+		"trunk",
+		GameState.TRUNK_MAX_SLOTS
+	)
 	close_button.pressed.connect(close_trunk)
-	if not GameState.inventory_item_changed.is_connected(_on_player_inventory_changed):
-		GameState.inventory_item_changed.connect(_on_player_inventory_changed)
+	if not GameState.inventory_slots_changed.is_connected(refresh):
+		GameState.inventory_slots_changed.connect(refresh)
 	root_control.visible = false
 
 
 func open_for_trunk(trunk: TrunkInteractionArea) -> void:
 	if not is_instance_valid(trunk):
 		return
-	if is_instance_valid(active_trunk) and active_trunk != trunk:
-		_disconnect_active_trunk()
 	active_trunk = trunk
-	if not active_trunk.trunk_inventory_changed.is_connected(refresh):
-		active_trunk.trunk_inventory_changed.connect(refresh)
 	_locked_player = get_tree().get_first_node_in_group("player")
 	if is_instance_valid(_locked_player) and _locked_player.has_method("set_cutting_input_locked"):
 		_locked_player.call("set_cutting_input_locked", true)
@@ -50,7 +54,6 @@ func close_trunk() -> void:
 	if not root_control.visible:
 		return
 	root_control.visible = false
-	_disconnect_active_trunk()
 	active_trunk = null
 	if is_instance_valid(_locked_player) and _locked_player.has_method("set_cutting_input_locked"):
 		_locked_player.call("set_cutting_input_locked", false)
@@ -59,66 +62,55 @@ func close_trunk() -> void:
 
 
 func refresh() -> void:
-	if not is_instance_valid(active_trunk):
+	if not is_instance_valid(root_control):
 		return
-	for slot_index in SLOT_COUNT:
-		var player_item: Dictionary = {}
-		if slot_index < GameState.INVENTORY_ITEM_IDS.size():
-			var item_id := GameState.INVENTORY_ITEM_IDS[slot_index]
-			var count := PlayerInventory.get_count(item_id)
-			if count > 0:
-				player_item = {"id": item_id, "count": count}
-		player_slots[slot_index].set_item(player_item)
-		trunk_slots[slot_index].set_item(active_trunk.get_item_at(slot_index))
-	player_count_label.text = "%d Gegenstände" % _get_player_item_total()
-	trunk_count_label.text = "%d/%d Plätze" % [
-		active_trunk.get_used_slot_count(),
-		active_trunk.max_slots,
+	for slot_index in GameState.PLAYER_MAX_SLOTS:
+		player_slot_controls[slot_index].set_item(
+			GameState.get_inventory_slot("player", slot_index)
+		)
+	for slot_index in GameState.TRUNK_MAX_SLOTS:
+		trunk_slot_controls[slot_index].set_item(
+			GameState.get_inventory_slot("trunk", slot_index)
+		)
+	player_count_label.text = "%d/%d Slots" % [
+		_count_used_slots(GameState.player_slots),
+		GameState.PLAYER_MAX_SLOTS,
+	]
+	trunk_count_label.text = "%d/%d Slots" % [
+		_count_used_slots(GameState.trunk_slots),
+		GameState.TRUNK_MAX_SLOTS,
 	]
 
 
-func can_drop_on_slot(target_source: String, target_index: int, data: Dictionary) -> bool:
-	if not is_instance_valid(active_trunk):
+func can_drop_on_slot(target_container: String, target_index: int, data: Dictionary) -> bool:
+	var source_container := String(data.get("from", ""))
+	var source_index := int(data.get("slot_index", -1))
+	var item_data: Variant = data.get("item_data", {})
+	if not item_data is Dictionary or item_data.is_empty():
 		return false
-	var source := String(data.get("source", ""))
-	var item_id := String(data.get("item_id", ""))
-	var count := int(data.get("count", 0))
-	if count <= 0 or not GameState.INVENTORY_ITEM_IDS.has(item_id):
+	if not _is_valid_slot(source_container, source_index):
 		return false
-	if target_source == "player":
-		return source == "trunk"
-	if target_source != "trunk":
+	if not _is_valid_slot(target_container, target_index):
 		return false
-	if source == "player":
-		return active_trunk.can_store_item(item_id, target_index)
-	if source == "trunk":
-		return target_index != int(data.get("index", -1))
-	return false
+	return source_container != target_container or source_index != target_index
 
 
-func drop_on_slot(target_source: String, target_index: int, data: Dictionary) -> void:
-	if not can_drop_on_slot(target_source, target_index, data):
+func drop_on_slot(target_container: String, target_index: int, data: Dictionary) -> void:
+	if not can_drop_on_slot(target_container, target_index, data):
 		return
-	var source := String(data.get("source", ""))
-	var changed := false
-	if source == "player" and target_source == "trunk":
-		changed = active_trunk.transfer_from_player(
-			String(data.get("item_id", "")),
-			int(data.get("count", 0)),
-			target_index
-		)
-	elif source == "trunk" and target_source == "player":
-		changed = active_trunk.transfer_to_player(int(data.get("index", -1)))
-	elif source == "trunk" and target_source == "trunk":
-		changed = active_trunk.move_item(int(data.get("index", -1)), target_index)
-	if changed:
-		refresh()
+	GameState.move_inventory_slot(
+		String(data.get("from", "")),
+		int(data.get("slot_index", -1)),
+		target_container,
+		target_index
+	)
 
 
 func create_drag_preview(data: Dictionary) -> Control:
+	var item_data := data.get("item_data", {}) as Dictionary
 	var preview := TextureRect.new()
 	preview.custom_minimum_size = Vector2(72, 72)
-	preview.texture = TrunkItemSlot.get_item_icon(String(data.get("item_id", "")))
+	preview.texture = TrunkItemSlot.get_item_icon(String(item_data.get("id", "")))
 	preview.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	preview.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	preview.mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -132,7 +124,7 @@ func create_drag_preview(data: Dictionary) -> Control:
 	count_badge.add_theme_color_override("font_outline_color", Color(0.03, 0.04, 0.05, 1))
 	count_badge.add_theme_constant_override("outline_size", 5)
 	count_badge.add_theme_font_size_override("font_size", 18)
-	count_badge.text = "×%d" % int(data.get("count", 0))
+	count_badge.text = "1x" if String(item_data.get("type", "")) == "weapon" else "×%d" % int(item_data.get("count", 0))
 	count_badge.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
 	preview.add_child(count_badge)
 	return preview
@@ -155,9 +147,10 @@ func _input(event: InputEvent) -> void:
 func _build_slots(
 	grid: GridContainer,
 	slot_collection: Array[TrunkItemSlot],
-	source: String
+	source: String,
+	slot_count: int
 ) -> void:
-	for slot_index in SLOT_COUNT:
+	for slot_index in slot_count:
 		var slot := TrunkItemSlot.new()
 		slot.name = "%sSlot%02d" % [source.capitalize(), slot_index + 1]
 		grid.add_child(slot)
@@ -165,21 +158,17 @@ func _build_slots(
 		slot_collection.append(slot)
 
 
-func _get_player_item_total() -> int:
-	var total := 0
-	for item_id: String in GameState.INVENTORY_ITEM_IDS:
-		total += PlayerInventory.get_count(item_id)
-	return total
+func _is_valid_slot(container_name: String, slot_index: int) -> bool:
+	if container_name == "player":
+		return slot_index >= 0 and slot_index < GameState.PLAYER_MAX_SLOTS
+	if container_name == "trunk":
+		return slot_index >= 0 and slot_index < GameState.TRUNK_MAX_SLOTS
+	return false
 
 
-func _disconnect_active_trunk() -> void:
-	if (
-		is_instance_valid(active_trunk)
-		and active_trunk.trunk_inventory_changed.is_connected(refresh)
-	):
-		active_trunk.trunk_inventory_changed.disconnect(refresh)
-
-
-func _on_player_inventory_changed(_item_id: String, _count: int) -> void:
-	if root_control.visible:
-		refresh()
+func _count_used_slots(slots: Array[Dictionary]) -> int:
+	var used_slots := 0
+	for item: Dictionary in slots:
+		if not item.is_empty():
+			used_slots += 1
+	return used_slots

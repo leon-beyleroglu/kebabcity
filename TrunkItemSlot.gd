@@ -7,6 +7,17 @@ const ITEM_ICONS := {
 	"cucumber": preload("res://textures/ingredients/cucumber_slice.svg"),
 	"tomato": preload("res://textures/ingredients/tomato_slice.svg"),
 	"red_cabbage": preload("res://textures/ingredients/red_cabbage_strip.svg"),
+	"knife": preload("res://textures/ingredients/weapon_knife.svg"),
+	"glock": preload("res://textures/ingredients/weapon_glock.svg"),
+	"ak47": preload("res://textures/ingredients/weapon_ak47.svg"),
+	"awp": preload("res://textures/ingredients/weapon_awp.svg"),
+}
+
+const WEAPON_NAMES := {
+	"knife": "Messer",
+	"glock": "Glock",
+	"ak47": "AK-47",
+	"awp": "AWP",
 }
 
 var inventory_ui: TrunkUI
@@ -75,10 +86,9 @@ func _get_drag_data(_at_position: Vector2) -> Variant:
 	if item_data.is_empty() or not is_instance_valid(inventory_ui):
 		return null
 	var drag_data := {
-		"source": source_type,
-		"index": slot_index,
-		"item_id": String(item_data.get("id", "")),
-		"count": maxi(int(item_data.get("count", 0)), 0),
+		"from": source_type,
+		"slot_index": slot_index,
+		"item_data": item_data.duplicate(true),
 	}
 	set_drag_preview(inventory_ui.create_drag_preview(drag_data))
 	return drag_data
@@ -109,17 +119,25 @@ func _update_display() -> void:
 		panel_style.border_color = Color(0.34, 0.39, 0.43, 1)
 		return
 	var item_id := String(item_data.get("id", ""))
+	var is_weapon := String(item_data.get("type", "")) == "weapon"
 	var ingredient_name := WholeVegetableFactory.normalize_ingredient_id(item_id)
-	var display_name := WholeVegetableFactory.display_name(ingredient_name)
+	var display_name := (
+		String(WEAPON_NAMES.get(item_id, item_id.to_upper()))
+		if is_weapon
+		else WholeVegetableFactory.display_name(ingredient_name)
+	)
 	icon_rect.texture = get_item_icon(item_id)
 	name_label.text = display_name
 	name_label.modulate = Color.WHITE
-	count_label.text = "×%d" % maxi(int(item_data.get("count", 0)), 0)
+	count_label.text = "1x" if is_weapon else "×%d" % maxi(int(item_data.get("count", 0)), 0)
 	tooltip_text = "%s (%s)" % [display_name, source_type]
-	panel_style.border_color = _item_color(ingredient_name)
+	panel_style.border_color = Color(0.92, 0.7, 0.22, 1) if is_weapon else _item_color(ingredient_name)
 
 
 static func get_item_icon(item_id: String) -> Texture2D:
+	var normalized_id := item_id.strip_edges().to_lower()
+	if GameState.WEAPON_ITEM_IDS.has(normalized_id):
+		return ITEM_ICONS.get(normalized_id) as Texture2D
 	var ingredient_name := WholeVegetableFactory.normalize_ingredient_id(item_id)
 	return ITEM_ICONS.get(ingredient_name) as Texture2D
 
