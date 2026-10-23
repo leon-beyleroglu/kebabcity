@@ -1,0 +1,59 @@
+[gd_scene load_steps=7 format=3]
+
+[sub_resource type="StandardMaterial3D" id="MatRawMeat"]
+resource_local_to_scene = true
+albedo_color = Color(0.8, 0.35, 0.35, 1)
+roughness = 0.9
+
+[sub_resource type="StandardMaterial3D" id="MatRawLight"]
+resource_local_to_scene = true
+albedo_color = Color(0.94, 0.57, 0.54, 1)
+roughness = 0.88
+
+[sub_resource type="StandardMaterial3D" id="MatRod"]
+albedo_color = Color(0.58, 0.62, 0.65, 1)
+metallic = 0.85
+roughness = 0.25
+
+[sub_resource type="CylinderMesh" id="MeshRawSpit"]
+top_radius = 0.19
+bottom_radius = 0.37
+height = 1.18
+radial_segments = 20
+rings = 7
+material = SubResource("MatRawMeat")
+
+[sub_resource type="TorusMesh" id="MeshFatBand"]
+inner_radius = 0.275
+outer_radius = 0.315
+rings = 18
+ring_segments = 6
+material = SubResource("MatRawLight")
+
+[sub_resource type="CylinderMesh" id="MeshRod"]
+top_radius = 0.016
+bottom_radius = 0.016
+height = 1.48
+radial_segments = 10
+material = SubResource("MatRod")
+
+[node name="RawSpit" type="Node3D"]
+metadata/item_id = "raw_spit"
+
+[node name="Rod" type="MeshInstance3D" parent="."]
+mesh = SubResource("MeshRod")
+
+[node name="RawMeat" type="MeshInstance3D" parent="."]
+mesh = SubResource("MeshRawSpit")
+
+[node name="FatBandLower" type="MeshInstance3D" parent="RawMeat"]
+position = Vector3(0, -0.27, 0)
+rotation = Vector3(1.5708, 0, 0)
+mesh = SubResource("MeshFatBand")
+
+[node name="FatBandUpper" type="MeshInstance3D" parent="RawMeat"]
+position = Vector3(0, 0.14, 0)
+rotation = Vector3(1.5708, 0, 0)
+scale = Vector3(0.78, 0.78, 0.78)
+mesh = SubResource("MeshFatBand")
+

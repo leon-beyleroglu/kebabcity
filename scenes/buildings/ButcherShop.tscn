@@ -1,0 +1,355 @@
+[gd_scene load_steps=34 format=3]
+
+[ext_resource type="Script" path="res://scenes/buildings/RestaurantBuilding.gd" id="1_building"]
+[ext_resource type="PackedScene" path="res://scenes/npcs/OwnerButcher.tscn" id="2_owner"]
+[ext_resource type="PackedScene" path="res://scenes/items/RawSpit.tscn" id="3_raw_spit"]
+
+[sub_resource type="StandardMaterial3D" id="MatTile"]
+resource_local_to_scene = true
+albedo_color = Color(0.92, 0.91, 0.87, 1)
+roughness = 0.52
+
+[sub_resource type="StandardMaterial3D" id="MatGrout"]
+albedo_color = Color(0.48, 0.49, 0.47, 1)
+roughness = 0.88
+
+[sub_resource type="StandardMaterial3D" id="MatRed"]
+resource_local_to_scene = true
+albedo_color = Color(0.31, 0.025, 0.035, 1)
+roughness = 0.75
+
+[sub_resource type="StandardMaterial3D" id="MatSteel"]
+resource_local_to_scene = true
+albedo_color = Color(0.58, 0.62, 0.65, 1)
+metallic = 0.84
+roughness = 0.28
+
+[sub_resource type="StandardMaterial3D" id="MatGlass"]
+transparency = 1
+albedo_color = Color(0.68, 0.86, 0.91, 0.38)
+metallic = 0.08
+roughness = 0.12
+
+[sub_resource type="StandardMaterial3D" id="MatMeat"]
+albedo_color = Color(0.62, 0.18, 0.18, 1)
+roughness = 0.9
+
+[sub_resource type="StandardMaterial3D" id="MatAsphalt"]
+albedo_color = Color(0.11, 0.12, 0.135, 1)
+roughness = 0.98
+
+[sub_resource type="StandardMaterial3D" id="MatLine"]
+albedo_color = Color(0.92, 0.88, 0.7, 1)
+roughness = 0.9
+
+[sub_resource type="BoxMesh" id="BackWallMesh"]
+size = Vector3(11, 5.5, 0.3)
+
+[sub_resource type="BoxMesh" id="SideWallMesh"]
+size = Vector3(0.3, 5.5, 9)
+
+[sub_resource type="BoxMesh" id="FrontColumnMesh"]
+size = Vector3(3.7, 3.9, 0.3)
+
+[sub_resource type="BoxMesh" id="FrontHeaderMesh"]
+size = Vector3(11, 1.6, 0.3)
+
+[sub_resource type="BoxMesh" id="FloorMesh"]
+size = Vector3(11, 0.15, 9)
+
+[sub_resource type="BoxMesh" id="RoofMesh"]
+size = Vector3(11.4, 0.28, 9.4)
+
+[sub_resource type="BoxMesh" id="AwningMesh"]
+size = Vector3(10.4, 0.18, 1.55)
+
+[sub_resource type="BoxMesh" id="SignMesh"]
+size = Vector3(6.8, 1.0, 0.18)
+
+[sub_resource type="BoxMesh" id="CounterMesh"]
+size = Vector3(7, 1.05, 1.05)
+
+[sub_resource type="BoxMesh" id="DisplayBaseMesh"]
+size = Vector3(4.2, 0.7, 1.25)
+
+[sub_resource type="BoxMesh" id="DisplayGlassMesh"]
+size = Vector3(4.25, 0.72, 0.07)
+
+[sub_resource type="CylinderMesh" id="RailMesh"]
+top_radius = 0.035
+bottom_radius = 0.035
+height = 4.8
+radial_segments = 10
+
+[sub_resource type="TorusMesh" id="HookMesh"]
+inner_radius = 0.09
+outer_radius = 0.115
+rings = 12
+ring_segments = 6
+
+[sub_resource type="CylinderMesh" id="HangingMeatMesh"]
+top_radius = 0.18
+bottom_radius = 0.24
+height = 0.72
+radial_segments = 12
+
+[sub_resource type="BoxMesh" id="ParkingMesh"]
+size = Vector3(10.8, 0.025, 4.6)
+
+[sub_resource type="BoxMesh" id="ParkingLineMesh"]
+size = Vector3(0.09, 0.035, 4.3)
+
+[sub_resource type="BoxShape3D" id="BackShape"]
+size = Vector3(11, 5.5, 0.3)
+
+[sub_resource type="BoxShape3D" id="SideShape"]
+size = Vector3(0.3, 5.5, 9)
+
+[sub_resource type="BoxShape3D" id="ColumnShape"]
+size = Vector3(3.7, 3.9, 0.3)
+
+[sub_resource type="BoxShape3D" id="HeaderShape"]
+size = Vector3(11, 1.6, 0.3)
+
+[sub_resource type="BoxShape3D" id="FloorShape"]
+size = Vector3(11, 0.15, 9)
+
+[sub_resource type="BoxShape3D" id="CounterShape"]
+size = Vector3(7, 1.05, 1.05)
+
+[node name="ButcherShop" type="StaticBody3D"]
+script = ExtResource("1_building")
+restaurant_id = &"butcher_shop"
+display_name = "Metzgerei / Butcher"
+description = "Editable tiled butcher shop selling raw Döner spits."
+facade_color = Color(0.92, 0.91, 0.87, 1)
+secondary_color = Color(0.48, 0.49, 0.47, 1)
+accent_color = Color(0.31, 0.025, 0.035, 1)
+metal_color = Color(0.58, 0.62, 0.65, 1)
+sign_color = Color(0.31, 0.025, 0.035, 1)
+sign_text_color = Color(1, 0.88, 0.68, 1)
+main_wall_mesh = SubResource("BackWallMesh")
+counter_mesh = SubResource("CounterMesh")
+
+[node name="CollisionBackWall" type="CollisionShape3D" parent="."]
+position = Vector3(0, 2.75, 4.35)
+shape = SubResource("BackShape")
+
+[node name="CollisionFloor" type="CollisionShape3D" parent="."]
+position = Vector3(0, 0.075, 0)
+shape = SubResource("FloorShape")
+
+[node name="CollisionLeftWall" type="CollisionShape3D" parent="."]
+position = Vector3(-5.35, 2.75, 0)
+shape = SubResource("SideShape")
+
+[node name="CollisionRightWall" type="CollisionShape3D" parent="."]
+position = Vector3(5.35, 2.75, 0)
+shape = SubResource("SideShape")
+
+[node name="CollisionFrontLeft" type="CollisionShape3D" parent="."]
+position = Vector3(-3.65, 1.95, -4.35)
+shape = SubResource("ColumnShape")
+
+[node name="CollisionFrontRight" type="CollisionShape3D" parent="."]
+position = Vector3(3.65, 1.95, -4.35)
+shape = SubResource("ColumnShape")
+
+[node name="CollisionFrontHeader" type="CollisionShape3D" parent="."]
+position = Vector3(0, 4.7, -4.35)
+shape = SubResource("HeaderShape")
+
+[node name="CollisionCounter" type="CollisionShape3D" parent="."]
+position = Vector3(0, 0.6, 1.05)
+shape = SubResource("CounterShape")
+
+[node name="Exterior" type="Node3D" parent="."]
+
+[node name="Floor" type="MeshInstance3D" parent="Exterior"]
+position = Vector3(0, 0.075, 0)
+material_override = SubResource("MatGrout")
+mesh = SubResource("FloorMesh")
+metadata/palette_slot = "secondary"
+
+[node name="BackWall" type="MeshInstance3D" parent="Exterior"]
+position = Vector3(0, 2.75, 4.35)
+material_override = SubResource("MatTile")
+mesh = SubResource("BackWallMesh")
+metadata/palette_slot = "facade"
+
+[node name="LeftWall" type="MeshInstance3D" parent="Exterior"]
+position = Vector3(-5.35, 2.75, 0)
+material_override = SubResource("MatTile")
+mesh = SubResource("SideWallMesh")
+metadata/palette_slot = "facade"
+
+[node name="RightWall" type="MeshInstance3D" parent="Exterior"]
+position = Vector3(5.35, 2.75, 0)
+material_override = SubResource("MatTile")
+mesh = SubResource("SideWallMesh")
+metadata/palette_slot = "facade"
+
+[node name="FrontLeft" type="MeshInstance3D" parent="Exterior"]
+position = Vector3(-3.65, 1.95, -4.35)
+material_override = SubResource("MatTile")
+mesh = SubResource("FrontColumnMesh")
+metadata/palette_slot = "facade"
+
+[node name="FrontRight" type="MeshInstance3D" parent="Exterior"]
+position = Vector3(3.65, 1.95, -4.35)
+material_override = SubResource("MatTile")
+mesh = SubResource("FrontColumnMesh")
+metadata/palette_slot = "facade"
+
+[node name="FrontHeader" type="MeshInstance3D" parent="Exterior"]
+position = Vector3(0, 4.7, -4.35)
+material_override = SubResource("MatTile")
+mesh = SubResource("FrontHeaderMesh")
+metadata/palette_slot = "facade"
+
+[node name="Roof" type="MeshInstance3D" parent="Exterior"]
+position = Vector3(0, 5.58, 0)
+material_override = SubResource("MatRed")
+mesh = SubResource("RoofMesh")
+metadata/palette_slot = "accent"
+
+[node name="Awning" type="MeshInstance3D" parent="Exterior"]
+position = Vector3(0, 3.45, -5.05)
+rotation_degrees = Vector3(-8, 0, 0)
+material_override = SubResource("MatRed")
+mesh = SubResource("AwningMesh")
+metadata/palette_slot = "accent"
+
+[node name="Sign" type="Node3D" parent="Exterior"]
+position = Vector3(0, 4.68, -4.58)
+
+[node name="SignBoard" type="MeshInstance3D" parent="Exterior/Sign"]
+material_override = SubResource("MatRed")
+mesh = SubResource("SignMesh")
+metadata/palette_slot = "accent"
+
+[node name="SignText" type="Label3D" parent="Exterior/Sign"]
+position = Vector3(0, 0, -0.11)
+rotation_degrees = Vector3(0, 180, 0)
+pixel_size = 0.007
+modulate = Color(1, 0.88, 0.68, 1)
+text = "Metzgerei / Butcher"
+font_size = 42
+outline_size = 8
+
+[node name="Interior" type="Node3D" parent="."]
+
+[node name="OrderCounter" type="Node3D" parent="Interior"]
+position = Vector3(0, 0, 1.05)
+
+[node name="CounterBody" type="MeshInstance3D" parent="Interior/OrderCounter"]
+position = Vector3(0, 0.6, 0)
+material_override = SubResource("MatSteel")
+mesh = SubResource("CounterMesh")
+metadata/palette_slot = "metal"
+
+[node name="CounterTop" type="MeshInstance3D" parent="Interior/OrderCounter"]
+position = Vector3(0, 1.14, 0)
+scale = Vector3(1.04, 0.1, 1.12)
+material_override = SubResource("MatSteel")
+mesh = SubResource("CounterMesh")
+metadata/palette_slot = "metal"
+
+[node name="RefrigeratedDisplay" type="Node3D" parent="Interior"]
+position = Vector3(-3.15, 0, -1.45)
+
+[node name="Base" type="MeshInstance3D" parent="Interior/RefrigeratedDisplay"]
+position = Vector3(0, 0.35, 0)
+material_override = SubResource("MatSteel")
+mesh = SubResource("DisplayBaseMesh")
+
+[node name="FrontGlass" type="MeshInstance3D" parent="Interior/RefrigeratedDisplay"]
+position = Vector3(0, 0.95, -0.62)
+rotation_degrees = Vector3(-14, 0, 0)
+material_override = SubResource("MatGlass")
+mesh = SubResource("DisplayGlassMesh")
+
+[node name="DisplayRawSpit" parent="Interior/RefrigeratedDisplay" instance=ExtResource("3_raw_spit")]
+position = Vector3(0, 0.88, 0)
+rotation_degrees = Vector3(0, 0, 90)
+scale = Vector3(0.46, 0.46, 0.46)
+
+[node name="HangingRail" type="MeshInstance3D" parent="Interior"]
+position = Vector3(2.75, 3.2, 2.9)
+rotation_degrees = Vector3(0, 0, 90)
+material_override = SubResource("MatSteel")
+mesh = SubResource("RailMesh")
+
+[node name="HookLeft" type="MeshInstance3D" parent="Interior"]
+position = Vector3(1.35, 2.85, 2.9)
+rotation_degrees = Vector3(90, 0, 0)
+material_override = SubResource("MatSteel")
+mesh = SubResource("HookMesh")
+
+[node name="HookCenter" type="MeshInstance3D" parent="Interior"]
+position = Vector3(2.75, 2.85, 2.9)
+rotation_degrees = Vector3(90, 0, 0)
+material_override = SubResource("MatSteel")
+mesh = SubResource("HookMesh")
+
+[node name="HookRight" type="MeshInstance3D" parent="Interior"]
+position = Vector3(4.15, 2.85, 2.9)
+rotation_degrees = Vector3(90, 0, 0)
+material_override = SubResource("MatSteel")
+mesh = SubResource("HookMesh")
+
+[node name="HangingMeatLeft" type="MeshInstance3D" parent="Interior"]
+position = Vector3(1.35, 2.25, 2.9)
+material_override = SubResource("MatMeat")
+mesh = SubResource("HangingMeatMesh")
+
+[node name="HangingMeatCenter" type="MeshInstance3D" parent="Interior"]
+position = Vector3(2.75, 2.25, 2.9)
+material_override = SubResource("MatMeat")
+mesh = SubResource("HangingMeatMesh")
+
+[node name="HangingMeatRight" type="MeshInstance3D" parent="Interior"]
+position = Vector3(4.15, 2.25, 2.9)
+material_override = SubResource("MatMeat")
+mesh = SubResource("HangingMeatMesh")
+
+[node name="OwnerAnchor" type="Marker3D" parent="Interior"]
+position = Vector3(0, 0.15, 2.15)
+
+[node name="OwnerButcher" parent="Interior/OwnerAnchor" instance=ExtResource("2_owner")]
+
+[node name="Parking" type="Node3D" parent="."]
+
+[node name="ParkingSurface" type="MeshInstance3D" parent="Parking"]
+position = Vector3(0, 0.02, -7.5)
+material_override = SubResource("MatAsphalt")
+mesh = SubResource("ParkingMesh")
+
+[node name="LineLeft" type="MeshInstance3D" parent="Parking"]
+position = Vector3(-5.25, 0.045, -7.5)
+material_override = SubResource("MatLine")
+mesh = SubResource("ParkingLineMesh")
+
+[node name="Line01" type="MeshInstance3D" parent="Parking"]
+position = Vector3(-1.75, 0.045, -7.5)
+material_override = SubResource("MatLine")
+mesh = SubResource("ParkingLineMesh")
+
+[node name="Line02" type="MeshInstance3D" parent="Parking"]
+position = Vector3(1.75, 0.045, -7.5)
+material_override = SubResource("MatLine")
+mesh = SubResource("ParkingLineMesh")
+
+[node name="LineRight" type="MeshInstance3D" parent="Parking"]
+position = Vector3(5.25, 0.045, -7.5)
+material_override = SubResource("MatLine")
+mesh = SubResource("ParkingLineMesh")
+
+[node name="ParkingBay01" type="Marker3D" parent="Parking"]
+position = Vector3(-3.5, 0.08, -7.5)
+
+[node name="ParkingBay02" type="Marker3D" parent="Parking"]
+position = Vector3(0, 0.08, -7.5)
+
+[node name="ParkingBay03" type="Marker3D" parent="Parking"]
+position = Vector3(3.5, 0.08, -7.5)

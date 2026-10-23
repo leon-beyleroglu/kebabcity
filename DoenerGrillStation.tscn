@@ -92,6 +92,28 @@ height = 0.024
 radial_segments = 6
 rings = 3
 
+[sub_resource type="StandardMaterial3D" id="MatSmoke"]
+transparency = 1
+shading_mode = 0
+albedo_color = Color(0.72, 0.72, 0.72, 0.34)
+roughness = 1.0
+
+[sub_resource type="ParticleProcessMaterial" id="SmokeParticleProcess"]
+direction = Vector3(0, 1, 0)
+spread = 24.0
+initial_velocity_min = 0.12
+initial_velocity_max = 0.28
+gravity = Vector3(0, 0.18, 0)
+scale_min = 0.7
+scale_max = 1.5
+
+[sub_resource type="SphereMesh" id="SmokeParticleMesh"]
+material = SubResource("MatSmoke")
+radius = 0.055
+height = 0.11
+radial_segments = 8
+rings = 4
+
 [sub_resource type="BoxShape3D" id="ShapeGrillInteraction"]
 size = Vector3(0.88, 1.5, 0.72)
 
@@ -205,5 +227,18 @@ shape = SubResource("ShapeGrillInteraction")
 
 [node name="SliceSFX" type="AudioStreamPlayer3D" parent="." unique_id=336189577]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.75, 0)
+unit_size = 2.0
+max_distance = 8.0
+
+[node name="SmokeParticles" type="GPUParticles3D" parent="."]
+position = Vector3(0, 1.18, 0)
+emitting = false
+amount = 18
+lifetime = 1.4
+process_material = SubResource("SmokeParticleProcess")
+draw_pass_1 = SubResource("SmokeParticleMesh")
+
+[node name="CookingSizzle" type="AudioStreamPlayer3D" parent="."]
+position = Vector3(0, 0.8, 0)
 unit_size = 2.0
 max_distance = 8.0

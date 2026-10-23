@@ -1,78 +1,83 @@
-[gd_scene load_steps=8 format=3]
+[gd_scene format=3 uid="uid://c7e6r6w2c3mjj"]
 
 [ext_resource type="PackedScene" path="res://SupermarketShelf.tscn" id="1_shelf"]
-
-[sub_resource type="StandardMaterial3D" id="AwningMaterial"]
-albedo_color = Color(0.12, 0.46, 0.18, 1)
-roughness = 0.72
-
-[sub_resource type="StandardMaterial3D" id="CounterMaterial"]
-albedo_color = Color(0.72, 0.66, 0.48, 1)
-roughness = 0.82
-
-[sub_resource type="BoxMesh" id="AwningMesh"]
-material = SubResource("AwningMaterial")
-size = Vector3(8.5, 0.18, 1.5)
-
-[sub_resource type="BoxMesh" id="CounterMesh"]
-material = SubResource("CounterMaterial")
-size = Vector3(8.4, 0.7, 1.15)
-
-[sub_resource type="BoxShape3D" id="CounterShape"]
-size = Vector3(8.4, 0.7, 1.15)
 
 [sub_resource type="StandardMaterial3D" id="BackdropMaterial"]
 albedo_color = Color(0.86, 0.82, 0.65, 1)
 roughness = 0.9
 
-[node name="SupermarketInterior" type="Node3D"]
+[sub_resource type="StandardMaterial3D" id="CounterMaterial"]
+albedo_color = Color(0.72, 0.66, 0.48, 1)
+roughness = 0.82
 
-[node name="Backdrop" type="MeshInstance3D" parent="."]
-position = Vector3(0, 1.45, 0.58)
-mesh = SubResource("CounterMesh")
-scale = Vector3(1, 3.4, 0.16)
+[sub_resource type="BoxMesh" id="CounterMesh"]
+material = SubResource("CounterMaterial")
+size = Vector3(8.4, 0.7, 1.15)
+
+[sub_resource type="StandardMaterial3D" id="AwningMaterial"]
+albedo_color = Color(0.12, 0.46, 0.18, 1)
+roughness = 0.72
+
+[sub_resource type="BoxMesh" id="AwningMesh"]
+material = SubResource("AwningMaterial")
+size = Vector3(8.5, 0.18, 1.5)
+
+[sub_resource type="BoxShape3D" id="CounterShape"]
+size = Vector3(8.4, 0.7, 1.15)
+
+[node name="SupermarketInterior" type="Node3D" unique_id=602927138]
+
+[node name="Backdrop" type="MeshInstance3D" parent="." unique_id=421914604]
+transform = Transform3D(1, 0, 0, 0, 3.4, 0, 0, 0, 0.16, 0, 1.45, 0.58)
 material_override = SubResource("BackdropMaterial")
+mesh = SubResource("CounterMesh")
 
-[node name="Awning" type="MeshInstance3D" parent="."]
-position = Vector3(0, 2.85, -0.15)
+[node name="Awning" type="MeshInstance3D" parent="." unique_id=1311403751]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.85, -0.15)
 mesh = SubResource("AwningMesh")
 
-[node name="ProduceCounter" type="StaticBody3D" parent="."]
+[node name="ProduceCounter" type="StaticBody3D" parent="." unique_id=1842090552]
 
-[node name="Counter" type="MeshInstance3D" parent="ProduceCounter"]
-position = Vector3(0, 0.35, 0.1)
+[node name="Counter" type="MeshInstance3D" parent="ProduceCounter" unique_id=881586706]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.35, 0.1)
 mesh = SubResource("CounterMesh")
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="ProduceCounter"]
-position = Vector3(0, 0.35, 0.1)
+[node name="CollisionShape3D" type="CollisionShape3D" parent="ProduceCounter" unique_id=277631680]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.35, 0.1)
 shape = SubResource("CounterShape")
 
-[node name="MarketLabel" type="Label3D" parent="."]
-position = Vector3(0, 2.35, -0.78)
-rotation = Vector3(0, 3.1415927, 0)
+[node name="MarketLabel" type="Label3D" parent="." unique_id=258020700]
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0, 2.35, -0.78)
 pixel_size = 0.007
 modulate = Color(1, 0.96, 0.7, 1)
 outline_modulate = Color(0.04, 0.18, 0.06, 1)
-text = "FRISCHES GEMÜSE • ALLES 1€"
+text = "GEMÜSE 1€ • SOẞEN 5€"
 font_size = 44
 outline_size = 8
-horizontal_alignment = 1
 
-[node name="OnionShelf" parent="." instance=ExtResource("1_shelf")]
-position = Vector3(-3.2, 0.7, -0.12)
+[node name="OnionShelf" parent="." unique_id=1933992715 instance=ExtResource("1_shelf")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.2, 0.7, -0.12)
 
-[node name="LettuceShelf" parent="." instance=ExtResource("1_shelf")]
-position = Vector3(-1.6, 0.7, -0.12)
+[node name="LettuceShelf" parent="." unique_id=2096635043 instance=ExtResource("1_shelf")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.6, 0.7, -0.12)
 item_id = "whole_lettuce"
 
-[node name="CucumberShelf" parent="." instance=ExtResource("1_shelf")]
-position = Vector3(0, 0.7, -0.12)
+[node name="CucumberShelf" parent="." unique_id=1004356836 instance=ExtResource("1_shelf")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.7, -0.12)
 item_id = "whole_cucumber"
 
-[node name="TomatoShelf" parent="." instance=ExtResource("1_shelf")]
-position = Vector3(1.6, 0.7, -0.12)
+[node name="TomatoShelf" parent="." unique_id=473140927 instance=ExtResource("1_shelf")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.6, 0.7, -0.12)
 item_id = "whole_tomato"
 
-[node name="RedCabbageShelf" parent="." instance=ExtResource("1_shelf")]
-position = Vector3(3.2, 0.7, -0.12)
+[node name="RedCabbageShelf" parent="." unique_id=2118729675 instance=ExtResource("1_shelf")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.2, 0.7, -0.12)
 item_id = "whole_red_cabbage"
+
+[node name="GarlicSauceShelf" parent="." unique_id=1575814537 instance=ExtResource("1_shelf")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.966931, 0.7, -0.12804902)
+item_id = "sauce_bottle_garlic"
+
+[node name="CocktailSauceShelf" parent="." unique_id=361477199 instance=ExtResource("1_shelf")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.966931, 0.7, -0.12804902)
+item_id = "sauce_bottle_cocktail"

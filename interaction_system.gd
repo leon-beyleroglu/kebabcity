@@ -4,6 +4,7 @@ extends Node
 const InteractableItemScript = preload("res://interactable_item.gd")
 const DonerMeatStationScript = preload("res://doner_meat_station.gd")
 const DoenerTongsScript = preload("res://DoenerTongs.gd")
+const KitchenSupplyFactoryScript = preload("res://KitchenSupplyFactory.gd")
 const LavashAssemblyScene := preload("res://LavashAssembly.tscn")
 const RolledDoenerScene := preload("res://RolledDoener.tscn")
 
@@ -85,6 +86,8 @@ func setup(owner_player: CharacterBody3D, view_camera: Camera3D, hand_slot: Mark
 	_setup_ui()
 	if not GameState.stock_updated.is_connected(_on_stock_updated):
 		GameState.stock_updated.connect(_on_stock_updated)
+	if not GameState.sauce_stock_updated.is_connected(_on_sauce_stock_updated):
+		GameState.sauce_stock_updated.connect(_on_sauce_stock_updated)
 	call_deferred("_register_scene_targets")
 
 func _setup_input() -> void:
@@ -203,6 +206,7 @@ func _register_scene_targets() -> void:
 		if is_instance_valid(oven_station):
 			oven_station.configure_persistence(get_oven_save_data, load_oven_save_data)
 	_sync_all_container_fill_visuals()
+	_sync_all_sauce_fill_visuals()
 
 
 func _restore_prep_counter_items(item_ids: Array[String], station: PrepStation) -> void:
@@ -934,6 +938,8 @@ func hold_kitchen_item_data(data: Dictionary) -> bool:
 	var visual: Node3D
 	if item_id == "meat_portion":
 		visual = DoenerTongsScript.create_viewmodel(true)
+	elif KitchenSupplyFactoryScript.SUPPORTED_ITEMS.has(item_id):
+		visual = KitchenSupplyFactoryScript.create_visual(item_id, true)
 	else:
 		visual = (
 			WholeVegetableFactory.create_sliced(ingredient_id)
@@ -942,13 +948,45 @@ func hold_kitchen_item_data(data: Dictionary) -> bool:
 		)
 	if not is_instance_valid(visual):
 		return false
-	var display_name := "Dönerfleisch in Zange" if item_id == "meat_portion" else WholeVegetableFactory.display_name(ingredient_id)
+	var display_name := (
+		"Dönerfleisch in Zange"
+		if item_id == "meat_portion"
+		else (
+			KitchenSupplyFactoryScript.display_name(item_id)
+			if KitchenSupplyFactoryScript.SUPPORTED_ITEMS.has(item_id)
+			else WholeVegetableFactory.display_name(ingredient_id)
+		)
+	)
 	if not hold_produced_item(item_id, display_name, visual):
 		visual.queue_free()
 		return false
+	if KitchenSupplyFactoryScript.SUPPORTED_ITEMS.has(item_id):
+		_apply_supply_hand_pose(visual, item_id)
 	if is_instance_valid(player) and player.has_method("set_held_kitchen_item"):
 		player.call("set_held_kitchen_item", normalized)
 	return true
+
+
+func _apply_supply_hand_pose(visual: Node3D, item_id: String) -> void:
+	if not is_instance_valid(visual):
+		return
+	if item_id == "raw_spit":
+		visual.position = Vector3(0.02, -0.04, -0.28)
+		visual.rotation = Vector3(deg_to_rad(75.0), 0.0, deg_to_rad(-8.0))
+		visual.scale = Vector3.ONE * 0.42
+	else:
+		visual.position = Vector3(0.0, -0.04, -0.12)
+		visual.rotation = Vector3(deg_to_rad(-12.0), 0.0, deg_to_rad(-8.0))
+		visual.scale = Vector3.ONE * 0.78
+
+
+func consume_supply_item(item_id: String) -> bool:
+	var normalized_id := KitchenSupplyFactoryScript.normalize_item_id(item_id)
+	if normalized_id.is_empty():
+		return false
+	if is_instance_valid(held_item):
+		return consume_held_item(normalized_id) if held_item.item_id == normalized_id else false
+	return PlayerInventory.remove_item(normalized_id, 1)
 
 
 func consume_held_item(expected_item_id: String = "") -> bool:
@@ -1186,12 +1224,49 @@ func _sync_all_container_fill_visuals() -> void:
 		_on_stock_updated(ingredient_id, int(GameState.ingredient_stock.get(ingredient_id, 0)))
 
 
+func _sync_all_sauce_fill_visuals() -> void:
+	for sauce_node in get_tree().get_nodes_in_group("sauce_containers"):
+		var sauce_bin := sauce_node as Area3D
+		if is_instance_valid(sauce_bin):
+			_update_sauce_fill_visual(sauce_bin)
+
+
+func _on_sauce_stock_updated(sauce_type: String, _remaining: int) -> void:
+	for sauce_node in get_tree().get_nodes_in_group("sauce_containers"):
+		var sauce_bin := sauce_node as Area3D
+		if (
+			is_instance_valid(sauce_bin)
+			and String(sauce_bin.get_meta("sauce_type", "")) == sauce_type
+		):
+			_update_sauce_fill_visual(sauce_bin)
+
+
+func _update_sauce_fill_visual(sauce_bin: Area3D) -> void:
+	var sauce_type := String(sauce_bin.get_meta("sauce_type", ""))
+	var surface := sauce_bin.find_child("*SauceSurface", true, false) as Node3D
+	if not is_instance_valid(surface):
+		return
+	if not surface.has_meta("full_scale"):
+		surface.set_meta("full_scale", surface.scale)
+	var full_scale := surface.get_meta("full_scale", Vector3.ONE) as Vector3
+	var remaining := GameState.get_sauce_stock(sauce_type)
+	var fill_ratio := float(remaining) / float(GameState.SAUCE_MAX_STOCK)
+	surface.visible = remaining > 0
+	surface.scale = Vector3(full_scale.x, full_scale.y * maxf(fill_ratio, 0.04), full_scale.z)
+
+
 func _is_sauce_ladle(item_id: String) -> bool:
 	return item_id == "garlic_sauce_ladle" or item_id == "cocktail_sauce_ladle"
 
 
 func _is_sauce_portion(item_id: String) -> bool:
 	return item_id == "garlic_sauce" or item_id == "cocktail_sauce"
+
+
+func _show_station_feedback(message: String, success: bool) -> void:
+	var hud := get_tree().get_first_node_in_group("money_hud")
+	if is_instance_valid(hud) and hud.has_method("show_order_feedback"):
+		hud.call("show_order_feedback", message, success)
 
 
 func _drop_held_sauce(target_node: Node3D, hit_point: Vector3, on_bread: bool) -> void:
@@ -1372,7 +1447,11 @@ func _add_sauce_to_durum(assembly: Area3D, hit_position: Vector3) -> void:
 	if not bool(held_item.get_meta("is_filled", false)):
 		return
 
-	var portion_id := "garlic_sauce" if held_item.item_id == "garlic_sauce_ladle" else "cocktail_sauce"
+	var sauce_type := "garlic" if held_item.item_id == "garlic_sauce_ladle" else "cocktail"
+	if GameState.get_sauce_stock(sauce_type) <= 0:
+		_show_station_feedback("%ssoße ist leer" % sauce_type.capitalize(), false)
+		return
+	var portion_id := "%s_sauce" % sauce_type
 	var portion_visual := _duplicate_pickup_template(portion_id)
 	if not is_instance_valid(portion_visual):
 		return
@@ -1404,6 +1483,8 @@ func _add_sauce_to_durum(assembly: Area3D, hit_position: Vector3) -> void:
 		assembly.set_meta("ingredients", ingredients)
 		assembly.set_meta("placed_count", int(assembly.get_meta("placed_count", 0)) + 1)
 
+	if not GameState.consume_sauce(sauce_type, 1):
+		return
 	_cancel_ladle_scoop()
 	held_item.set_meta("is_filled", false)
 	var sauce_mesh := held_visual.find_child("SauceFill", true, false) as MeshInstance3D if is_instance_valid(held_visual) else null
@@ -1514,6 +1595,8 @@ func _interact_with_customer(customer: CharacterBody3D) -> void:
 func _interact_with_sauce_bin(bin: Area3D) -> void:
 	if not is_instance_valid(bin):
 		return
+	if _try_refill_sauce_bin(bin):
+		return
 	var ladle_id := String(bin.get_meta("sauce_ladle_id", ""))
 	if held_item:
 		if held_item.item_id == ladle_id:
@@ -1527,12 +1610,35 @@ func _fill_sauce_ladle(ladle_id: String) -> void:
 		return
 	if not _is_sauce_ladle(ladle_id) or not is_instance_valid(held_visual):
 		return
+	var sauce_type := "garlic" if ladle_id == "garlic_sauce_ladle" else "cocktail"
+	if GameState.get_sauce_stock(sauce_type) <= 0:
+		held_item.set_meta("is_filled", false)
+		_show_station_feedback("%ssoße ist leer" % sauce_type.capitalize(), false)
+		return
 	var sauce_mesh := held_visual.find_child("SauceFill", true, false) as MeshInstance3D
 	if not is_instance_valid(sauce_mesh):
 		return
 	held_item.set_meta("is_filled", true)
 	sauce_mesh.visible = true
 	_animate_ladle_scoop(sauce_mesh)
+
+
+func _try_refill_sauce_bin(bin: Area3D) -> bool:
+	var sauce_type := String(bin.get_meta("sauce_type", "")).strip_edges().to_lower()
+	if not sauce_type in ["garlic", "cocktail"]:
+		return false
+	if GameState.get_sauce_stock(sauce_type) >= GameState.SAUCE_MAX_STOCK:
+		return false
+	var bottle_id := "sauce_bottle_%s" % sauce_type
+	var has_held_bottle: bool = is_instance_valid(held_item) and held_item.item_id == bottle_id
+	if is_instance_valid(held_item) and not has_held_bottle:
+		return false
+	var consumed: bool = consume_held_item(bottle_id) if has_held_bottle else PlayerInventory.remove_item(bottle_id, 1)
+	if not consumed:
+		return false
+	GameState.set_sauce_stock(sauce_type, GameState.SAUCE_MAX_STOCK)
+	_show_station_feedback("%ssoße aufgefüllt (10/10)" % sauce_type.capitalize(), true)
+	return true
 
 
 func _pickup_sauce_ladle(bin: Area3D, ladle_id: String) -> void:
@@ -2003,6 +2109,10 @@ func _item_collision_size(item_id: String) -> Vector3:
 			return Vector3(0.42, 0.22, 0.42)
 		"meat_portion":
 			return Vector3(0.22, 0.12, 0.22)
+		"sauce_bottle_cocktail", "sauce_bottle_garlic":
+			return Vector3(0.22, 0.5, 0.22)
+		"raw_spit":
+			return Vector3(0.8, 1.3, 0.8)
 		_:
 			return Vector3(0.5, 0.3, 0.5)
 

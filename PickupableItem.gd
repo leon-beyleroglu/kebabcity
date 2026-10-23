@@ -4,6 +4,7 @@ extends Area3D
 const DEFAULT_SCENE_PATH := "res://PickupableItem.tscn"
 const INTERACTION_LAYER := 1 << 7
 const DoenerTongsScript := preload("res://DoenerTongs.gd")
+const KitchenSupplyFactoryScript := preload("res://KitchenSupplyFactory.gd")
 
 var item_data: Dictionary = {}
 var item_visual: Node3D
@@ -61,6 +62,14 @@ static func normalize_item_data(data: Dictionary) -> Dictionary:
 			"id": "meat_portion",
 			"type": "meat",
 			"is_cut": true,
+			"scene_path": String(data.get("scene_path", DEFAULT_SCENE_PATH)),
+		}
+	var supply_id := KitchenSupplyFactoryScript.normalize_item_id(item_id)
+	if not supply_id.is_empty():
+		return {
+			"id": supply_id,
+			"type": "supply",
+			"is_cut": false,
 			"scene_path": String(data.get("scene_path", DEFAULT_SCENE_PATH)),
 		}
 	var prefix := ""
@@ -140,6 +149,12 @@ func _rebuild_visual() -> void:
 		add_child(item_visual)
 		item_visual.position = Vector3(0.0, _visual_contact_height(item_id), 0.0)
 		return
+	if KitchenSupplyFactoryScript.SUPPORTED_ITEMS.has(item_id):
+		item_visual = KitchenSupplyFactoryScript.create_visual(item_id)
+		if is_instance_valid(item_visual):
+			add_child(item_visual)
+			item_visual.position = Vector3(0.0, _visual_contact_height(item_id), 0.0)
+		return
 	var ingredient_id := WholeVegetableFactory.normalize_ingredient_id(item_id)
 	item_visual = (
 		WholeVegetableFactory.create_sliced(ingredient_id)
@@ -170,6 +185,10 @@ func _rebuild_collision() -> void:
 func _visual_contact_height(item_id: String) -> float:
 	if item_id == "meat_portion":
 		return 0.025
+	if item_id.begins_with("sauce_bottle_"):
+		return 0.0
+	if item_id == "raw_spit":
+		return 0.62
 	if item_id.begins_with("sliced_"):
 		return 0.018
 	match WholeVegetableFactory.normalize_ingredient_id(item_id):
@@ -187,6 +206,10 @@ func _visual_contact_height(item_id: String) -> float:
 func _collision_size(item_id: String) -> Vector3:
 	if item_id == "meat_portion":
 		return Vector3(0.22, 0.08, 0.18)
+	if item_id.begins_with("sauce_bottle_"):
+		return Vector3(0.22, 0.5, 0.22)
+	if item_id == "raw_spit":
+		return Vector3(0.8, 1.3, 0.8)
 	if item_id.begins_with("sliced_"):
 		return Vector3(0.2, 0.055, 0.16)
 	match WholeVegetableFactory.normalize_ingredient_id(item_id):

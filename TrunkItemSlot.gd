@@ -11,6 +11,9 @@ const ITEM_ICONS := {
 	"glock": preload("res://textures/ingredients/weapon_glock.svg"),
 	"ak47": preload("res://textures/ingredients/weapon_ak47.svg"),
 	"awp": preload("res://textures/ingredients/weapon_awp.svg"),
+	"sauce_bottle_cocktail": preload("res://textures/ingredients/sauce_cocktail.svg"),
+	"sauce_bottle_garlic": preload("res://textures/ingredients/sauce_garlic.svg"),
+	"raw_spit": preload("res://textures/ingredients/raw_spit.svg"),
 }
 
 const WEAPON_NAMES := {
@@ -18,6 +21,12 @@ const WEAPON_NAMES := {
 	"glock": "Glock",
 	"ak47": "AK-47",
 	"awp": "AWP",
+}
+
+const SUPPLY_NAMES := {
+	"sauce_bottle_cocktail": "Cocktailsoße",
+	"sauce_bottle_garlic": "Knoblauchsoße",
+	"raw_spit": "Roher Spieß",
 }
 
 var inventory_ui: TrunkUI
@@ -120,22 +129,27 @@ func _update_display() -> void:
 		return
 	var item_id := String(item_data.get("id", ""))
 	var is_weapon := String(item_data.get("type", "")) == "weapon"
+	var is_supply := String(item_data.get("type", "")) == "supply"
 	var ingredient_name := WholeVegetableFactory.normalize_ingredient_id(item_id)
-	var display_name := (
-		String(WEAPON_NAMES.get(item_id, item_id.to_upper()))
-		if is_weapon
-		else WholeVegetableFactory.display_name(ingredient_name)
-	)
+	var display_name := String(SUPPLY_NAMES.get(item_id, ""))
+	if display_name.is_empty():
+		display_name = (
+			String(WEAPON_NAMES.get(item_id, item_id.to_upper()))
+			if is_weapon
+			else WholeVegetableFactory.display_name(ingredient_name)
+		)
 	icon_rect.texture = get_item_icon(item_id)
 	name_label.text = display_name
 	name_label.modulate = Color.WHITE
-	count_label.text = "1x" if is_weapon else "×%d" % maxi(int(item_data.get("count", 0)), 0)
+	count_label.text = "1x" if is_weapon or is_supply else "×%d" % maxi(int(item_data.get("count", 0)), 0)
 	tooltip_text = "%s (%s)" % [display_name, source_type]
 	panel_style.border_color = Color(0.92, 0.7, 0.22, 1) if is_weapon else _item_color(ingredient_name)
 
 
 static func get_item_icon(item_id: String) -> Texture2D:
 	var normalized_id := item_id.strip_edges().to_lower()
+	if ITEM_ICONS.has(normalized_id):
+		return ITEM_ICONS.get(normalized_id) as Texture2D
 	if GameState.WEAPON_ITEM_IDS.has(normalized_id):
 		return ITEM_ICONS.get(normalized_id) as Texture2D
 	var ingredient_name := WholeVegetableFactory.normalize_ingredient_id(item_id)

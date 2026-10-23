@@ -9,6 +9,7 @@ signal day_changed(new_day: int)
 signal stock_updated(item: String, remaining: int)
 signal counter_stock_updated(ingredient_name: String, remaining: int)
 signal raw_supply_stock_updated(ingredient_type: String, remaining: int)
+signal sauce_stock_updated(sauce_type: String, remaining: int)
 signal inventory_item_changed(item_id: String, count: int)
 signal inventory_slots_changed
 
@@ -25,6 +26,8 @@ const COUNTER_INGREDIENTS: Array[String] = [
 	"red_cabbage",
 ]
 const RAW_SUPPLY_MAX_STOCK := 5
+const SAUCE_MAX_STOCK := 10
+const SPIT_MAX_CUTS := 60
 const RAW_SUPPLY_INGREDIENTS: Array[String] = [
 	"onion",
 	"cucumber",
@@ -38,6 +41,9 @@ const INVENTORY_ITEM_IDS: Array[String] = [
 	"whole_cucumber",
 	"whole_tomato",
 	"whole_red_cabbage",
+	"sauce_bottle_cocktail",
+	"sauce_bottle_garlic",
+	"raw_spit",
 ]
 
 var money: int = 0
@@ -81,6 +87,13 @@ var inventory_items: Dictionary = {
 	"whole_cucumber": 0,
 	"whole_tomato": 0,
 	"whole_red_cabbage": 0,
+	"sauce_bottle_cocktail": 0,
+	"sauce_bottle_garlic": 0,
+	"raw_spit": 0,
+}
+var sauce_stocks: Dictionary = {
+	"cocktail": 10,
+	"garlic": 10,
 }
 var player_slots: Array[Dictionary] = []
 var trunk_slots: Array[Dictionary] = []
@@ -92,6 +105,9 @@ var counter_items: Array[Dictionary] = []
 var prep_counter_items: Array[String] = []
 var meat_tray_portions: int = 0
 var lavash_meat_count: int = 0
+var spit_cuts_remaining: int = 60
+var is_spit_cooking: bool = false
+var spit_cook_time_left: float = 0.0
 var oven_data: Dictionary = {"item_type": "", "timer_progress": 0.0, "is_baked": false}
 var table_stored_weapons: Array[String] = []
 var cutting_station_data: Dictionary = {"item_on_board": "", "chop_progress": 0, "is_chopped": false}
@@ -160,6 +176,7 @@ func save_game() -> void:
 		"counter_stocks": counter_stocks,
 		"raw_supply_stocks": raw_supply_stocks,
 		"inventory_items": inventory_items,
+		"sauce_stocks": sauce_stocks,
 		"player_slots": player_slots,
 		"trunk_slots": trunk_slots,
 		"unlocked_upgrades": unlocked_upgrades,
@@ -176,6 +193,9 @@ func save_game() -> void:
 		"prep_counter_items": prep_counter_items,
 		"meat_tray_portions": meat_tray_portions,
 		"lavash_meat_count": lavash_meat_count,
+		"spit_cuts_remaining": spit_cuts_remaining,
+		"is_spit_cooking": is_spit_cooking,
+		"spit_cook_time_left": spit_cook_time_left,
 		"oven_data": oven_data,
 		"table_stored_weapons": table_stored_weapons,
 		"cutting_station": cutting_station_data,
@@ -275,6 +295,15 @@ func load_game() -> bool:
 		)
 	_restore_inventory_slots(save_data)
 	_restore_tofas_trunk = true
+	var loaded_sauce_stocks: Variant = save_data.get("sauce_stocks", {})
+	for sauce_type: String in ["cocktail", "garlic"]:
+		sauce_stocks[sauce_type] = clampi(
+			int((loaded_sauce_stocks as Dictionary).get(sauce_type, SAUCE_MAX_STOCK))
+			if loaded_sauce_stocks is Dictionary
+			else SAUCE_MAX_STOCK,
+			0,
+			SAUCE_MAX_STOCK
+		)
 	var loaded_upgrades: Variant = save_data.get("unlocked_upgrades", unlocked_upgrades)
 	if loaded_upgrades is Array:
 		unlocked_upgrades.assign(loaded_upgrades)
@@ -345,9 +374,27 @@ func load_game() -> bool:
 		else:
 			_restore_prep_counter = false
 
-	_restore_meat_tray = save_data.has("meat_tray_portions")
+	_restore_meat_tray = (
+		save_data.has("meat_tray_portions")
+		or save_data.has("spit_cuts_remaining")
+		or save_data.has("is_spit_cooking")
+	)
 	if _restore_meat_tray:
-		meat_tray_portions = clampi(int(save_data["meat_tray_portions"]), 0, 3)
+		meat_tray_portions = clampi(int(save_data.get("meat_tray_portions", 0)), 0, 3)
+	spit_cuts_remaining = clampi(
+		int(save_data.get("spit_cuts_remaining", SPIT_MAX_CUTS)),
+		0,
+		SPIT_MAX_CUTS
+	)
+	is_spit_cooking = bool(save_data.get("is_spit_cooking", false))
+	spit_cook_time_left = clampf(
+		float(save_data.get("spit_cook_time_left", 0.0)),
+		0.0,
+		10.0
+	)
+	if is_spit_cooking and spit_cook_time_left <= 0.0:
+		is_spit_cooking = false
+		spit_cuts_remaining = SPIT_MAX_CUTS
 
 	_restore_oven = save_data.has("oven_data")
 	if _restore_oven:
@@ -403,6 +450,8 @@ func load_game() -> bool:
 		counter_stock_updated.emit(ingredient_name, int(counter_stocks[ingredient_name]))
 	for ingredient_name: String in RAW_SUPPLY_INGREDIENTS:
 		raw_supply_stock_updated.emit(ingredient_name, int(raw_supply_stocks[ingredient_name]))
+	for sauce_type: String in ["cocktail", "garlic"]:
+		sauce_stock_updated.emit(sauce_type, int(sauce_stocks[sauce_type]))
 	for item_id: String in INVENTORY_ITEM_IDS:
 		inventory_item_changed.emit(item_id, int(inventory_items[item_id]))
 	inventory_slots_changed.emit()
@@ -464,6 +513,17 @@ func _collect_station_data() -> void:
 		var tray_data: Variant = meat_tray.call("get_save_data")
 		if tray_data is Dictionary:
 			meat_tray_portions = clampi(int(tray_data.get("portions", 0)), 0, 3)
+			spit_cuts_remaining = clampi(
+				int(tray_data.get("spit_cuts_remaining", spit_cuts_remaining)),
+				0,
+				SPIT_MAX_CUTS
+			)
+			is_spit_cooking = bool(tray_data.get("is_spit_cooking", is_spit_cooking))
+			spit_cook_time_left = clampf(
+				float(tray_data.get("spit_cook_time_left", spit_cook_time_left)),
+				0.0,
+				10.0
+			)
 
 	var oven := get_tree().get_first_node_in_group("oven")
 	if is_instance_valid(oven) and oven.has_method("get_save_data"):
@@ -576,7 +636,12 @@ func _restore_scene_state(attempt: int = 0) -> void:
 		if (
 			is_instance_valid(meat_tray)
 			and meat_tray.has_method("load_save_data")
-			and bool(meat_tray.call("load_save_data", {"portions": meat_tray_portions}))
+			and bool(meat_tray.call("load_save_data", {
+				"portions": meat_tray_portions,
+				"spit_cuts_remaining": spit_cuts_remaining,
+				"is_spit_cooking": is_spit_cooking,
+				"spit_cook_time_left": spit_cook_time_left,
+			}))
 		):
 			_restore_meat_tray = false
 		else:
@@ -754,6 +819,37 @@ func set_raw_supply_stock(item: String, value: int) -> int:
 	return remaining
 
 
+func get_sauce_stock(sauce_type: String) -> int:
+	var normalized_type := sauce_type.strip_edges().to_lower()
+	if normalized_type.ends_with("_sauce"):
+		normalized_type = normalized_type.trim_suffix("_sauce")
+	if not sauce_stocks.has(normalized_type):
+		return 0
+	return clampi(int(sauce_stocks[normalized_type]), 0, SAUCE_MAX_STOCK)
+
+
+func set_sauce_stock(sauce_type: String, value: int) -> int:
+	var normalized_type := sauce_type.strip_edges().to_lower()
+	if normalized_type.ends_with("_sauce"):
+		normalized_type = normalized_type.trim_suffix("_sauce")
+	if not sauce_stocks.has(normalized_type):
+		return 0
+	var remaining := clampi(value, 0, SAUCE_MAX_STOCK)
+	sauce_stocks[normalized_type] = remaining
+	sauce_stock_updated.emit(normalized_type, remaining)
+	return remaining
+
+
+func consume_sauce(sauce_type: String, amount: int = 1) -> bool:
+	if amount <= 0:
+		return false
+	var current := get_sauce_stock(sauce_type)
+	if current < amount:
+		return false
+	set_sauce_stock(sauce_type, current - amount)
+	return true
+
+
 func add_inventory_item(item_id: String, amount: int = 1) -> bool:
 	var item := _slot_item_for_id(item_id, amount)
 	if item.is_empty() or not _add_to_slot_array(player_slots, PLAYER_MAX_SLOTS, item):
@@ -801,11 +897,12 @@ func can_add_player_item(item_id: String, amount: int = 1) -> bool:
 	var item := _slot_item_for_id(item_id, amount)
 	if item.is_empty():
 		return false
-	if String(item.get("type", "")) == "ingredient":
+	var item_type := String(item.get("type", ""))
+	if item_type == "ingredient":
 		for slot_item: Dictionary in player_slots:
 			if String(slot_item.get("id", "")) == String(item["id"]):
 				return true
-	else:
+	elif item_type == "weapon":
 		if _slot_array_has_item(player_slots, String(item["id"])):
 			return false
 	return _find_empty_slot(player_slots, PLAYER_MAX_SLOTS) >= 0
@@ -1043,12 +1140,13 @@ func _normalize_slot_item(raw_item: Dictionary) -> Dictionary:
 	if item_id.is_empty():
 		return {}
 	var is_weapon := WEAPON_ITEM_IDS.has(item_id)
-	var count := 1 if is_weapon else maxi(int(raw_item.get("count", 0)), 0)
+	var is_supply := item_id in ["raw_spit", "sauce_bottle_cocktail", "sauce_bottle_garlic"]
+	var count := 1 if is_weapon or is_supply else maxi(int(raw_item.get("count", 0)), 0)
 	if count <= 0:
 		return {}
 	return {
 		"id": item_id,
-		"type": "weapon" if is_weapon else "ingredient",
+		"type": "weapon" if is_weapon else ("supply" if is_supply else "ingredient"),
 		"count": count,
 	}
 
@@ -1066,6 +1164,8 @@ func _normalize_slot_item_id(item_id: String) -> String:
 
 func _normalize_inventory_item(item_id: String) -> String:
 	var normalized_id := item_id.strip_edges().to_lower()
+	if normalized_id in ["sauce_bottle_cocktail", "sauce_bottle_garlic", "raw_spit"]:
+		return normalized_id
 	if not normalized_id.begins_with("whole_"):
 		return ""
 	var ingredient_name := WholeVegetableFactory.normalize_ingredient_id(normalized_id)
@@ -1089,7 +1189,7 @@ func _add_to_slot_array(
 				stacked_item["count"] = int(stacked_item.get("count", 0)) + int(normalized_item["count"])
 				slots[slot_index] = stacked_item
 				return true
-	elif _slot_array_has_item(slots, item_id):
+	elif String(normalized_item["type"]) == "weapon" and _slot_array_has_item(slots, item_id):
 		return false
 	var empty_slot := _find_empty_slot(slots, max_slots)
 	if empty_slot < 0:

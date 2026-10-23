@@ -1,0 +1,221 @@
+[gd_scene load_steps=20 format=3]
+
+[ext_resource type="Script" path="res://scenes/npcs/ButcherOwner.gd" id="1_owner"]
+
+[sub_resource type="StandardMaterial3D" id="MatShirt"]
+resource_local_to_scene = true
+albedo_color = Color(0.92, 0.88, 0.8, 1)
+roughness = 0.84
+
+[sub_resource type="StandardMaterial3D" id="MatStripe"]
+resource_local_to_scene = true
+albedo_color = Color(0.34, 0.08, 0.07, 1)
+roughness = 0.8
+
+[sub_resource type="StandardMaterial3D" id="MatApron"]
+resource_local_to_scene = true
+albedo_color = Color(0.92, 0.91, 0.84, 1)
+roughness = 0.88
+
+[sub_resource type="StandardMaterial3D" id="MatBlood"]
+albedo_color = Color(0.34, 0.015, 0.02, 1)
+roughness = 0.92
+
+[sub_resource type="StandardMaterial3D" id="MatSkin"]
+resource_local_to_scene = true
+albedo_color = Color(0.72, 0.5, 0.36, 1)
+roughness = 0.9
+
+[sub_resource type="StandardMaterial3D" id="MatHair"]
+resource_local_to_scene = true
+albedo_color = Color(0.12, 0.07, 0.045, 1)
+roughness = 0.94
+
+[sub_resource type="StandardMaterial3D" id="MatCap"]
+albedo_color = Color(0.22, 0.16, 0.12, 1)
+roughness = 0.92
+
+[sub_resource type="BoxMesh" id="TorsoMesh"]
+size = Vector3(0.7, 0.86, 0.38)
+
+[sub_resource type="CapsuleMesh" id="HeadMesh"]
+radius = 0.25
+height = 0.52
+radial_segments = 12
+rings = 5
+
+[sub_resource type="CapsuleMesh" id="ArmMesh"]
+radius = 0.11
+height = 0.72
+radial_segments = 8
+rings = 3
+
+[sub_resource type="CapsuleMesh" id="LegMesh"]
+radius = 0.12
+height = 0.8
+radial_segments = 8
+rings = 3
+
+[sub_resource type="BoxMesh" id="ApronMesh"]
+size = Vector3(0.54, 0.72, 0.035)
+
+[sub_resource type="BoxMesh" id="StripeMesh"]
+size = Vector3(0.055, 0.84, 0.025)
+
+[sub_resource type="SphereMesh" id="BloodSpotMesh"]
+radius = 0.055
+height = 0.025
+radial_segments = 10
+rings = 4
+
+[sub_resource type="CylinderMesh" id="CapMesh"]
+top_radius = 0.27
+bottom_radius = 0.29
+height = 0.12
+radial_segments = 12
+
+[sub_resource type="BoxMesh" id="CapBrimMesh"]
+size = Vector3(0.34, 0.035, 0.19)
+
+[sub_resource type="CapsuleShape3D" id="BodyShape"]
+radius = 0.36
+height = 1.84
+
+[sub_resource type="BoxShape3D" id="InteractionShape"]
+size = Vector3(1.6, 2.0, 1.25)
+
+[node name="OwnerButcher" type="CharacterBody3D"]
+script = ExtResource("1_owner")
+owner_name = "Mehmet"
+restaurant_id = &"butcher_shop"
+restaurant_name = "Metzgerei / Butcher"
+greeting_text = "Frische rohe Dönerspieße – 50€ pro Stück."
+skin_color = Color(0.72, 0.5, 0.36, 1)
+outfit_primary = Color(0.92, 0.88, 0.8, 1)
+outfit_accent = Color(0.34, 0.08, 0.07, 1)
+hair_color = Color(0.12, 0.07, 0.045, 1)
+torso_mesh = SubResource("TorsoMesh")
+head_mesh = SubResource("HeadMesh")
+
+[node name="BodyCollision" type="CollisionShape3D" parent="."]
+position = Vector3(0, 0.92, 0)
+shape = SubResource("BodyShape")
+
+[node name="Rig" type="Node3D" parent="."]
+
+[node name="Torso" type="Node3D" parent="Rig"]
+position = Vector3(0, 1.13, 0)
+
+[node name="Body" type="MeshInstance3D" parent="Rig/Torso"]
+material_override = SubResource("MatShirt")
+mesh = SubResource("TorsoMesh")
+metadata/palette_slot = "primary"
+
+[node name="StripeLeft" type="MeshInstance3D" parent="Rig/Torso"]
+position = Vector3(-0.22, 0, -0.205)
+material_override = SubResource("MatStripe")
+mesh = SubResource("StripeMesh")
+metadata/palette_slot = "accent"
+
+[node name="StripeCenter" type="MeshInstance3D" parent="Rig/Torso"]
+position = Vector3(0, 0, -0.205)
+material_override = SubResource("MatStripe")
+mesh = SubResource("StripeMesh")
+metadata/palette_slot = "accent"
+
+[node name="StripeRight" type="MeshInstance3D" parent="Rig/Torso"]
+position = Vector3(0.22, 0, -0.205)
+material_override = SubResource("MatStripe")
+mesh = SubResource("StripeMesh")
+metadata/palette_slot = "accent"
+
+[node name="Apron" type="MeshInstance3D" parent="Rig/Torso"]
+position = Vector3(0, -0.08, -0.225)
+material_override = SubResource("MatApron")
+mesh = SubResource("ApronMesh")
+
+[node name="BloodSpot01" type="MeshInstance3D" parent="Rig/Torso/Apron"]
+position = Vector3(-0.13, 0.12, -0.027)
+scale = Vector3(1.3, 0.45, 0.8)
+material_override = SubResource("MatBlood")
+mesh = SubResource("BloodSpotMesh")
+
+[node name="BloodSpot02" type="MeshInstance3D" parent="Rig/Torso/Apron"]
+position = Vector3(0.12, -0.16, -0.027)
+scale = Vector3(0.75, 0.35, 1.25)
+material_override = SubResource("MatBlood")
+mesh = SubResource("BloodSpotMesh")
+
+[node name="Head" type="Node3D" parent="Rig"]
+position = Vector3(0, 1.79, 0)
+
+[node name="Face" type="MeshInstance3D" parent="Rig/Head"]
+material_override = SubResource("MatSkin")
+mesh = SubResource("HeadMesh")
+metadata/palette_slot = "skin"
+
+[node name="Hair" type="MeshInstance3D" parent="Rig/Head"]
+position = Vector3(0, 0.19, 0.035)
+scale = Vector3(0.9, 0.22, 0.9)
+material_override = SubResource("MatHair")
+mesh = SubResource("HeadMesh")
+metadata/palette_slot = "hair"
+
+[node name="FlatCap" type="MeshInstance3D" parent="Rig/Head"]
+position = Vector3(0, 0.29, 0)
+material_override = SubResource("MatCap")
+mesh = SubResource("CapMesh")
+
+[node name="CapBrim" type="MeshInstance3D" parent="Rig/Head"]
+position = Vector3(0, 0.25, -0.2)
+material_override = SubResource("MatCap")
+mesh = SubResource("CapBrimMesh")
+
+[node name="LeftArm" type="Node3D" parent="Rig"]
+position = Vector3(-0.44, 1.13, 0)
+rotation_degrees = Vector3(0, 0, -8)
+
+[node name="Arm" type="MeshInstance3D" parent="Rig/LeftArm"]
+material_override = SubResource("MatShirt")
+mesh = SubResource("ArmMesh")
+metadata/palette_slot = "primary"
+
+[node name="RightArm" type="Node3D" parent="Rig"]
+position = Vector3(0.44, 1.13, 0)
+rotation_degrees = Vector3(0, 0, 8)
+
+[node name="Arm" type="MeshInstance3D" parent="Rig/RightArm"]
+material_override = SubResource("MatShirt")
+mesh = SubResource("ArmMesh")
+metadata/palette_slot = "primary"
+
+[node name="LeftLeg" type="Node3D" parent="Rig"]
+position = Vector3(-0.17, 0.43, 0)
+
+[node name="Leg" type="MeshInstance3D" parent="Rig/LeftLeg"]
+material_override = SubResource("MatStripe")
+mesh = SubResource("LegMesh")
+
+[node name="RightLeg" type="Node3D" parent="Rig"]
+position = Vector3(0.17, 0.43, 0)
+
+[node name="Leg" type="MeshInstance3D" parent="Rig/RightLeg"]
+material_override = SubResource("MatStripe")
+mesh = SubResource("LegMesh")
+
+[node name="InteractionArea" type="Area3D" parent="."]
+position = Vector3(0, 1.1, -0.9)
+collision_layer = 4
+collision_mask = 0
+monitoring = false
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="InteractionArea"]
+shape = SubResource("InteractionShape")
+
+[node name="NameLabel" type="Label3D" parent="."]
+position = Vector3(0, 2.7, 0)
+billboard = 1
+pixel_size = 0.004
+text = "Mehmet • Spieß 50€"
+font_size = 28
+outline_size = 8
