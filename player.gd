@@ -185,6 +185,12 @@ func _unhandled_input(event: InputEvent) -> void:
 		var key_event := event as InputEventKey
 		var physical_key: Key = key_event.physical_keycode if key_event.physical_keycode != 0 else key_event.keycode
 		if physical_key == KEY_E:
+			if (
+				is_instance_valid(interaction_system)
+				and interaction_system.try_open_trunk_from_raycast()
+			):
+				get_viewport().set_input_as_handled()
+				return
 			if _try_pickup_table_weapon() or _try_vehicle_interaction():
 				get_viewport().set_input_as_handled()
 			return

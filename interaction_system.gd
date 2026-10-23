@@ -593,6 +593,9 @@ func _unhandled_input(event: InputEvent) -> void:
 func handle_interaction(collider: Object, hit_position: Vector3, hit_normal: Vector3) -> void:
 	var collider_node := collider as Node
 	if is_instance_valid(collider_node):
+		var trunk := _trunk_from_collider(collider_node)
+		if is_instance_valid(trunk) and trunk.interact(player):
+			return
 		var pickupable_item := collider_node as PickupableItem
 		if is_instance_valid(pickupable_item):
 			pickup_world_kitchen_item(pickupable_item)
@@ -657,6 +660,28 @@ func handle_interaction(collider: Object, hit_position: Vector3, hit_normal: Vec
 		pick_up(focused_item)
 	elif held_item:
 		_return_held()
+
+
+func try_open_trunk_from_raycast() -> bool:
+	if not is_instance_valid(interaction_ray) or not is_instance_valid(player):
+		return false
+	interaction_ray.force_raycast_update()
+	if not interaction_ray.is_colliding():
+		return false
+	var trunk := _trunk_from_collider(interaction_ray.get_collider())
+	return is_instance_valid(trunk) and trunk.interact(player)
+
+
+func _trunk_from_collider(collider: Object) -> TrunkInteractionArea:
+	var collider_node := collider as Node
+	if not is_instance_valid(collider_node):
+		return null
+	var trunk := collider_node as TrunkInteractionArea
+	if is_instance_valid(trunk):
+		return trunk
+	if collider_node.has_meta("trunk_interaction_owner"):
+		return collider_node.get_meta("trunk_interaction_owner") as TrunkInteractionArea
+	return null
 
 
 func _supply_box_from_collider(collider: Object) -> SupplyBox:

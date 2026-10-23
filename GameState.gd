@@ -89,6 +89,7 @@ var table_stored_weapons: Array[String] = []
 var cutting_station_data: Dictionary = {"item_on_board": "", "chop_progress": 0, "is_chopped": false}
 var placed_world_items: Array[Dictionary] = []
 var held_kitchen_item: Dictionary = {}
+var tofas_trunk_items: Array[Dictionary] = []
 var placed_lavash: Dictionary = {
 	"is_present": false,
 	"is_baked": false,
@@ -112,6 +113,7 @@ var _restore_cutting_station := false
 var _restore_placed_world_items := false
 var _restore_held_kitchen_item := false
 var _restore_raw_supply_stocks := false
+var _restore_tofas_trunk := false
 
 
 func _ready() -> void:
@@ -130,6 +132,7 @@ func save_game() -> void:
 	_collect_weapon_table_data()
 	_collect_kitchen_item_data(player)
 	_collect_raw_supply_stocks()
+	_collect_tofas_trunk_items()
 
 	var save_data: Dictionary = {
 		"money": money,
@@ -162,6 +165,7 @@ func save_game() -> void:
 		"cutting_station": cutting_station_data,
 		"placed_world_items": placed_world_items,
 		"held_kitchen_item": held_kitchen_item,
+		"tofas_trunk_items": tofas_trunk_items,
 	}
 	var file := FileAccess.open(SAVE_PATH, FileAccess.WRITE)
 	if file == null:
@@ -258,6 +262,22 @@ func load_game() -> bool:
 		loaded_inventory = {}
 	for item_id: String in INVENTORY_ITEM_IDS:
 		inventory_items[item_id] = maxi(int(loaded_inventory.get(item_id, 0)), 0)
+	tofas_trunk_items.clear()
+	var loaded_trunk_items: Variant = save_data.get("tofas_trunk_items", [])
+	if loaded_trunk_items is Array:
+		for raw_trunk_item: Variant in loaded_trunk_items:
+			if not raw_trunk_item is Dictionary:
+				continue
+			var trunk_item_id := String(raw_trunk_item.get("id", "")).strip_edges().to_lower()
+			var trunk_item_count := maxi(int(raw_trunk_item.get("count", 0)), 0)
+			if not INVENTORY_ITEM_IDS.has(trunk_item_id) or trunk_item_count <= 0:
+				continue
+			tofas_trunk_items.append({
+				"slot": clampi(int(raw_trunk_item.get("slot", tofas_trunk_items.size())), 0, 19),
+				"id": trunk_item_id,
+				"count": trunk_item_count,
+			})
+	_restore_tofas_trunk = true
 	var loaded_upgrades: Variant = save_data.get("unlocked_upgrades", unlocked_upgrades)
 	if loaded_upgrades is Array:
 		unlocked_upgrades.assign(loaded_upgrades)
@@ -498,6 +518,19 @@ func _collect_raw_supply_stocks() -> void:
 		)
 
 
+func _collect_tofas_trunk_items() -> void:
+	var trunk := get_tree().get_first_node_in_group("tofas_trunk")
+	if not is_instance_valid(trunk) or not trunk.has_method("get_save_data"):
+		return
+	var saved_items: Variant = trunk.call("get_save_data")
+	if not saved_items is Array:
+		return
+	tofas_trunk_items.clear()
+	for raw_item: Variant in saved_items:
+		if raw_item is Dictionary:
+			tofas_trunk_items.append(raw_item.duplicate(true))
+
+
 func _restore_scene_state(attempt: int = 0) -> void:
 	var needs_retry := false
 	var player := get_tree().get_first_node_in_group("player") as Node3D
@@ -587,6 +620,14 @@ func _restore_scene_state(attempt: int = 0) -> void:
 					continue
 				supply_box.load_stock(get_raw_supply_stock(supply_box.ingredient_type))
 			_restore_raw_supply_stocks = false
+
+	if _restore_tofas_trunk:
+		var trunk := get_tree().get_first_node_in_group("tofas_trunk")
+		if is_instance_valid(trunk) and trunk.has_method("load_save_data"):
+			trunk.call("load_save_data", tofas_trunk_items)
+			_restore_tofas_trunk = false
+		else:
+			needs_retry = true
 
 	if _restore_placed_world_items:
 		var scene := get_tree().current_scene
