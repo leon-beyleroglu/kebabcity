@@ -39,7 +39,7 @@ func set_money(amount: int, animate := true) -> void:
 
 
 func _set_money_display(amount: int, animate: bool) -> void:
-	money_label.text = "$%08d" % maxi(amount, 0)
+	money_label.text = "€%08d" % maxi(amount, 0)
 	if not animate:
 		money_label.scale = Vector2.ONE
 		return

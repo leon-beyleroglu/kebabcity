@@ -106,6 +106,11 @@ func _setup_input() -> void:
 		var finalize_key := InputEventKey.new()
 		finalize_key.physical_keycode = KEY_F
 		InputMap.action_add_event("finalize_doner", finalize_key)
+	if not InputMap.has_action("refill_supply_box"):
+		InputMap.add_action("refill_supply_box")
+		var refill_key := InputEventKey.new()
+		refill_key.physical_keycode = KEY_R
+		InputMap.action_add_event("refill_supply_box", refill_key)
 
 func _setup_ui() -> void:
 	ui_layer = CanvasLayer.new()
@@ -565,6 +570,16 @@ func _unhandled_input(event: InputEvent) -> void:
 	elif event.is_action_pressed("finalize_doner"):
 		if _try_finalize_aimed_lavash():
 			get_viewport().set_input_as_handled()
+	elif event.is_action_pressed("refill_supply_box"):
+		if not is_instance_valid(interaction_ray):
+			return
+		interaction_ray.force_raycast_update()
+		if not interaction_ray.is_colliding():
+			return
+		var supply_box := _supply_box_from_collider(interaction_ray.get_collider())
+		if is_instance_valid(supply_box):
+			supply_box.refill_from_inventory(true)
+			get_viewport().set_input_as_handled()
 	elif event.is_action_pressed("mouse_right"):
 		if _try_return_sauce_ladle_to_matching_bin():
 			get_viewport().set_input_as_handled()
@@ -582,11 +597,13 @@ func handle_interaction(collider: Object, hit_position: Vector3, hit_normal: Vec
 		if is_instance_valid(pickupable_item):
 			pickup_world_kitchen_item(pickupable_item)
 			return
-		var supply_box: SupplyBox
-		if collider_node.has_meta("supply_box_owner"):
-			supply_box = collider_node.get_meta("supply_box_owner") as SupplyBox
-		elif collider_node.has_meta("supply_crate_owner"):
-			supply_box = collider_node.get_meta("supply_crate_owner") as SupplyBox
+		var supermarket_shelf: SupermarketShelf
+		if collider_node.has_meta("supermarket_shelf_owner"):
+			supermarket_shelf = collider_node.get_meta("supermarket_shelf_owner") as SupermarketShelf
+		if is_instance_valid(supermarket_shelf):
+			supermarket_shelf.interact(self)
+			return
+		var supply_box := _supply_box_from_collider(collider_node)
 		if is_instance_valid(supply_box):
 			supply_box.interact(self)
 			return
@@ -640,6 +657,18 @@ func handle_interaction(collider: Object, hit_position: Vector3, hit_normal: Vec
 		pick_up(focused_item)
 	elif held_item:
 		_return_held()
+
+
+func _supply_box_from_collider(collider: Object) -> SupplyBox:
+	var collider_node := collider as Node
+	if not is_instance_valid(collider_node):
+		return null
+	if collider_node.has_meta("supply_box_owner"):
+		return collider_node.get_meta("supply_box_owner") as SupplyBox
+	if collider_node.has_meta("supply_crate_owner"):
+		return collider_node.get_meta("supply_crate_owner") as SupplyBox
+	return null
+
 
 func pick_up(item: Node3D) -> void:
 	var target := item as Area3D

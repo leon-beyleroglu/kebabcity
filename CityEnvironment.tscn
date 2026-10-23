@@ -1,5 +1,7 @@
 [gd_scene format=4 uid="uid://dg72gj52tm03b"]
 
+[ext_resource type="PackedScene" path="res://Supermarket.tscn" id="1_supermarket"]
+
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_gehlm"]
 resource_name = "City_Asphalt_PBR"
 albedo_color = Color(0.14901961, 0.16470589, 0.20784314, 1)
@@ -23123,7 +23125,7 @@ cast_shadow = 1
 pixel_size = 0.012
 modulate = Color(1, 0.9411765, 0.78431374, 1)
 outline_modulate = Color(0.4, 0.13725491, 0.30588236, 1)
-text = "OCEAN VIEW"
+text = "SUPERMARKT"
 font_size = 48
 outline_size = 5
 
@@ -23174,6 +23176,9 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.1, 0)
 
 [node name="CollisionShape_001" type="CollisionShape3D" parent="Buildings/Building_01/Collisions/Facade_Collision_001" unique_id=1052148179]
 shape = SubResource("BoxShape3D_ebguy")
+
+[node name="Supermarket" parent="Buildings/Building_01" instance=ExtResource("1_supermarket")]
+position = Vector3(0, 0, -6.15)
 
 [node name="Building_02" type="Node3D" parent="Buildings" unique_id=2009275588]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -32, 0, 16)

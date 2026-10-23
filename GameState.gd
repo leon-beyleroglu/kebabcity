@@ -9,6 +9,7 @@ signal day_changed(new_day: int)
 signal stock_updated(item: String, remaining: int)
 signal counter_stock_updated(ingredient_name: String, remaining: int)
 signal raw_supply_stock_updated(ingredient_type: String, remaining: int)
+signal inventory_item_changed(item_id: String, count: int)
 
 const COUNTER_MAX_STOCK := 10
 const COUNTER_INGREDIENTS: Array[String] = [
@@ -25,6 +26,13 @@ const RAW_SUPPLY_INGREDIENTS: Array[String] = [
 	"lettuce",
 	"tomato",
 	"red_cabbage",
+]
+const INVENTORY_ITEM_IDS: Array[String] = [
+	"whole_onion",
+	"whole_lettuce",
+	"whole_cucumber",
+	"whole_tomato",
+	"whole_red_cabbage",
 ]
 
 var money: int = 0
@@ -61,6 +69,13 @@ var raw_supply_stocks: Dictionary = {
 	"lettuce": 5,
 	"tomato": 5,
 	"red_cabbage": 5,
+}
+var inventory_items: Dictionary = {
+	"whole_onion": 0,
+	"whole_lettuce": 0,
+	"whole_cucumber": 0,
+	"whole_tomato": 0,
+	"whole_red_cabbage": 0,
 }
 var unlocked_upgrades: Array[String] = []
 var rival_reputation: int = 20
@@ -128,6 +143,7 @@ func save_game() -> void:
 		"ingredient_stock": ingredient_stock,
 		"counter_stocks": counter_stocks,
 		"raw_supply_stocks": raw_supply_stocks,
+		"inventory_items": inventory_items,
 		"unlocked_upgrades": unlocked_upgrades,
 		"rival_reputation": rival_reputation,
 		"player_pos": {
@@ -237,6 +253,11 @@ func load_game() -> bool:
 			0,
 			RAW_SUPPLY_MAX_STOCK
 		)
+	var loaded_inventory: Variant = save_data.get("inventory_items", {})
+	if not loaded_inventory is Dictionary:
+		loaded_inventory = {}
+	for item_id: String in INVENTORY_ITEM_IDS:
+		inventory_items[item_id] = maxi(int(loaded_inventory.get(item_id, 0)), 0)
 	var loaded_upgrades: Variant = save_data.get("unlocked_upgrades", unlocked_upgrades)
 	if loaded_upgrades is Array:
 		unlocked_upgrades.assign(loaded_upgrades)
@@ -357,6 +378,8 @@ func load_game() -> bool:
 		counter_stock_updated.emit(ingredient_name, int(counter_stocks[ingredient_name]))
 	for ingredient_name: String in RAW_SUPPLY_INGREDIENTS:
 		raw_supply_stock_updated.emit(ingredient_name, int(raw_supply_stocks[ingredient_name]))
+	for item_id: String in INVENTORY_ITEM_IDS:
+		inventory_item_changed.emit(item_id, int(inventory_items[item_id]))
 
 	if get_tree().current_scene == null:
 		call_deferred("_restore_scene_state")
@@ -684,6 +707,35 @@ func set_raw_supply_stock(item: String, value: int) -> int:
 	return remaining
 
 
+func add_inventory_item(item_id: String, amount: int = 1) -> void:
+	var normalized_id := _normalize_inventory_item(item_id)
+	if normalized_id.is_empty() or amount <= 0:
+		return
+	var new_count := get_inventory_count(normalized_id) + amount
+	inventory_items[normalized_id] = new_count
+	inventory_item_changed.emit(normalized_id, new_count)
+
+
+func remove_inventory_item(item_id: String, amount: int = 1) -> bool:
+	var normalized_id := _normalize_inventory_item(item_id)
+	if normalized_id.is_empty() or amount <= 0:
+		return false
+	var current_count := get_inventory_count(normalized_id)
+	if current_count < amount:
+		return false
+	var new_count := current_count - amount
+	inventory_items[normalized_id] = new_count
+	inventory_item_changed.emit(normalized_id, new_count)
+	return true
+
+
+func get_inventory_count(item_id: String) -> int:
+	var normalized_id := _normalize_inventory_item(item_id)
+	if normalized_id.is_empty():
+		return 0
+	return maxi(int(inventory_items.get(normalized_id, 0)), 0)
+
+
 func set_counter_stock(item: String, value: int) -> int:
 	var ingredient_name := _normalize_counter_ingredient(item)
 	if ingredient_name.is_empty():
@@ -733,6 +785,15 @@ func _normalize_counter_ingredient(item: String) -> String:
 func _normalize_raw_supply_ingredient(item: String) -> String:
 	var ingredient_name := WholeVegetableFactory.normalize_ingredient_id(item)
 	return ingredient_name if RAW_SUPPLY_INGREDIENTS.has(ingredient_name) else ""
+
+
+func _normalize_inventory_item(item_id: String) -> String:
+	var normalized_id := item_id.strip_edges().to_lower()
+	if not normalized_id.begins_with("whole_"):
+		return ""
+	var ingredient_name := WholeVegetableFactory.normalize_ingredient_id(normalized_id)
+	normalized_id = "whole_%s" % ingredient_name
+	return normalized_id if INVENTORY_ITEM_IDS.has(normalized_id) else ""
 
 
 func _ingredient_stock_key(ingredient_name: String) -> String:
