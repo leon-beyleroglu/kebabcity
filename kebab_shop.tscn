@@ -24,8 +24,8 @@
 [ext_resource type="Script" uid="uid://diis4ayjqcdmb" path="res://WeaponTable.gd" id="29_weapon_table"]
 [ext_resource type="PackedScene" path="res://CuttingStation.tscn" id="30_cutting_station"]
 [ext_resource type="PackedScene" path="res://SupplyCrate.tscn" id="31_supply_crate"]
-[ext_resource type="Script" path="res://PrepCounter.gd" id="32_prep_counter"]
-[ext_resource type="Script" path="res://LavashAssembly.gd" id="33_lavash_assembly"]
+[ext_resource type="Script" uid="uid://cjm3640td8fvx" path="res://PrepCounter.gd" id="32_prep_counter"]
+[ext_resource type="Script" uid="uid://kehu74db4laf" path="res://LavashAssembly.gd" id="33_lavash_assembly"]
 
 [sub_resource type="StandardMaterial3D" id="MatInteriorFloorTile"]
 resource_name = "Non-Slip Terracotta Floor Tile"
@@ -2452,6 +2452,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.44217527, 1.27, 17)
 collision_layer = 129
 collision_mask = 0
 script = ExtResource("12_assembly_station")
+surface_snap_offset = null
 metadata/work_surface = true
 metadata/assembly_station = true
 
@@ -3059,7 +3060,6 @@ collision_layer = 128
 collision_mask = 0
 monitoring = false
 script = ExtResource("32_prep_counter")
-ingredient_name = "onion"
 fill_mesh_path = NodePath("Zwiebeln")
 metadata/ingredient_id = "onion"
 metadata/ingredient_label = "Zwiebeln"

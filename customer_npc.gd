@@ -277,7 +277,12 @@ func validate_durum_order(
 
 
 func _normalize_ingredient(ingredient: String) -> String:
-	return "cut_meat" if ingredient == "meat" else ingredient
+	match ingredient:
+		"meat", "cut_meat":
+			return "cut_meat"
+		"lettuce", "salad":
+			return "salad"
+	return ingredient
 
 
 func _show_order_feedback(message: String, success := false) -> void:

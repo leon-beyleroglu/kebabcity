@@ -3,6 +3,7 @@ extends CharacterBody3D
 signal hitscan_hit(collider: Object, position: Vector3, normal: Vector3)
 signal health_changed(current: float, max_val: float)
 signal shield_changed(current: float, max_val: float)
+signal held_ingredient_changed(ingredient_name: String)
 
 @export var walk_speed := 5.0
 @export var sprint_speed := 9.0
@@ -61,6 +62,7 @@ var nearby_vehicle: Node
 var active_vehicle: Node
 var cutting_input_locked := false
 var held_kitchen_item: Dictionary = {}
+var held_ingredient := ""
 var health := 100.0
 var shield := 0.0
 
@@ -270,6 +272,22 @@ func clear_held_kitchen_item() -> void:
 
 func get_held_kitchen_item_data() -> Dictionary:
 	return held_kitchen_item.duplicate(true)
+
+
+func set_held_ingredient(ingredient_name: String) -> void:
+	held_ingredient = ingredient_name.strip_edges().to_lower()
+	held_ingredient_changed.emit(held_ingredient)
+
+
+func clear_held_ingredient() -> void:
+	if held_ingredient.is_empty():
+		return
+	held_ingredient = ""
+	held_ingredient_changed.emit(held_ingredient)
+
+
+func get_held_ingredient() -> String:
+	return held_ingredient
 
 
 func restore_held_kitchen_item(data: Dictionary) -> bool:

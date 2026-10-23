@@ -61,6 +61,13 @@ var held_kitchen_item: Dictionary = {}
 var placed_lavash: Dictionary = {
 	"is_present": false,
 	"is_baked": false,
+	"is_rolled": false,
+	"toppings": [],
+}
+var placed_lavash_state: Dictionary = {
+	"is_present": false,
+	"is_baked": false,
+	"is_rolled": false,
 	"toppings": [],
 }
 
@@ -85,7 +92,8 @@ func save_game() -> void:
 		player_position = player.global_position
 		player_rotation_y = player.rotation.y
 	counter_items = _collect_counter_items(player)
-	placed_lavash = _collect_placed_lavash(counter_items)
+	placed_lavash_state = _collect_placed_lavash(counter_items)
+	placed_lavash = placed_lavash_state.duplicate(true)
 	_collect_station_data()
 	_collect_weapon_table_data()
 	_collect_kitchen_item_data(player)
@@ -111,6 +119,7 @@ func save_game() -> void:
 		"player_rot_y": player_rotation_y,
 		"counter_items": counter_items,
 		"placed_lavash": placed_lavash,
+		"placed_lavash_state": placed_lavash_state,
 		"prep_counter_items": prep_counter_items,
 		"meat_tray_portions": meat_tray_portions,
 		"oven_data": oven_data,
@@ -234,16 +243,21 @@ func load_game() -> bool:
 					})
 		else:
 			_restore_counter_inventory = false
-	var loaded_placed_lavash: Variant = save_data.get("placed_lavash", {})
-	if loaded_placed_lavash is Dictionary:
-		placed_lavash = _normalize_placed_lavash(loaded_placed_lavash)
+	var loaded_placed_lavash: Variant = save_data.get(
+		"placed_lavash_state",
+		save_data.get("placed_lavash", {})
+	)
+	if loaded_placed_lavash is Dictionary and not loaded_placed_lavash.is_empty():
+		placed_lavash_state = _normalize_placed_lavash(loaded_placed_lavash)
 	else:
-		placed_lavash = _collect_placed_lavash(counter_items)
-	if bool(placed_lavash.get("is_present", false)) and not _counter_items_have_lavash(counter_items):
+		placed_lavash_state = _collect_placed_lavash(counter_items)
+	placed_lavash = placed_lavash_state.duplicate(true)
+	if bool(placed_lavash_state.get("is_present", false)) and not _counter_items_have_lavash(counter_items):
 		counter_items.append({
-			"type": "durum_assembly" if not (placed_lavash.get("toppings", []) as Array).is_empty() else "baked_lavash",
-			"is_baked": bool(placed_lavash.get("is_baked", true)),
-			"ingredients": (placed_lavash.get("toppings", []) as Array).duplicate(),
+			"type": "durum_assembly" if not (placed_lavash_state.get("toppings", []) as Array).is_empty() else "baked_lavash",
+			"is_baked": bool(placed_lavash_state.get("is_baked", true)),
+			"is_rolled": bool(placed_lavash_state.get("is_rolled", false)),
+			"ingredients": (placed_lavash_state.get("toppings", []) as Array).duplicate(),
 			"slot_index": counter_items.size(),
 		})
 		_restore_counter_inventory = true
@@ -349,9 +363,10 @@ func _collect_placed_lavash(items: Array[Dictionary]) -> Dictionary:
 		return {
 			"is_present": true,
 			"is_baked": bool(entry.get("is_baked", true)),
+			"is_rolled": bool(entry.get("is_rolled", false)),
 			"toppings": toppings,
 		}
-	return {"is_present": false, "is_baked": false, "toppings": []}
+	return {"is_present": false, "is_baked": false, "is_rolled": false, "toppings": []}
 
 
 func _collect_station_data() -> void:
@@ -653,6 +668,7 @@ func _normalize_placed_lavash(data: Dictionary) -> Dictionary:
 	return {
 		"is_present": bool(data.get("is_present", false)),
 		"is_baked": bool(data.get("is_baked", false)),
+		"is_rolled": bool(data.get("is_rolled", false)),
 		"toppings": toppings,
 	}
 

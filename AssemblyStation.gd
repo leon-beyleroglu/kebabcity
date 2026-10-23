@@ -11,6 +11,7 @@ const PREP_ITEM_LAYER := 1 << 8
 @export var table_width := 7.9843507
 @export var table_depth := 1.5
 @export var table_top_y_offset := 0.07
+@export_range(0.0, 0.05, 0.001) var surface_snap_offset := 0.005
 
 @onready var table_mesh := get_node_or_null(table_mesh_path) as MeshInstance3D
 @onready var placed_items := get_node_or_null("PlacedItems") as Node3D
@@ -46,6 +47,7 @@ func get_save_data() -> Dictionary:
 		if item_type.is_empty():
 			continue
 		var ingredients: Array = item.get_meta("ingredients", [])
+		var is_rolled := bool(item.get_meta("is_rolled", false))
 		if item_type == "durum_assembly" and ingredients.is_empty():
 			item_type = "baked_lavash"
 		var saved_slot_index := int(item.get_meta("save_slot_index", slot_index))
@@ -53,6 +55,7 @@ func get_save_data() -> Dictionary:
 		var entry: Dictionary = {
 			"type": item_type,
 			"is_baked": item_type == "baked_lavash" or item_type == "durum_assembly",
+			"is_rolled": is_rolled,
 			"slot_index": saved_slot_index,
 			"local_x": table_position.x,
 			"local_z": table_position.z,
@@ -101,7 +104,7 @@ func snap_to_table_top(hit_point: Vector3, hit_normal: Vector3) -> Vector3:
 	var local_hit: Vector3 = table_mesh.to_local(hit_point)
 	local_hit.x = clampf(local_hit.x, -table_width * 0.45, table_width * 0.45)
 	local_hit.z = clampf(local_hit.z, -table_depth * 0.45, table_depth * 0.45)
-	local_hit.y = get_surface_local_y()
+	local_hit.y = get_surface_local_y() + surface_snap_offset
 	return table_mesh.to_global(local_hit)
 
 
@@ -121,7 +124,7 @@ func get_slot_position(slot_index: int, total: int) -> Vector3:
 	var local_z := 0.0
 	if row_count > 1:
 		local_z = lerpf(-table_depth * 0.28, table_depth * 0.28, float(row) / float(row_count - 1))
-	return table_mesh.to_global(Vector3(local_x, get_surface_local_y(), local_z))
+	return table_mesh.to_global(Vector3(local_x, get_surface_local_y() + surface_snap_offset, local_z))
 
 
 func get_placed_items_container() -> Node3D:
@@ -132,19 +135,25 @@ func place_item(item: Node3D, item_id: String, hit_point: Vector3, hit_normal: V
 	if not is_instance_valid(item) or not can_place_item(hit_normal):
 		return null
 	var snapped_position := snap_to_table_top(hit_point, hit_normal)
-	var table := placed_items
-	if item.get_parent() != table:
-		item.reparent(table)
-	item.global_transform = Transform3D(Basis.IDENTITY, snapped_position)
+	if _is_lavash_item(item, item_id):
+		var slot_index := int(item.get_meta("save_slot_index", current_items.size()))
+		var anchor := _get_or_create_lavash_anchor(slot_index)
+		anchor.global_transform = Transform3D(Basis.IDENTITY, snapped_position)
+		if item.get_parent() != anchor:
+			item.reparent(anchor)
+		item.top_level = false
+		item.transform = Transform3D.IDENTITY
+	else:
+		if item.get_parent() != placed_items:
+			item.reparent(placed_items)
+		item.global_transform = Transform3D(Basis.IDENTITY, snapped_position)
 	item.scale = Vector3.ONE
 	item.set_meta("item_id", item_id)
 	item.set_meta("ingredient_id", item_id)
 	item.set_meta("prep_station", self)
 	item.set_meta("placed_on_assembly_station", true)
 	item.add_to_group("placed_items")
-	if item is CollisionObject3D:
-		(item as CollisionObject3D).collision_layer = 1 << 1
-		(item as CollisionObject3D).collision_mask = 0
+	_lock_placed_item(item)
 	for collision_node in item.find_children("*", "CollisionShape3D", true, false):
 		var collision_shape := collision_node as CollisionShape3D
 		if not is_instance_valid(collision_shape):
@@ -157,6 +166,34 @@ func place_item(item: Node3D, item_id: String, hit_point: Vector3, hit_normal: V
 			box_shape.size = enlarged_size
 	_register_item(item, item_id)
 	return item
+
+
+func replace_item(old_item: Node3D, replacement: Node3D, item_id: String) -> bool:
+	if not is_instance_valid(old_item) or not is_instance_valid(replacement):
+		return false
+	var item_index := current_items.find(old_item)
+	var anchor := old_item.get_parent() as Marker3D
+	if not is_instance_valid(anchor) or not anchor.name.begins_with("LavashSlot_"):
+		anchor = _get_or_create_lavash_anchor(maxi(item_index, 0))
+		anchor.global_transform = old_item.global_transform
+	if replacement.get_parent() == null:
+		anchor.add_child(replacement)
+	elif replacement.get_parent() != anchor:
+		replacement.reparent(anchor)
+	replacement.top_level = false
+	replacement.transform = Transform3D.IDENTITY
+	replacement.scale = Vector3.ONE
+	replacement.set_meta("item_id", item_id)
+	replacement.set_meta("ingredient_id", item_id)
+	replacement.set_meta("prep_station", self)
+	replacement.set_meta("placed_on_assembly_station", true)
+	replacement.set_meta("save_slot_index", int(old_item.get_meta("save_slot_index", maxi(item_index, 0))))
+	replacement.add_to_group("placed_items")
+	_lock_placed_item(replacement)
+	current_items.erase(old_item)
+	_register_item(replacement, item_id)
+	item_removed.emit(String(old_item.get_meta("item_id", "durum_assembly")), old_item)
+	return true
 
 
 func remove_item(item: Node3D) -> void:
@@ -179,6 +216,38 @@ func _register_item(item: Node3D, item_id: String) -> void:
 	if not item.tree_exiting.is_connected(exit_callback):
 		item.tree_exiting.connect(exit_callback, CONNECT_ONE_SHOT)
 	item_placed.emit(item_id, item)
+
+
+func _get_or_create_lavash_anchor(slot_index: int) -> Marker3D:
+	var anchor_name := "LavashSlot_%02d" % [maxi(slot_index, 0) + 1]
+	var anchor := placed_items.get_node_or_null(anchor_name) as Marker3D
+	if not is_instance_valid(anchor):
+		anchor = Marker3D.new()
+		anchor.name = anchor_name
+		placed_items.add_child(anchor)
+	return anchor
+
+
+func _is_lavash_item(item: Node3D, item_id: String) -> bool:
+	return (
+		item is LavashAssembly
+		or item is RolledDoener
+		or item_id == "baked_lavash"
+		or item_id == "durum_assembly"
+	)
+
+
+func _lock_placed_item(item: Node3D) -> void:
+	var rigid_item := item as RigidBody3D
+	if is_instance_valid(rigid_item):
+		rigid_item.freeze_mode = RigidBody3D.FREEZE_MODE_STATIC
+		rigid_item.freeze = true
+		rigid_item.linear_velocity = Vector3.ZERO
+		rigid_item.angular_velocity = Vector3.ZERO
+	var collision_object := item as CollisionObject3D
+	if is_instance_valid(collision_object):
+		collision_object.collision_layer = INTERACTION_LAYER
+		collision_object.collision_mask = 0
 
 
 func _on_placed_item_tree_exiting(item: Node3D) -> void:
