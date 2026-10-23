@@ -8,9 +8,18 @@ signal armour_changed(current: float, max_val: float)
 signal day_changed(new_day: int)
 signal stock_updated(item: String, remaining: int)
 signal counter_stock_updated(ingredient_name: String, remaining: int)
+signal raw_supply_stock_updated(ingredient_type: String, remaining: int)
 
 const COUNTER_MAX_STOCK := 10
 const COUNTER_INGREDIENTS: Array[String] = [
+	"onion",
+	"cucumber",
+	"lettuce",
+	"tomato",
+	"red_cabbage",
+]
+const RAW_SUPPLY_MAX_STOCK := 5
+const RAW_SUPPLY_INGREDIENTS: Array[String] = [
 	"onion",
 	"cucumber",
 	"lettuce",
@@ -46,6 +55,13 @@ var counter_stocks: Dictionary = {
 	"tomato": 10,
 	"red_cabbage": 10,
 }
+var raw_supply_stocks: Dictionary = {
+	"onion": 5,
+	"cucumber": 5,
+	"lettuce": 5,
+	"tomato": 5,
+	"red_cabbage": 5,
+}
 var unlocked_upgrades: Array[String] = []
 var rival_reputation: int = 20
 var player_position: Vector3 = Vector3.ZERO
@@ -80,6 +96,7 @@ var _restore_weapon_table := false
 var _restore_cutting_station := false
 var _restore_placed_world_items := false
 var _restore_held_kitchen_item := false
+var _restore_raw_supply_stocks := false
 
 
 func _ready() -> void:
@@ -97,6 +114,7 @@ func save_game() -> void:
 	_collect_station_data()
 	_collect_weapon_table_data()
 	_collect_kitchen_item_data(player)
+	_collect_raw_supply_stocks()
 
 	var save_data: Dictionary = {
 		"money": money,
@@ -109,6 +127,7 @@ func save_game() -> void:
 		"ammo": ammo,
 		"ingredient_stock": ingredient_stock,
 		"counter_stocks": counter_stocks,
+		"raw_supply_stocks": raw_supply_stocks,
 		"unlocked_upgrades": unlocked_upgrades,
 		"rival_reputation": rival_reputation,
 		"player_pos": {
@@ -208,6 +227,16 @@ func load_game() -> bool:
 				COUNTER_MAX_STOCK
 			)
 	_sync_counter_stock_aliases()
+	_restore_raw_supply_stocks = true
+	var loaded_raw_supply: Variant = save_data.get("raw_supply_stocks", {})
+	if not loaded_raw_supply is Dictionary:
+		loaded_raw_supply = {}
+	for ingredient_name: String in RAW_SUPPLY_INGREDIENTS:
+		raw_supply_stocks[ingredient_name] = clampi(
+			int(loaded_raw_supply.get(ingredient_name, RAW_SUPPLY_MAX_STOCK)),
+			0,
+			RAW_SUPPLY_MAX_STOCK
+		)
 	var loaded_upgrades: Variant = save_data.get("unlocked_upgrades", unlocked_upgrades)
 	if loaded_upgrades is Array:
 		unlocked_upgrades.assign(loaded_upgrades)
@@ -326,6 +355,8 @@ func load_game() -> bool:
 		stock_updated.emit(item, int(ingredient_stock[item]))
 	for ingredient_name: String in COUNTER_INGREDIENTS:
 		counter_stock_updated.emit(ingredient_name, int(counter_stocks[ingredient_name]))
+	for ingredient_name: String in RAW_SUPPLY_INGREDIENTS:
+		raw_supply_stock_updated.emit(ingredient_name, int(raw_supply_stocks[ingredient_name]))
 
 	if get_tree().current_scene == null:
 		call_deferred("_restore_scene_state")
@@ -429,6 +460,21 @@ func _collect_kitchen_item_data(player: Node3D) -> void:
 			held_kitchen_item = PickupableItem.normalize_item_data(player_item)
 
 
+func _collect_raw_supply_stocks() -> void:
+	for supply_node in get_tree().get_nodes_in_group("raw_supply_box"):
+		var supply_box := supply_node as SupplyBox
+		if not is_instance_valid(supply_box):
+			continue
+		var normalized_type := _normalize_raw_supply_ingredient(supply_box.ingredient_type)
+		if normalized_type.is_empty():
+			continue
+		raw_supply_stocks[normalized_type] = clampi(
+			supply_box.current_stock,
+			0,
+			RAW_SUPPLY_MAX_STOCK
+		)
+
+
 func _restore_scene_state(attempt: int = 0) -> void:
 	var needs_retry := false
 	var player := get_tree().get_first_node_in_group("player") as Node3D
@@ -506,6 +552,18 @@ func _restore_scene_state(attempt: int = 0) -> void:
 			_restore_cutting_station = false
 		else:
 			needs_retry = true
+
+	if _restore_raw_supply_stocks:
+		var supply_boxes := get_tree().get_nodes_in_group("raw_supply_box")
+		if supply_boxes.is_empty():
+			needs_retry = true
+		else:
+			for supply_node in supply_boxes:
+				var supply_box := supply_node as SupplyBox
+				if not is_instance_valid(supply_box):
+					continue
+				supply_box.load_stock(get_raw_supply_stock(supply_box.ingredient_type))
+			_restore_raw_supply_stocks = false
 
 	if _restore_placed_world_items:
 		var scene := get_tree().current_scene
@@ -609,6 +667,23 @@ func get_counter_stock(item: String) -> int:
 	return int(counter_stocks.get(ingredient_name, COUNTER_MAX_STOCK))
 
 
+func get_raw_supply_stock(item: String) -> int:
+	var ingredient_name := _normalize_raw_supply_ingredient(item)
+	if ingredient_name.is_empty():
+		return 0
+	return int(raw_supply_stocks.get(ingredient_name, RAW_SUPPLY_MAX_STOCK))
+
+
+func set_raw_supply_stock(item: String, value: int) -> int:
+	var ingredient_name := _normalize_raw_supply_ingredient(item)
+	if ingredient_name.is_empty():
+		return 0
+	var remaining := clampi(value, 0, RAW_SUPPLY_MAX_STOCK)
+	raw_supply_stocks[ingredient_name] = remaining
+	raw_supply_stock_updated.emit(ingredient_name, remaining)
+	return remaining
+
+
 func set_counter_stock(item: String, value: int) -> int:
 	var ingredient_name := _normalize_counter_ingredient(item)
 	if ingredient_name.is_empty():
@@ -653,6 +728,11 @@ func _sync_counter_stock_aliases() -> void:
 func _normalize_counter_ingredient(item: String) -> String:
 	var ingredient_name := WholeVegetableFactory.normalize_ingredient_id(item)
 	return ingredient_name if COUNTER_INGREDIENTS.has(ingredient_name) else ""
+
+
+func _normalize_raw_supply_ingredient(item: String) -> String:
+	var ingredient_name := WholeVegetableFactory.normalize_ingredient_id(item)
+	return ingredient_name if RAW_SUPPLY_INGREDIENTS.has(ingredient_name) else ""
 
 
 func _ingredient_stock_key(ingredient_name: String) -> String:

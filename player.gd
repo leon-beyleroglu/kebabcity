@@ -274,6 +274,15 @@ func get_held_kitchen_item_data() -> Dictionary:
 	return held_kitchen_item.duplicate(true)
 
 
+func equip_raw_vegetable(item_id: String) -> bool:
+	if not held_kitchen_item.is_empty() or not is_instance_valid(interaction_system):
+		return false
+	var item_data := PickupableItem.data_for_id(item_id)
+	if item_data.is_empty() or not String(item_data.get("id", "")).begins_with("whole_"):
+		return false
+	return interaction_system.hold_kitchen_item_data(item_data)
+
+
 func set_held_ingredient(ingredient_name: String) -> void:
 	held_ingredient = ingredient_name.strip_edges().to_lower()
 	held_ingredient_changed.emit(held_ingredient)

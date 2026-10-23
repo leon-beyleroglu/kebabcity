@@ -582,11 +582,13 @@ func handle_interaction(collider: Object, hit_position: Vector3, hit_normal: Vec
 		if is_instance_valid(pickupable_item):
 			pickup_world_kitchen_item(pickupable_item)
 			return
-		var supply_crate: SupplyCrate
-		if collider_node.has_meta("supply_crate_owner"):
-			supply_crate = collider_node.get_meta("supply_crate_owner") as SupplyCrate
-		if is_instance_valid(supply_crate):
-			supply_crate.interact(self)
+		var supply_box: SupplyBox
+		if collider_node.has_meta("supply_box_owner"):
+			supply_box = collider_node.get_meta("supply_box_owner") as SupplyBox
+		elif collider_node.has_meta("supply_crate_owner"):
+			supply_box = collider_node.get_meta("supply_crate_owner") as SupplyBox
+		if is_instance_valid(supply_box):
+			supply_box.interact(self)
 			return
 		var cutting_station: CuttingStation
 		if collider_node.has_meta("cutting_station_owner"):
